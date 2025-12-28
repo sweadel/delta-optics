@@ -9,208 +9,147 @@
     
     <style>
         :root {
-            /* تم تعديل اللون ليطابق لون اللوجو الجديد (أخضر تيركواز فخم) */
             --primary-color: #009688; 
             --primary-dark: #00796b;
             --secondary-color: #f4fbfb;
             --text-color: #2c3e50;
-            --accent-color: #d4af37; /* لون ذهبي للفخامة */
+            --accent-color: #d4af37;
             --whatsapp-color: #25D366;
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { line-height: 1.7; color: var(--text-color); background-color: #fff; scroll-behavior: smooth; }
+        body { line-height: 1.6; color: var(--text-color); background-color: #fff; scroll-behavior: smooth; }
         a { text-decoration: none; }
 
         /* Header */
         header {
             background: rgba(255, 255, 255, 0.98);
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            transition: 0.3s;
+            position: fixed; width: 100%; top: 0; z-index: 1000; transition: 0.3s;
         }
 
         .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0.8rem 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            max-width: 1200px; margin: 0 auto; padding: 0.8rem 1rem;
+            display: flex; justify-content: space-between; align-items: center;
         }
 
-        /* تنسيق اللوجو الجديد */
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-        }
-        
-        .logo-img {
-            height: 55px; /* حجم اللوجو */
-            width: auto;
-            border-radius: 50%; /* يخلي الصورة دائرية */
-            /* box-shadow: 0 2px 5px rgba(0,0,0,0.1); */
-        }
-
-        .logo-text { 
-            font-size: 1.6rem; 
-            font-weight: 800; 
-            color: var(--primary-color); 
-            letter-spacing: -0.5px;
-        }
+        .logo-container { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo-img { height: 50px; width: auto; border-radius: 50%; }
+        .logo-text { font-size: 1.4rem; font-weight: 800; color: var(--primary-color); }
         
         .nav-links a {
-            color: #555;
-            margin-left: 2rem;
-            font-weight: 600;
-            transition: 0.3s;
-            font-size: 1.05rem;
+            color: #555; margin-left: 1.5rem; font-weight: 600; transition: 0.3s; font-size: 1rem;
         }
         .nav-links a:hover { color: var(--primary-color); }
 
         .cta-btn {
             background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
-            color: white !important;
-            padding: 0.6rem 1.8rem;
-            border-radius: 50px;
-            transition: 0.3s;
-            box-shadow: 0 4px 15px rgba(0, 150, 136, 0.3);
+            color: white !important; padding: 0.5rem 1.5rem; border-radius: 50px;
+            transition: 0.3s; font-size: 0.9rem;
         }
-        .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 150, 136, 0.4); }
+        .cta-btn:hover { transform: translateY(-2px); }
 
         /* Hero Section */
         .hero {
-            height: 90vh;
-            /* صورة خلفية هادئة وسريعة التحميل */
+            height: 85vh;
             background: linear-gradient(rgba(0,50,40,0.7), rgba(0,50,40,0.6)), url('https://images.unsplash.com/photo-1570222094114-28a9d8894566?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: white;
-            margin-top: 70px;
+            background-size: cover; background-position: center;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; color: white; margin-top: 70px;
         }
 
-        .hero-content h1 { font-size: 3.5rem; margin-bottom: 0.5rem; font-weight: 800; }
-        .hero-content p { font-size: 1.3rem; margin-bottom: 2.5rem; opacity: 0.9; }
+        .hero-content h1 { font-size: 2.8rem; margin-bottom: 0.5rem; font-weight: 800; }
+        .hero-content p { font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.9; }
         
         .rating-badge {
-            background: rgba(255,255,255,0.15);
-            padding: 8px 20px;
-            border-radius: 30px;
-            display: inline-block;
-            margin-bottom: 1.5rem;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.15); padding: 5px 15px; border-radius: 30px;
+            display: inline-block; margin-bottom: 1rem; backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2); font-size: 0.9rem;
         }
         .stars { color: var(--accent-color); }
 
-        /* Services */
-        .section { padding: 6rem 1rem; text-align: center; }
-        .section-title { 
-            margin-bottom: 4rem; 
-            color: var(--primary-dark); 
-            font-size: 2.2rem; 
-            position: relative; 
-            display: inline-block; 
-            font-weight: 700;
-        }
-        .section-title::after {
-            content: ''; width: 80px; height: 4px; background: var(--accent-color);
-            position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); border-radius: 2px;
-        }
-
+        /* Services - تم تصغير الحجم هنا */
+        .section { padding: 4rem 1rem; text-align: center; }
+        .section-title { margin-bottom: 2.5rem; color: var(--primary-dark); font-size: 1.8rem; font-weight: 700; position: relative; display: inline-block; }
+        
         .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2.5rem;
-            max-width: 1200px;
-            margin: 0 auto;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem; max-width: 1100px; margin: 0 auto;
         }
 
         .service-card {
-            background: white;
-            padding: 2.5rem 2rem;
-            border-radius: 15px;
-            transition: all 0.4s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            background: white; padding: 1.5rem; border-radius: 12px;
+            transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
             border: 1px solid #eee;
         }
-        .service-card:hover { transform: translateY(-10px); box-shadow: 0 15px 40px rgba(0, 150, 136, 0.15); border-color: var(--primary-color); }
+        .service-card:hover { transform: translateY(-5px); border-color: var(--primary-color); }
         
         .service-icon { 
-            font-size: 3rem; 
-            color: var(--primary-color); 
-            margin-bottom: 1.5rem;
-            background: var(--secondary-color);
-            width: 80px;
-            height: 80px;
-            line-height: 80px;
-            border-radius: 50%;
+            font-size: 2rem; color: var(--primary-color); margin-bottom: 1rem;
+            background: var(--secondary-color); width: 60px; height: 60px;
+            line-height: 60px; border-radius: 50%;
         }
+        
+        .service-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--primary-dark); }
+        .service-card p { font-size: 0.9rem; color: #666; line-height: 1.5; }
 
-        /* تمييز الخدمات الرئيسية (أول كرتين) كما طلبت */
-        .featured-card {
-            border-bottom: 5px solid var(--primary-color);
-        }
-        .featured-card h3 { font-size: 1.5rem; font-weight: 800; color: var(--primary-dark); }
-        .featured-card p { font-size: 1.1rem; }
-
-        /* Reviews */
+        /* Reviews Grid & Form */
         .reviews-section { background: var(--secondary-color); }
+        
+        .reviews-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem; max-width: 1100px; margin: 0 auto 3rem auto;
+        }
+
         .review-card {
-            background: white; padding: 2.5rem; border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.06); max-width: 700px; margin: 0 auto;
+            background: white; padding: 1.5rem; border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05); text-align: right;
             position: relative;
         }
-        .quote-icon { font-size: 2rem; color: #ddd; position: absolute; top: 20px; right: 20px; }
+        
+        .add-review-box {
+            background: white; max-width: 600px; margin: 0 auto; padding: 2rem;
+            border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        
+        .form-input, .form-textarea {
+            width: 100%; padding: 10px; margin-bottom: 15px;
+            border: 1px solid #ddd; border-radius: 5px; font-family: 'Tajawal';
+        }
+        .submit-btn {
+            background: var(--primary-color); color: white; border: none;
+            padding: 10px 25px; border-radius: 5px; cursor: pointer; width: 100%;
+            font-weight: bold; font-size: 1rem;
+        }
 
         /* Contact & Footer */
-        .info-section { background: #1a1a1a; color: white; padding: 5rem 1rem; }
+        .info-section { background: #1a1a1a; color: white; padding: 4rem 1rem; }
         .info-container {
-            max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap;
+            max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap;
             justify-content: space-around; text-align: center;
         }
-        .info-box { margin: 1.5rem; flex: 1; min-width: 280px; }
-        .info-box i { font-size: 2.2rem; margin-bottom: 1.2rem; color: var(--accent-color); }
-        .info-box h3 { margin-bottom: 1rem; font-size: 1.4rem; }
-        .info-box p { color: #bbb; line-height: 1.8; font-size: 1.1rem; }
+        .info-box { margin: 1rem; flex: 1; min-width: 250px; }
+        .info-box i { font-size: 1.8rem; margin-bottom: 1rem; color: var(--accent-color); }
         
-        .social-links a {
-            color: white; font-size: 1.8rem; margin: 0 12px; transition: 0.3s;
-        }
-        .social-links a:hover { color: var(--accent-color); transform: scale(1.1); }
+        /* Map Link Style */
+        .map-link { color: #fff; transition: 0.3s; display: block; }
+        .map-link:hover { color: var(--accent-color); text-decoration: underline; }
 
-        /* WhatsApp Float */
         .whatsapp-float {
-            position: fixed; bottom: 25px; right: 25px;
+            position: fixed; bottom: 20px; right: 20px;
             background: var(--whatsapp-color); color: white;
-            width: 65px; height: 65px; border-radius: 50%;
+            width: 60px; height: 60px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 35px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            font-size: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             z-index: 100; transition: 0.3s;
-            animation: pulse 2s infinite;
         }
         .whatsapp-float:hover { transform: scale(1.1); }
 
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
-        }
-
         @media (max-width: 768px) {
-            .hero-content h1 { font-size: 2.2rem; }
+            .hero-content h1 { font-size: 2rem; }
             .nav-links { display: none; } 
-            .logo-text { font-size: 1.3rem; }
-            .logo-img { height: 45px; }
+            .logo-text { font-size: 1.2rem; }
+            .logo-img { height: 40px; }
         }
     </style>
 </head>
@@ -226,11 +165,10 @@
                 <img src="logo.jpg" alt="Delta Optics Logo" class="logo-img">
                 <span class="logo-text">دلتا للبصريات</span>
             </a>
-            
             <nav class="nav-links">
                 <a href="#home">الرئيسية</a>
                 <a href="#services">خدماتنا</a>
-                <a href="#reviews">التقييمات</a>
+                <a href="#reviews">آراء العملاء</a>
                 <a href="#contact" class="cta-btn">تواصل معنا</a>
             </nav>
         </div>
@@ -243,9 +181,12 @@
                 <span> 5.0 (خدمة مميزة)</span>
             </div>
             <h1>دلتا للبصريات</h1>
-            <p>رؤية أوضح.. لحياة أجمل. أحدث تقنيات فحص النظر والنظارات العالمية.</p>
-            <p><i class="fas fa-map-marker-alt" style="color: var(--accent-color);"></i> عمان، المقابلين، ش. الصخرة المشرفة</p>
-            <br>
+            <p>رؤية أوضح.. لحياة أجمل.</p>
+            
+            <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Amman+Al-Muqabalain" target="_blank" style="color: white; font-size: 1.1rem; display: block; margin-bottom: 20px;">
+                <i class="fas fa-map-marker-alt" style="color: var(--accent-color);"></i> عمان، المقابلين، ش. الصخرة المشرفة
+            </a>
+            
             <a href="tel:0775549700" class="cta-btn">
                 <i class="fas fa-phone-alt"></i> اتصل الآن: 0775549700
             </a>
@@ -253,40 +194,64 @@
     </section>
 
     <section class="section" id="services">
-        <h2 class="section-title">خدماتنا المميزة</h2>
+        <h2 class="section-title">خدماتنا</h2>
         <div class="services-grid">
-            <div class="service-card featured-card">
+            <div class="service-card">
                 <i class="fas fa-eye service-icon"></i>
                 <h3>فحص نظر شامل</h3>
-                <p>فحص دقيق بأحدث الأجهزة الرقمية لضمان دقة النتائج وسلامة عينيك.</p>
+                <p>فحص دقيق بأجهزة رقمية حديثة.</p>
             </div>
-            <div class="service-card featured-card">
+            <div class="service-card">
                 <i class="fas fa-glasses service-icon"></i>
                 <h3>نظارات طبية</h3>
-                <p>تشكيلة واسعة من الإطارات الطبية العالمية التي تجمع بين الأناقة والراحة.</p>
+                <p>إطارات عالمية وأنيقة لكافة الأعمار.</p>
             </div>
             <div class="service-card">
                 <i class="fas fa-sun service-icon"></i> 
                 <h3>نظارات شمسية</h3>
-                <p>حماية كاملة من الأشعة فوق البنفسجية بتصاميم عصرية تناسب ذوقك.</p>
+                <p>حماية 100% UV بتصاميم عصرية.</p>
             </div>
             <div class="service-card">
                 <i class="fas fa-record-vinyl service-icon"></i>
                 <h3>عدسات لاصقة</h3>
-                <p>عدسات طبية وتجميلية بألوان جذابة وماركات عالمية مريحة للعين.</p>
+                <p>عدسات طبية وتجميلية مريحة للعين.</p>
             </div>
         </div>
     </section>
 
     <section class="section reviews-section" id="reviews">
-        <h2 class="section-title">آراء عملائنا</h2>
-        <div class="review-card">
-            <i class="fas fa-quote-right quote-icon"></i>
-            <div class="stars" style="margin-bottom: 15px;">
-                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+        <h2 class="section-title">ماذا يقول عملاؤنا؟</h2>
+        
+        <div class="reviews-grid">
+            <div class="review-card">
+                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <p style="font-style: italic; font-size: 0.9rem; margin-top: 10px;">"تعامل راقي جداً والأسعار ممتازة مقارنة بالسوق. شكراً دكتور."</p>
+                <p style="font-weight: bold; color: var(--primary-color); margin-top: 5px;">- أحمد العلي</p>
             </div>
-            <p style="font-size: 1.2rem; font-style: italic; color: #555;">"المحل فخم والتعامل راقي جداً، والفحص كان دقيق. أنصح الجميع بالتعامل معهم ❤️"</p>
-            <p style="margin-top: 15px; font-weight: bold; color: var(--primary-color);">- عميل مميز</p>
+            <div class="review-card">
+                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <p style="font-style: italic; font-size: 0.9rem; margin-top: 10px;">"فحص النظر دقيق جداً، والنظارة جهزت بسرعة. أنصحكم فيه."</p>
+                <p style="font-weight: bold; color: var(--primary-color); margin-top: 5px;">- سارة محمد</p>
+            </div>
+            <div class="review-card">
+                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+                <p style="font-style: italic; font-size: 0.9rem; margin-top: 10px;">"المحل مرتب وفيه تشكيلة نظارات حلوة كثير."</p>
+                <p style="font-weight: bold; color: var(--primary-color); margin-top: 5px;">- مراد خليل</p>
+            </div>
+        </div>
+
+        <div class="add-review-box">
+            <h3 style="margin-bottom: 15px; color: var(--primary-dark);">أضف تقييمك</h3>
+            <input type="text" class="form-input" placeholder="الاسم الكريم">
+            <select class="form-input">
+                <option>⭐⭐⭐⭐⭐ (ممتاز)</option>
+                <option>⭐⭐⭐⭐ (جيد جداً)</option>
+                <option>⭐⭐⭐ (جيد)</option>
+            </select>
+            <textarea class="form-textarea" rows="3" placeholder="اكتب تعليقك هنا..."></textarea>
+            <a href="https://wa.me/962775549700?text=مرحبا،%20حبيت%20أقيم%20خدمتكم%20بـ%205%20نجوم%20لأنها%20ممتازة" target="_blank">
+                <button class="submit-btn">نشر التقييم</button>
+            </a>
         </div>
     </section>
 
@@ -295,18 +260,20 @@
             <div class="info-box">
                 <i class="fas fa-map-marked-alt"></i>
                 <h3>زورونا في</h3>
-                <p>عمان - المقابلين<br>شارع الصخرة المشرفة (شارع الإذاعة والتلفزيون)<br>قرب المؤسسة العسكرية</p>
+                <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Amman+Al-Muqabalain" target="_blank" class="map-link">
+                    عمان - المقابلين<br>شارع الصخرة المشرفة<br>(انقر هنا للموقع)
+                </a>
             </div>
             <div class="info-box">
                 <i class="fas fa-clock"></i>
                 <h3>أوقات الدوام</h3>
-                <p style="font-size: 1.2rem; font-weight: bold;">من 9:00 صباحاً</p>
-                <p style="font-size: 1.2rem; font-weight: bold;">حتى 12:00 منتصف الليل</p>
+                <p style="font-weight: bold;">من 9:00 صباحاً</p>
+                <p style="font-weight: bold;">حتى 12:00 منتصف الليل</p>
             </div>
             <div class="info-box">
                 <i class="fas fa-phone-volume"></i>
                 <h3>تواصلوا معنا</h3>
-                <p><a href="tel:0775549700" style="color:white; font-size: 1.3rem;">07 7554 9700</a></p>
+                <p><a href="tel:0775549700" style="color:white;">07 7554 9700</a></p>
                 <div class="social-links" style="margin-top: 20px;">
                     <a href="https://www.facebook.com/delta.optics1" target="_blank"><i class="fab fa-facebook"></i></a>
                     <a href="https://www.instagram.com/delta.optics1" target="_blank"><i class="fab fa-instagram"></i></a>

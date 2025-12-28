@@ -4,184 +4,259 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>دلتا للبصريات | Delta Optics</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
         :root {
-            --primary-color: #009688; 
-            --primary-dark: #00796b;
-            --secondary-color: #f4fbfb;
-            --text-color: #2c3e50;
-            --accent-color: #d4af37;
-            --whatsapp-color: #25D366;
-            --phone-color: #007bff; /* لون زر الاتصال الجديد */
+            /* ألوان الفخامة */
+            --primary-color: #00897B; /* أخضر تيركواز عميق */
+            --primary-gradient: linear-gradient(135deg, #00897B, #004D40);
+            --accent-color: #D4AF37; /* ذهبي ملكي */
+            --bg-color: #FAFAFA; /* أبيض لؤلؤي للخلفية */
+            --text-dark: #2D3436;
+            --text-light: #636E72;
+            --white: #ffffff;
+            --whatsapp: #25D366;
+            --phone: #2980b9;
         }
         
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { line-height: 1.6; color: var(--text-color); background-color: #fff; scroll-behavior: smooth; }
-        a { text-decoration: none; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; outline: none; }
+        body { line-height: 1.7; color: var(--text-dark); background-color: var(--bg-color); scroll-behavior: smooth; overflow-x: hidden; }
+        a { text-decoration: none; color: inherit; }
 
-        /* Header */
+        /* --- Header: Glassmorphism --- */
         header {
-            background: rgba(255, 255, 255, 0.98);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            position: fixed; width: 100%; top: 0; z-index: 1000; transition: 0.3s;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(0,0,0,0.03);
+            position: fixed; width: 100%; top: 0; z-index: 1000;
+            height: 70px; display: flex; align-items: center;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
 
         .nav-container {
-            max-width: 1200px; margin: 0 auto; padding: 0.8rem 1rem;
+            width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 1.5rem;
             display: flex; justify-content: space-between; align-items: center;
         }
 
-        .logo-container { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-        /* تحسين كود الصورة عشان تتجاوب بشكل أفضل */
-        .logo-img { height: 50px; width: 50px; border-radius: 50%; object-fit: cover; }
-        .logo-text { font-size: 1.4rem; font-weight: 800; color: var(--primary-color); }
+        .logo-container { display: flex; align-items: center; gap: 12px; }
+        .logo-img { 
+            height: 45px; width: 45px; border-radius: 50%; object-fit: cover; 
+            border: 2px solid var(--primary-color); padding: 2px;
+        }
+        .logo-text { font-size: 1.3rem; font-weight: 800; color: var(--primary-color); letter-spacing: -0.5px; }
         
+        .nav-links { display: flex; gap: 2rem; }
         .nav-links a {
-            color: #555; margin-left: 1.5rem; font-weight: 600; transition: 0.3s; font-size: 1rem;
+            color: var(--text-light); font-weight: 600; font-size: 0.95rem; 
+            transition: 0.3s; position: relative;
         }
         .nav-links a:hover { color: var(--primary-color); }
-
-        .cta-btn {
-            background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
-            color: white !important; padding: 0.5rem 1.5rem; border-radius: 50px;
-            transition: 0.3s; font-size: 0.9rem;
+        .nav-links a::after {
+            content: ''; position: absolute; width: 0; height: 2px; bottom: -5px; right: 0;
+            background: var(--accent-color); transition: 0.3s;
         }
-        .cta-btn:hover { transform: translateY(-2px); }
+        .nav-links a:hover::after { width: 100%; }
 
-        /* Hero Section */
+        /* --- Hero Section: Clean & Luxury --- */
         .hero {
-            height: 85vh;
-            background: linear-gradient(rgba(0,50,40,0.7), rgba(0,50,40,0.6)), url('https://images.unsplash.com/photo-1570222094114-28a9d8894566?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60');
-            background-size: cover; background-position: center;
+            height: 70vh; /* ارتفاع متوازن */
+            background: linear-gradient(rgba(0, 40, 30, 0.8), rgba(0, 40, 30, 0.7)), url('https://images.unsplash.com/photo-1570222094114-28a9d8894566?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60');
+            background-size: cover; background-position: center; background-attachment: fixed;
             display: flex; align-items: center; justify-content: center;
-            text-align: center; color: white; margin-top: 70px;
+            text-align: center; color: var(--white); margin-top: 70px;
+            position: relative;
         }
 
-        .hero-content h1 { font-size: 2.8rem; margin-bottom: 0.5rem; font-weight: 800; }
-        .hero-content p { font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.9; }
+        .hero-content { max-width: 800px; padding: 20px; animation: fadeInUp 1s ease; }
         
         .rating-badge {
-            background: rgba(255,255,255,0.15); padding: 5px 15px; border-radius: 30px;
-            display: inline-block; margin-bottom: 1rem; backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2); font-size: 0.9rem;
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            padding: 6px 18px; border-radius: 50px; display: inline-flex; align-items: center; gap: 8px;
+            margin-bottom: 1.5rem; backdrop-filter: blur(5px);
         }
-        .stars { color: var(--accent-color); }
-
-        /* Services */
-        .section { padding: 4rem 1rem; text-align: center; }
-        .section-title { margin-bottom: 2.5rem; color: var(--primary-dark); font-size: 1.8rem; font-weight: 700; position: relative; display: inline-block; }
+        .rating-badge i { color: var(--accent-color); font-size: 0.9rem; }
         
+        .hero-content h1 { 
+            font-size: 3rem; margin-bottom: 0.5rem; font-weight: 800; 
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .hero-content p { font-size: 1.2rem; margin-bottom: 2rem; color: #e0e0e0; font-weight: 300; }
+
+        .location-link {
+            display: inline-flex; align-items: center; gap: 8px; color: var(--white);
+            margin-bottom: 25px; transition: 0.3s; font-weight: 500;
+        }
+        .location-link:hover { color: var(--accent-color); transform: translateY(-2px); }
+
+        /* --- Services Grid --- */
+        .section { padding: 5rem 1.5rem; text-align: center; background: var(--bg-color); }
+        .section-title { 
+            font-size: 2rem; color: var(--primary-color); font-weight: 800; 
+            margin-bottom: 3rem; position: relative; display: inline-block;
+        }
+        .section-title::after {
+            content: ''; width: 60px; height: 3px; background: var(--accent-color);
+            position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); border-radius: 2px;
+        }
+
         .services-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.5rem; max-width: 1100px; margin: 0 auto;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 2rem; max-width: 1100px; margin: 0 auto;
         }
 
         .service-card {
-            background: white; padding: 1.5rem; border-radius: 12px;
-            transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            border: 1px solid #eee;
+            background: var(--white); padding: 2.5rem 1.5rem; border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid transparent; position: relative; overflow: hidden;
         }
-        .service-card:hover { transform: translateY(-5px); border-color: var(--primary-color); }
+        .service-card:hover { transform: translateY(-10px); border-color: rgba(0, 137, 123, 0.2); }
+        .service-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px;
+            background: var(--primary-gradient);
+        }
         
         .service-icon { 
-            font-size: 2rem; color: var(--primary-color); margin-bottom: 1rem;
-            background: var(--secondary-color); width: 60px; height: 60px;
-            line-height: 60px; border-radius: 50%;
+            font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1.5rem; 
+            background: rgba(0, 137, 123, 0.05); width: 80px; height: 80px; 
+            line-height: 80px; border-radius: 50%; transition: 0.3s;
         }
+        .service-card:hover .service-icon { background: var(--primary-color); color: white; }
         
-        .service-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--primary-dark); }
-        .service-card p { font-size: 0.9rem; color: #666; line-height: 1.5; }
+        .service-card h3 { font-size: 1.2rem; margin-bottom: 0.8rem; color: var(--text-dark); }
+        .service-card p { font-size: 0.95rem; color: var(--text-light); }
 
-        /* Reviews */
-        .reviews-section { background: var(--secondary-color); }
+        /* --- Reviews System (Interactive) --- */
+        .reviews-section { background: white; position: relative; }
+        
+        /* Grid للعرض */
         .reviews-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem; max-width: 1100px; margin: 0 auto 3rem auto;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem; max-width: 1100px; margin: 0 auto 4rem auto;
         }
+
         .review-card {
-            background: white; padding: 1.5rem; border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05); text-align: right;
+            background: var(--bg-color); padding: 2rem; border-radius: 15px;
+            border-right: 4px solid var(--accent-color); text-align: right;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03); animation: fadeIn 0.5s ease;
+        }
+        .reviewer-name { font-weight: 700; color: var(--primary-color); margin-bottom: 5px; font-size: 1.1rem; }
+        .review-stars { color: #FFC107; font-size: 0.9rem; margin-bottom: 10px; }
+        .review-text { font-style: italic; color: var(--text-light); font-size: 1rem; }
+
+        /* Form إضافة التقييم */
+        .add-review-container {
+            max-width: 600px; margin: 0 auto; background: var(--white);
+            padding: 3rem; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+            border: 1px solid #eee;
         }
         
-        .add-review-box {
-            background: white; max-width: 600px; margin: 0 auto; padding: 2rem;
-            border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        .add-review-container h3 { margin-bottom: 1.5rem; color: var(--text-dark); text-align: center; }
+
+        /* تفاعل النجوم */
+        .star-rating {
+            display: flex; flex-direction: row-reverse; justify-content: center; gap: 10px; margin-bottom: 20px;
         }
+        .star-rating input { display: none; }
+        .star-rating label {
+            font-size: 2rem; color: #ddd; cursor: pointer; transition: 0.2s;
+        }
+        .star-rating input:checked ~ label,
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #FFC107; transform: scale(1.2);
+        }
+
         .form-input, .form-textarea {
-            width: 100%; padding: 10px; margin-bottom: 15px;
-            border: 1px solid #ddd; border-radius: 5px; font-family: 'Tajawal';
+            width: 100%; padding: 15px; margin-bottom: 15px; background: #F8F9FA;
+            border: 2px solid transparent; border-radius: 12px; font-size: 1rem;
+            transition: 0.3s;
         }
+        .form-input:focus, .form-textarea:focus { border-color: var(--primary-color); background: white; }
+        
         .submit-btn {
-            background: var(--primary-color); color: white; border: none;
-            padding: 10px 25px; border-radius: 5px; cursor: pointer; width: 100%;
-            font-weight: bold; font-size: 1rem;
+            width: 100%; padding: 15px; background: var(--primary-gradient); color: white;
+            border: none; border-radius: 12px; font-size: 1.1rem; font-weight: bold;
+            cursor: pointer; box-shadow: 0 5px 20px rgba(0, 137, 123, 0.3);
+            transition: 0.3s;
         }
+        .submit-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0, 137, 123, 0.4); }
 
-        /* Contact Footer */
-        .info-section { background: #1a1a1a; color: white; padding: 4rem 1rem; }
-        .info-container {
-            max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap;
-            justify-content: space-around; text-align: center;
+        /* --- Footer Info Strip --- */
+        .info-strip { background: #1e272e; color: white; padding: 3rem 1.5rem; }
+        .info-grid {
+            max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; 
+            justify-content: space-around; gap: 2rem; text-align: center;
         }
-        .info-box { margin: 1rem; flex: 1; min-width: 250px; }
-        .info-box i { font-size: 1.8rem; margin-bottom: 1rem; color: var(--accent-color); }
-        .map-link { color: #fff; transition: 0.3s; display: block; }
-        .map-link:hover { color: var(--accent-color); text-decoration: underline; }
+        .info-item { flex: 1; min-width: 250px; }
+        .info-item i { font-size: 1.8rem; color: var(--accent-color); margin-bottom: 1rem; }
+        .info-item h3 { font-size: 1.1rem; margin-bottom: 0.5rem; opacity: 0.9; }
+        .info-item p, .info-item a { color: #bdc3c7; font-size: 0.95rem; }
 
-        /* Floating Buttons Style */
-        .floating-btn {
-            position: fixed; right: 20px;
+        /* --- Floating Buttons (Super Smooth) --- */
+        .floating-container {
+            position: fixed; bottom: 30px; right: 30px; z-index: 1000;
+            display: flex; flex-direction: column; gap: 15px;
+        }
+        
+        .float-btn {
             width: 60px; height: 60px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            z-index: 100; transition: 0.3s; color: white;
+            color: white; font-size: 24px; box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative; overflow: hidden;
         }
-        .floating-btn:hover { transform: scale(1.1); }
-
-        /* زر الواتساب (أسفل الشاشة) */
-        .whatsapp-float {
-            bottom: 20px;
-            background: var(--whatsapp-color);
+        
+        .float-btn::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.2); opacity: 0; transition: 0.3s;
         }
+        .float-btn:hover::after { opacity: 1; }
+        .float-btn:hover { transform: scale(1.1); }
 
-        /* زر الاتصال الجديد (فوق الواتساب بمسافة) */
-        .phone-float {
-            bottom: 90px; /* مرفوع 90 بكسل عن الأسفل ليظهر فوق الواتساب */
-            background: var(--phone-color);
+        .btn-whatsapp { background: linear-gradient(45deg, #25D366, #128C7E); }
+        .btn-phone { background: linear-gradient(45deg, #2980b9, #3498db); }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; } to { opacity: 1; }
         }
 
         @media (max-width: 768px) {
-            .hero-content h1 { font-size: 2rem; }
-            .nav-links { display: none; } 
-            .logo-text { font-size: 1.2rem; }
-            .logo-img { height: 40px; width: 40px; }
+            .nav-links { display: none; }
+            .hero-content h1 { font-size: 2.2rem; }
+            .info-grid { flex-direction: column; }
+            .service-card { padding: 2rem 1rem; }
         }
     </style>
 </head>
 <body>
 
-    <a href="tel:0775549700" class="floating-btn phone-float">
-        <i class="fas fa-phone-alt"></i>
-    </a>
-
-    <a href="https://wa.me/962775549700" class="floating-btn whatsapp-float" target="_blank">
-        <i class="fab fa-whatsapp"></i>
-    </a>
+    <div class="floating-container">
+        <a href="tel:0775549700" class="float-btn btn-phone" title="اتصال مباشر">
+            <i class="fas fa-phone-alt"></i>
+        </a>
+        <a href="https://wa.me/962775549700" class="float-btn btn-whatsapp" target="_blank" title="واتساب">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
 
     <header>
         <div class="nav-container">
             <a href="#" class="logo-container">
-                <img src="logo.jpg" alt="Delta Optics" class="logo-img" onerror="this.style.display='none'">
+                <img src="logo.jpg" alt="Delta Logo" class="logo-img" onerror="this.style.display='none'">
                 <span class="logo-text">دلتا للبصريات</span>
             </a>
             <nav class="nav-links">
                 <a href="#home">الرئيسية</a>
                 <a href="#services">خدماتنا</a>
-                <a href="#reviews">آراء العملاء</a>
-                <a href="#contact" class="cta-btn">تواصل معنا</a>
+                <a href="#reviews">التقييمات</a>
+                <a href="#contact">تواصل معنا</a>
             </nav>
         </div>
     </header>
@@ -189,114 +264,153 @@
     <section class="hero" id="home">
         <div class="hero-content">
             <div class="rating-badge">
-                <span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span>
-                <span> 5.0 (خدمة مميزة)</span>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <span style="margin-right: 5px; font-weight: bold;">الخيار الأول في عمان</span>
             </div>
             <h1>دلتا للبصريات</h1>
-            <p>رؤية أوضح.. لحياة أجمل.</p>
+            <p>حيث تلتقي دقة الفحص الطبي مع أناقة المظهر العصري.</p>
             
-            <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Amman+Al-Muqabalain" target="_blank" style="color: white; font-size: 1.1rem; display: block; margin-bottom: 20px;">
-                <i class="fas fa-map-marker-alt" style="color: var(--accent-color);"></i> عمان، المقابلين، ش. الصخرة المشرفة
-            </a>
-            
-            <a href="tel:0775549700" class="cta-btn">
-                <i class="fas fa-phone-alt"></i> اتصل الآن: 0775549700
+            <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Amman+Al-Muqabalain" target="_blank" class="location-link">
+                <i class="fas fa-map-marker-alt" style="color: var(--accent-color);"></i>
+                <span>عمان - المقابلين - شارع الصخرة المشرفة</span>
             </a>
         </div>
     </section>
 
     <section class="section" id="services">
-        <h2 class="section-title">خدماتنا</h2>
+        <h2 class="section-title">خدماتنا المتميزة</h2>
         <div class="services-grid">
             <div class="service-card">
-                <i class="fas fa-eye service-icon"></i>
-                <h3>فحص نظر شامل</h3>
-                <p>فحص دقيق بأجهزة رقمية حديثة.</p>
+                <i class="fas fa-user-md service-icon"></i>
+                <h3>فحص نظر متقدم</h3>
+                <p>نستخدم أحدث أجهزة الكمبيوتر لضمان أدق النتائج لصحة عينيك.</p>
             </div>
             <div class="service-card">
                 <i class="fas fa-glasses service-icon"></i>
                 <h3>نظارات طبية</h3>
-                <p>إطارات عالمية وأنيقة لكافة الأعمار.</p>
+                <p>تشكيلة واسعة من الإطارات العالمية التي تناسب جميع الأذواق.</p>
             </div>
             <div class="service-card">
                 <i class="fas fa-sun service-icon"></i> 
                 <h3>نظارات شمسية</h3>
-                <p>حماية 100% UV بتصاميم عصرية.</p>
+                <p>أناقة وحماية 100% من الأشعة الضارة مع أحدث الموديلات.</p>
             </div>
             <div class="service-card">
-                <i class="fas fa-record-vinyl service-icon"></i>
+                <i class="fas fa-eye service-icon"></i>
                 <h3>عدسات لاصقة</h3>
-                <p>عدسات طبية وتجميلية مريحة للعين.</p>
+                <p>عدسات طبية وتجميلية مريحة للعين وبألوان طبيعية جذابة.</p>
             </div>
         </div>
     </section>
 
     <section class="section reviews-section" id="reviews">
-        <h2 class="section-title">ماذا يقول عملاؤنا؟</h2>
+        <h2 class="section-title">آراء عملائنا</h2>
         
-        <div class="reviews-grid">
+        <div class="reviews-grid" id="reviewsContainer">
             <div class="review-card">
-                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                <p style="font-style: italic; font-size: 0.9rem; margin-top: 10px;">"تعامل راقي جداً والأسعار ممتازة مقارنة بالسوق. شكراً دكتور."</p>
-                <p style="font-weight: bold; color: var(--primary-color); margin-top: 5px;">- أحمد العلي</p>
-            </div>
-            <div class="review-card">
-                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                <p style="font-style: italic; font-size: 0.9rem; margin-top: 10px;">"فحص النظر دقيق جداً، والنظارة جهزت بسرعة. أنصحكم فيه."</p>
-                <p style="font-weight: bold; color: var(--primary-color); margin-top: 5px;">- سارة محمد</p>
-            </div>
-            <div class="review-card">
-                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
-                <p style="font-style: italic; font-size: 0.9rem; margin-top: 10px;">"المحل مرتب وفيه تشكيلة نظارات حلوة كثير."</p>
-                <p style="font-weight: bold; color: var(--primary-color); margin-top: 5px;">- مراد خليل</p>
-            </div>
-        </div>
-
-        <div class="add-review-box">
-            <h3 style="margin-bottom: 15px; color: var(--primary-dark);">أضف تقييمك</h3>
-            <input type="text" class="form-input" placeholder="الاسم الكريم">
-            <select class="form-input">
-                <option>⭐⭐⭐⭐⭐ (ممتاز)</option>
-                <option>⭐⭐⭐⭐ (جيد جداً)</option>
-                <option>⭐⭐⭐ (جيد)</option>
-            </select>
-            <textarea class="form-textarea" rows="3" placeholder="اكتب تعليقك هنا..."></textarea>
-            <a href="https://wa.me/962775549700?text=مرحبا،%20حبيت%20أقيم%20خدمتكم%20بـ%205%20نجوم%20لأنها%20ممتازة" target="_blank">
-                <button class="submit-btn">نشر التقييم</button>
-            </a>
-        </div>
-    </section>
-
-    <section class="info-section" id="contact">
-        <div class="info-container">
-            <div class="info-box">
-                <i class="fas fa-map-marked-alt"></i>
-                <h3>زورونا في</h3>
-                <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Amman+Al-Muqabalain" target="_blank" class="map-link">
-                    عمان - المقابلين<br>شارع الصخرة المشرفة<br>(انقر هنا للموقع)
-                </a>
-            </div>
-            <div class="info-box">
-                <i class="fas fa-clock"></i>
-                <h3>أوقات الدوام</h3>
-                <p style="font-weight: bold;">من 9:00 صباحاً</p>
-                <p style="font-weight: bold;">حتى 12:00 منتصف الليل</p>
-            </div>
-            <div class="info-box">
-                <i class="fas fa-phone-volume"></i>
-                <h3>تواصلوا معنا</h3>
-                <p><a href="tel:0775549700" style="color:white;">07 7554 9700</a></p>
-                <div class="social-links" style="margin-top: 20px;">
-                    <a href="https://www.facebook.com/delta.optics1" target="_blank"><i class="fab fa-facebook"></i></a>
-                    <a href="https://www.instagram.com/delta.optics1" target="_blank"><i class="fab fa-instagram"></i></a>
+                <div class="reviewer-name">محمد السالم</div>
+                <div class="review-stars">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                 </div>
+                <p class="review-text">"ما شاء الله المحل مرتب والتعامل جداً راقي، والدكتور شاطر."</p>
+            </div>
+            <div class="review-card">
+                <div class="reviewer-name">لانا خالد</div>
+                <div class="review-stars">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                </div>
+                <p class="review-text">"اشتريت نظارة شمسية من عندهم، الكواليتي بتجنن والسعر ممتاز."</p>
+            </div>
+        </div>
+
+        <div class="add-review-container">
+            <h3>أضف تقييمك وتجربتك</h3>
+            <form id="reviewForm">
+                <div class="star-rating">
+                    <input type="radio" name="rating" id="star5" value="5"><label for="star5" title="ممتاز"><i class="fas fa-star"></i></label>
+                    <input type="radio" name="rating" id="star4" value="4"><label for="star4" title="جيد جدا"><i class="fas fa-star"></i></label>
+                    <input type="radio" name="rating" id="star3" value="3"><label for="star3" title="جيد"><i class="fas fa-star"></i></label>
+                    <input type="radio" name="rating" id="star2" value="2"><label for="star2" title="مقبول"><i class="fas fa-star"></i></label>
+                    <input type="radio" name="rating" id="star1" value="1"><label for="star1" title="سيء"><i class="fas fa-star"></i></label>
+                </div>
+                <input type="text" id="userName" class="form-input" placeholder="الاسم الكريم" required>
+                <textarea id="userComment" class="form-textarea" rows="3" placeholder="اكتب تعليقك هنا..." required></textarea>
+                <button type="submit" class="submit-btn">نشر التقييم</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="info-strip" id="contact">
+        <div class="info-grid">
+            <div class="info-item">
+                <i class="fas fa-map-marked-alt"></i>
+                <h3>موقعنا</h3>
+                <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Amman+Al-Muqabalain" target="_blank">عمان - المقابلين - ش. الصخرة المشرفة</a>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-clock"></i>
+                <h3>أوقات العمل</h3>
+                <p>يومياً من 9:00 ص - 12:00 منتصف الليل</p>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-headset"></i>
+                <h3>خدمة العملاء</h3>
+                <a href="tel:0775549700" dir="ltr">07 7554 9700</a>
             </div>
         </div>
     </section>
 
-    <footer style="background: #111; color: #777; text-align: center; padding: 20px; border-top: 1px solid #333;">
-        <p>جميع الحقوق محفوظة © 2025 دلتا للبصريات</p>
+    <footer style="background: #111; color: #555; text-align: center; padding: 20px; font-size: 0.8rem;">
+        <p>جميع الحقوق محفوظة &copy; 2025 دلتا للبصريات</p>
     </footer>
+
+    <script>
+        document.getElementById('reviewForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // منع إعادة تحميل الصفحة
+
+            // جلب البيانات من الفورم
+            const name = document.getElementById('userName').value;
+            const comment = document.getElementById('userComment').value;
+            
+            // معرفة عدد النجوم المختارة
+            const stars = document.querySelector('input[name="rating"]:checked');
+            const ratingValue = stars ? stars.value : 0;
+
+            if (ratingValue == 0) {
+                alert("الرجاء اختيار عدد النجوم");
+                return;
+            }
+
+            // تجهيز كود النجوم للعرض
+            let starsHtml = '';
+            for(let i=0; i<ratingValue; i++) {
+                starsHtml += '<i class="fas fa-star"></i>';
+            }
+
+            // إنشاء كرت جديد للتقييم
+            const newReview = document.createElement('div');
+            newReview.className = 'review-card';
+            newReview.innerHTML = `
+                <div class="reviewer-name">${name}</div>
+                <div class="review-stars" style="color: #FFC107;">
+                    ${starsHtml}
+                </div>
+                <p class="review-text">"${comment}"</p>
+            `;
+
+            // إضافة الكرت في بداية القائمة
+            const container = document.getElementById('reviewsContainer');
+            container.prepend(newReview);
+
+            // تنظيف الفورم ورسالة شكر
+            document.getElementById('reviewForm').reset();
+            alert("شكراً لك! تم نشر تقييمك بنجاح.");
+        });
+    </script>
 
 </body>
 </html>

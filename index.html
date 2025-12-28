@@ -15,6 +15,7 @@
             --text-color: #2c3e50;
             --accent-color: #d4af37;
             --whatsapp-color: #25D366;
+            --phone-color: #007bff; /* لون زر الاتصال الجديد */
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
@@ -34,7 +35,8 @@
         }
 
         .logo-container { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-        .logo-img { height: 50px; width: auto; border-radius: 50%; }
+        /* تحسين كود الصورة عشان تتجاوب بشكل أفضل */
+        .logo-img { height: 50px; width: 50px; border-radius: 50%; object-fit: cover; }
         .logo-text { font-size: 1.4rem; font-weight: 800; color: var(--primary-color); }
         
         .nav-links a {
@@ -68,7 +70,7 @@
         }
         .stars { color: var(--accent-color); }
 
-        /* Services - تم تصغير الحجم هنا */
+        /* Services */
         .section { padding: 4rem 1rem; text-align: center; }
         .section-title { margin-bottom: 2.5rem; color: var(--primary-dark); font-size: 1.8rem; font-weight: 700; position: relative; display: inline-block; }
         
@@ -93,25 +95,21 @@
         .service-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--primary-dark); }
         .service-card p { font-size: 0.9rem; color: #666; line-height: 1.5; }
 
-        /* Reviews Grid & Form */
+        /* Reviews */
         .reviews-section { background: var(--secondary-color); }
-        
         .reviews-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem; max-width: 1100px; margin: 0 auto 3rem auto;
         }
-
         .review-card {
             background: white; padding: 1.5rem; border-radius: 10px;
             box-shadow: 0 3px 10px rgba(0,0,0,0.05); text-align: right;
-            position: relative;
         }
         
         .add-review-box {
             background: white; max-width: 600px; margin: 0 auto; padding: 2rem;
             border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.08);
         }
-        
         .form-input, .form-textarea {
             width: 100%; padding: 10px; margin-bottom: 15px;
             border: 1px solid #ddd; border-radius: 5px; font-family: 'Tajawal';
@@ -122,7 +120,7 @@
             font-weight: bold; font-size: 1rem;
         }
 
-        /* Contact & Footer */
+        /* Contact Footer */
         .info-section { background: #1a1a1a; color: white; padding: 4rem 1rem; }
         .info-container {
             max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap;
@@ -130,39 +128,53 @@
         }
         .info-box { margin: 1rem; flex: 1; min-width: 250px; }
         .info-box i { font-size: 1.8rem; margin-bottom: 1rem; color: var(--accent-color); }
-        
-        /* Map Link Style */
         .map-link { color: #fff; transition: 0.3s; display: block; }
         .map-link:hover { color: var(--accent-color); text-decoration: underline; }
 
-        .whatsapp-float {
-            position: fixed; bottom: 20px; right: 20px;
-            background: var(--whatsapp-color); color: white;
+        /* Floating Buttons Style */
+        .floating-btn {
+            position: fixed; right: 20px;
             width: 60px; height: 60px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             font-size: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            z-index: 100; transition: 0.3s;
+            z-index: 100; transition: 0.3s; color: white;
         }
-        .whatsapp-float:hover { transform: scale(1.1); }
+        .floating-btn:hover { transform: scale(1.1); }
+
+        /* زر الواتساب (أسفل الشاشة) */
+        .whatsapp-float {
+            bottom: 20px;
+            background: var(--whatsapp-color);
+        }
+
+        /* زر الاتصال الجديد (فوق الواتساب بمسافة) */
+        .phone-float {
+            bottom: 90px; /* مرفوع 90 بكسل عن الأسفل ليظهر فوق الواتساب */
+            background: var(--phone-color);
+        }
 
         @media (max-width: 768px) {
             .hero-content h1 { font-size: 2rem; }
             .nav-links { display: none; } 
             .logo-text { font-size: 1.2rem; }
-            .logo-img { height: 40px; }
+            .logo-img { height: 40px; width: 40px; }
         }
     </style>
 </head>
 <body>
 
-    <a href="https://wa.me/962775549700" class="whatsapp-float" target="_blank">
+    <a href="tel:0775549700" class="floating-btn phone-float">
+        <i class="fas fa-phone-alt"></i>
+    </a>
+
+    <a href="https://wa.me/962775549700" class="floating-btn whatsapp-float" target="_blank">
         <i class="fab fa-whatsapp"></i>
     </a>
 
     <header>
         <div class="nav-container">
             <a href="#" class="logo-container">
-                <img src="logo.jpg" alt="Delta Optics Logo" class="logo-img">
+                <img src="logo.jpg" alt="Delta Optics" class="logo-img" onerror="this.style.display='none'">
                 <span class="logo-text">دلتا للبصريات</span>
             </a>
             <nav class="nav-links">
@@ -283,7 +295,7 @@
     </section>
 
     <footer style="background: #111; color: #777; text-align: center; padding: 20px; border-top: 1px solid #333;">
-        <p>جميع الحقوق محفوظة &copy; 2025 دلتا للبصريات</p>
+        <p>جميع الحقوق محفوظة © 2025 دلتا للبصريات</p>
     </footer>
 
 </body>

@@ -20,10 +20,7 @@
         a { text-decoration: none; color: inherit; }
 
         /* --- Language Switcher --- */
-        .lang-switcher {
-            display: flex; gap: 5px; margin-right: 15px; /* RTL default */
-        }
-        /* تعديل المسافة في اللغات الأجنبية */
+        .lang-switcher { display: flex; gap: 5px; margin-right: 15px; }
         html[dir="ltr"] .lang-switcher { margin-right: 0; margin-left: 15px; }
 
         .lang-btn {
@@ -46,11 +43,12 @@
         .logo-mini { height: 35px; width: 35px; border-radius: 50%; object-fit: cover; }
         .logo-text { font-size: 1.1rem; font-weight: 800; color: var(--primary-color); }
         .nav-links { display: flex; gap: 1.2rem; }
+        .nav-links a { font-size: 0.95rem; font-weight: 600; color: #5f6368; cursor: pointer;}
         
         /* --- Hero --- */
         .hero {
             min-height: 85vh;
-            background: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.85)), url('https://images.unsplash.com/photo-1570222094114-28a9d8894566?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60');
+            background: linear-gradient(rgba(255,255,255,0.95), rgba(255,255,255,0.9)), url('https://images.unsplash.com/photo-1570222094114-28a9d8894566?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60');
             background-size: cover; background-position: center;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             text-align: center; margin-top: 60px; padding: 20px;
@@ -60,39 +58,68 @@
             box-shadow: 0 15px 35px rgba(0, 153, 153, 0.25); margin-bottom: 25px;
             animation: float 4s ease-in-out infinite;
         }
+        
         .google-badge {
             background: white; border: 1px solid #dadce0; padding: 8px 24px;
-            border-radius: 50px; display: inline-flex; align-items: center; gap: 8px;
+            border-radius: 50px; display: inline-flex; align-items: center; gap: 10px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin-bottom: 20px;
         }
-        .cta-button {
-            background: var(--primary-color); color: white; padding: 12px 35px;
-            border-radius: 50px; font-weight: bold; font-size: 1.1rem;
-            box-shadow: 0 4px 15px rgba(0, 153, 153, 0.4); margin-top: 15px; display: inline-block;
+        /* أيقونة جوجل الملونة */
+        .google-icon-style {
+            background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat;
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+            -webkit-text-fill-color: transparent; font-size: 1.2rem;
         }
 
         /* --- General Layout --- */
         .section { padding: 4rem 1.5rem; text-align: center; }
+        .section-title { font-size: 1.6rem; color: var(--primary-color); font-weight: 800; margin-bottom: 2.5rem; }
+
         .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1.5rem; max-width: 1000px; margin: 0 auto; }
         .service-card { background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #f0f0f0; }
         .service-icon { font-size: 2rem; color: var(--primary-color); margin-bottom: 10px; }
         
         .reviews-section { background: #f8f9fa; padding: 4rem 1.5rem; }
         .reviews-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; max-width: 1000px; margin: 0 auto 2.5rem auto; }
-        .google-review-card { background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid #dadce0; text-align: start; } /* text-align start adapts to dir */
+        .google-review-card { background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid #dadce0; text-align: start; position: relative; } 
         
+        .g-logo-corner { position: absolute; top: 15px; left: 15px; font-size: 1.2rem; }
+        html[dir="ltr"] .g-logo-corner { left: auto; right: 15px; } 
+
         .reviewer-info { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
         .reviewer-pic { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; }
-        .rate-us-btn { background: white; color: #1a73e8; border: 1px solid #dadce0; padding: 12px 30px; border-radius: 4px; font-weight: 600; display: inline-flex; align-items: center; gap: 10px; }
+        
+        .rate-us-btn { 
+            background: white; color: #3c4043; border: 1px solid #dadce0; 
+            padding: 12px 30px; border-radius: 25px; font-weight: 600; 
+            display: inline-flex; align-items: center; gap: 10px; transition: 0.3s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .rate-us-btn:hover { background: #f1f3f4; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
 
         .info-strip { background: #202124; color: #e8eaed; padding: 3rem 1.5rem; }
         .info-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 2.5rem; max-width: 800px; margin: 0 auto; text-align: center; }
-        .social-icons { margin-top: 2rem; display: flex; justify-content: center; gap: 20px; }
-        .social-btn { width: 45px; height: 45px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; transition: 0.3s; }
-        .social-btn:hover { background: var(--primary-color); }
+        .info-item i { font-size: 1.4rem; color: var(--primary-color); margin-bottom: 0.8rem; display: block; }
+        
+        /* --- تكبير وتحسين أيقونات التواصل الاجتماعي --- */
+        .social-icons { margin-top: 2.5rem; display: flex; justify-content: center; gap: 25px; }
+        .social-btn { 
+            width: 60px; height: 60px; /* تكبير الحجم */
+            border-radius: 50%; 
+            background: rgba(255,255,255,0.08); 
+            display: flex; align-items: center; justify-content: center; 
+            color: white; 
+            font-size: 1.8rem; /* تكبير الأيقونة */
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .social-btn:hover { 
+            background: var(--primary-color); 
+            transform: scale(1.15); /* تكبير إضافي عند التحويم */
+            box-shadow: 0 0 15px rgba(0, 153, 153, 0.5);
+        }
 
         .floating-container { position: fixed; bottom: 25px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 12px; }
-        /* تعديل مكان الأزرار العائمة للغات LTR */
         html[dir="ltr"] .floating-container { right: auto; left: 20px; }
         
         .float-btn { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 26px; box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
@@ -140,7 +167,7 @@
         <img src="logo.jpg" alt="Delta Optics" class="main-logo">
         
         <div class="google-badge">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="G" style="width:20px;">
+            <i class="fab fa-google google-icon-style"></i>
             <span style="font-weight:bold; color:#333;">4.9</span>
             <div style="color:var(--accent-color); font-size:0.9rem;">★★★★★</div>
             <span style="color:#666; font-size:0.9rem;" data-i18n="google_rating">(تقييمات جوجل)</span>
@@ -149,10 +176,6 @@
         <p style="color: #444; font-weight: 500; margin-bottom: 20px; max-width: 300px;" data-i18n="hero_slogan">
             دقة في الفحص .. أناقة في المظهر
         </p>
-
-        <a href="https://wa.me/962775549700" class="cta-button">
-            <i class="fab fa-whatsapp"></i> <span data-i18n="book_now">احجز موعدك الآن</span>
-        </a>
     </section>
 
     <section class="section" id="services">
@@ -182,6 +205,7 @@
         
         <div class="reviews-container">
             <div class="google-review-card">
+                <i class="fab fa-google google-icon-style g-logo-corner"></i>
                 <div class="reviewer-info">
                     <div class="reviewer-pic" style="background:#ef6c00;">A</div>
                     <div class="reviewer-name">Ahmad Ali</div>
@@ -190,6 +214,7 @@
                 <p style="font-size:0.9rem; color:#4b4f56;" data-i18n="rev_1">المحل مرتب ونظيف، والتعامل جداً راقي من الدكتور. تشكيلة النظارات حلوة.</p>
             </div>
             <div class="google-review-card">
+                <i class="fab fa-google google-icon-style g-logo-corner"></i>
                 <div class="reviewer-info">
                     <div class="reviewer-pic" style="background:#673ab7;">S</div>
                     <div class="reviewer-name">Sara Kh</div>
@@ -201,8 +226,9 @@
 
         <div style="text-align: center;">
             <p style="margin-bottom: 15px; color: #5f6368;" data-i18n="share_exp">شاركنا تجربتك وساعدنا نكون الأفضل</p>
-            <a href="https://goo.gl/maps/YOUR_LINK_HERE" target="_blank" class="rate-us-btn">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" style="width:18px;" alt="G">
+            
+            <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Amman+Al-Muqabalain" target="_blank" class="rate-us-btn">
+                <i class="fab fa-google google-icon-style"></i>
                 <span data-i18n="rate_btn">قيّمنا على Google</span>
             </a>
         </div>
@@ -213,7 +239,7 @@
             <div class="info-item">
                 <i class="fas fa-map-marked-alt"></i>
                 <h3 data-i18n="loc_title">موقعنا</h3>
-                <a href="#" target="_blank" data-i18n="loc_desc">المقابلين - ش. الصخرة المشرفة</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Amman+Al-Muqabalain" target="_blank" data-i18n="loc_desc">المقابلين - ش. الصخرة المشرفة</a>
             </div>
             <div class="info-item">
                 <i class="fas fa-phone-alt"></i>
@@ -221,6 +247,7 @@
                 <a href="tel:0775549700">07 7554 9700</a>
             </div>
         </div>
+        
         <div class="social-icons">
             <a href="https://www.facebook.com/delta.optics1" target="_blank" class="social-btn"><i class="fab fa-facebook-f"></i></a>
             <a href="https://www.instagram.com/delta.optics1" target="_blank" class="social-btn"><i class="fab fa-instagram"></i></a>
@@ -232,7 +259,6 @@
     </footer>
 
     <script>
-        // قاموس الترجمات
         const translations = {
             ar: {
                 logo_text: "دلتا للبصريات",
@@ -241,7 +267,6 @@
                 nav_reviews: "التقييمات",
                 google_rating: "(تقييمات جوجل)",
                 hero_slogan: "دقة في الفحص .. أناقة في المظهر",
-                book_now: "احجز موعدك الآن",
                 services_title: "خدماتنا",
                 srv_exam: "فحص نظر شامل",
                 srv_glasses: "نظارات طبية",
@@ -263,7 +288,6 @@
                 nav_reviews: "Reviews",
                 google_rating: "(Google Reviews)",
                 hero_slogan: "Precision in examination.. Elegance in look",
-                book_now: "Book Appointment",
                 services_title: "Our Services",
                 srv_exam: "Comprehensive Eye Exam",
                 srv_glasses: "Medical Glasses",
@@ -285,7 +309,6 @@
                 nav_reviews: "Avis",
                 google_rating: "(Avis Google)",
                 hero_slogan: "Précision de l'examen.. Élégance de l'apparence",
-                book_now: "Prendre Rendez-vous",
                 services_title: "Nos Services",
                 srv_exam: "Examen de la vue",
                 srv_glasses: "Lunettes de vue",
@@ -303,7 +326,6 @@
         };
 
         function setLang(lang) {
-            // تحديث النصوص
             document.querySelectorAll('[data-i18n]').forEach(element => {
                 const key = element.getAttribute('data-i18n');
                 if (translations[lang][key]) {
@@ -311,7 +333,6 @@
                 }
             });
 
-            // تحديث الاتجاه (RTL / LTR)
             if (lang === 'ar') {
                 document.documentElement.setAttribute('dir', 'rtl');
                 document.documentElement.setAttribute('lang', 'ar');
@@ -320,38 +341,21 @@
                 document.documentElement.setAttribute('lang', lang);
             }
 
-            // تحديث الأزرار النشطة
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            event.target.classList.add('active'); // هذا السطر يفترض الضغط على الزر، سيتم تعديله في التحميل
+            event.target.classList.add('active'); 
 
-            // حفظ اللغة في المتصفح
             localStorage.setItem('delta_lang', lang);
         }
 
-        // عند تحميل الصفحة
         document.addEventListener('DOMContentLoaded', () => {
             const savedLang = localStorage.getItem('delta_lang') || 'ar';
-            
-            // تفعيل الزر المناسب
             const btns = document.querySelectorAll('.lang-btn');
-            btns.forEach(btn => {
-                if(btn.textContent.toLowerCase() === savedLang.toLowerCase() || (savedLang === 'en' && btn.textContent === 'EN') || (savedLang === 'fr' && btn.textContent === 'FR')) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-
-            // تطبيق اللغة
-            setLang(savedLang);
             
-            // إصلاح تفعيل الزر بعد الاستدعاء الأولي (لأن setLang تم استدعاؤها يدوياً)
-            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-            if(savedLang === 'ar') document.querySelector('.lang-btn:nth-child(1)').classList.add('active');
-            if(savedLang === 'en') document.querySelector('.lang-btn:nth-child(2)').classList.add('active');
-            if(savedLang === 'fr') document.querySelector('.lang-btn:nth-child(3)').classList.add('active');
+            if(savedLang === 'ar') btns[0].click();
+            else if(savedLang === 'en') btns[1].click();
+            else if(savedLang === 'fr') btns[2].click();
         });
     </script>
 </body>

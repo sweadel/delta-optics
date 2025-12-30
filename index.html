@@ -10,12 +10,12 @@
     
     <style>
         :root {
-            --primary-color: #00897B;
-            --primary-gradient: linear-gradient(135deg, #00897B, #004D40);
-            --accent-color: #D4AF37;
-            --bg-color: #FAFAFA;
-            --text-dark: #2D3436;
-            --text-light: #636E72;
+            /* لون التيركواز المشتق من اللوجو */
+            --primary-color: #009999; 
+            --primary-gradient: linear-gradient(135deg, #009999, #006666);
+            --accent-color: #FFC107; /* الذهبي للنجوم */
+            --bg-color: #Fdfdfd;
+            --text-dark: #333;
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; outline: none; }
@@ -24,90 +24,93 @@
 
         /* --- Header --- */
         header {
-            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
-            box-shadow: 0 2px 15px rgba(0,0,0,0.05); position: fixed; width: 100%; top: 0; z-index: 1000;
-            height: 65px; display: flex; align-items: center;
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: fixed; width: 100%; top: 0; z-index: 1000;
+            height: 60px; display: flex; align-items: center;
         }
         .nav-container {
             width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 1rem;
             display: flex; justify-content: space-between; align-items: center;
         }
-        .logo-container { display: flex; align-items: center; gap: 10px; }
-        /* تحسين كود الصورة عشان ما يعمل لاق */
-        .logo-img { 
-            height: 45px; width: 45px; 
-            border-radius: 50%; border: 2px solid var(--primary-color); padding: 1px; 
-            object-fit: cover; 
-        }
-        .logo-text { font-size: 1.2rem; font-weight: 800; color: var(--primary-color); }
-        .nav-links { display: flex; gap: 1.5rem; }
-        .nav-links a { font-size: 0.9rem; font-weight: 600; color: var(--text-light); transition: 0.3s; }
+        .logo-mini { height: 40px; width: 40px; border-radius: 50%; object-fit: cover; }
+        .logo-text { font-size: 1.1rem; font-weight: 800; color: var(--primary-color); margin-right: 8px; }
+        
+        /* إخفاء الروابط في الموبايل لتبسيط الشكل */
+        .nav-links { display: flex; gap: 1rem; }
+        .nav-links a { font-size: 0.9rem; font-weight: 600; color: #555; transition: 0.3s; }
         .nav-links a:hover { color: var(--primary-color); }
 
-        /* --- Hero --- */
+        /* --- Hero Section (تعديل جذري لعرض اللوجو) --- */
         .hero {
-            height: 65vh; background: linear-gradient(rgba(0,40,30,0.8), rgba(0,40,30,0.7)), url('https://images.unsplash.com/photo-1570222094114-28a9d8894566?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60');
-            background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center;
-            text-align: center; color: white; margin-top: 65px;
+            height: 80vh; /* مساحة كبيرة للوجو */
+            /* خلفية مموهة تبرز اللوجو */
+            background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.8)), url('https://images.unsplash.com/photo-1570222094114-28a9d8894566?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60');
+            background-size: cover; background-position: center;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; margin-top: 60px;
         }
-        .hero-content h1 { font-size: 2.5rem; margin-bottom: 0.5rem; font-weight: 800; }
-        .hero-content p { font-size: 1.1rem; margin-bottom: 1.5rem; color: #eee; }
-        .location-link { display: inline-flex; align-items: center; gap: 5px; color: var(--accent-color); font-weight: bold; font-size: 0.9rem; }
+
+        /* تنسيق اللوجو الكبير في الوسط */
+        .main-logo {
+            width: 280px; /* حجم كبير */
+            height: 280px;
+            object-fit: cover;
+            border-radius: 50%;
+            box-shadow: 0 10px 30px rgba(0, 153, 153, 0.3); /* ظل بلون اللوجو */
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite; /* حركة طفو خفيفة */
+        }
+
+        .rating-badge {
+            background: #fff; border: 1px solid #eee; padding: 5px 20px;
+            border-radius: 50px; display: inline-flex; align-items: center; gap: 5px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); font-weight: bold; color: var(--text-dark);
+        }
 
         /* --- Services --- */
-        .section { padding: 4rem 1rem; text-align: center; }
-        .section-title { font-size: 1.8rem; color: var(--primary-color); font-weight: 800; margin-bottom: 2.5rem; position: relative; display: inline-block; }
-        .section-title::after { content: ''; width: 40px; height: 3px; background: var(--accent-color); position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); }
+        .section { padding: 3rem 1rem; text-align: center; }
+        .section-title { font-size: 1.5rem; color: var(--primary-color); font-weight: 800; margin-bottom: 2rem; }
         
-        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; max-width: 1000px; margin: 0 auto; }
-        .service-card { background: white; padding: 2rem 1rem; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); transition: 0.3s; }
-        .service-card:hover { transform: translateY(-5px); }
-        .service-icon { font-size: 2rem; color: var(--primary-color); margin-bottom: 1rem; }
-        .service-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
-        .service-card p { font-size: 0.9rem; color: #777; }
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; max-width: 1000px; margin: 0 auto; }
+        .service-card { background: white; padding: 1.5rem; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border: 1px solid #f0f0f0; transition: 0.3s; }
+        .service-card:hover { transform: translateY(-5px); border-color: var(--primary-color); }
+        .service-icon { font-size: 2rem; color: var(--primary-color); margin-bottom: 0.5rem; }
+        .service-card h3 { font-size: 1rem; }
 
         /* --- Reviews --- */
-        .reviews-section { background: white; padding: 3rem 1rem; }
-        .reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; max-width: 1000px; margin: 0 auto 2rem auto; }
-        .review-card { background: var(--bg-color); padding: 1.5rem; border-radius: 10px; border-right: 3px solid var(--accent-color); text-align: right; font-size: 0.9rem; }
-        .reviewer-name { font-weight: bold; color: var(--primary-color); font-size: 1rem; }
-        .review-stars { color: #FFC107; font-size: 0.8rem; margin: 5px 0; }
+        .reviews-section { background: #f9f9f9; padding: 3rem 1rem; }
+        .reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; max-width: 800px; margin: 0 auto 2rem auto; }
+        .review-card { background: white; padding: 1rem; border-radius: 10px; text-align: right; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
         
-        .add-review-container { max-width: 500px; margin: 0 auto; background: var(--bg-color); padding: 2rem; border-radius: 15px; border: 1px solid #eee; }
-        .star-rating { display: flex; flex-direction: row-reverse; justify-content: center; gap: 8px; margin-bottom: 15px; }
-        .star-rating input { display: none; }
-        .star-rating label { font-size: 1.5rem; color: #ccc; cursor: pointer; transition: 0.2s; }
-        .star-rating input:checked ~ label, .star-rating label:hover, .star-rating label:hover ~ label { color: #FFC107; }
-        
-        .form-input, .form-textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9rem; }
-        .submit-btn { width: 100%; padding: 10px; background: var(--primary-color); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .submit-btn:hover { background: #00695c; }
-
-        /* --- Footer Info Strip --- */
-        .info-strip { background: #1e272e; color: #ccc; padding: 2rem 1rem; font-size: 0.85rem; }
-        .info-grid { max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 2rem; text-align: center; }
-        .info-item { flex: 0 1 200px; }
-        .info-item i { font-size: 1.2rem; color: var(--accent-color); margin-bottom: 0.5rem; display: block; }
-        .info-item h3 { color: white; font-size: 0.95rem; margin-bottom: 0.3rem; }
-        .info-item p, .info-item a { line-height: 1.4; color: #bbb; display: block; }
+        /* --- Compact Footer Info --- */
+        .info-strip { background: #222; color: #ccc; padding: 2rem 1rem; font-size: 0.85rem; }
+        .info-grid { max-width: 1000px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; text-align: center; }
+        .info-item i { font-size: 1.2rem; color: var(--primary-color); margin-bottom: 0.5rem; display: block; }
+        .info-item h3 { color: white; margin-bottom: 5px; }
         
         /* Social Icons */
-        .social-container { width: 100%; text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); }
-        .social-icons { display: flex; justify-content: center; gap: 1rem; }
-        .social-btn { width: 35px; height: 35px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; color: white; font-size: 1rem; transition: 0.3s; border: 1px solid rgba(255,255,255,0.2); }
-        .social-btn:hover { background: var(--accent-color); color: #1e272e; transform: scale(1.1); }
+        .social-container { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #333; text-align: center; }
+        .social-icons { display: flex; justify-content: center; gap: 15px; }
+        .social-btn { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; color: white; transition: 0.3s; }
+        .social-btn:hover { background: var(--primary-color); transform: scale(1.1); }
 
-        /* Floating Btns */
+        /* Floating Buttons */
         .floating-container { position: fixed; bottom: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
-        .float-btn { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.3s; }
-        .float-btn:hover { transform: scale(1.1); }
+        .float-btn { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .btn-whatsapp { background: #25D366; }
         .btn-phone { background: #2980b9; }
 
+        /* Animation */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
         @media (max-width: 768px) {
             .nav-links { display: none; }
-            .hero-content h1 { font-size: 2rem; }
-            .info-item { flex: 0 1 45%; }
+            .main-logo { width: 220px; height: 220px; }
         }
     </style>
 </head>
@@ -120,30 +123,28 @@
 
     <header>
         <div class="nav-container">
-            <a href="#" class="logo-container">
-                <img src="logo.jpg" alt="Delta" class="logo-img" onerror="this.style.display='none'">
+            <div style="display:flex; align-items:center;">
+                <img src="logo.jpg" class="logo-mini" onerror="this.style.display='none'">
                 <span class="logo-text">دلتا للبصريات</span>
-            </a>
+            </div>
             <nav class="nav-links">
                 <a href="#home">الرئيسية</a>
                 <a href="#services">الخدمات</a>
-                <a href="#reviews">آراء العملاء</a>
-                <a href="#contact">تواصل معنا</a>
+                <a href="#contact">اتصل بنا</a>
             </nav>
         </div>
     </header>
 
     <section class="hero" id="home">
-        <div class="hero-content">
-            <div class="rating-badge" style="background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; margin-bottom: 15px; display: inline-block;">
-                <i class="fas fa-star" style="color: #FFC107;"></i> 5.0 خيارك الأفضل
-            </div>
-            <h1>دلتا للبصريات</h1>
-            <p>دقة في الفحص .. أناقة في المظهر</p>
-            <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Amman+Al-Muqabalain" target="_blank" class="location-link">
-                <i class="fas fa-map-marker-alt"></i> عمان - المقابلين - ش. الصخرة المشرفة
-            </a>
+        <img src="logo.jpg" alt="Delta Optics Logo" class="main-logo">
+        
+        <div class="rating-badge">
+            <i class="fas fa-star" style="color: var(--accent-color);"></i> 5.0 خيارك الأفضل
         </div>
+        
+        <p style="margin-top: 15px; color: #555; font-weight: 500;">
+            <i class="fas fa-map-marker-alt" style="color:var(--primary-color)"></i> عمان - المقابلين - ش. الصخرة المشرفة
+        </p>
     </section>
 
     <section class="section" id="services">
@@ -152,55 +153,42 @@
             <div class="service-card">
                 <i class="fas fa-user-md service-icon"></i>
                 <h3>فحص نظر</h3>
-                <p>فحص دقيق بأحدث الأجهزة.</p>
             </div>
             <div class="service-card">
                 <i class="fas fa-glasses service-icon"></i>
                 <h3>نظارات طبية</h3>
-                <p>إطارات عالمية لكافة الأعمار.</p>
             </div>
             <div class="service-card">
                 <i class="fas fa-sun service-icon"></i> 
                 <h3>نظارات شمسية</h3>
-                <p>حماية UV وتصاميم عصرية.</p>
             </div>
             <div class="service-card">
                 <i class="fas fa-eye service-icon"></i>
                 <h3>عدسات لاصقة</h3>
-                <p>طبية وتجميلية بألوان جذابة.</p>
             </div>
         </div>
     </section>
 
-    <section class="reviews-section" id="reviews">
+    <section class="reviews-section">
         <h2 class="section-title">آراء العملاء</h2>
         <div class="reviews-grid" id="reviewsContainer">
             <div class="review-card">
-                <div class="reviewer-name">محمد السالم</div>
-                <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                <p>"تعامل راقي جداً والأسعار ممتازة."</p>
+                <p style="color:var(--primary-color); font-weight:bold;">محمد السالم</p>
+                <div style="color:#FFC107; font-size:0.8rem;">★★★★★</div>
+                <p style="font-size:0.9rem; margin-top:5px;">"خدمة ممتازة وأسعار مناسبة"</p>
             </div>
             <div class="review-card">
-                <div class="reviewer-name">لانا خالد</div>
-                <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                <p>"الكواليتي بتجنن، شكراً الكم."</p>
+                <p style="color:var(--primary-color); font-weight:bold;">لانا خالد</p>
+                <div style="color:#FFC107; font-size:0.8rem;">★★★★★</div>
+                <p style="font-size:0.9rem; margin-top:5px;">"تعامل راقي جداً"</p>
             </div>
         </div>
-
-        <div class="add-review-container">
-            <h3 style="text-align: center; margin-bottom: 15px; font-size: 1.1rem;">أضف تقييمك</h3>
-            <form id="reviewForm">
-                <div class="star-rating">
-                    <input type="radio" name="rating" id="star5" value="5"><label for="star5">★</label>
-                    <input type="radio" name="rating" id="star4" value="4"><label for="star4">★</label>
-                    <input type="radio" name="rating" id="star3" value="3"><label for="star3">★</label>
-                    <input type="radio" name="rating" id="star2" value="2"><label for="star2">★</label>
-                    <input type="radio" name="rating" id="star1" value="1"><label for="star1">★</label>
-                </div>
-                <input type="text" id="userName" class="form-input" placeholder="الاسم" required>
-                <textarea id="userComment" class="form-textarea" rows="2" placeholder="التعليق..." required></textarea>
-                <button type="submit" class="submit-btn">نشر التقييم</button>
-            </form>
+        
+        <div style="text-align:center; margin-top:20px;">
+            <button onclick="Swal.fire('قريباً!', 'سيتم تفعيل هذه الميزة قريباً', 'info')" 
+                    style="background:var(--primary-color); color:white; border:none; padding:10px 20px; border-radius:20px; cursor:pointer;">
+                أضف تقييمك
+            </button>
         </div>
     </section>
 
@@ -209,7 +197,7 @@
             <div class="info-item">
                 <i class="fas fa-map-marked-alt"></i>
                 <h3>الموقع</h3>
-                <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Amman+Al-Muqabalain" target="_blank">المقابلين - ش. الصخرة المشرفة</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Amman+Al-Muqabalain" target="_blank" style="color:#aaa;">المقابلين - ش. الصخرة المشرفة</a>
             </div>
             <div class="info-item">
                 <i class="fas fa-clock"></i>
@@ -217,9 +205,9 @@
                 <p>9:00 ص - 12:00 م</p>
             </div>
             <div class="info-item">
-                <i class="fas fa-headset"></i>
+                <i class="fas fa-phone"></i>
                 <h3>تواصل</h3>
-                <a href="tel:0775549700" dir="ltr">07 7554 9700</a>
+                <a href="tel:0775549700" style="color:#aaa;">07 7554 9700</a>
             </div>
         </div>
         
@@ -227,7 +215,6 @@
             <div class="social-icons">
                 <a href="https://www.facebook.com/delta.optics1" target="_blank" class="social-btn"><i class="fab fa-facebook-f"></i></a>
                 <a href="https://www.instagram.com/delta.optics1" target="_blank" class="social-btn"><i class="fab fa-instagram"></i></a>
-                <a href="https://linktr.ee/delta.optics" target="_blank" class="social-btn"><i class="fas fa-link"></i></a>
             </div>
         </div>
     </section>
@@ -236,51 +223,5 @@
         <p>© 2025 دلتا للبصريات</p>
     </footer>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const savedReviews = JSON.parse(localStorage.getItem('deltaReviews')) || [];
-            savedReviews.forEach(review => addReviewCard(review.name, review.comment, review.stars));
-        });
-
-        document.getElementById('reviewForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('userName').value;
-            const comment = document.getElementById('userComment').value;
-            const stars = document.querySelector('input[name="rating"]:checked');
-            
-            if (!stars) {
-                Swal.fire({ icon: 'warning', title: 'تنبيه', text: 'الرجاء اختيار التقييم', confirmButtonColor: '#00897B' });
-                return;
-            }
-
-            addReviewCard(name, comment, stars.value);
-            saveReview(name, comment, stars.value);
-
-            Swal.fire({
-                icon: 'success',
-                title: 'شكراً لك!',
-                text: 'تم نشر تقييمك بنجاح',
-                confirmButtonColor: '#00897B',
-                timer: 3000
-            });
-            
-            document.getElementById('reviewForm').reset();
-        });
-
-        function addReviewCard(name, comment, ratingValue) {
-            let starsHtml = '';
-            for(let i=0; i<ratingValue; i++) starsHtml += '<i class="fas fa-star"></i>';
-            const newReview = document.createElement('div');
-            newReview.className = 'review-card';
-            newReview.innerHTML = `<div class="reviewer-name">${name}</div><div class="review-stars">${starsHtml}</div><p>"${comment}"</p>`;
-            document.getElementById('reviewsContainer').prepend(newReview);
-        }
-
-        function saveReview(name, comment, stars) {
-            const reviews = JSON.parse(localStorage.getItem('deltaReviews')) || [];
-            reviews.push({ name, comment, stars });
-            localStorage.setItem('deltaReviews', JSON.stringify(reviews));
-        }
-    </script>
 </body>
 </html>

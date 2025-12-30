@@ -9,128 +9,191 @@
     
     <style>
         :root {
-            --primary-color: #009999; 
-            --accent-color: #F4B400;
-            --bg-color: #ffffff;
-            --text-dark: #202124;
+            /* لوحة الألوان الطبية الفخمة الجديدة */
+            --primary-color: #00796B; /* زمردي عميق - طبي وفخم */
+            --primary-dark: #004D40;  /* درجة أغمق للتفاعل */
+            --accent-color: #D4AF37;  /* ذهبي معدني راقي */
+            --bg-color: #FAFAFA;      /* أوف وايت ناعم */
+            --secondary-bg: #F2F4F6;  /* رمادي فاتح جداً للأقسام */
+            --text-dark: #37474F;     /* رمادي فحمي عميق للنصوص */
+            --text-light: #546E7A;    /* رمادي متوسط للفقرات */
+            --google-blue: #4285F4;   /* لون جوجل الرسمي */
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { line-height: 1.6; color: var(--text-dark); background-color: var(--bg-color); overflow-x: hidden; transition: 0.3s; }
-        a { text-decoration: none; color: inherit; }
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
 
         /* --- Language Switcher --- */
         .lang-switcher { display: flex; gap: 5px; margin-right: 15px; }
         html[dir="ltr"] .lang-switcher { margin-right: 0; margin-left: 15px; }
 
         .lang-btn {
-            background: transparent; border: 1px solid #ddd; padding: 4px 8px;
-            border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: bold;
-            transition: 0.2s; color: #555;
+            background: transparent; border: 1px solid #CFD8DC; padding: 4px 10px;
+            border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600;
+            transition: 0.3s; color: var(--text-light);
         }
-        .lang-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+        .lang-btn.active { 
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); /* تدرج فخم */
+            color: white; border-color: transparent; 
+            box-shadow: 0 2px 6px rgba(0, 121, 107, 0.3);
+        }
 
         /* --- Header --- */
         header {
-            background: rgba(255, 255, 255, 0.98); box-shadow: 0 1px 6px rgba(0,0,0,0.1);
-            position: fixed; width: 100%; top: 0; z-index: 1000; height: 60px; display: flex; align-items: center;
+            background: rgba(255, 255, 255, 0.98); 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08); /* ظل أنعم */
+            position: fixed; width: 100%; top: 0; z-index: 1000; height: 65px; display: flex; align-items: center;
+            backdrop-filter: blur(10px);
         }
         .nav-container {
             width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 1rem;
             display: flex; justify-content: space-between; align-items: center;
         }
-        .logo-head { display: flex; align-items: center; gap: 8px; }
-        .logo-mini { height: 35px; width: 35px; border-radius: 50%; object-fit: cover; }
-        .logo-text { font-size: 1.1rem; font-weight: 800; color: var(--primary-color); }
-        .nav-links { display: flex; gap: 1.2rem; }
-        .nav-links a { font-size: 0.95rem; font-weight: 600; color: #5f6368; cursor: pointer;}
+        .logo-head { display: flex; align-items: center; gap: 10px; }
+        .logo-mini { height: 40px; width: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-color); }
+        .logo-text { font-size: 1.2rem; font-weight: 800; color: var(--primary-color); }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a { font-size: 1rem; font-weight: 600; color: var(--text-dark); cursor: pointer; position: relative; }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -5px; right: 0; width: 0; height: 2px; 
+            background: var(--accent-color); transition: 0.3s; /* خط ذهبي عند التحويم */
+        }
+        html[dir="ltr"] .nav-links a::after { right: auto; left: 0; }
+        .nav-links a:hover::after { width: 100%; }
         
         /* --- Hero --- */
         .hero {
             min-height: 85vh;
-            background: linear-gradient(rgba(255,255,255,0.95), rgba(255,255,255,0.9)), url('https://images.unsplash.com/photo-1570222094114-28a9d8894566?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60');
+            background: linear-gradient(rgba(250,250,250,0.9), rgba(250,250,250,0.8)), url('https://images.unsplash.com/photo-1570222094114-28a9d8894566?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60');
             background-size: cover; background-position: center;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            text-align: center; margin-top: 60px; padding: 20px;
+            text-align: center; margin-top: 65px; padding: 20px;
         }
         .main-logo {
             width: 200px; height: 200px; object-fit: cover; border-radius: 50%;
-            box-shadow: 0 15px 35px rgba(0, 153, 153, 0.25); margin-bottom: 25px;
+            box-shadow: 0 20px 40px rgba(0, 121, 107, 0.2); /* ظل بلون الزمرد */
+            margin-bottom: 25px;
             animation: float 4s ease-in-out infinite;
+            border: 3px solid white;
         }
         
         .google-badge {
-            background: white; border: 1px solid #dadce0; padding: 8px 24px;
-            border-radius: 50px; display: inline-flex; align-items: center; gap: 10px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin-bottom: 20px;
+            background: white; border: 1px solid #ECEFF1; padding: 10px 28px;
+            border-radius: 50px; display: inline-flex; align-items: center; gap: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px;
         }
         /* أيقونة جوجل الملونة */
         .google-icon-style {
             background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat;
             -webkit-background-clip: text; background-clip: text; color: transparent;
-            -webkit-text-fill-color: transparent; font-size: 1.2rem;
+            -webkit-text-fill-color: transparent; font-size: 1.3rem;
         }
 
         /* --- General Layout --- */
-        .section { padding: 4rem 1.5rem; text-align: center; }
-        .section-title { font-size: 1.6rem; color: var(--primary-color); font-weight: 800; margin-bottom: 2.5rem; }
+        .section { padding: 5rem 1.5rem; text-align: center; }
+        .section-title { 
+            font-size: 1.8rem; color: var(--primary-color); font-weight: 800; margin-bottom: 3rem; 
+            position: relative; display: inline-block;
+        }
+        .section-title::after {
+            content: ''; width: 60px; height: 3px; background: var(--accent-color);
+            position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); border-radius: 2px;
+        }
 
-        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1.5rem; max-width: 1000px; margin: 0 auto; }
-        .service-card { background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #f0f0f0; }
-        .service-icon { font-size: 2rem; color: var(--primary-color); margin-bottom: 10px; }
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2rem; max-width: 1100px; margin: 0 auto; }
+        .service-card { 
+            background: white; padding: 2rem 1.5rem; border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.05);
+            transition: 0.4s ease;
+        }
+        .service-card:hover { 
+            transform: translateY(-8px); 
+            border-color: var(--accent-color); /* حدود ذهبية عند التحويم */
+            box-shadow: 0 15px 35px rgba(212, 175, 55, 0.15);
+        }
+        /* تدرج لوني للأيقونات */
+        .service-icon { 
+            font-size: 2.2rem; margin-bottom: 15px; display: inline-block;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .service-card h3 { font-size: 1.1rem; color: var(--text-dark); }
         
-        .reviews-section { background: #f8f9fa; padding: 4rem 1.5rem; }
-        .reviews-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; max-width: 1000px; margin: 0 auto 2.5rem auto; }
-        .google-review-card { background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid #dadce0; text-align: start; position: relative; } 
+        /* --- Reviews --- */
+        .reviews-section { background: var(--secondary-bg); padding: 5rem 1.5rem; }
+        .reviews-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 1000px; margin: 0 auto 3rem auto; }
+        .google-review-card { 
+            background: white; padding: 2rem; border-radius: 16px; 
+            border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+            text-align: start; position: relative; 
+        } 
         
-        .g-logo-corner { position: absolute; top: 15px; left: 15px; font-size: 1.2rem; }
-        html[dir="ltr"] .g-logo-corner { left: auto; right: 15px; } 
+        .g-logo-corner { position: absolute; top: 20px; left: 20px; font-size: 1.3rem; opacity: 0.8; }
+        html[dir="ltr"] .g-logo-corner { left: auto; right: 20px; } 
 
-        .reviewer-info { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .reviewer-pic { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; }
+        .reviewer-info { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .reviewer-pic { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; font-size: 1.1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .reviewer-name { font-weight: 700; color: var(--text-dark); }
         
         .rate-us-btn { 
-            background: white; color: #3c4043; border: 1px solid #dadce0; 
-            padding: 12px 30px; border-radius: 25px; font-weight: 600; 
-            display: inline-flex; align-items: center; gap: 10px; transition: 0.3s;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            background: white; color: var(--google-blue); border: 2px solid #ECEFF1; 
+            padding: 14px 35px; border-radius: 50px; font-weight: 700; font-size: 1rem;
+            display: inline-flex; align-items: center; gap: 12px; transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
-        .rate-us-btn:hover { background: #f1f3f4; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+        .rate-us-btn:hover { 
+            border-color: var(--google-blue); background: #F8FBFF;
+            box-shadow: 0 6px 15px rgba(66, 133, 244, 0.15);
+            transform: translateY(-2px);
+        }
 
-        .info-strip { background: #202124; color: #e8eaed; padding: 3rem 1.5rem; }
-        .info-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 2.5rem; max-width: 800px; margin: 0 auto; text-align: center; }
-        .info-item i { font-size: 1.4rem; color: var(--primary-color); margin-bottom: 0.8rem; display: block; }
+        /* --- Footer & Info --- */
+        .info-strip { background: #263238; /* لون فحمي داكن جداً */ color: #ECEFF1; padding: 4rem 1.5rem; }
+        .info-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 3rem; max-width: 900px; margin: 0 auto; text-align: center; }
+        .info-item i { font-size: 1.6rem; color: var(--accent-color); /* أيقونات ذهبية في الفوتر */ margin-bottom: 1rem; display: block; }
+        .info-item h3 { font-size: 1.1rem; margin-bottom: 8px; color: white; }
+        .info-item p, .info-item a { color: #B0BEC5; transition: 0.3s; }
+        .info-item a:hover { color: var(--accent-color); }
         
-        /* --- تكبير وتحسين أيقونات التواصل الاجتماعي --- */
-        .social-icons { margin-top: 2.5rem; display: flex; justify-content: center; gap: 25px; }
+        /* --- أيقونات التواصل الكبيرة والمحسنة --- */
+        .social-icons { margin-top: 3rem; display: flex; justify-content: center; gap: 25px; }
         .social-btn { 
-            width: 60px; height: 60px; /* تكبير الحجم */
+            width: 60px; height: 60px; 
             border-radius: 50%; 
-            background: rgba(255,255,255,0.08); 
+            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)); /* تدرج شفاف */
             display: flex; align-items: center; justify-content: center; 
             color: white; 
-            font-size: 1.8rem; /* تكبير الأيقونة */
-            transition: all 0.3s ease;
+            font-size: 1.8rem; 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* حركة ناعمة */
             border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
         .social-btn:hover { 
-            background: var(--primary-color); 
-            transform: scale(1.15); /* تكبير إضافي عند التحويم */
-            box-shadow: 0 0 15px rgba(0, 153, 153, 0.5);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); /* تدرج الزمردي عند التحويم */
+            transform: scale(1.15) translateY(-3px);
+            border-color: transparent;
+            box-shadow: 0 10px 25px rgba(0, 121, 107, 0.4);
         }
 
-        .floating-container { position: fixed; bottom: 25px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 12px; }
-        html[dir="ltr"] .floating-container { right: auto; left: 20px; }
+        /* --- Floating Buttons --- */
+        .floating-container { position: fixed; bottom: 30px; right: 25px; z-index: 1000; display: flex; flex-direction: column; gap: 15px; }
+        html[dir="ltr"] .floating-container { right: auto; left: 25px; }
         
-        .float-btn { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 26px; box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
-        .btn-whatsapp { background: #25D366; }
-        .btn-phone { background: #1a73e8; }
-        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        .float-btn { 
+            width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            color: white; font-size: 28px; box-shadow: 0 6px 20px rgba(0,0,0,0.25); transition: 0.3s;
+        }
+        .btn-whatsapp { background: linear-gradient(135deg, #25D366, #128C7E); }
+        .btn-phone { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); }
+        .float-btn:hover { transform: scale(1.1); }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-12px); } 100% { transform: translateY(0px); } }
 
         @media (max-width: 768px) {
             .nav-links { display: none; }
-            .hero { padding-top: 20px; }
+            .hero { padding-top: 30px; }
             .main-logo { width: 180px; height: 180px; }
+            .section { padding: 3rem 1rem; }
         }
     </style>
 </head>
@@ -168,12 +231,12 @@
         
         <div class="google-badge">
             <i class="fab fa-google google-icon-style"></i>
-            <span style="font-weight:bold; color:#333;">4.9</span>
-            <div style="color:var(--accent-color); font-size:0.9rem;">★★★★★</div>
-            <span style="color:#666; font-size:0.9rem;" data-i18n="google_rating">(تقييمات جوجل)</span>
+            <span style="font-weight:700; color:var(--text-dark); font-size:1.1rem;">4.9</span>
+            <div style="color:var(--accent-color); font-size:1rem;">★★★★★</div>
+            <span style="color:var(--text-light); font-size:0.95rem;" data-i18n="google_rating">(تقييمات جوجل)</span>
         </div>
         
-        <p style="color: #444; font-weight: 500; margin-bottom: 20px; max-width: 300px;" data-i18n="hero_slogan">
+        <p style="color: var(--text-dark); font-weight: 600; margin-bottom: 20px; max-width: 350px; font-size: 1.1rem;" data-i18n="hero_slogan">
             دقة في الفحص .. أناقة في المظهر
         </p>
     </section>
@@ -207,25 +270,25 @@
             <div class="google-review-card">
                 <i class="fab fa-google google-icon-style g-logo-corner"></i>
                 <div class="reviewer-info">
-                    <div class="reviewer-pic" style="background:#ef6c00;">A</div>
+                    <div class="reviewer-pic" style="background: linear-gradient(135deg, #EF6C00, #E65100);">A</div>
                     <div class="reviewer-name">Ahmad Ali</div>
                 </div>
-                <div style="color:#F4B400; font-size:0.85rem; margin-bottom:8px;">★★★★★</div>
-                <p style="font-size:0.9rem; color:#4b4f56;" data-i18n="rev_1">المحل مرتب ونظيف، والتعامل جداً راقي من الدكتور. تشكيلة النظارات حلوة.</p>
+                <div style="color:var(--accent-color); font-size:0.9rem; margin-bottom:10px;">★★★★★</div>
+                <p style="font-size:0.95rem; color:var(--text-light);" data-i18n="rev_1">المحل مرتب ونظيف، والتعامل جداً راقي من الدكتور. تشكيلة النظارات حلوة.</p>
             </div>
             <div class="google-review-card">
                 <i class="fab fa-google google-icon-style g-logo-corner"></i>
                 <div class="reviewer-info">
-                    <div class="reviewer-pic" style="background:#673ab7;">S</div>
+                    <div class="reviewer-pic" style="background: linear-gradient(135deg, #673AB7, #512DA8);">S</div>
                     <div class="reviewer-name">Sara Kh</div>
                 </div>
-                <div style="color:#F4B400; font-size:0.85rem; margin-bottom:8px;">★★★★★</div>
-                <p style="font-size:0.9rem; color:#4b4f56;" data-i18n="rev_2">فحص النظر عندهم دقيق جداً، اشتريت نظارة شمسية طبية وكانت ممتازة.</p>
+                <div style="color:var(--accent-color); font-size:0.9rem; margin-bottom:10px;">★★★★★</div>
+                <p style="font-size:0.95rem; color:var(--text-light);" data-i18n="rev_2">فحص النظر عندهم دقيق جداً، اشتريت نظارة شمسية طبية وكانت ممتازة.</p>
             </div>
         </div>
 
         <div style="text-align: center;">
-            <p style="margin-bottom: 15px; color: #5f6368;" data-i18n="share_exp">شاركنا تجربتك وساعدنا نكون الأفضل</p>
+            <p style="margin-bottom: 20px; color: var(--text-light); font-weight: 600;" data-i18n="share_exp">شاركنا تجربتك وساعدنا نكون الأفضل</p>
             
             <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Amman+Al-Muqabalain" target="_blank" class="rate-us-btn">
                 <i class="fab fa-google google-icon-style"></i>
@@ -254,8 +317,8 @@
         </div>
     </section>
 
-    <footer style="background: #111; color: #777; text-align: center; padding: 20px; font-size: 0.8rem;">
-        <p>© 2025 Delta Optics</p>
+    <footer style="background: #1C2326; color: #90A4AE; text-align: center; padding: 25px; font-size: 0.85rem;">
+        <p>© 2025 Delta Optics. All rights reserved.</p>
     </footer>
 
     <script>
@@ -344,18 +407,16 @@
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            event.target.classList.add('active'); 
+            // Find the button that was clicked (or simulated click) and make it active
+            const clickedBtn = Array.from(document.querySelectorAll('.lang-btn')).find(btn => btn.textContent.toLowerCase() === lang || (lang==='ar' && btn.textContent==='AR'));
+            if(clickedBtn) clickedBtn.classList.add('active');
 
             localStorage.setItem('delta_lang', lang);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             const savedLang = localStorage.getItem('delta_lang') || 'ar';
-            const btns = document.querySelectorAll('.lang-btn');
-            
-            if(savedLang === 'ar') btns[0].click();
-            else if(savedLang === 'en') btns[1].click();
-            else if(savedLang === 'fr') btns[2].click();
+            setLang(savedLang);
         });
     </script>
 </body>

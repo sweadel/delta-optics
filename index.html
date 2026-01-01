@@ -3,421 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>دلتا للبصريات | Delta Optics</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>Delta Optics | دلتا للبصريات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
         :root {
-            /* لوحة الألوان الطبية الفخمة الجديدة */
-            --primary-color: #00796B; /* زمردي عميق - طبي وفخم */
-            --primary-dark: #004D40;  /* درجة أغمق للتفاعل */
-            --accent-color: #D4AF37;  /* ذهبي معدني راقي */
-            --bg-color: #FAFAFA;      /* أوف وايت ناعم */
-            --secondary-bg: #F2F4F6;  /* رمادي فاتح جداً للأقسام */
-            --text-dark: #37474F;     /* رمادي فحمي عميق للنصوص */
-            --text-light: #546E7A;    /* رمادي متوسط للفقرات */
-            --google-blue: #4285F4;   /* لون جوجل الرسمي */
+            --primary: #00796B; /* زمردي */
+            --gold: #D4AF37;    /* ذهبي */
+            --bg: #FAFAFA;
+            --text: #37474F;
         }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; scroll-behavior: smooth; }
         
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { line-height: 1.6; color: var(--text-dark); background-color: var(--bg-color); overflow-x: hidden; transition: 0.3s; }
-        a { text-decoration: none; color: inherit; transition: 0.3s; }
-
-        /* --- Language Switcher --- */
-        .lang-switcher { display: flex; gap: 5px; margin-right: 15px; }
-        html[dir="ltr"] .lang-switcher { margin-right: 0; margin-left: 15px; }
-
-        .lang-btn {
-            background: transparent; border: 1px solid #CFD8DC; padding: 4px 10px;
-            border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600;
-            transition: 0.3s; color: var(--text-light);
-        }
-        .lang-btn.active { 
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); /* تدرج فخم */
-            color: white; border-color: transparent; 
-            box-shadow: 0 2px 6px rgba(0, 121, 107, 0.3);
-        }
-
-        /* --- Header --- */
-        header {
-            background: rgba(255, 255, 255, 0.98); 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08); /* ظل أنعم */
-            position: fixed; width: 100%; top: 0; z-index: 1000; height: 65px; display: flex; align-items: center;
-            backdrop-filter: blur(10px);
-        }
-        .nav-container {
-            width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 1rem;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .logo-head { display: flex; align-items: center; gap: 10px; }
-        .logo-mini { height: 40px; width: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-color); }
-        .logo-text { font-size: 1.2rem; font-weight: 800; color: var(--primary-color); }
-        .nav-links { display: flex; gap: 1.5rem; }
-        .nav-links a { font-size: 1rem; font-weight: 600; color: var(--text-dark); cursor: pointer; position: relative; }
-        .nav-links a::after {
-            content: ''; position: absolute; bottom: -5px; right: 0; width: 0; height: 2px; 
-            background: var(--accent-color); transition: 0.3s; /* خط ذهبي عند التحويم */
-        }
-        html[dir="ltr"] .nav-links a::after { right: auto; left: 0; }
-        .nav-links a:hover::after { width: 100%; }
+        /* Header & Nav */
+        header { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: fixed; width: 100%; top: 0; z-index: 1000; height: 60px; display: flex; align-items: center; }
+        .nav-container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 15px; display: flex; justify-content: space-between; align-items: center; }
+        .logo-text { font-size: 1.2rem; font-weight: 800; color: var(--primary); }
         
-        /* --- Hero --- */
-        .hero {
-            min-height: 85vh;
-            background: linear-gradient(rgba(250,250,250,0.9), rgba(250,250,250,0.8)), url('https://images.unsplash.com/photo-1570222094114-28a9d8894566?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60');
-            background-size: cover; background-position: center;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            text-align: center; margin-top: 65px; padding: 20px;
-        }
-        .main-logo {
-            width: 200px; height: 200px; object-fit: cover; border-radius: 50%;
-            box-shadow: 0 20px 40px rgba(0, 121, 107, 0.2); /* ظل بلون الزمرد */
-            margin-bottom: 25px;
-            animation: float 4s ease-in-out infinite;
-            border: 3px solid white;
-        }
+        /* Hero */
+        .hero { min-height: 75vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; margin-top: 60px; 
+                background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.85)), url('https://images.unsplash.com/photo-1570222094114-28a9d8894566?auto=format&fit=crop&w=600&q=40'); background-size: cover; }
+        .main-logo { width: 180px; height: 180px; border-radius: 50%; border: 4px solid #fff; box-shadow: 0 10px 30px rgba(0,121,107,0.2); animation: float 4s ease-in-out infinite; }
         
-        .google-badge {
-            background: white; border: 1px solid #ECEFF1; padding: 10px 28px;
-            border-radius: 50px; display: inline-flex; align-items: center; gap: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px;
-        }
-        /* أيقونة جوجل الملونة */
-        .google-icon-style {
-            background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat;
-            -webkit-background-clip: text; background-clip: text; color: transparent;
-            -webkit-text-fill-color: transparent; font-size: 1.3rem;
-        }
+        /* Filter Tabs */
+        .filter-tabs { display: flex; justify-content: center; gap: 10px; margin: 40px 0 20px 0; flex-wrap: wrap; }
+        .tab { padding: 10px 25px; border-radius: 30px; border: 1px solid #ddd; cursor: pointer; font-weight: 700; background: white; transition: 0.3s; }
+        .tab.active, .tab:hover { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 5px 15px rgba(0,121,107,0.3); }
 
-        /* --- General Layout --- */
-        .section { padding: 5rem 1.5rem; text-align: center; }
-        .section-title { 
-            font-size: 1.8rem; color: var(--primary-color); font-weight: 800; margin-bottom: 3rem; 
-            position: relative; display: inline-block;
-        }
-        .section-title::after {
-            content: ''; width: 60px; height: 3px; background: var(--accent-color);
-            position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); border-radius: 2px;
-        }
+        /* Gallery Grid (Optimized for Speed) */
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; padding: 0 20px 50px 20px; max-width: 1200px; margin: 0 auto; }
+        .product-card { background: #fff; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border: 1px solid #f0f0f0; transition: 0.3s; opacity: 0; animation: fadeIn 0.5s forwards; }
+        .product-card:hover { transform: translateY(-5px); border-color: var(--gold); }
+        .img-box { height: 250px; background: #f9f9f9; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .img-box img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .product-card:hover .img-box img { transform: scale(1.08); }
+        .info { padding: 15px; text-align: right; }
+        .wa-btn { display: flex; align-items: center; justify-content: center; gap:8px; background: #f5f5f5; text-align: center; padding: 10px; border-radius: 8px; font-weight: 700; margin-top: 10px; color: var(--text); transition: 0.2s; }
+        .wa-btn:hover { background: #25D366; color: #fff; }
 
-        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2rem; max-width: 1100px; margin: 0 auto; }
-        .service-card { 
-            background: white; padding: 2rem 1.5rem; border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.05);
-            transition: 0.4s ease;
-        }
-        .service-card:hover { 
-            transform: translateY(-8px); 
-            border-color: var(--accent-color); /* حدود ذهبية عند التحويم */
-            box-shadow: 0 15px 35px rgba(212, 175, 55, 0.15);
-        }
-        /* تدرج لوني للأيقونات */
-        .service-icon { 
-            font-size: 2.2rem; margin-bottom: 15px; display: inline-block;
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .service-card h3 { font-size: 1.1rem; color: var(--text-dark); }
+        /* Helpers */
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        @keyframes fadeIn { to { opacity: 1; } }
+        .google-icon { background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat; -webkit-background-clip: text; color: transparent; }
         
-        /* --- Reviews --- */
-        .reviews-section { background: var(--secondary-bg); padding: 5rem 1.5rem; }
-        .reviews-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 1000px; margin: 0 auto 3rem auto; }
-        .google-review-card { 
-            background: white; padding: 2rem; border-radius: 16px; 
-            border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.03);
-            text-align: start; position: relative; 
-        } 
-        
-        .g-logo-corner { position: absolute; top: 20px; left: 20px; font-size: 1.3rem; opacity: 0.8; }
-        html[dir="ltr"] .g-logo-corner { left: auto; right: 20px; } 
+        /* Hide broken images immediately */
+        .hidden-card { display: none !important; }
 
-        .reviewer-info { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-        .reviewer-pic { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; font-size: 1.1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .reviewer-name { font-weight: 700; color: var(--text-dark); }
-        
-        .rate-us-btn { 
-            background: white; color: var(--google-blue); border: 2px solid #ECEFF1; 
-            padding: 14px 35px; border-radius: 50px; font-weight: 700; font-size: 1rem;
-            display: inline-flex; align-items: center; gap: 12px; transition: 0.3s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-        .rate-us-btn:hover { 
-            border-color: var(--google-blue); background: #F8FBFF;
-            box-shadow: 0 6px 15px rgba(66, 133, 244, 0.15);
-            transform: translateY(-2px);
-        }
-
-        /* --- Footer & Info --- */
-        .info-strip { background: #263238; /* لون فحمي داكن جداً */ color: #ECEFF1; padding: 4rem 1.5rem; }
-        .info-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 3rem; max-width: 900px; margin: 0 auto; text-align: center; }
-        .info-item i { font-size: 1.6rem; color: var(--accent-color); /* أيقونات ذهبية في الفوتر */ margin-bottom: 1rem; display: block; }
-        .info-item h3 { font-size: 1.1rem; margin-bottom: 8px; color: white; }
-        .info-item p, .info-item a { color: #B0BEC5; transition: 0.3s; }
-        .info-item a:hover { color: var(--accent-color); }
-        
-        /* --- أيقونات التواصل الكبيرة والمحسنة --- */
-        .social-icons { margin-top: 3rem; display: flex; justify-content: center; gap: 25px; }
-        .social-btn { 
-            width: 60px; height: 60px; 
-            border-radius: 50%; 
-            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)); /* تدرج شفاف */
-            display: flex; align-items: center; justify-content: center; 
-            color: white; 
-            font-size: 1.8rem; 
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* حركة ناعمة */
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        .social-btn:hover { 
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); /* تدرج الزمردي عند التحويم */
-            transform: scale(1.15) translateY(-3px);
-            border-color: transparent;
-            box-shadow: 0 10px 25px rgba(0, 121, 107, 0.4);
-        }
-
-        /* --- Floating Buttons --- */
-        .floating-container { position: fixed; bottom: 30px; right: 25px; z-index: 1000; display: flex; flex-direction: column; gap: 15px; }
-        html[dir="ltr"] .floating-container { right: auto; left: 25px; }
-        
-        .float-btn { 
-            width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-            color: white; font-size: 28px; box-shadow: 0 6px 20px rgba(0,0,0,0.25); transition: 0.3s;
-        }
-        .btn-whatsapp { background: linear-gradient(135deg, #25D366, #128C7E); }
-        .btn-phone { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); }
-        .float-btn:hover { transform: scale(1.1); }
-        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-12px); } 100% { transform: translateY(0px); } }
-
-        @media (max-width: 768px) {
-            .nav-links { display: none; }
-            .hero { padding-top: 30px; }
-            .main-logo { width: 180px; height: 180px; }
-            .section { padding: 3rem 1rem; }
-        }
+        @media (max-width: 600px) { .gallery-grid { grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; } .info h3 { font-size: 0.9rem; } .img-box { height: 180px; } }
     </style>
 </head>
 <body>
 
-    <div class="floating-container">
-        <a href="tel:0775549700" class="float-btn btn-phone"><i class="fas fa-phone-alt"></i></a>
-        <a href="https://wa.me/962775549700" class="float-btn btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a>
-    </div>
-
     <header>
         <div class="nav-container">
-            <div class="logo-head">
-                <img src="logo.jpg" class="logo-mini" onerror="this.style.display='none'">
-                <span class="logo-text" data-i18n="logo_text">دلتا للبصريات</span>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <img src="logo.jpg" style="width:35px; height:35px; border-radius:50%;" onerror="this.style.display='none'">
+                <span class="logo-text">دلتا للبصريات</span>
             </div>
-            
-            <div style="display: flex; align-items: center;">
-                <div class="lang-switcher">
-                    <button class="lang-btn active" onclick="setLang('ar')">AR</button>
-                    <button class="lang-btn" onclick="setLang('en')">EN</button>
-                    <button class="lang-btn" onclick="setLang('fr')">FR</button>
-                </div>
-                <nav class="nav-links">
-                    <a href="#home" data-i18n="nav_home">الرئيسية</a>
-                    <a href="#services" data-i18n="nav_services">الخدمات</a>
-                    <a href="#reviews" data-i18n="nav_reviews">التقييمات</a>
-                </nav>
-            </div>
+            <button onclick="toggleLang()" style="border:1px solid #ddd; background:white; padding:5px 10px; border-radius:5px; cursor:pointer;">EN/AR</button>
         </div>
     </header>
 
-    <section class="hero" id="home">
-        <img src="logo.jpg" alt="Delta Optics" class="main-logo">
-        
-        <div class="google-badge">
-            <i class="fab fa-google google-icon-style"></i>
-            <span style="font-weight:700; color:var(--text-dark); font-size:1.1rem;">4.9</span>
-            <div style="color:var(--accent-color); font-size:1rem;">★★★★★</div>
-            <span style="color:var(--text-light); font-size:0.95rem;" data-i18n="google_rating">(تقييمات جوجل)</span>
+    <section class="hero">
+        <img src="logo.jpg" class="main-logo" onerror="this.src='https://via.placeholder.com/200?text=Delta'">
+        <div style="margin-top:20px; font-weight:bold; background:white; padding:8px 25px; border-radius:25px; box-shadow:0 4px 10px rgba(0,0,0,0.05);">
+            <i class="fab fa-google google-icon"></i> 4.9 <span style="color:#FFD700">★★★★★</span>
         </div>
-        
-        <p style="color: var(--text-dark); font-weight: 600; margin-bottom: 20px; max-width: 350px; font-size: 1.1rem;" data-i18n="hero_slogan">
-            دقة في الفحص .. أناقة في المظهر
-        </p>
+        <h1 style="margin-top:15px; font-size:1.5rem; color:var(--text);">دقة في الفحص .. أناقة في المظهر</h1>
     </section>
 
-    <section class="section" id="services">
-        <h2 class="section-title" data-i18n="services_title">خدماتنا</h2>
-        <div class="services-grid">
-            <div class="service-card">
-                <i class="fas fa-user-md service-icon"></i>
-                <h3 data-i18n="srv_exam">فحص نظر شامل</h3>
-            </div>
-            <div class="service-card">
-                <i class="fas fa-glasses service-icon"></i>
-                <h3 data-i18n="srv_glasses">نظارات طبية</h3>
-            </div>
-            <div class="service-card">
-                <i class="fas fa-sun service-icon"></i> 
-                <h3 data-i18n="srv_sun">نظارات شمسية</h3>
-            </div>
-            <div class="service-card">
-                <i class="fas fa-eye service-icon"></i>
-                <h3 data-i18n="srv_lenses">عدسات لاصقة</h3>
-            </div>
-        </div>
-    </section>
+    <div class="filter-tabs">
+        <div class="tab active" onclick="filter('all')">الكل</div>
+        <div class="tab" onclick="filter('medical')">نظارات طبية</div>
+        <div class="tab" onclick="filter('sun')">نظارات شمسية</div>
+    </div>
 
-    <section class="reviews-section" id="reviews">
-        <h2 class="section-title" data-i18n="reviews_title">ماذا يقول عملاؤنا على Google؟</h2>
-        
-        <div class="reviews-container">
-            <div class="google-review-card">
-                <i class="fab fa-google google-icon-style g-logo-corner"></i>
-                <div class="reviewer-info">
-                    <div class="reviewer-pic" style="background: linear-gradient(135deg, #EF6C00, #E65100);">A</div>
-                    <div class="reviewer-name">Ahmad Ali</div>
-                </div>
-                <div style="color:var(--accent-color); font-size:0.9rem; margin-bottom:10px;">★★★★★</div>
-                <p style="font-size:0.95rem; color:var(--text-light);" data-i18n="rev_1">المحل مرتب ونظيف، والتعامل جداً راقي من الدكتور. تشكيلة النظارات حلوة.</p>
-            </div>
-            <div class="google-review-card">
-                <i class="fab fa-google google-icon-style g-logo-corner"></i>
-                <div class="reviewer-info">
-                    <div class="reviewer-pic" style="background: linear-gradient(135deg, #673AB7, #512DA8);">S</div>
-                    <div class="reviewer-name">Sara Kh</div>
-                </div>
-                <div style="color:var(--accent-color); font-size:0.9rem; margin-bottom:10px;">★★★★★</div>
-                <p style="font-size:0.95rem; color:var(--text-light);" data-i18n="rev_2">فحص النظر عندهم دقيق جداً، اشتريت نظارة شمسية طبية وكانت ممتازة.</p>
-            </div>
-        </div>
+    <div class="gallery-grid" id="galleryContainer"></div>
 
-        <div style="text-align: center;">
-            <p style="margin-bottom: 20px; color: var(--text-light); font-weight: 600;" data-i18n="share_exp">شاركنا تجربتك وساعدنا نكون الأفضل</p>
-            
-            <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Amman+Al-Muqabalain" target="_blank" class="rate-us-btn">
-                <i class="fab fa-google google-icon-style"></i>
-                <span data-i18n="rate_btn">قيّمنا على Google</span>
-            </a>
-        </div>
-    </section>
-
-    <section class="info-strip" id="contact">
-        <div class="info-grid">
-            <div class="info-item">
-                <i class="fas fa-map-marked-alt"></i>
-                <h3 data-i18n="loc_title">موقعنا</h3>
-                <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Amman+Al-Muqabalain" target="_blank" data-i18n="loc_desc">المقابلين - ش. الصخرة المشرفة</a>
-            </div>
-            <div class="info-item">
-                <i class="fas fa-phone-alt"></i>
-                <h3 data-i18n="contact_title">اتصل بنا</h3>
-                <a href="tel:0775549700">07 7554 9700</a>
-            </div>
-        </div>
-        
-        <div class="social-icons">
-            <a href="https://www.facebook.com/delta.optics1" target="_blank" class="social-btn"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://www.instagram.com/delta.optics1" target="_blank" class="social-btn"><i class="fab fa-instagram"></i></a>
-        </div>
-    </section>
-
-    <footer style="background: #1C2326; color: #90A4AE; text-align: center; padding: 25px; font-size: 0.85rem;">
-        <p>© 2025 Delta Optics. All rights reserved.</p>
+    <footer style="background:#263238; color:#90A4AE; text-align:center; padding:30px; margin-top:50px;">
+        <p>© 2025 Delta Optics</p>
     </footer>
 
     <script>
-        const translations = {
-            ar: {
-                logo_text: "دلتا للبصريات",
-                nav_home: "الرئيسية",
-                nav_services: "الخدمات",
-                nav_reviews: "التقييمات",
-                google_rating: "(تقييمات جوجل)",
-                hero_slogan: "دقة في الفحص .. أناقة في المظهر",
-                services_title: "خدماتنا",
-                srv_exam: "فحص نظر شامل",
-                srv_glasses: "نظارات طبية",
-                srv_sun: "نظارات شمسية",
-                srv_lenses: "عدسات لاصقة",
-                reviews_title: "ماذا يقول عملاؤنا على Google؟",
-                rev_1: "المحل مرتب ونظيف، والتعامل جداً راقي من الدكتور. تشكيلة النظارات حلوة.",
-                rev_2: "فحص النظر عندهم دقيق جداً، اشتريت نظارة شمسية طبية وكانت ممتازة.",
-                share_exp: "شاركنا تجربتك وساعدنا نكون الأفضل",
-                rate_btn: "قيّمنا على Google",
-                loc_title: "موقعنا",
-                loc_desc: "المقابلين - ش. الصخرة المشرفة",
-                contact_title: "اتصل بنا"
-            },
-            en: {
-                logo_text: "Delta Optics",
-                nav_home: "Home",
-                nav_services: "Services",
-                nav_reviews: "Reviews",
-                google_rating: "(Google Reviews)",
-                hero_slogan: "Precision in examination.. Elegance in look",
-                services_title: "Our Services",
-                srv_exam: "Comprehensive Eye Exam",
-                srv_glasses: "Medical Glasses",
-                srv_sun: "Sunglasses",
-                srv_lenses: "Contact Lenses",
-                reviews_title: "What our clients say on Google?",
-                rev_1: "Very organized shop, classy dealing from the doctor. Nice collection of glasses.",
-                rev_2: "The eye exam was very accurate, I bought prescription sunglasses and they were excellent.",
-                share_exp: "Share your experience and help us be the best",
-                rate_btn: "Rate us on Google",
-                loc_title: "Location",
-                loc_desc: "Al-Muqabalain - Al-Sakhra Al-Musharrafa St.",
-                contact_title: "Contact Us"
-            },
-            fr: {
-                logo_text: "Delta Optique",
-                nav_home: "Accueil",
-                nav_services: "Services",
-                nav_reviews: "Avis",
-                google_rating: "(Avis Google)",
-                hero_slogan: "Précision de l'examen.. Élégance de l'apparence",
-                services_title: "Nos Services",
-                srv_exam: "Examen de la vue",
-                srv_glasses: "Lunettes de vue",
-                srv_sun: "Lunettes de soleil",
-                srv_lenses: "Lentilles de contact",
-                reviews_title: "Ce que disent nos clients sur Google?",
-                rev_1: "Magasin très organisé, traitement chic du médecin. Belle collection de lunettes.",
-                rev_2: "L'examen de la vue était très précis, j'ai acheté des lunettes de soleil et elles étaient excellentes.",
-                share_exp: "Partagez votre expérience",
-                rate_btn: "Évaluez-nous sur Google",
-                loc_title: "Emplacement",
-                loc_desc: "Al-Muqabalain - Rue Al-Sakhra Al-Musharrafa",
-                contact_title: "Contactez-nous"
-            }
-        };
-
-        function setLang(lang) {
-            document.querySelectorAll('[data-i18n]').forEach(element => {
-                const key = element.getAttribute('data-i18n');
-                if (translations[lang][key]) {
-                    element.textContent = translations[lang][key];
-                }
-            });
-
-            if (lang === 'ar') {
-                document.documentElement.setAttribute('dir', 'rtl');
-                document.documentElement.setAttribute('lang', 'ar');
-            } else {
-                document.documentElement.setAttribute('dir', 'ltr');
-                document.documentElement.setAttribute('lang', lang);
-            }
-
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            // Find the button that was clicked (or simulated click) and make it active
-            const clickedBtn = Array.from(document.querySelectorAll('.lang-btn')).find(btn => btn.textContent.toLowerCase() === lang || (lang==='ar' && btn.textContent==='AR'));
-            if(clickedBtn) clickedBtn.classList.add('active');
-
-            localStorage.setItem('delta_lang', lang);
-        }
+        // إعدادات المهندس
+        const MAX_IMAGES_TO_CHECK = 150; // سيفحص الكود حتى 150 صورة لكل نوع (يمكنك زيادتها)
 
         document.addEventListener('DOMContentLoaded', () => {
-            const savedLang = localStorage.getItem('delta_lang') || 'ar';
-            setLang(savedLang);
+            const container = document.getElementById('galleryContainer');
+            let html = '';
+
+            // 1. توليد كروت النظارات الطبية (m1 -> m150)
+            for (let i = 1; i <= MAX_IMAGES_TO_CHECK; i++) {
+                html += createCard('medical', i, `m${i}.jpg`, `Medical Frame ${i}`, `إطار طبي موديل ${i}`);
+            }
+
+            // 2. توليد كروت النظارات الشمسية (s1 -> s150)
+            for (let i = 1; i <= MAX_IMAGES_TO_CHECK; i++) {
+                html += createCard('sun', i, `s${i}.jpg`, `Sunglasses ${i}`, `نظارة شمسية موديل ${i}`);
+            }
+
+            container.innerHTML = html;
         });
+
+        // دالة إنشاء الكرت (مع خدعة إخفاء الكرت إذا الصورة غير موجودة)
+        function createCard(type, index, imgSrc, titleEn, titleAr) {
+            // ملاحظة: this.closest('.product-card').remove() هي السطر السحري الذي يحذف الكرت إذا لم توجد صورة
+            return `
+            <div class="product-card ${type}">
+                <div class="img-box">
+                    <img src="${imgSrc}" loading="lazy" 
+                         onerror="this.closest('.product-card').remove()"> 
+                </div>
+                <div class="info">
+                    <span style="color:var(--gold); font-size:0.75rem; font-weight:800; text-transform:uppercase;">
+                        ${type === 'medical' ? 'Medical' : 'Sun'}
+                    </span>
+                    <h3 class="prod-title">${titleAr}</h3>
+                    <a href="https://wa.me/962775549700?text=استفسار عن موديل: ${imgSrc}" target="_blank" class="wa-btn">
+                        <i class="fab fa-whatsapp"></i> استفسر
+                    </a>
+                </div>
+            </div>`;
+        }
+
+        function filter(category) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const cards = document.querySelectorAll('.product-card');
+            cards.forEach(card => {
+                if (category === 'all' || card.classList.contains(category)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function toggleLang() {
+            const html = document.documentElement;
+            const isRTL = html.getAttribute('dir') === 'rtl';
+            html.setAttribute('dir', isRTL ? 'ltr' : 'rtl');
+            // هنا يمكنك إضافة منطق تغيير النصوص إذا أردت
+        }
     </script>
+
 </body>
 </html>

@@ -3,49 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="description" content="دلتا للبصريات - فحص نظر، نظارات طبية وشمسية، وعدسات لاصقة في الأردن.">
     <title>Delta Optics | الرئيسية</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        :root { --primary: #00796B; --gold: #D4AF37; --bg: #FAFAFA; --text: #37474F; }
+        :root { 
+            --primary: #00796B; /* زمردي */
+            --gold: #D4AF37;    /* ذهبي */
+            --bg: #FAFAFA;      /* خلفية فاتحة */
+            --text: #37474F;    /* نص غامق */
+        }
+        
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 60px; scroll-behavior: smooth; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 60px; scroll-behavior: smooth; transition: 0.3s; }
         a { text-decoration: none; color: inherit; }
         
-        /* Header */
-        header { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: fixed; width: 100%; top: 0; z-index: 1000; height: 60px; display: flex; align-items: center; }
-        .nav-container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 15px; display: flex; justify-content: space-between; align-items: center; }
+        /* --- الهيدر --- */
+        header { 
+            background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+            position: fixed; width: 100%; top: 0; z-index: 1000; height: 60px; 
+            display: flex; align-items: center; 
+        }
+        .nav-container { 
+            width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 15px; 
+            display: flex; justify-content: space-between; align-items: center; 
+        }
         .logo-text { font-size: 1.2rem; font-weight: 800; color: var(--primary); }
-        .lang-btn { border: 1px solid #ddd; background: white; padding: 5px 15px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: 700; color: var(--primary); }
+        .lang-btn {
+            border: 1px solid #ddd; background: white; padding: 5px 15px; 
+            border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: 700; color: var(--primary);
+            transition: 0.3s;
+        }
+        .lang-btn:hover { background: var(--primary); color: white; }
 
-        /* Hero */
+        /* --- الهيرو (الواجهة الرئيسية) --- */
         .hero { 
-            min-height: 85vh; /* ارتفاع كامل للشاشة تقريباً */
+            min-height: 85vh; 
             background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.85)), url('https://images.unsplash.com/photo-1570222094114-28a9d8894566?auto=format&fit=crop&w=600&q=40'); 
             background-size: cover; background-position: center;
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            text-align: center; margin-top: 60px;
+            text-align: center; margin-top: 60px; padding: 20px;
         }
-        .main-logo { width: 160px; height: 160px; border-radius: 50%; border: 4px solid #fff; box-shadow: 0 10px 30px rgba(0,121,107,0.2); margin-bottom: 20px; object-fit: cover; animation: float 6s ease-in-out infinite; }
+        .main-logo { 
+            width: 160px; height: 160px; border-radius: 50%; border: 4px solid #fff; 
+            box-shadow: 0 10px 30px rgba(0,121,107,0.2); margin-bottom: 20px; object-fit: cover; 
+            animation: float 6s ease-in-out infinite;
+        }
         
-        /* أزرار الهيرو */
+        /* --- الأزرار --- */
+        .btn-group { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; margin-top: 25px; }
+        
+        /* زر التشكيلة (الرئيسي) */
         .hero-btn {
-            background: var(--primary); color: white; padding: 12px 35px; 
+            background: var(--primary); color: white; padding: 12px 30px; 
             border-radius: 50px; font-weight: 800; font-size: 1.1rem; 
-            margin-top: 25px; box-shadow: 0 5px 15px rgba(0,121,107,0.3);
-            transition: 0.3s; display: inline-block;
+            box-shadow: 0 5px 15px rgba(0,121,107,0.3); transition: 0.3s; text-align: center;
         }
         .hero-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,121,107,0.4); }
+
+        /* زر الفحص (الثانوي - أبيض) */
+        .hero-btn-outline {
+            background: #fff; color: var(--primary); border: 2px solid var(--primary);
+            padding: 12px 30px; border-radius: 50px; font-weight: 800; font-size: 1.1rem; 
+            transition: 0.3s; text-align: center;
+        }
+        .hero-btn-outline:hover { background: #E0F2F1; }
         
+        /* زر التقييم (جوجل) */
         .google-rate-btn {
             background: #fff; border: 1px solid #ddd; padding: 10px 25px; 
-            border-radius: 50px; display: inline-flex; align-items: center; gap: 10px; 
-            margin-top: 15px; font-weight: 700; color: #3c4043; box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            border-radius: 50px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; 
+            font-weight: 700; color: #3c4043; box-shadow: 0 4px 10px rgba(0,0,0,0.08); margin-top: 5px;
         }
 
-        /* Services & Reviews */
-        .section-title { text-align: center; margin: 40px 0 20px; color: var(--primary); font-size: 1.4rem; font-weight: 800; }
+        /* --- الخدمات والتقييمات --- */
+        .section-title { text-align: center; margin: 50px 0 20px; color: var(--primary); font-size: 1.5rem; font-weight: 800; }
         .services-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 0 15px; }
         .srv-card { background: white; padding: 15px; border-radius: 10px; width: calc(50% - 10px); text-align: center; box-shadow: 0 3px 10px rgba(0,0,0,0.03); }
         .srv-card i { font-size: 1.8rem; color: var(--primary); margin-bottom: 8px; }
@@ -55,6 +92,7 @@
 
         footer { background: #263238; color: #90A4AE; text-align: center; padding: 30px 15px; margin-top: 40px; font-size: 0.8rem; }
         
+        /* --- أزرار عائمة --- */
         .floating-container { position: fixed; bottom: 20px; left: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
         html[dir="ltr"] .floating-container { left: auto; right: 20px; }
         .float-btn { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
@@ -84,17 +122,27 @@
 
     <section class="hero">
         <img src="logo.jpg" class="main-logo" onerror="this.src='https://via.placeholder.com/160?text=Delta'">
+        
         <div style="margin-top:10px; font-weight:bold; background:white; padding:6px 20px; border-radius:20px; box-shadow:0 3px 8px rgba(0,0,0,0.05); font-size: 0.9rem;">
             <i class="fab fa-google google-icon"></i> 4.9 <span style="color:#FFD700">★★★★★</span>
         </div>
+        
         <h1 style="margin-top:15px; font-size:1.3rem; color:var(--text); max-width: 90%; line-height: 1.5;" data-i18n="slogan">دقة في الفحص .. أناقة في المظهر</h1>
 
-        <a href="collection.html" class="hero-btn" data-i18n="view_collection">تصفح التشكيلة الجديدة</a>
+        <div class="btn-group">
+            <a href="collection.html" class="hero-btn" data-i18n="view_collection">
+                تصفح التشكيلة الجديدة
+            </a>
 
-        <a href="YOUR_GOOGLE_MAPS_LINK" target="_blank" class="google-rate-btn">
-            <i class="fab fa-google google-icon" style="font-size:1.2rem;"></i>
-            <span data-i18n="rate_us">قيّمنا على Google</span>
-        </a>
+            <a href="test.html" class="hero-btn-outline">
+                <i class="fas fa-eye"></i> <span data-i18n="eye_test_btn">افحص نظرك الآن</span>
+            </a>
+
+            <a href="YOUR_GOOGLE_MAPS_LINK" target="_blank" class="google-rate-btn">
+                <i class="fab fa-google google-icon" style="font-size:1.2rem;"></i>
+                <span data-i18n="rate_us">قيّمنا على Google</span>
+            </a>
+        </div>
     </section>
 
     <h2 class="section-title" data-i18n="services">خدماتنا</h2>
@@ -132,14 +180,18 @@
         const translations = {
             ar: {
                 title: "دلتا للبصريات", slogan: "دقة في الفحص .. أناقة في المظهر", 
-                view_collection: "تصفح التشكيلة الجديدة", rate_us: "قيّمنا على Google",
+                view_collection: "تصفح التشكيلة الجديدة", 
+                eye_test_btn: "افحص نظرك الآن",
+                rate_us: "قيّمنا على Google",
                 services: "خدماتنا", srv_exam: "فحص نظر", srv_glasses: "نظارات طبية", srv_sun: "نظارات شمسية", srv_lenses: "عدسات لاصقة",
                 reviews: "قالوا عنا", rev1: "المحل مرتب والتعامل راقي جداً.", rev2: "فحص النظر دقيق جداً.",
                 address: "المقابلين - شارع الصخرة المشرفة", btn_lang: "English"
             },
             en: {
                 title: "Delta Optics", slogan: "Precision in Eye Care .. Elegance in Look", 
-                view_collection: "View Collection", rate_us: "Rate us on Google",
+                view_collection: "View Collection", 
+                eye_test_btn: "Test Your Eyes",
+                rate_us: "Rate us on Google",
                 services: "Our Services", srv_exam: "Eye Exam", srv_glasses: "Eyeglasses", srv_sun: "Sunglasses", srv_lenses: "Contact Lenses",
                 reviews: "Testimonials", rev1: "Very organized shop, classy dealing.", rev2: "Accurate eye exam.",
                 address: "Al-Muqabalain St.", btn_lang: "عربي"

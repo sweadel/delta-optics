@@ -9,95 +9,43 @@
     <style>
         body { font-family: 'Tajawal', sans-serif; text-align: center; background: #FAFAFA; margin: 0; padding: 20px; color: #333; }
         header { margin-bottom: 20px; text-align: right; }
-        
-        .container { max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
-        
-        .e-box { 
-            width: 150px; height: 150px; background: #fff; margin: 20px auto; 
-            display: flex; align-items: center; justify-content: center; 
-            border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #eee;
-        }
+        .e-box { width: 150px; height: 150px; background: #fff; margin: 20px auto; display: flex; align-items: center; justify-content: center; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #eee; }
         #e-char { font-size: 80px; font-family: sans-serif; font-weight: 900; transition: 0.2s; line-height: 1; }
-        
         .controls { display: grid; grid-template-columns: repeat(3, 70px); gap: 10px; justify-content: center; margin-top: 20px; }
         .btn { width: 70px; height: 70px; background: #fff; border: 1px solid #ddd; border-radius: 12px; font-size: 24px; color: #00796B; cursor: pointer; box-shadow: 0 3px 0 #eee; }
-        .btn:active { transform: translateY(2px); box-shadow: none; }
-        
-        .start-btn { 
-            background: #00796B; color: #fff; padding: 15px 50px; border-radius: 50px; 
-            border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 30px;
-            box-shadow: 0 5px 15px rgba(0,121,107,0.3);
-        }
+        .start-btn { background: #00796B; color: #fff; padding: 15px 50px; border-radius: 50px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 30px; }
     </style>
 </head>
 <body>
-
-    <header>
-        <a href="index.html" style="color:#00796B; text-decoration:none; font-weight:bold; font-size:1.1rem;">
-            <i class="fas fa-arrow-right"></i> خروج
-        </a>
-    </header>
+    <header><a href="index.html" style="color:#00796B; text-decoration:none; font-weight:bold;"><i class="fas fa-arrow-right"></i> خروج</a></header>
     
-    <div class="container">
-        
-        <div id="start-screen">
-            <h2 style="color:#00796B;">فحص نظر سريع</h2>
-            <p style="color:#666; line-height:1.6;">امسك الهاتف على بعد ذراع.<br>حدد اتجاه فتحة حرف E.</p>
-            <button class="start-btn" onclick="startGame()">ابدأ الفحص</button>
-        </div>
+    <div id="start-screen">
+        <h2 style="color:#00796B;">فحص نظر سريع</h2>
+        <p>حدد اتجاه فتحة حرف E</p>
+        <button class="start-btn" onclick="start()">ابدأ الفحص</button>
+    </div>
 
-        <div id="game-screen" style="display:none">
-            <div class="e-box"><div id="e-char">E</div></div>
-            
-            <div class="controls">
-                <button class="btn" style="grid-column:2" onclick="check(270)"><i class="fas fa-arrow-up"></i></button>
-                <button class="btn" style="grid-column:1; grid-row:2" onclick="check(180)"><i class="fas fa-arrow-left"></i></button>
-                <button class="btn" style="grid-column:2; grid-row:2" onclick="check(90)"><i class="fas fa-arrow-down"></i></button>
-                <button class="btn" style="grid-column:3; grid-row:2" onclick="check(0)"><i class="fas fa-arrow-right"></i></button>
-            </div>
-            <p style="margin-top:20px; color:#999; font-size:0.9rem;">المستوى: <span id="lvl-txt">1</span></p>
+    <div id="game-screen" style="display:none">
+        <div class="e-box"><div id="e-char">E</div></div>
+        <div class="controls">
+            <button class="btn" style="grid-column:2" onclick="check(270)"><i class="fas fa-arrow-up"></i></button>
+            <button class="btn" style="grid-column:1; grid-row:2" onclick="check(180)"><i class="fas fa-arrow-left"></i></button>
+            <button class="btn" style="grid-column:2; grid-row:2" onclick="check(90)"><i class="fas fa-arrow-down"></i></button>
+            <button class="btn" style="grid-column:3; grid-row:2" onclick="check(0)"><i class="fas fa-arrow-right"></i></button>
         </div>
-
     </div>
 
     <script>
-        let level = 0; 
-        const sizes = [100, 70, 50, 30, 15]; // أحجام الخط
-        let currentRot = 0;
-
-        function startGame() {
-            document.getElementById('start-screen').style.display = 'none';
-            document.getElementById('game-screen').style.display = 'block';
-            nextLevel();
-        }
-
-        function nextLevel() {
-            if (level >= sizes.length) {
-                alert('ما شاء الله! نظرك ممتاز (تقديرياً 6/6).');
-                location.reload();
-                return;
-            }
-            
-            // تحديث الحجم
+        let lv = 0; const sizes = [100, 70, 50, 30, 15]; let rot = 0;
+        function start() { document.getElementById('start-screen').style.display='none'; document.getElementById('game-screen').style.display='block'; next(); }
+        function next() {
+            if(lv >= sizes.length) { alert('نظرك ممتاز (6/6)'); location.reload(); return; }
+            rot = [0, 90, 180, 270][Math.floor(Math.random()*4)];
             const e = document.getElementById('e-char');
-            e.style.fontSize = sizes[level] + 'px';
-            document.getElementById('lvl-txt').innerText = level + 1;
-
-            // تدوير عشوائي
-            const rots = [0, 90, 180, 270];
-            currentRot = rots[Math.floor(Math.random() * rots.length)];
-            e.style.transform = `rotate(${currentRot}deg)`;
+            e.style.fontSize = sizes[lv]+'px';
+            e.style.transform = `rotate(${rot}deg)`;
         }
-
-        function check(val) {
-            if (val === currentRot) {
-                level++;
-                nextLevel();
-            } else {
-                alert('انتهى الفحص. ننصحك بزيارة "دلتا للبصريات" لفحص دقيق.');
-                location.reload();
-            }
-        }
+        function check(val) { if(val === rot) { lv++; next(); } else { alert('انتهى الفحص. زورنا للتأكد أكثر.'); location.reload(); } }
     </script>
 </body>
 </html>

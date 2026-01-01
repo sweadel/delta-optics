@@ -13,12 +13,10 @@
         body { background: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 60px; scroll-behavior: smooth; }
         a { text-decoration: none; color: inherit; }
         
-        /* الهيدر */
         header { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: fixed; width: 100%; top: 0; z-index: 1000; height: 60px; display: flex; align-items: center; }
         .nav-container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 15px; display: flex; justify-content: space-between; align-items: center; }
         .logo-text { font-size: 1.2rem; font-weight: 800; color: var(--primary); }
 
-        /* قسم الهيرو (الواجهة) */
         .hero { 
             min-height: 90vh; 
             background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.85)), url('https://images.unsplash.com/photo-1570222094114-28a9d8894566?auto=format&fit=crop&w=600&q=40'); 
@@ -28,27 +26,23 @@
         }
         .main-logo { width: 160px; height: 160px; border-radius: 50%; border: 5px solid #fff; box-shadow: 0 10px 30px rgba(0,121,107,0.25); margin-bottom: 20px; object-fit: cover; }
         
-        /* التقييم */
         .rating-badge {
             background: white; padding: 8px 25px; border-radius: 50px; 
             box-shadow: 0 5px 15px rgba(0,0,0,0.08); font-weight: 800; color: #333; margin-bottom: 15px;
             display: flex; align-items: center; gap: 8px;
         }
         
-        /* الأزرار الرئيسية */
         .btn-group { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 320px; margin-top: 25px; }
         
         .hero-btn {
             background: var(--primary); color: white; padding: 15px; border-radius: 50px; 
             font-weight: 800; text-align: center; box-shadow: 0 5px 15px rgba(0,121,107,0.3); transition: 0.2s; font-size: 1.1rem;
         }
-        .hero-btn:active { transform: scale(0.98); }
-
+        
         .hero-btn-outline {
             background: #fff; color: var(--primary); border: 2px solid var(--primary); 
             padding: 14px; border-radius: 50px; font-weight: 800; text-align: center; transition: 0.2s; font-size: 1.1rem;
         }
-        .hero-btn-outline:active { background: #E0F2F1; }
 
         .google-rate-btn {
             background: #fff; border: 1px solid #ddd; padding: 12px; border-radius: 50px; 
@@ -56,7 +50,7 @@
             font-weight: 700; color: #3c4043; margin-top: 10px;
         }
 
-        /* الأزرار العائمة (سوشيال ميديا) */
+        /* الأزرار العائمة */
         .floating-container { position: fixed; bottom: 25px; left: 25px; z-index: 2000; display: flex; flex-direction: column; gap: 12px; }
         .float-btn { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 26px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: transform 0.2s; }
         .float-btn:active { transform: scale(0.9); }
@@ -64,7 +58,6 @@
         .btn-phone { background: var(--primary); }
         .btn-facebook { background: #1877F2; }
 
-        /* الفوتر */
         footer { background: #263238; color: #90A4AE; text-align: center; padding: 40px 20px; margin-top: 50px; font-size: 0.9rem; }
     </style>
 </head>
@@ -79,7 +72,7 @@
     <header>
         <div class="nav-container">
             <span class="logo-text">دلتا للبصريات</span>
-            <span style="font-size:0.8rem; background:#E0F2F1; color:var(--primary); padding:5px 10px; border-radius:15px;">خبرة 20 عاماً</span>
+            <button onclick="document.documentElement.setAttribute('dir', document.documentElement.dir==='rtl'?'ltr':'rtl')" style="background:none; border:1px solid #ddd; padding:5px 10px; border-radius:20px; cursor:pointer;">EN/AR</button>
         </div>
     </header>
 
@@ -87,33 +80,23 @@
         <img src="logo.jpg" class="main-logo" onerror="this.src='https://via.placeholder.com/150'">
         
         <div class="rating-badge">
-            <i class="fas fa-star" style="color:#FFD700"></i> 4.9 (أكثر من 100 عميل سعيد)
+            <i class="fas fa-star" style="color:#FFD700"></i> 4.9 (أكثر من 100 عميل)
         </div>
         
         <h1 style="margin-top:10px; font-size:1.5rem; line-height:1.6;">دقة في الفحص ..<br>أناقة في المظهر</h1>
-        <p style="color:#666; margin-top:10px;">أحدث موديلات النظارات الطبية والشمسية في المقابلين</p>
 
         <div class="btn-group">
-            <a href="collection.html" class="hero-btn">
-                <i class="fas fa-glasses"></i> تصفح التشكيلة
-            </a>
-            
-            <a href="test.html" class="hero-btn-outline">
-                <i class="fas fa-eye"></i> فحص النظر السريع
-            </a>
-            
+            <a href="collection.html" class="hero-btn"><i class="fas fa-glasses"></i> تصفح التشكيلة</a>
+            <a href="test.html" class="hero-btn-outline"><i class="fas fa-eye"></i> فحص النظر السريع</a>
             <a href="https://g.page/r/YOUR_MAPS_LINK/review" target="_blank" class="google-rate-btn">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="20" alt="Google">
-                شاهد تقييماتنا على Google
+                <i class="fab fa-google" style="color:#ea4335;"></i> قيّمنا على Google
             </a>
         </div>
     </section>
 
     <footer>
-        <div style="margin-bottom:15px;">
-            <i class="fas fa-map-marker-alt" style="color:var(--primary)"></i> المقابلين - شارع الصخرة المشرفة
-        </div>
-        <p>© 2026 Delta Optics - جميع الحقوق محفوظة</p>
+        <p>المقابلين - شارع الصخرة المشرفة</p>
+        <p>© 2026 Delta Optics</p>
     </footer>
 
 </body>

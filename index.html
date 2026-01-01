@@ -3,25 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="دلتا للبصريات - أحدث النظارات الطبية والشمسية وفحص النظر في الأردن">
     <title>Delta Optics | دلتا للبصريات</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        /* --- الألوان والهوية البصرية --- */
+        /* --- المتغيرات والألوان (ثيم الفخامة الطبية) --- */
         :root { 
             --primary: #00796B; /* زمردي */
             --gold: #D4AF37;    /* ذهبي */
-            --bg: #FAFAFA;      /* خلفية فاتحة */
-            --text: #37474F;    /* نص غامق */
+            --bg: #FAFAFA;      /* أوف وايت */
+            --text: #37474F;    /* رمادي غامق */
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 60px; }
+        a { text-decoration: none; color: inherit; }
         
-        /* --- الهيدر (القائمة العلوية) --- */
+        /* --- الهيدر --- */
         header { 
-            background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+            background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
             position: fixed; width: 100%; top: 0; z-index: 1000; height: 60px; 
             display: flex; align-items: center; 
         }
@@ -33,18 +38,19 @@
         
         /* --- القسم الرئيسي (Hero) --- */
         .hero { 
-            min-height: 60vh; 
+            min-height: 55vh; 
             background: linear-gradient(rgba(255,255,255,0.95), rgba(255,255,255,0.9)), url('https://images.unsplash.com/photo-1570222094114-28a9d8894566?auto=format&fit=crop&w=600&q=40'); 
-            background-size: cover;
+            background-size: cover; background-position: center;
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
             text-align: center; margin-top: 60px; padding-bottom: 20px;
         }
         .main-logo { 
-            width: 160px; height: 160px; border-radius: 50%; border: 4px solid #fff; 
+            width: 150px; height: 150px; border-radius: 50%; border: 4px solid #fff; 
             box-shadow: 0 10px 30px rgba(0,121,107,0.2); margin-bottom: 15px; object-fit: cover; 
+            animation: float 6s ease-in-out infinite;
         }
         
-        /* --- فلاتر المعرض --- */
+        /* --- تبويبات الفلتر --- */
         .filter-tabs { 
             display: flex; justify-content: center; gap: 10px; margin: 10px 0 20px 0; 
             flex-wrap: wrap; position: sticky; top: 65px; z-index: 900; 
@@ -53,8 +59,9 @@
         .tab { 
             padding: 8px 25px; border-radius: 30px; border: 1px solid #ddd; 
             cursor: pointer; font-weight: 700; background: white; transition: 0.2s; font-size: 0.9rem; 
+            color: #777;
         }
-        .tab.active { background: var(--primary); color: #fff; border-color: var(--primary); transform: scale(1.05); }
+        .tab.active { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 4px 10px rgba(0,121,107,0.3); }
 
         /* --- شبكة المعرض (Gallery Grid) --- */
         .gallery-grid { 
@@ -66,17 +73,18 @@
             background: #fff; border-radius: 12px; overflow: hidden; 
             box-shadow: 0 4px 10px rgba(0,0,0,0.04); border: 1px solid #f0f0f0; transition: 0.3s; 
         }
+        .product-card:hover { transform: translateY(-5px); border-color: var(--gold); }
         
         .img-box { 
             height: 180px; background: #f9f9f9; position: relative; overflow: hidden; 
             display: flex; align-items: center; justify-content: center; 
         }
-        /* لودر التحميل */
-        .img-box::after { content: '...'; position: absolute; color: #ccc; font-weight: bold; font-size: 20px; z-index: 0; }
+        /* لودر بسيط يظهر قبل تحميل الصورة */
+        .img-box::after { content: '...'; position: absolute; color: #ccc; font-weight: bold; font-size: 24px; z-index: 0; }
         
         .img-box img { 
             width: 100%; height: 100%; object-fit: cover; position: relative; 
-            z-index: 1; transition: 0.3s; background: #f9f9f9; opacity: 0; transition: opacity 0.5s; 
+            z-index: 1; transition: opacity 0.3s; background: #f9f9f9; opacity: 0; 
         }
         .img-box img.loaded { opacity: 1; }
 
@@ -85,11 +93,12 @@
             display: flex; align-items: center; justify-content: center; gap:5px; 
             background: #f5f5f5; text-align: center; padding: 8px; border-radius: 6px; 
             font-weight: 700; margin-top: 8px; color: var(--text); font-size: 0.85rem; text-decoration: none; 
+            transition: 0.2s;
         }
         .wa-btn:hover { background: #25D366; color: #fff; }
 
         /* --- الخدمات والتقييمات --- */
-        .section-title { text-align: center; margin: 40px 0 20px; color: var(--primary); font-size: 1.4rem; font-weight: 800; }
+        .section-title { text-align: center; margin: 40px 0 20px; color: var(--primary); font-size: 1.4rem; font-weight: 800; position: relative; }
         .services-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 0 15px; }
         .srv-card { 
             background: white; padding: 15px; border-radius: 10px; width: calc(50% - 10px); 
@@ -106,16 +115,16 @@
             scroll-snap-align: center; box-shadow: 0 3px 10px rgba(0,0,0,0.03); border: 1px solid #eee; 
         }
 
-        /* --- الفوتر --- */
-        footer { background: #263238; color: #90A4AE; text-align: center; padding: 25px; margin-top: 40px; font-size: 0.8rem; }
+        /* --- الفوتر والأزرار العائمة --- */
+        footer { background: #263238; color: #90A4AE; text-align: center; padding: 30px 15px; margin-top: 40px; font-size: 0.8rem; }
         
-        /* --- أزرار التواصل العائمة --- */
         .floating-container { position: fixed; bottom: 20px; left: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
         .float-btn { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         .btn-whatsapp { background: #25D366; }
         .btn-phone { background: var(--primary); }
 
         .google-icon { background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat; -webkit-background-clip: text; color: transparent; }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-8px); } 100% { transform: translateY(0px); } }
 
         /* --- ميديا للموبايل --- */
         @media (max-width: 600px) { 
@@ -140,16 +149,16 @@
                 <img src="logo.jpg" style="width:35px; height:35px; border-radius:50%;" onerror="this.style.display='none'">
                 <span class="logo-text">دلتا للبصريات</span>
             </div>
-            <button onclick="toggleLang()" style="border:1px solid #ddd; background:white; padding:4px 10px; border-radius:5px; cursor:pointer; font-size:0.8rem;">EN/AR</button>
+            <button onclick="toggleLang()" style="border:1px solid #ddd; background:white; padding:4px 10px; border-radius:20px; cursor:pointer; font-size:0.8rem;">EN/AR</button>
         </div>
     </header>
 
     <section class="hero">
         <img src="logo.jpg" class="main-logo" onerror="this.src='https://via.placeholder.com/160?text=Delta'">
-        <div style="margin-top:15px; font-weight:bold; background:white; padding:5px 20px; border-radius:20px; box-shadow:0 3px 8px rgba(0,0,0,0.05); font-size: 0.9rem;">
+        <div style="margin-top:10px; font-weight:bold; background:white; padding:6px 20px; border-radius:20px; box-shadow:0 3px 8px rgba(0,0,0,0.05); font-size: 0.9rem;">
             <i class="fab fa-google google-icon"></i> 4.9 <span style="color:#FFD700">★★★★★</span>
         </div>
-        <h1 style="margin-top:10px; font-size:1.2rem; color:var(--text); max-width: 90%;">دقة في الفحص .. أناقة في المظهر</h1>
+        <h1 style="margin-top:15px; font-size:1.3rem; color:var(--text); max-width: 90%; line-height: 1.5;">دقة في الفحص .. أناقة في المظهر</h1>
     </section>
 
     <div class="filter-tabs">
@@ -197,21 +206,21 @@
     </footer>
 
     <script>
-        // --- إعدادات النظام ---
-        const LIMIT = 100; // عدد الصور التي سنحاول تحميلها لكل نوع
+        // عدد الصور التي سيحاول الكود فحصها لكل نوع
+        const CHECK_LIMIT = 100; 
 
         document.addEventListener('DOMContentLoaded', () => {
             const container = document.getElementById('galleryContainer');
             let html = '';
 
             // 1. توليد كروت الطبي (m1 -> m100)
-            for (let i = 1; i <= LIMIT; i++) {
-                // نبدأ بمحاولة الاسم المكرر (m1.jpg.jpg) لأنه الموجود عندك حالياً
+            for (let i = 1; i <= CHECK_LIMIT; i++) {
+                // ملاحظة: نبدأ بافتراض الاسم المكرر (.jpg.jpg) لأنه الموجود حالياً
                 html += createCard('medical', i, `m${i}.jpg.jpg`);
             }
 
             // 2. توليد كروت الشمسي (s1 -> s100)
-            for (let i = 1; i <= LIMIT; i++) {
+            for (let i = 1; i <= CHECK_LIMIT; i++) {
                 html += createCard('sun', i, `s${i}.jpg.jpg`);
             }
 
@@ -239,15 +248,17 @@
             </div>`;
         }
 
-        // دالة ذكية للتعامل مع الأخطاء (Smart Error Handler)
+        // --- دالة المعالجة الذكية للأخطاء ---
+        // تحاول حل مشكلة الأسماء، وإذا فشلت تحذف الكرت
         function handleError(img, type, index) {
-            // إذا فشل تحميل الاسم المكرر (jpg.jpg)، نجرب الاسم العادي (.jpg)
             if (!img.dataset.retried) {
+                // المحاولة الأولى فشلت (الاسم المكرر غير موجود)
+                // نضع علامة ونحاول الاسم الصحيح (.jpg) للمستقبل
                 img.dataset.retried = "true";
                 let normalName = type === 'medical' ? `m${index}.jpg` : `s${index}.jpg`;
                 img.src = normalName;
             } else {
-                // إذا فشل الاثنان -> احذف الكرت نهائياً
+                // المحاولتين فشلوا (الصورة غير موجودة نهائياً) -> احذف الكرت
                 img.closest('.product-card').remove();
             }
         }

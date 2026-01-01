@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <meta name="description" content="دلتا للبصريات - فحص نظر، نظارات طبية وشمسية، وعدسات لاصقة في الأردن.">
-    <title>Delta Optics | الرئيسية</title>
+    <title>Delta Optics | دلتا للبصريات</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,209 +11,129 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        :root { 
-            --primary: #00796B; /* زمردي */
-            --gold: #D4AF37;    /* ذهبي */
-            --bg: #FAFAFA;      /* خلفية فاتحة */
-            --text: #37474F;    /* نص غامق */
-        }
-        
+        :root { --primary: #00796B; --gold: #D4AF37; --bg: #FAFAFA; --text: #37474F; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 60px; scroll-behavior: smooth; transition: 0.3s; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 60px; scroll-behavior: smooth; }
         a { text-decoration: none; color: inherit; }
         
-        /* --- الهيدر --- */
-        header { 
-            background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
-            position: fixed; width: 100%; top: 0; z-index: 1000; height: 60px; 
-            display: flex; align-items: center; 
-        }
-        .nav-container { 
-            width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 15px; 
-            display: flex; justify-content: space-between; align-items: center; 
-        }
+        header { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: fixed; width: 100%; top: 0; z-index: 1000; height: 60px; display: flex; align-items: center; }
+        .nav-container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 15px; display: flex; justify-content: space-between; align-items: center; }
         .logo-text { font-size: 1.2rem; font-weight: 800; color: var(--primary); }
-        .lang-btn {
-            border: 1px solid #ddd; background: white; padding: 5px 15px; 
-            border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: 700; color: var(--primary);
-            transition: 0.3s;
-        }
-        .lang-btn:hover { background: var(--primary); color: white; }
 
-        /* --- الهيرو (الواجهة الرئيسية) --- */
         .hero { 
-            min-height: 85vh; 
-            background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.85)), url('https://images.unsplash.com/photo-1570222094114-28a9d8894566?auto=format&fit=crop&w=600&q=40'); 
-            background-size: cover; background-position: center;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            text-align: center; margin-top: 60px; padding: 20px;
+            min-height: 80vh; background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.85)), url('https://images.unsplash.com/photo-1570222094114-28a9d8894566?auto=format&fit=crop&w=600&q=40'); 
+            background-size: cover; background-position: center; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; margin-top: 60px; padding: 20px;
         }
-        .main-logo { 
-            width: 160px; height: 160px; border-radius: 50%; border: 4px solid #fff; 
-            box-shadow: 0 10px 30px rgba(0,121,107,0.2); margin-bottom: 20px; object-fit: cover; 
-            animation: float 6s ease-in-out infinite;
-        }
+        .main-logo { width: 150px; height: 150px; border-radius: 50%; border: 4px solid #fff; box-shadow: 0 10px 30px rgba(0,121,107,0.2); margin-bottom: 20px; object-fit: cover; }
         
-        /* --- الأزرار --- */
-        .btn-group { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; margin-top: 25px; }
-        
-        /* زر التشكيلة (الرئيسي) */
-        .hero-btn {
-            background: var(--primary); color: white; padding: 12px 30px; 
-            border-radius: 50px; font-weight: 800; font-size: 1.1rem; 
-            box-shadow: 0 5px 15px rgba(0,121,107,0.3); transition: 0.3s; text-align: center;
+        .btn-group { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; margin-top: 20px; }
+        .hero-btn { background: var(--primary); color: white; padding: 12px; border-radius: 50px; font-weight: 800; text-align: center; box-shadow: 0 5px 15px rgba(0,121,107,0.3); }
+        .hero-btn-outline { background: #fff; color: var(--primary); border: 2px solid var(--primary); padding: 12px; border-radius: 50px; font-weight: 800; text-align: center; }
+        .google-rate-btn { background: #fff; border: 1px solid #ddd; padding: 10px; border-radius: 50px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-weight: 700; color: #3c4043; }
+
+        /* Chatbot UI */
+        #chat-window {
+            position: fixed; bottom: 85px; left: 20px; width: 320px; height: 400px;
+            background: white; border-radius: 15px; box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+            display: none; flex-direction: column; z-index: 2000; overflow: hidden; border: 1px solid #eee;
         }
-        .hero-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,121,107,0.4); }
+        #chat-header { background: var(--primary); color: white; padding: 12px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+        #chat-messages { flex: 1; padding: 15px; overflow-y: auto; font-size: 0.9rem; display: flex; flex-direction: column; gap: 10px; background: #f9f9f9; }
+        .msg { padding: 8px 12px; border-radius: 12px; max-width: 85%; line-height: 1.4; }
+        .msg.user { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .msg.ai { background: #e0e0e0; color: #333; align-self: flex-start; border-bottom-left-radius: 2px; }
+        #chat-input-area { padding: 10px; display: flex; gap: 5px; background: white; border-top: 1px solid #eee; }
+        #chat-input { flex: 1; border: 1px solid #ddd; padding: 8px; border-radius: 20px; outline: none; }
+        #send-btn { background: var(--primary); color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; }
 
-        /* زر الفحص (الثانوي - أبيض) */
-        .hero-btn-outline {
-            background: #fff; color: var(--primary); border: 2px solid var(--primary);
-            padding: 12px 30px; border-radius: 50px; font-weight: 800; font-size: 1.1rem; 
-            transition: 0.3s; text-align: center;
-        }
-        .hero-btn-outline:hover { background: #E0F2F1; }
-        
-        /* زر التقييم (جوجل) */
-        .google-rate-btn {
-            background: #fff; border: 1px solid #ddd; padding: 10px 25px; 
-            border-radius: 50px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; 
-            font-weight: 700; color: #3c4043; box-shadow: 0 4px 10px rgba(0,0,0,0.08); margin-top: 5px;
-        }
-
-        /* --- الخدمات والتقييمات --- */
-        .section-title { text-align: center; margin: 50px 0 20px; color: var(--primary); font-size: 1.5rem; font-weight: 800; }
-        .services-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 0 15px; }
-        .srv-card { background: white; padding: 15px; border-radius: 10px; width: calc(50% - 10px); text-align: center; box-shadow: 0 3px 10px rgba(0,0,0,0.03); }
-        .srv-card i { font-size: 1.8rem; color: var(--primary); margin-bottom: 8px; }
-
-        .reviews-scroll { display: flex; overflow-x: auto; gap: 15px; padding: 10px 15px; scroll-snap-type: x mandatory; padding-bottom: 20px; }
-        .review-card { min-width: 260px; background: white; padding: 15px; border-radius: 10px; scroll-snap-align: center; box-shadow: 0 3px 10px rgba(0,0,0,0.03); border: 1px solid #eee; }
-
-        footer { background: #263238; color: #90A4AE; text-align: center; padding: 30px 15px; margin-top: 40px; font-size: 0.8rem; }
-        
-        /* --- أزرار عائمة --- */
         .floating-container { position: fixed; bottom: 20px; left: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
-        html[dir="ltr"] .floating-container { left: auto; right: 20px; }
         .float-btn { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .btn-whatsapp { background: #25D366; } .btn-phone { background: var(--primary); }
+        .btn-whatsapp { background: #25D366; } .btn-phone { background: var(--primary); } .btn-ai { background: #37474f; }
         .google-icon { background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat; -webkit-background-clip: text; color: transparent; }
-        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
-
-        @media (max-width: 600px) { .main-logo { width: 130px; height: 130px; } }
     </style>
 </head>
 <body>
 
     <div class="floating-container">
+        <a href="javascript:void(0)" class="float-btn btn-ai" onclick="toggleChat()"><i class="fas fa-robot"></i></a>
         <a href="tel:+962775549700" class="float-btn btn-phone"><i class="fas fa-phone-alt"></i></a>
         <a href="https://wa.me/962775549700" class="float-btn btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a>
     </div>
 
+    <div id="chat-window">
+        <div id="chat-header"><span>مساعد دلتا الذكي</span><button onclick="toggleChat()" style="color:white; border:none; background:none; cursor:pointer;"><i class="fas fa-times"></i></button></div>
+        <div id="chat-messages"><div class="msg ai">أهلاً بك! أنا مساعدك الذكي في دلتا للبصريات. كيف بقدر أساعدك اليوم؟</div></div>
+        <div id="chat-input-area">
+            <input type="text" id="chat-input" placeholder="اكتب سؤالك..." onkeypress="if(event.key==='Enter') sendMessage()">
+            <button id="send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
     <header>
         <div class="nav-container">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <img src="logo.jpg" alt="Logo" style="width:35px; height:35px; border-radius:50%;" onerror="this.style.display='none'">
-                <span class="logo-text" data-i18n="title">دلتا للبصريات</span>
-            </div>
-            <button class="lang-btn" onclick="toggleLanguage()">English</button>
+            <span class="logo-text">دلتا للبصريات</span>
+            <button onclick="document.documentElement.setAttribute('dir', document.documentElement.dir==='rtl'?'ltr':'rtl')" style="background:none; border:1px solid #ddd; padding:5px 10px; border-radius:20px; cursor:pointer;">EN/AR</button>
         </div>
     </header>
 
     <section class="hero">
-        <img src="logo.jpg" class="main-logo" onerror="this.src='https://via.placeholder.com/160?text=Delta'">
-        
-        <div style="margin-top:10px; font-weight:bold; background:white; padding:6px 20px; border-radius:20px; box-shadow:0 3px 8px rgba(0,0,0,0.05); font-size: 0.9rem;">
-            <i class="fab fa-google google-icon"></i> 4.9 <span style="color:#FFD700">★★★★★</span>
+        <img src="logo.jpg" class="main-logo" onerror="this.src='https://via.placeholder.com/150'">
+        <div style="background:white; padding:5px 20px; border-radius:20px; box-shadow:0 3px 8px rgba(0,0,0,0.05); font-weight:bold;">
+            <i class="fab fa-google google-icon"></i> 4.9 ★★★★★
         </div>
-        
-        <h1 style="margin-top:15px; font-size:1.3rem; color:var(--text); max-width: 90%; line-height: 1.5;" data-i18n="slogan">دقة في الفحص .. أناقة في المظهر</h1>
-
+        <h1 style="margin-top:15px; font-size:1.3rem;">دقة في الفحص .. أناقة في المظهر</h1>
         <div class="btn-group">
-            <a href="collection.html" class="hero-btn" data-i18n="view_collection">
-                تصفح التشكيلة الجديدة
-            </a>
-
-            <a href="test.html" class="hero-btn-outline">
-                <i class="fas fa-eye"></i> <span data-i18n="eye_test_btn">افحص نظرك الآن</span>
-            </a>
-
-            <a href="YOUR_GOOGLE_MAPS_LINK" target="_blank" class="google-rate-btn">
-                <i class="fab fa-google google-icon" style="font-size:1.2rem;"></i>
-                <span data-i18n="rate_us">قيّمنا على Google</span>
-            </a>
+            <a href="collection.html" class="hero-btn">تصفح التشكيلة</a>
+            <a href="test.html" class="hero-btn-outline">فحص النظر السريع</a>
+            <a href="https://maps.app.goo.gl/YourLink" target="_blank" class="google-rate-btn"><i class="fab fa-google google-icon"></i> قيّمنا على Google</a>
         </div>
     </section>
 
-    <h2 class="section-title" data-i18n="services">خدماتنا</h2>
-    <div class="services-grid">
-        <div class="srv-card"><i class="fas fa-eye"></i><h3 data-i18n="srv_exam">فحص نظر</h3></div>
-        <div class="srv-card"><i class="fas fa-glasses"></i><h3 data-i18n="srv_glasses">نظارات طبية</h3></div>
-        <div class="srv-card"><i class="fas fa-sun"></i><h3 data-i18n="srv_sun">نظارات شمسية</h3></div>
-        <div class="srv-card"><i class="fas fa-eye-dropper"></i><h3 data-i18n="srv_lenses">عدسات لاصقة</h3></div>
-    </div>
-
-    <h2 class="section-title" data-i18n="reviews">قالوا عنا</h2>
-    <div class="reviews-scroll">
-        <div class="review-card">
-            <div style="color:#FFC107; margin-bottom:5px;">★★★★★</div>
-            <p data-i18n="rev1">"المحل مرتب والتعامل راقي جداً والأسعار مناسبة."</p>
-            <small style="color:#888; display:block; margin-top:5px;">- Ahmad Ali</small>
-        </div>
-        <div class="review-card">
-            <div style="color:#FFC107; margin-bottom:5px;">★★★★★</div>
-            <p data-i18n="rev2">"فحص النظر دقيق جداً، اشتريت نظارة شمسية طبية وكانت ممتازة."</p>
-            <small style="color:#888; display:block; margin-top:5px;">- Sara Kh</small>
-        </div>
-    </div>
-
-    <footer>
-        <p data-i18n="address">المقابلين - شارع الصخرة المشرفة</p>
-        <div style="margin-top:15px; font-size:1.5rem;">
-            <a href="https://facebook.com/delta.optics1" target="_blank" style="margin:0 10px; color:#fff;"><i class="fab fa-facebook"></i></a>
-            <a href="https://instagram.com/delta.optics1" target="_blank" style="margin:0 10px; color:#fff;"><i class="fab fa-instagram"></i></a>
-        </div>
-        <p style="margin-top:20px; font-size:0.75rem; opacity:0.7;">© 2026 Delta Optics</p>
+    <footer style="background:#263238; color:#90A4AE; text-align:center; padding:30px; font-size:0.8rem;">
+        <p>المقابلين - شارع الصخرة المشرفة</p>
+        <p>© 2026 Delta Optics</p>
     </footer>
 
     <script>
-        const translations = {
-            ar: {
-                title: "دلتا للبصريات", slogan: "دقة في الفحص .. أناقة في المظهر", 
-                view_collection: "تصفح التشكيلة الجديدة", 
-                eye_test_btn: "افحص نظرك الآن",
-                rate_us: "قيّمنا على Google",
-                services: "خدماتنا", srv_exam: "فحص نظر", srv_glasses: "نظارات طبية", srv_sun: "نظارات شمسية", srv_lenses: "عدسات لاصقة",
-                reviews: "قالوا عنا", rev1: "المحل مرتب والتعامل راقي جداً.", rev2: "فحص النظر دقيق جداً.",
-                address: "المقابلين - شارع الصخرة المشرفة", btn_lang: "English"
-            },
-            en: {
-                title: "Delta Optics", slogan: "Precision in Eye Care .. Elegance in Look", 
-                view_collection: "View Collection", 
-                eye_test_btn: "Test Your Eyes",
-                rate_us: "Rate us on Google",
-                services: "Our Services", srv_exam: "Eye Exam", srv_glasses: "Eyeglasses", srv_sun: "Sunglasses", srv_lenses: "Contact Lenses",
-                reviews: "Testimonials", rev1: "Very organized shop, classy dealing.", rev2: "Accurate eye exam.",
-                address: "Al-Muqabalain St.", btn_lang: "عربي"
+        const API_KEY = "AIzaSyAC2HSVhR1DIt4Ry5OZQFge-rZr04FvfUQ"; // تم وضع مفتاحك هنا
+
+        function toggleChat() {
+            const win = document.getElementById('chat-window');
+            win.style.display = (win.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const msgText = input.value.trim();
+            if (!msgText) return;
+
+            appendMessage(msgText, 'user');
+            input.value = '';
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: `أنت مساعد ذكي لمحل "دلتا للبصريات" في الأردن، المقابلين. 
+                        خدماتنا: فحص نظر، نظارات طبية وشمسية، عدسات. أسلوبك: ودود وتجيب بالعامية الأردنية باختصار. سؤال الزبون: ${msgText}` }] }]
+                    })
+                });
+                const data = await response.json();
+                appendMessage(data.candidates[0].content.parts[0].text, 'ai');
+            } catch (e) {
+                appendMessage("عذراً، حاول مرة أخرى لاحقاً.", 'ai');
             }
-        };
-
-        let currentLang = localStorage.getItem('delta_lang') || 'ar';
-        
-        function toggleLanguage() {
-            currentLang = currentLang === 'ar' ? 'en' : 'ar';
-            localStorage.setItem('delta_lang', currentLang);
-            updateLanguage();
         }
 
-        function updateLanguage() {
-            const t = translations[currentLang];
-            document.documentElement.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
-            document.documentElement.setAttribute('lang', currentLang);
-            document.querySelectorAll('[data-i18n]').forEach(el => { if(t[el.dataset.i18n]) el.textContent = t[el.dataset.i18n]; });
-            document.querySelector('.lang-btn').textContent = t.btn_lang;
+        function appendMessage(text, side) {
+            const container = document.getElementById('chat-messages');
+            const div = document.createElement('div');
+            div.className = `msg ${side}`;
+            div.innerText = text;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
         }
-
-        document.addEventListener('DOMContentLoaded', updateLanguage);
     </script>
 </body>
 </html>

@@ -3,108 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <meta name="description" content="Delta Optics - Precision Eye Care and Stylish Eyewear.">
-    <title>Delta Optics | دلتا للبصريات</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>Delta Optics | الرئيسية</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        :root { 
-            --primary: #00796B; 
-            --gold: #D4AF37; 
-            --bg: #FAFAFA; 
-            --text: #37474F; 
-        }
-        
+        :root { --primary: #00796B; --gold: #D4AF37; --bg: #FAFAFA; --text: #37474F; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 60px; scroll-behavior: smooth; transition: 0.3s; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 60px; scroll-behavior: smooth; }
         a { text-decoration: none; color: inherit; }
         
         /* Header */
-        header { 
-            background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
-            position: fixed; width: 100%; top: 0; z-index: 1000; height: 60px; 
-            display: flex; align-items: center; 
-        }
-        .nav-container { 
-            width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 15px; 
-            display: flex; justify-content: space-between; align-items: center; 
-        }
+        header { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: fixed; width: 100%; top: 0; z-index: 1000; height: 60px; display: flex; align-items: center; }
+        .nav-container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 15px; display: flex; justify-content: space-between; align-items: center; }
         .logo-text { font-size: 1.2rem; font-weight: 800; color: var(--primary); }
-        .lang-btn {
-            border: 1px solid #ddd; background: white; padding: 5px 15px; 
-            border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: 700; color: var(--primary);
-            transition: 0.3s;
-        }
-        .lang-btn:hover { background: var(--primary); color: white; }
-        
+        .lang-btn { border: 1px solid #ddd; background: white; padding: 5px 15px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: 700; color: var(--primary); }
+
         /* Hero */
         .hero { 
-            min-height: 60vh; 
-            background: linear-gradient(rgba(255,255,255,0.95), rgba(255,255,255,0.9)), url('https://images.unsplash.com/photo-1570222094114-28a9d8894566?auto=format&fit=crop&w=600&q=40'); 
+            min-height: 85vh; /* ارتفاع كامل للشاشة تقريباً */
+            background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.85)), url('https://images.unsplash.com/photo-1570222094114-28a9d8894566?auto=format&fit=crop&w=600&q=40'); 
             background-size: cover; background-position: center;
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            text-align: center; margin-top: 60px; padding-bottom: 20px;
+            text-align: center; margin-top: 60px;
         }
-        .main-logo { 
-            width: 150px; height: 150px; border-radius: 50%; border: 4px solid #fff; 
-            box-shadow: 0 10px 30px rgba(0,121,107,0.2); margin-bottom: 15px; object-fit: cover; 
-            animation: float 6s ease-in-out infinite;
-        }
+        .main-logo { width: 160px; height: 160px; border-radius: 50%; border: 4px solid #fff; box-shadow: 0 10px 30px rgba(0,121,107,0.2); margin-bottom: 20px; object-fit: cover; animation: float 6s ease-in-out infinite; }
         
-        /* زر التقييم المميز */
+        /* أزرار الهيرو */
+        .hero-btn {
+            background: var(--primary); color: white; padding: 12px 35px; 
+            border-radius: 50px; font-weight: 800; font-size: 1.1rem; 
+            margin-top: 25px; box-shadow: 0 5px 15px rgba(0,121,107,0.3);
+            transition: 0.3s; display: inline-block;
+        }
+        .hero-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,121,107,0.4); }
+        
         .google-rate-btn {
-            background: #fff; border: 1px solid #dadce0; padding: 10px 25px; 
-            border-radius: 30px; display: inline-flex; align-items: center; gap: 10px; 
-            margin-top: 20px; font-weight: 700; color: #3c4043; box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            transition: 0.3s;
+            background: #fff; border: 1px solid #ddd; padding: 10px 25px; 
+            border-radius: 50px; display: inline-flex; align-items: center; gap: 10px; 
+            margin-top: 15px; font-weight: 700; color: #3c4043; box-shadow: 0 4px 10px rgba(0,0,0,0.08);
         }
-        .google-rate-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.12); }
-
-        /* Tabs */
-        .filter-tabs { 
-            display: flex; justify-content: center; gap: 10px; margin: 10px 0 20px 0; 
-            flex-wrap: wrap; position: sticky; top: 60px; z-index: 900; 
-            background: var(--bg); padding: 15px 0; border-bottom: 1px solid rgba(0,0,0,0.05);
-        }
-        .tab { 
-            padding: 8px 22px; border-radius: 30px; border: 1px solid #ddd; 
-            cursor: pointer; font-weight: 700; background: white; transition: 0.2s; font-size: 0.9rem; color: #777;
-        }
-        .tab.active { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 4px 10px rgba(0,121,107,0.2); }
-
-        /* Gallery */
-        .gallery-grid { 
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
-            gap: 15px; padding: 0 15px 30px 15px; max-width: 1200px; margin: 0 auto; min-height: 200px;
-        }
-        .product-card { 
-            background: #fff; border-radius: 12px; overflow: hidden; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.04); border: 1px solid #f0f0f0; transition: 0.3s; 
-        }
-        .product-card:hover { transform: translateY(-5px); border-color: var(--gold); }
-        
-        .img-box { 
-            height: 180px; background: #f0f0f0; position: relative; overflow: hidden; 
-        }
-        .img-box img { 
-            width: 100%; height: 100%; object-fit: cover; 
-            opacity: 0; transition: opacity 0.5s ease-in; /* ظهور ناعم جداً */
-        }
-        .img-box img.loaded { opacity: 1; }
-
-        .info { padding: 10px; text-align: start; }
-        html[dir="ltr"] .info { text-align: left; }
-
-        .wa-btn { 
-            display: flex; align-items: center; justify-content: center; gap:5px; 
-            background: #f1f3f4; text-align: center; padding: 9px; border-radius: 8px; 
-            font-weight: 700; margin-top: 8px; color: var(--text); font-size: 0.85rem; text-decoration: none; 
-        }
-        .wa-btn:hover { background: #25D366; color: #fff; }
 
         /* Services & Reviews */
         .section-title { text-align: center; margin: 40px 0 20px; color: var(--primary); font-size: 1.4rem; font-weight: 800; }
@@ -119,20 +57,12 @@
         
         .floating-container { position: fixed; bottom: 20px; left: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
         html[dir="ltr"] .floating-container { left: auto; right: 20px; }
-
         .float-btn { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .btn-whatsapp { background: #25D366; }
-        .btn-phone { background: var(--primary); }
-
+        .btn-whatsapp { background: #25D366; } .btn-phone { background: var(--primary); }
         .google-icon { background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat; -webkit-background-clip: text; color: transparent; }
         @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
 
-        @media (max-width: 600px) { 
-            .hero { min-height: 50vh; margin-top: 55px; } 
-            .gallery-grid { grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; } 
-            .img-box { height: 160px; } 
-            .main-logo { width: 130px; height: 130px; }
-        }
+        @media (max-width: 600px) { .main-logo { width: 130px; height: 130px; } }
     </style>
 </head>
 <body>
@@ -153,27 +83,19 @@
     </header>
 
     <section class="hero">
-        <img src="logo.jpg" alt="Delta Optics" class="main-logo" onerror="this.src='https://via.placeholder.com/160?text=Delta'">
-        
+        <img src="logo.jpg" class="main-logo" onerror="this.src='https://via.placeholder.com/160?text=Delta'">
         <div style="margin-top:10px; font-weight:bold; background:white; padding:6px 20px; border-radius:20px; box-shadow:0 3px 8px rgba(0,0,0,0.05); font-size: 0.9rem;">
             <i class="fab fa-google google-icon"></i> 4.9 <span style="color:#FFD700">★★★★★</span>
         </div>
-        
         <h1 style="margin-top:15px; font-size:1.3rem; color:var(--text); max-width: 90%; line-height: 1.5;" data-i18n="slogan">دقة في الفحص .. أناقة في المظهر</h1>
 
-        <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Amman" target="_blank" class="google-rate-btn">
-            <i class="fab fa-google google-icon"></i>
+        <a href="collection.html" class="hero-btn" data-i18n="view_collection">تصفح التشكيلة الجديدة</a>
+
+        <a href="YOUR_GOOGLE_MAPS_LINK" target="_blank" class="google-rate-btn">
+            <i class="fab fa-google google-icon" style="font-size:1.2rem;"></i>
             <span data-i18n="rate_us">قيّمنا على Google</span>
         </a>
     </section>
-
-    <div class="filter-tabs">
-        <div class="tab active" onclick="filter('all')" data-i18n="all">الكل</div>
-        <div class="tab" onclick="filter('medical')" data-i18n="medical">طبية</div>
-        <div class="tab" onclick="filter('sun')" data-i18n="sun">شمسية</div>
-    </div>
-
-    <div class="gallery-grid" id="galleryContainer"></div>
 
     <h2 class="section-title" data-i18n="services">خدماتنا</h2>
     <div class="services-grid">
@@ -203,95 +125,32 @@
             <a href="https://facebook.com/delta.optics1" target="_blank" style="margin:0 10px; color:#fff;"><i class="fab fa-facebook"></i></a>
             <a href="https://instagram.com/delta.optics1" target="_blank" style="margin:0 10px; color:#fff;"><i class="fab fa-instagram"></i></a>
         </div>
-        <p style="margin-top:20px; font-size:0.75rem; opacity:0.7;">© 2026 Delta Optics. All rights reserved.</p>
+        <p style="margin-top:20px; font-size:0.75rem; opacity:0.7;">© 2026 Delta Optics</p>
     </footer>
 
     <script>
-        // --- 1. إعدادات اللغة ---
         const translations = {
             ar: {
-                title: "دلتا للبصريات",
-                slogan: "دقة في الفحص .. أناقة في المظهر",
-                rate_us: "قيّمنا على Google",
-                all: "الكل", medical: "طبية", sun: "شمسية",
-                services: "خدماتنا",
-                srv_exam: "فحص نظر", srv_glasses: "نظارات طبية", srv_sun: "نظارات شمسية", srv_lenses: "عدسات لاصقة",
-                reviews: "قالوا عنا",
-                rev1: "المحل مرتب والتعامل راقي جداً والأسعار مناسبة.",
-                rev2: "فحص النظر دقيق جداً، اشتريت نظارة شمسية طبية وكانت ممتازة.",
-                address: "المقابلين - شارع الصخرة المشرفة",
-                wa_btn: "واتساب",
-                wa_msg: "مرحباً، استفسار عن الموديل",
-                btn_lang: "English"
+                title: "دلتا للبصريات", slogan: "دقة في الفحص .. أناقة في المظهر", 
+                view_collection: "تصفح التشكيلة الجديدة", rate_us: "قيّمنا على Google",
+                services: "خدماتنا", srv_exam: "فحص نظر", srv_glasses: "نظارات طبية", srv_sun: "نظارات شمسية", srv_lenses: "عدسات لاصقة",
+                reviews: "قالوا عنا", rev1: "المحل مرتب والتعامل راقي جداً.", rev2: "فحص النظر دقيق جداً.",
+                address: "المقابلين - شارع الصخرة المشرفة", btn_lang: "English"
             },
             en: {
-                title: "Delta Optics",
-                slogan: "Precision in Eye Care .. Elegance in Look",
-                rate_us: "Rate us on Google",
-                all: "All", medical: "Medical", sun: "Sunglasses",
-                services: "Our Services",
-                srv_exam: "Eye Exam", srv_glasses: "Eyeglasses", srv_sun: "Sunglasses", srv_lenses: "Contact Lenses",
-                reviews: "Testimonials",
-                rev1: "Very organized shop, classy dealing and reasonable prices.",
-                rev2: "Eye exam was very accurate, I bought prescription sunglasses and they were excellent.",
-                address: "Al-Muqabalain - Al-Sakhra Al-Musharrafa St.",
-                wa_btn: "WhatsApp",
-                wa_msg: "Hello, inquiry about model",
-                btn_lang: "عربي"
+                title: "Delta Optics", slogan: "Precision in Eye Care .. Elegance in Look", 
+                view_collection: "View Collection", rate_us: "Rate us on Google",
+                services: "Our Services", srv_exam: "Eye Exam", srv_glasses: "Eyeglasses", srv_sun: "Sunglasses", srv_lenses: "Contact Lenses",
+                reviews: "Testimonials", rev1: "Very organized shop, classy dealing.", rev2: "Accurate eye exam.",
+                address: "Al-Muqabalain St.", btn_lang: "عربي"
             }
         };
 
-        let currentLang = 'ar'; // اللغة الافتراضية
-
-        // --- 2. إعدادات الصور ---
-        const MAX_CHECK = 100;
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const container = document.getElementById('galleryContainer');
-            let html = '';
-            for (let i = 1; i <= MAX_CHECK; i++) { html += createCard('medical', i, `m${i}.jpg.jpg`); }
-            for (let i = 1; i <= MAX_CHECK; i++) { html += createCard('sun', i, `s${i}.jpg.jpg`); }
-            container.innerHTML = html;
-            updateLanguage(); // تطبيق اللغة عند التحميل
-        });
-
-        function createCard(type, index, fileName) {
-            // نستخدم data-attributes للترجمة لاحقاً
-            return `
-            <div class="product-card ${type}">
-                <div class="img-box">
-                    <img src="${fileName}" loading="lazy" 
-                         onload="this.classList.add('loaded')" 
-                         onerror="handleImageError(this, '${type}', ${index})">
-                </div>
-                <div class="info">
-                    <span class="cat-label" style="color:var(--gold); font-size:0.7rem; font-weight:800;" data-type="${type}"></span>
-                    <h3 class="prod-title" style="margin:5px 0; font-size:0.9rem;" data-index="${index}" data-type="${type}"></h3>
-                    <a href="#" target="_blank" class="wa-btn dynamic-wa" data-filename="${fileName}" data-index="${index}" data-type="${type}">
-                        <i class="fab fa-whatsapp"></i> <span data-i18n="wa_btn">واتساب</span>
-                    </a>
-                </div>
-            </div>`;
-        }
-
-        function handleImageError(img, type, index) {
-            if (!img.dataset.retried) {
-                img.dataset.retried = "true";
-                const normalName = type === 'medical' ? `m${index}.jpg` : `s${index}.jpg`;
-                img.src = normalName;
-                
-                // تحديث اسم الملف في زر الواتساب للمحاولة الجديدة
-                const btn = img.closest('.product-card').querySelector('.dynamic-wa');
-                btn.dataset.filename = normalName;
-                updateLink(btn); 
-            } else {
-                img.closest('.product-card').remove();
-            }
-        }
-
-        // --- 3. وظائف اللغة والترجمة ---
+        let currentLang = localStorage.getItem('delta_lang') || 'ar';
+        
         function toggleLanguage() {
             currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            localStorage.setItem('delta_lang', currentLang);
             updateLanguage();
         }
 
@@ -299,47 +158,11 @@
             const t = translations[currentLang];
             document.documentElement.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
             document.documentElement.setAttribute('lang', currentLang);
-
-            // تحديث النصوص الثابتة
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.dataset.i18n;
-                if(t[key]) el.textContent = t[key];
-            });
-
-            // تحديث زر اللغة
+            document.querySelectorAll('[data-i18n]').forEach(el => { if(t[el.dataset.i18n]) el.textContent = t[el.dataset.i18n]; });
             document.querySelector('.lang-btn').textContent = t.btn_lang;
-
-            // تحديث نصوص الكروت (المولد تلقائياً)
-            document.querySelectorAll('.cat-label').forEach(el => {
-                el.textContent = el.dataset.type === 'medical' ? t.medical : t.sun;
-            });
-            document.querySelectorAll('.prod-title').forEach(el => {
-                const typeText = el.dataset.type === 'medical' ? t.medical : t.sun;
-                el.textContent = `${typeText} #${el.dataset.index}`;
-            });
-
-            // تحديث روابط الواتساب لتكون باللغة المختارة
-            document.querySelectorAll('.dynamic-wa').forEach(btn => updateLink(btn));
         }
 
-        function updateLink(btn) {
-            const t = translations[currentLang];
-            const baseUrl = window.location.href.split('index.html')[0].split('#')[0];
-            const fullImgUrl = baseUrl + btn.dataset.filename;
-            const typeText = btn.dataset.type === 'medical' ? t.medical : t.sun;
-            const title = `${typeText} #${btn.dataset.index}`;
-            
-            const msg = encodeURIComponent(`${t.wa_msg}: ${title}\nURL: ${fullImgUrl}`);
-            btn.href = `https://wa.me/962775549700?text=${msg}`;
-        }
-
-        function filter(category) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
-            document.querySelectorAll('.product-card').forEach(card => {
-                card.style.display = (category === 'all' || card.classList.contains(category)) ? 'block' : 'none';
-            });
-        }
+        document.addEventListener('DOMContentLoaded', updateLanguage);
     </script>
 </body>
 </html>

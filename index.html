@@ -12,32 +12,56 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: var(--text); overflow-x: hidden; scroll-behavior: smooth; }
         
+        /* Header */
         header { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: fixed; width: 100%; top: 0; z-index: 1000; height: 60px; display: flex; align-items: center; }
         .nav-container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 15px; display: flex; justify-content: space-between; align-items: center; }
         .logo-text { font-size: 1.2rem; font-weight: 800; color: var(--primary); }
         
-        .hero { min-height: 75vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; margin-top: 60px; background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.85)), url('https://images.unsplash.com/photo-1570222094114-28a9d8894566?auto=format&fit=crop&w=600&q=40'); background-size: cover; }
-        .main-logo { width: 180px; height: 180px; border-radius: 50%; border: 4px solid #fff; box-shadow: 0 10px 30px rgba(0,121,107,0.2); animation: float 4s ease-in-out infinite; }
+        /* Hero Section - تم تعديل الارتفاع لحل مشكلة الفراغ في الموبايل */
+        .hero { 
+            min-height: 65vh; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; margin-top: 60px; 
+            background: linear-gradient(rgba(255,255,255,0.95), rgba(255,255,255,0.9)), url('https://images.unsplash.com/photo-1570222094114-28a9d8894566?auto=format&fit=crop&w=600&q=40'); background-size: cover; 
+            padding-bottom: 20px;
+        }
+        .main-logo { width: 160px; height: 160px; border-radius: 50%; border: 4px solid #fff; box-shadow: 0 10px 30px rgba(0,121,107,0.2); margin-bottom: 15px; }
         
-        .filter-tabs { display: flex; justify-content: center; gap: 10px; margin: 40px 0 20px 0; flex-wrap: wrap; }
-        .tab { padding: 10px 25px; border-radius: 30px; border: 1px solid #ddd; cursor: pointer; font-weight: 700; background: white; transition: 0.3s; }
-        .tab.active, .tab:hover { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 5px 15px rgba(0,121,107,0.3); }
+        /* Tabs */
+        .filter-tabs { display: flex; justify-content: center; gap: 8px; margin: 10px 0 20px 0; flex-wrap: wrap; }
+        .tab { padding: 8px 20px; border-radius: 30px; border: 1px solid #ddd; cursor: pointer; font-weight: 700; background: white; transition: 0.2s; font-size: 0.9rem; }
+        .tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; padding: 0 20px 50px 20px; max-width: 1200px; margin: 0 auto; }
-        .product-card { background: #fff; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border: 1px solid #f0f0f0; transition: 0.3s; opacity: 0; animation: fadeIn 0.5s forwards; }
-        .product-card:hover { transform: translateY(-5px); border-color: var(--gold); }
-        .img-box { height: 250px; background: #f9f9f9; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        .img-box img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-        .product-card:hover .img-box img { transform: scale(1.08); }
-        .info { padding: 15px; text-align: right; }
-        .wa-btn { display: flex; align-items: center; justify-content: center; gap:8px; background: #f5f5f5; text-align: center; padding: 10px; border-radius: 8px; font-weight: 700; margin-top: 10px; color: var(--text); transition: 0.2s; }
+        /* Gallery Grid */
+        .gallery-grid { 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
+            gap: 15px; padding: 0 15px 50px 15px; max-width: 1200px; margin: 0 auto; 
+            min-height: 200px; 
+        }
+        .product-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.04); border: 1px solid #f0f0f0; transition: 0.3s; }
+        
+        .img-box { height: 180px; background: #f9f9f9; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; }
+        
+        /* لودر بسيط يظهر قبل تحميل الصورة */
+        .img-box::before { content: '\f1ce'; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; color: #ccc; animation: spin 1s infinite linear; font-size: 20px; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .img-box img { width: 100%; height: 100%; object-fit: cover; position: relative; z-index: 2; opacity: 0; transition: opacity 0.3s; background: #fff; }
+        .img-box img.loaded { opacity: 1; }
+
+        .info { padding: 10px; text-align: right; }
+        .wa-btn { display: flex; align-items: center; justify-content: center; gap:5px; background: #f5f5f5; text-align: center; padding: 8px; border-radius: 6px; font-weight: 700; margin-top: 8px; color: var(--text); font-size: 0.85rem; text-decoration: none; }
         .wa-btn:hover { background: #25D366; color: #fff; }
 
-        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
-        @keyframes fadeIn { to { opacity: 1; } }
         .google-icon { background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat; -webkit-background-clip: text; color: transparent; }
 
-        @media (max-width: 600px) { .gallery-grid { grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; } .info h3 { font-size: 0.9rem; } .img-box { height: 180px; } }
+        /* Media Query for Mobile */
+        @media (max-width: 600px) { 
+            .hero { min-height: 55vh; margin-top: 55px; } 
+            .gallery-grid { grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; } 
+            .img-box { height: 150px; } 
+            .info h3 { font-size: 0.85rem; }
+            .main-logo { width: 140px; height: 140px; }
+        }
     </style>
 </head>
 <body>
@@ -48,92 +72,88 @@
                 <img src="logo.jpg" style="width:35px; height:35px; border-radius:50%;" onerror="this.style.display='none'">
                 <span class="logo-text">دلتا للبصريات</span>
             </div>
-            <button onclick="toggleLang()" style="border:1px solid #ddd; background:white; padding:5px 10px; border-radius:5px; cursor:pointer;">EN/AR</button>
+            <button onclick="toggleLang()" style="border:1px solid #ddd; background:white; padding:4px 10px; border-radius:5px; cursor:pointer; font-size:0.8rem;">EN/AR</button>
         </div>
     </header>
 
     <section class="hero">
-        <img src="logo.jpg" class="main-logo" onerror="this.src='https://via.placeholder.com/200?text=Delta'">
-        <div style="margin-top:20px; font-weight:bold; background:white; padding:8px 25px; border-radius:25px; box-shadow:0 4px 10px rgba(0,0,0,0.05);">
+        <img src="logo.jpg" class="main-logo" onerror="this.src='https://via.placeholder.com/160?text=Delta'">
+        
+        <div style="margin-top:15px; font-weight:bold; background:white; padding:5px 20px; border-radius:20px; box-shadow:0 3px 8px rgba(0,0,0,0.05); font-size: 0.9rem;">
             <i class="fab fa-google google-icon"></i> 4.9 <span style="color:#FFD700">★★★★★</span>
         </div>
-        <h1 style="margin-top:15px; font-size:1.5rem; color:var(--text);">دقة في الفحص .. أناقة في المظهر</h1>
+        
+        <h1 style="margin-top:10px; font-size:1.2rem; color:var(--text); max-width: 80%;">دقة في الفحص .. أناقة في المظهر</h1>
     </section>
 
     <div class="filter-tabs">
         <div class="tab active" onclick="filter('all')">الكل</div>
-        <div class="tab" onclick="filter('medical')">نظارات طبية</div>
-        <div class="tab" onclick="filter('sun')">نظارات شمسية</div>
+        <div class="tab" onclick="filter('medical')">طبية</div>
+        <div class="tab" onclick="filter('sun')">شمسية</div>
     </div>
 
-    <div class="gallery-grid" id="galleryContainer">
-        </div>
+    <div class="gallery-grid" id="galleryContainer"></div>
 
-    <footer style="background:#263238; color:#90A4AE; text-align:center; padding:30px; margin-top:50px;">
+    <footer style="background:#263238; color:#90A4AE; text-align:center; padding:20px; margin-top:30px; font-size: 0.8rem;">
         <p>© 2025 Delta Optics</p>
     </footer>
 
     <script>
+        // --- إعدادات النظام ---
+        // سيقوم الكود بإنشاء 150 كرت لكل نوع (300 كرت كحد أقصى)
+        // أي صورة غير موجودة سيتم حذف الكرت الخاص بها تلقائياً
+        const MAX_ITEMS = 150; 
+
         document.addEventListener('DOMContentLoaded', () => {
-            // نبدأ السلسلة: ابحث عن s1 و m1
-            loadNextImage('sun', 1);
-            loadNextImage('medical', 1);
+            const container = document.getElementById('galleryContainer');
+            let html = '';
+
+            // 1. توليد كروت الطبي (m1 -> m150)
+            for (let i = 1; i <= MAX_ITEMS; i++) {
+                html += createCard('medical', i);
+            }
+
+            // 2. توليد كروت الشمسي (s1 -> s150)
+            for (let i = 1; i <= MAX_ITEMS; i++) {
+                html += createCard('sun', i);
+            }
+
+            container.innerHTML = html;
         });
 
-        // --- الدالة الذكية (Recursive Loader) ---
-        function loadNextImage(type, index) {
-            const container = document.getElementById('galleryContainer');
-            
-            // تحديد اسم الصورة (s1.jpg أو m1.jpg)
-            const prefix = type === 'sun' ? 's' : 'm';
+        function createCard(type, index) {
+            // تحديد الحرف الأول (s أو m)
+            const prefix = type === 'medical' ? 'm' : 's';
             const imgSrc = `${prefix}${index}.jpg`;
             
-            // إنشاء كائن صورة في الذاكرة للفحص
-            const img = new Image();
-            img.src = imgSrc;
+            const titleAr = type === 'medical' ? `موديل طبي ${index}` : `موديل شمسي ${index}`;
+            const label = type === 'medical' ? 'طبي' : 'شمسي';
 
-            // إذا وجدت الصورة بنجاح
-            img.onload = function() {
-                // 1. أضف الكارت للموقع
-                const titleAr = type === 'sun' ? `نظارة شمسية موديل ${index}` : `إطار طبي موديل ${index}`;
-                const titleEn = type === 'sun' ? `Sunglasses ${index}` : `Medical Frame ${index}`;
-                
-                const cardHTML = `
-                    <div class="product-card ${type}">
-                        <div class="img-box">
-                            <img src="${imgSrc}" loading="lazy">
-                        </div>
-                        <div class="info">
-                            <span style="color:var(--gold); font-size:0.75rem; font-weight:800; text-transform:uppercase;">
-                                ${type === 'sun' ? 'Sunglasses' : 'Medical'}
-                            </span>
-                            <h3 class="prod-title">${titleAr}</h3>
-                            <a href="https://wa.me/962775549700?text=استفسار عن موديل: ${imgSrc}" target="_blank" class="wa-btn">
-                                <i class="fab fa-whatsapp"></i> استفسر
-                            </a>
-                        </div>
-                    </div>
-                `;
-                container.insertAdjacentHTML('beforeend', cardHTML);
-
-                // 2. استدعاء نفس الدالة للصورة التالية (Loop)
-                loadNextImage(type, index + 1);
-            };
-
-            // إذا لم يجد الصورة (وصلنا للنهاية)
-            img.onerror = function() {
-                // توقف بصمت. لا تفعل شيئاً. انتهت الصور.
-                console.log(`Finished loading ${type} images at index ${index-1}`);
-            };
+            // السحر هنا في onerror: تحذف الكرت بالكامل إذا الصورة مش موجودة
+            return `
+            <div class="product-card ${type}">
+                <div class="img-box">
+                    <img src="${imgSrc}" loading="lazy" 
+                         onload="this.classList.add('loaded')"
+                         onerror="this.closest('.product-card').remove()"> 
+                </div>
+                <div class="info">
+                    <span style="color:var(--gold); font-size:0.7rem; font-weight:800;">${label}</span>
+                    <h3 style="margin:5px 0; font-size:0.9rem;">${titleAr}</h3>
+                    <a href="https://wa.me/962775549700?text=استفسار عن موديل: ${imgSrc}" class="wa-btn">
+                        <i class="fab fa-whatsapp"></i> واتساب
+                    </a>
+                </div>
+            </div>`;
         }
 
-        // --- باقي وظائف الموقع (الفلتر واللغة) ---
         function filter(category) {
+            // تلوين الزر النشط
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             event.target.classList.add('active');
             
-            const cards = document.querySelectorAll('.product-card');
-            cards.forEach(card => {
+            // إظهار وإخفاء الكروت
+            document.querySelectorAll('.product-card').forEach(card => {
                 if (category === 'all' || card.classList.contains(category)) {
                     card.style.display = 'block';
                 } else {
@@ -144,10 +164,8 @@
 
         function toggleLang() {
             const html = document.documentElement;
-            const isRTL = html.getAttribute('dir') === 'rtl';
-            html.setAttribute('dir', isRTL ? 'ltr' : 'rtl');
+            html.setAttribute('dir', html.getAttribute('dir') === 'rtl' ? 'ltr' : 'rtl');
         }
     </script>
-
 </body>
 </html>

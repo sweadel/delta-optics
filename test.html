@@ -3,49 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>فحص النظر | Delta Optics</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700&display=swap" rel="stylesheet">
+    <title>Delta Optics | فحص النظر السريع</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
-        body { font-family: 'Tajawal', sans-serif; text-align: center; background: #FAFAFA; margin: 0; padding: 20px; color: #333; }
-        header { margin-bottom: 20px; text-align: right; }
-        .e-box { width: 150px; height: 150px; background: #fff; margin: 20px auto; display: flex; align-items: center; justify-content: center; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #eee; }
-        #e-char { font-size: 80px; font-family: sans-serif; font-weight: 900; transition: 0.2s; line-height: 1; }
-        .controls { display: grid; grid-template-columns: repeat(3, 70px); gap: 10px; justify-content: center; margin-top: 20px; }
-        .btn { width: 70px; height: 70px; background: #fff; border: 1px solid #ddd; border-radius: 12px; font-size: 24px; color: #00796B; cursor: pointer; box-shadow: 0 3px 0 #eee; }
-        .start-btn { background: #00796B; color: #fff; padding: 15px 50px; border-radius: 50px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 30px; }
+        :root { --primary: #00796B; --gold: #D4AF37; --bg: #FAFAFA; --text: #37474F; }
+        * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; text-align: center; height: 100vh; display: flex; flex-direction: column; }
+        a { text-decoration: none; color: inherit; }
+
+        /* Header */
+        header { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 0 15px; height: 60px; display: flex; align-items: center; justify-content: space-between; }
+        .logo-text { font-size: 1.2rem; font-weight: 800; color: var(--primary); }
+        .back-btn { font-size: 1.2rem; color: var(--text); }
+
+        /* Main Content */
+        .test-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        
+        /* شاشات الفحص */
+        .screen { display: none; width: 100%; max-width: 500px; animation: fadeIn 0.4s; }
+        .screen.active { display: flex; flex-direction: column; align-items: center; }
+
+        /* شاشة التعليمات */
+        .icon-box { width: 80px; height: 80px; background: #E0F2F1; color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin-bottom: 20px; }
+        .instruction-text { font-size: 1.1rem; line-height: 1.6; color: #555; margin-bottom: 30px; }
+        .start-btn { background: var(--primary); color: white; padding: 15px 40px; border-radius: 50px; font-weight: 800; border: none; font-size: 1.1rem; cursor: pointer; box-shadow: 0 5px 15px rgba(0,121,107,0.3); transition: 0.2s; }
+        .start-btn:active { transform: scale(0.95); }
+
+        /* شاشة الاختبار */
+        .e-display { 
+            width: 200px; height: 200px; background: white; border-radius: 20px; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05); border: 2px solid #eee;
+            display: flex; align-items: center; justify-content: center; margin-bottom: 30px;
+        }
+        #testChar { font-family: sans-serif; font-weight: 900; color: #000; transition: 0.3s; line-height: 1; }
+        
+        .controls-grid { display: grid; grid-template-columns: 60px 60px 60px; gap: 10px; }
+        .ctrl-btn { width: 60px; height: 60px; background: white; border: 1px solid #ddd; border-radius: 12px; font-size: 1.5rem; color: var(--primary); cursor: pointer; box-shadow: 0 3px 0 #ddd; transition: 0.1s; }
+        .ctrl-btn:active { transform: translateY(3px); box-shadow: none; }
+        .btn-up { grid-column: 2; }
+        .btn-left { grid-column: 1; grid-row: 2; }
+        .btn-right { grid-column: 3; grid-row: 2; }
+        .btn-down { grid-column: 2; grid-row: 2; }
+
+        /* شاشة النتيجة */
+        .result-box { padding: 30px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 100%; }
+        .score-circle { width: 120px; height: 120px; border: 6px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800; color: var(--primary); margin: 0 auto 20px; }
+        .note { font-size: 0.9rem; color: #777; margin: 20px 0; background: #fff8e1; padding: 10px; border-radius: 8px; border: 1px solid #ffe082; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
-    <header><a href="index.html" style="color:#00796B; text-decoration:none; font-weight:bold;"><i class="fas fa-arrow-right"></i> خروج</a></header>
-    
-    <div id="start-screen">
-        <h2 style="color:#00796B;">فحص نظر سريع</h2>
-        <p>حدد اتجاه فتحة حرف E</p>
-        <button class="start-btn" onclick="start()">ابدأ الفحص</button>
-    </div>
 
-    <div id="game-screen" style="display:none">
-        <div class="e-box"><div id="e-char">E</div></div>
-        <div class="controls">
-            <button class="btn" style="grid-column:2" onclick="check(270)"><i class="fas fa-arrow-up"></i></button>
-            <button class="btn" style="grid-column:1; grid-row:2" onclick="check(180)"><i class="fas fa-arrow-left"></i></button>
-            <button class="btn" style="grid-column:2; grid-row:2" onclick="check(90)"><i class="fas fa-arrow-down"></i></button>
-            <button class="btn" style="grid-column:3; grid-row:2" onclick="check(0)"><i class="fas fa-arrow-right"></i></button>
+    <header>
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-right"></i> خروج</a>
+        <span class="logo-text">فحص النظر</span>
+        <div style="width:20px"></div>
+    </header>
+
+    <div class="test-container">
+        
+        <div id="screen-start" class="screen active">
+            <div class="icon-box"><i class="fas fa-eye"></i></div>
+            <h2>فحص نظر سريع</h2>
+            <p class="instruction-text">
+                هذا الفحص تقريبي للمساعدة فقط.<br>
+                1. امسك الهاتف على بعد ذراع (40 سم).<br>
+                2. اضغط على اتجاه فتحة حرف <b>E</b>.<br>
+                3. سيصغر الحرف تدريجياً.
+            </p>
+            <button class="start-btn" onclick="startGame()">ابدأ الفحص</button>
         </div>
+
+        <div id="screen-game" class="screen">
+            <div class="e-display">
+                <div id="testChar">E</div>
+            </div>
+            
+            <div class="controls-grid">
+                <button class="ctrl-btn btn-up" onclick="checkAnswer(270)"><i class="fas fa-arrow-up"></i></button>
+                <button class="ctrl-btn btn-left" onclick="checkAnswer(180)"><i class="fas fa-arrow-left"></i></button>
+                <button class="ctrl-btn btn-down" onclick="checkAnswer(90)"><i class="fas fa-arrow-down"></i></button>
+                <button class="ctrl-btn btn-right" onclick="checkAnswer(0)"><i class="fas fa-arrow-right"></i></button>
+            </div>
+            <p style="margin-top:20px; color:#999; font-size:0.9rem;">المستوى: <span id="level-display">1</span>/6</p>
+        </div>
+
+        <div id="screen-result" class="screen">
+            <div class="result-box">
+                <h3>نتيجتك التقديرية</h3>
+                <div class="score-circle" id="final-score">6/6</div>
+                <p id="result-msg">نظرك ممتاز!</p>
+                
+                <div class="note">
+                    <i class="fas fa-info-circle"></i> تنبيه: هذا الفحص إلكتروني ولا يغني عن الفحص الطبي الدقيق بالأجهزة.
+                </div>
+
+                <a href="https://wa.me/962775549700?text=مرحباً، قمت بفحص النظر على الموقع وكانت النتيجة تقديرياً:" class="start-btn" style="background:#25D366; display:inline-block; margin-top:10px; width:100%;">
+                    <i class="fab fa-whatsapp"></i> احجز فحص دقيق
+                </a>
+                <br><br>
+                <button onclick="location.reload()" style="background:none; border:none; color:#777; cursor:pointer;">إعادة الفحص</button>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        let lv = 0; const sizes = [100, 70, 50, 30, 15]; let rot = 0;
-        function start() { document.getElementById('start-screen').style.display='none'; document.getElementById('game-screen').style.display='block'; next(); }
-        function next() {
-            if(lv >= sizes.length) { alert('نظرك ممتاز (6/6)'); location.reload(); return; }
-            rot = [0, 90, 180, 270][Math.floor(Math.random()*4)];
-            const e = document.getElementById('e-char');
-            e.style.fontSize = sizes[lv]+'px';
-            e.style.transform = `rotate(${rot}deg)`;
+        // إعدادات المستويات (حجم الخط بالبكسل)
+        const levels = [100, 70, 50, 30, 20, 10]; 
+        const scores = ["6/60", "6/36", "6/24", "6/12", "6/9", "6/6"];
+        
+        let currentLevel = 0;
+        let currentRotation = 0; // 0=Right, 90=Down, 180=Left, 270=Up
+
+        function startGame() {
+            showScreen('screen-game');
+            loadLevel();
         }
-        function check(val) { if(val === rot) { lv++; next(); } else { alert('انتهى الفحص. زورنا للتأكد أكثر.'); location.reload(); } }
+
+        function loadLevel() {
+            if (currentLevel >= levels.length) {
+                showResult(true);
+                return;
+            }
+
+            // تحديث الحجم ورقم المستوى
+            const char = document.getElementById('testChar');
+            char.style.fontSize = levels[currentLevel] + 'px';
+            document.getElementById('level-display').textContent = currentLevel + 1;
+
+            // تدوير عشوائي
+            const rotations = [0, 90, 180, 270];
+            currentRotation = rotations[Math.floor(Math.random() * rotations.length)];
+            char.style.transform = `rotate(${currentRotation}deg)`;
+        }
+
+        function checkAnswer(userChoice) {
+            // السماح بهامش خطأ بسيط أو تطابق تام
+            if (userChoice === currentRotation) {
+                // إجابة صحيحة
+                currentLevel++;
+                loadLevel();
+            } else {
+                // إجابة خاطئة -> انتهى الفحص
+                showResult(false);
+            }
+        }
+
+        function showResult(completed) {
+            showScreen('screen-result');
+            const scoreElement = document.getElementById('final-score');
+            const msgElement = document.getElementById('result-msg');
+            const whatsappBtn = document.querySelector('#screen-result a');
+
+            let finalScore = currentLevel > 0 ? scores[currentLevel - 1] : "أقل من 6/60";
+            
+            // إذا أنهى كل المستويات
+            if (completed) finalScore = "6/6";
+
+            scoreElement.textContent = finalScore;
+            
+            if (currentLevel >= 4) {
+                msgElement.textContent = "ما شاء الله، نظرك ممتاز!";
+                msgElement.style.color = "green";
+            } else {
+                msgElement.textContent = "قد تحتاج لنظارة، ننصحك بزيارتنا.";
+                msgElement.style.color = "#d32f2f";
+            }
+
+            // تحديث رابط الواتساب بالنتيجة
+            whatsappBtn.href += ` ${finalScore}`;
+        }
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
     </script>
 </body>
 </html>

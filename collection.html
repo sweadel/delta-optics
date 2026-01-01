@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Delta Optics | التشكيلة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root { --primary: #00796B; --gold: #D4AF37; --bg: #FAFAFA; --text: #37474F; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 60px; }
+        a { text-decoration: none; color: inherit; }
+        
+        header { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: fixed; width: 100%; top: 0; z-index: 1000; height: 60px; display: flex; align-items: center; }
+        .nav-container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 15px; display: flex; justify-content: space-between; align-items: center; }
+        .back-btn { font-size: 1.2rem; color: var(--primary); font-weight: bold; }
+        .logo-text { font-size: 1.2rem; font-weight: 800; color: var(--primary); }
+        
+        .page-title { text-align: center; margin-top: 80px; font-size: 1.5rem; color: var(--primary); font-weight: 800; }
+        
+        .filter-tabs { display: flex; justify-content: center; gap: 10px; margin: 20px 0; flex-wrap: wrap; position: sticky; top: 60px; z-index: 900; background: var(--bg); padding: 10px 0; }
+        .tab { padding: 8px 25px; border-radius: 30px; border: 1px solid #ddd; cursor: pointer; font-weight: 700; background: white; transition: 0.2s; color: #777; }
+        .tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding: 0 15px 30px 15px; max-width: 1200px; margin: 0 auto; min-height: 400px; }
+        .product-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.04); border: 1px solid #f0f0f0; transition: 0.3s; }
+        .product-card:hover { transform: translateY(-5px); border-color: var(--gold); }
+        
+        .img-box { height: 180px; background: #f0f0f0; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .img-box::after { content: '...'; position: absolute; color: #ccc; font-weight: bold; font-size: 24px; z-index: 0; }
+        .img-box img { width: 100%; height: 100%; object-fit: cover; position: relative; z-index: 1; opacity: 0; transition: opacity 0.5s; }
+        .img-box img.loaded { opacity: 1; }
+
+        .info { padding: 10px; text-align: start; }
+        html[dir="ltr"] .info { text-align: left; }
+
+        .wa-btn { display: flex; align-items: center; justify-content: center; gap:5px; background: #f1f3f4; text-align: center; padding: 9px; border-radius: 8px; font-weight: 700; margin-top: 8px; color: var(--text); font-size: 0.85rem; text-decoration: none; }
+        .wa-btn:hover { background: #25D366; color: #fff; }
+        
+        .floating-container { position: fixed; bottom: 20px; left: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
+        html[dir="ltr"] .floating-container { left: auto; right: 20px; }
+        .float-btn { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .btn-whatsapp { background: #25D366; } .btn-phone { background: var(--primary); }
+
+        @media (max-width: 600px) { .gallery-grid { grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; } .img-box { height: 160px; } }
+    </style>
+</head>
+<body>
+
+    <div class="floating-container">
+        <a href="tel:+962775549700" class="float-btn btn-phone"><i class="fas fa-phone-alt"></i></a>
+        <a href="https://wa.me/962775549700" class="float-btn btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a>
+    </div>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-right"></i></a>
+            <span class="logo-text" data-i18n="page_title">التشكيلة</span>
+            <div style="width:20px;"></div> </div>
+    </header>
+
+    <h1 class="page-title" data-i18n="page_title">التشكيلة الكاملة</h1>
+
+    <div class="filter-tabs">
+        <div class="tab active" onclick="filter('all')" data-i18n="all">الكل</div>
+        <div class="tab" onclick="filter('medical')" data-i18n="medical">طبية</div>
+        <div class="tab" onclick="filter('sun')" data-i18n="sun">شمسية</div>
+    </div>
+
+    <div class="gallery-grid" id="galleryContainer"></div>
+
+    <script>
+        const translations = {
+            ar: { page_title: "التشكيلة", all: "الكل", medical: "طبية", sun: "شمسية", wa_btn: "واتساب", wa_msg: "استفسار عن" },
+            en: { page_title: "Collection", all: "All", medical: "Medical", sun: "Sunglasses", wa_btn: "WhatsApp", wa_msg: "Inquiry about" }
+        };
+
+        let currentLang = localStorage.getItem('delta_lang') || 'ar';
+        const CHECK_LIMIT = 15; // عدد الصور للفحص
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateLanguage();
+            const container = document.getElementById('galleryContainer');
+            let html = '';
+            // توليد الصور (سيحاول الاسم المكرر .jpg.jpg أولاً)
+            for (let i = 1; i <= CHECK_LIMIT; i++) { html += createCard('medical', i, `m${i}.jpg.jpg`); }
+            for (let i = 1; i <= CHECK_LIMIT; i++) { html += createCard('sun', i, `s${i}.jpg.jpg`); }
+            container.innerHTML = html;
+        });
+
+        function createCard(type, index, fileName) {
+            return `
+            <div class="product-card ${type}">
+                <div class="img-box">
+                    <img src="${fileName}" loading="lazy" 
+                         onload="this.classList.add('loaded')" 
+                         onerror="handleImageError(this, '${type}', ${index})">
+                </div>
+                <div class="info">
+                    <span class="cat-label" style="color:var(--gold); font-size:0.7rem; font-weight:800;" data-type="${type}"></span>
+                    <h3 class="prod-title" style="margin:5px 0; font-size:0.9rem;" data-index="${index}" data-type="${type}"></h3>
+                    <a href="#" target="_blank" class="wa-btn dynamic-wa" data-filename="${fileName}" data-index="${index}" data-type="${type}">
+                        <i class="fab fa-whatsapp"></i> <span data-i18n="wa_btn">واتساب</span>
+                    </a>
+                </div>
+            </div>`;
+        }
+
+        function handleImageError(img, type, index) {
+            if (!img.dataset.retried) {
+                img.dataset.retried = "true";
+                const normalName = type === 'medical' ? `m${index}.jpg` : `s${index}.jpg`;
+                img.src = normalName;
+                const btn = img.closest('.product-card').querySelector('.dynamic-wa');
+                btn.dataset.filename = normalName;
+                updateLink(btn);
+            } else {
+                img.closest('.product-card').remove();
+            }
+        }
+
+        function filter(category) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            document.querySelectorAll('.product-card').forEach(card => {
+                card.style.display = (category === 'all' || card.classList.contains(category)) ? 'block' : 'none';
+            });
+        }
+
+        function updateLanguage() {
+            const t = translations[currentLang];
+            document.documentElement.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+            document.documentElement.setAttribute('lang', currentLang);
+            document.querySelectorAll('[data-i18n]').forEach(el => { if(t[el.dataset.i18n]) el.textContent = t[el.dataset.i18n]; });
+            
+            // تحديث السهم للرجوع
+            document.querySelector('.back-btn i').className = currentLang === 'ar' ? 'fas fa-arrow-right' : 'fas fa-arrow-left';
+
+            document.querySelectorAll('.cat-label').forEach(el => { el.textContent = el.dataset.type === 'medical' ? t.medical : t.sun; });
+            document.querySelectorAll('.prod-title').forEach(el => { 
+                const typeText = el.dataset.type === 'medical' ? t.medical : t.sun;
+                el.textContent = `${typeText} #${el.dataset.index}`;
+            });
+            document.querySelectorAll('.dynamic-wa').forEach(btn => updateLink(btn));
+        }
+
+        function updateLink(btn) {
+            const t = translations[currentLang];
+            const baseUrl = window.location.href.split('collection.html')[0].split('#')[0];
+            const fullImgUrl = baseUrl + btn.dataset.filename;
+            const typeText = btn.dataset.type === 'medical' ? t.medical : t.sun;
+            const title = `${typeText} #${btn.dataset.index}`;
+            const msg = encodeURIComponent(`${t.wa_msg}: ${title}\nURL: ${fullImgUrl}`);
+            btn.href = `https://wa.me/962775549700?text=${msg}`;
+        }
+    </script>
+</body>
+</html>

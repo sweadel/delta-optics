@@ -29,12 +29,13 @@
     </header>
     <div class="gallery-grid" id="container"></div>
     <script>
-        const CHECK_LIMIT = 10;
+        const LIMIT = 10;
         document.addEventListener('DOMContentLoaded', () => {
             const container = document.getElementById('container');
             let html = '';
-            for (let i = 1; i <= CHECK_LIMIT; i++) { html += createCard('medical', i, `m${i}.jpg.jpg`); }
-            for (let i = 1; i <= CHECK_LIMIT; i++) { html += createCard('sun', i, `s${i}.jpg.jpg`); }
+            // استخدام أسماء الملفات كما هي في صورك المرفوعة
+            for (let i = 1; i <= LIMIT; i++) { html += createCard('medical', i, `m${i}.jpg.jpg`); }
+            for (let i = 1; i <= LIMIT; i++) { html += createCard('sun', i, `s${i}.jpg.jpg`); }
             container.innerHTML = html;
         });
         function createCard(type, index, fileName) {

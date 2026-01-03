@@ -105,10 +105,8 @@
     </div>
 
     <script type="module">
-        // 1. استخدام رابط محدد لأحدث إصدار مستقر من المكتبة
-        import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai@0.21.0";
+        import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
         
-        // مفتاحك
         const API_KEY = "AIzaSyABNvhPDxPcRPMSA6ZeRrnLzvJfnKynBHw";
         const genAI = new GoogleGenerativeAI(API_KEY);
 
@@ -136,10 +134,10 @@
             preview.src = URL.createObjectURL(file);
             loader.style.display = 'block';
             responseDiv.style.display = 'none';
-            responseDiv.innerHTML = ''; // مسح النتائج السابقة
+            responseDiv.innerHTML = '';
 
             try {
-                // إعدادات الأمان لعدم حظر صورة الوجه
+                // إعدادات الأمان
                 const safetySettings = [
                     { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
                     { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
@@ -147,9 +145,9 @@
                     { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" },
                 ];
 
-                // 2. استخدام الموديل القياسي المعتمد للصور
+                // ⚠️ التعديل المهم هنا: اسم الموديل الرسمي الكامل ⚠️
                 const model = genAI.getGenerativeModel({ 
-                    model: "gemini-1.5-flash",
+                    model: "gemini-1.5-flash-001",
                     safetySettings: safetySettings
                 });
                 
@@ -169,17 +167,13 @@
                 loader.style.display = 'none';
                 responseDiv.style.display = 'block';
                 
-                // 3. عرض رسالة الخطأ الحقيقية باللون الأحمر للمساعدة في الحل
                 responseDiv.innerHTML = `
                     <div style="color:red; font-weight:bold; direction:ltr; text-align:left; font-size:0.8rem;">
                         Error: ${error.message}
                     </div>
-                    <br>
-                    <small style="color:#555;">الرجاء تصوير هذا الخطأ وإرساله لحله فوراً.</small>
                 `;
             }
             
-            // إعادة تعيين الإدخال للسماح بإعادة اختيار نفس الصورة
             event.target.value = '';
         }
 

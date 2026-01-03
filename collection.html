@@ -10,8 +10,14 @@
         :root { --primary: #00796B; --gold: #D4AF37; --bg: #FAFAFA; }
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg); margin: 0; padding-bottom: 60px; }
-        header { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 15px; display: flex; align-items: center; sticky: top; }
+        header { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 15px; display: flex; align-items: center; position: sticky; top: 0; z-index: 100; }
         .back-btn { font-size: 1.2rem; color: var(--primary); text-decoration: none; margin-left: 15px; }
+        
+        /* قسم الذكاء الاصطناعي الجديد */
+        .ai-panel { background: linear-gradient(135deg, #00796B, #004D40); color: white; margin: 15px; padding: 20px; border-radius: 15px; text-align: center; }
+        .ai-btn { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); color: white; padding: 10px; border-radius: 8px; cursor: pointer; width: 48%; margin: 1%; }
+        #aiResult { background: white; color: #333; margin-top: 15px; padding: 15px; border-radius: 10px; display: none; text-align: right; }
+
         .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; }
         .product-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.04); border: 1px solid #f0f0f0; }
         .img-box { height: 160px; background: #eee; display: flex; align-items: center; justify-content: center; }
@@ -23,26 +29,50 @@
     <header>
         <a href="index.html" class="back-btn"><i class="fas fa-arrow-right"></i> التشكيلة</a>
     </header>
+
+    <div class="ai-panel">
+        <h3>🤖 مستشار المظهر الذكي</h3>
+        <button class="ai-btn" onclick="document.getElementById('aiCam').click()"><i class="fas fa-camera"></i> حلل وجهي</button>
+        <button class="ai-btn" onclick="toggleManual()"><i class="fas fa-list"></i> اختر يدوياً</button>
+        <input type="file" id="aiCam" accept="image/*" capture="user" style="display:none" onchange="analyzeFace(event)">
+        
+        <div id="manualDiv" style="display:none; margin-top:10px;">
+            <select id="faceShape" style="width:100%; padding:10px; border-radius:5px;"><option value="Oval">بيضاوي</option><option value="Round">دائري</option></select>
+            <button onclick="getAdvice()" style="width:100%; margin-top:5px; background:var(--gold); border:none; padding:8px; border-radius:5px;">انصحني</button>
+        </div>
+        <div id="aiResult"></div>
+    </div>
+
     <div class="gallery-grid" id="galleryContainer"></div>
+
+    <script type="module">
+        import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+        const genAI = new GoogleGenerativeAI("AIzaSyABNvhPDxPcRPMSA6ZeRrnLzvJfnKynBHw");
+        window.analyzeFace = async (e) => {
+            const file = e.target.files[0]; if(!file) return;
+            const res = document.getElementById('aiResult'); res.style.display='block'; res.innerHTML='جاري التحليل...';
+            try {
+                const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+                const reader = new FileReader();
+                reader.onloadend = async () => {
+                    const base64 = reader.result.split(',')[1];
+                    const result = await model.generateContent(["حلل شكل وجه الشخص في الصورة واقترح نظارات بالعربي.", { inlineData: { data: base64, mimeType: file.type } }]);
+                    res.innerHTML = result.response.text().replace(/\n/g, '<br>');
+                }; reader.readAsDataURL(file);
+            } catch(e) { res.innerHTML = "خطأ في الاتصال."; }
+        };
+    </script>
+
     <script>
+        function toggleManual() { document.getElementById('manualDiv').style.display='block'; }
         const container = document.getElementById('galleryContainer');
-        const limit = 15;
+        const limit = 20;
         function loadImages() {
             let html = '';
             for (let i = 1; i <= limit; i++) {
                 html += `
-                <div class="product-card" id="card-m${i}">
-                    <div class="img-box">
-                        <img src="m${i}.jpg" onerror="document.getElementById('card-m${i}').remove()">
-                    </div>
-                    <a href="https://wa.me/962775549700?text=استفسار عن موديل m${i}" class="wa-btn"><i class="fab fa-whatsapp"></i> واتساب</a>
-                </div>
-                <div class="product-card" id="card-s${i}">
-                    <div class="img-box">
-                        <img src="s${i}.jpg" onerror="document.getElementById('card-s${i}').remove()">
-                    </div>
-                    <a href="https://wa.me/962775549700?text=استفسار عن موديل s${i}" class="wa-btn"><i class="fab fa-whatsapp"></i> واتساب</a>
-                </div>`;
+                <div class="product-card" id="m${i}"><div class="img-box"><img src="m${i}.jpg" onerror="document.getElementById('m${i}').remove()"></div><a href="https://wa.me/962775549700?text=استفسار عن m${i}" class="wa-btn"><i class="fab fa-whatsapp"></i> استفسار</a></div>
+                <div class="product-card" id="s${i}"><div class="img-box"><img src="s${i}.jpg" onerror="document.getElementById('s${i}').remove()"></div><a href="https://wa.me/962775549700?text=استفسار عن s${i}" class="wa-btn"><i class="fab fa-whatsapp"></i> استفسار</a></div>`;
             }
             container.innerHTML = html;
         }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Delta Optics | التشكيلة</title>
+    <title>Delta Optics | التشكيلة والمستشار الذكي</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
@@ -20,6 +20,27 @@
         
         .page-title { text-align: center; margin-top: 80px; font-size: 1.5rem; color: var(--primary); font-weight: 800; }
         
+        /* --- قسم الذكاء الاصطناعي الجديد --- */
+        .ai-toggle-btn {
+            display: block; margin: 10px auto; background: linear-gradient(45deg, var(--primary), #004D40);
+            color: white; padding: 10px 25px; border-radius: 50px; font-weight: bold; cursor: pointer;
+            border: none; box-shadow: 0 4px 15px rgba(0,121,107,0.3); transition: 0.3s;
+        }
+        .ai-toggle-btn:hover { transform: scale(1.05); }
+
+        .ai-panel {
+            max-width: 600px; margin: 10px auto 30px; background: white; padding: 20px;
+            border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.08); border: 2px solid var(--gold);
+            display: none; /* مخفي افتراضياً */
+            animation: slideDown 0.4s ease-out;
+        }
+        @keyframes slideDown { from {opacity: 0; transform: translateY(-20px);} to {opacity: 1; transform: translateY(0);} }
+        
+        .ai-panel select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; }
+        .ai-panel button { width: 100%; background: var(--gold); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .ai-result { margin-top: 15px; background: #f9f9f9; padding: 15px; border-radius: 8px; font-size: 0.95rem; line-height: 1.6; white-space: pre-line; }
+
+        /* --- الفلاتر والعرض --- */
         .filter-tabs { display: flex; justify-content: center; gap: 10px; margin: 20px 0; flex-wrap: wrap; position: sticky; top: 60px; z-index: 900; background: var(--bg); padding: 10px 0; }
         .tab { padding: 8px 25px; border-radius: 30px; border: 1px solid #ddd; cursor: pointer; font-weight: 700; background: white; transition: 0.2s; color: #777; }
         .tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
@@ -63,6 +84,27 @@
 
     <h1 class="page-title" data-i18n="page_title">التشكيلة الكاملة</h1>
 
+    <button class="ai-toggle-btn" onclick="toggleAI()">
+        <i class="fas fa-robot"></i> محتار؟ استشر الذكاء الاصطناعي
+    </button>
+
+    <div class="ai-panel" id="aiPanel">
+        <h3 style="color:var(--primary); text-align:center;">مستشار Delta Optics 🕶️</h3>
+        <p style="font-size:0.9rem; text-align:center; color:#666; margin-bottom:10px;">اختر شكل وجهك وسنخبرك بما يناسبك</p>
+        
+        <select id="faceShape">
+            <option value="" disabled selected>-- اختر شكل الوجه --</option>
+            <option value="Round">دائري (Round)</option>
+            <option value="Square">مربع (Square)</option>
+            <option value="Oval">بيضاوي (Oval)</option>
+            <option value="Heart">قلبي (Heart)</option>
+            <option value="Oblong">مستطيل (Oblong)</option>
+        </select>
+        
+        <button id="askAiBtn">انصحني الآن</button>
+        <div id="aiResult" class="ai-result" style="display:none;"></div>
+    </div>
+
     <div class="filter-tabs">
         <div class="tab active" onclick="filter('all')" data-i18n="all">الكل</div>
         <div class="tab" onclick="filter('medical')" data-i18n="medical">طبية</div>
@@ -71,20 +113,82 @@
 
     <div class="gallery-grid" id="galleryContainer"></div>
 
+    <script type="module">
+        // 1. استيراد مكتبة Gemini
+        import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+
+        // 2. المفتاح الخاص بك
+        const API_KEY = "AIzaSyABNvhPDxPcRPMSA6ZeRrnLzvJfnKynBHw";
+        const genAI = new GoogleGenerativeAI(API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
+        // 3. تعريف العناصر
+        const askBtn = document.getElementById('askAiBtn');
+        const resultDiv = document.getElementById('aiResult');
+        const faceSelect = document.getElementById('faceShape');
+
+        // 4. دالة الاستدعاء عند الضغط
+        askBtn.addEventListener('click', async () => {
+            const shape = faceSelect.value;
+            if (!shape) {
+                alert("الرجاء اختيار شكل الوجه أولاً");
+                return;
+            }
+
+            // واجهة التحميل
+            askBtn.disabled = true;
+            askBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التفكير...';
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = "جاري استشارة خبير الموضة...";
+
+            try {
+                // نص الطلب (Prompt)
+                const prompt = `
+                أنا زبون في محل نظارات اسمه Delta Optics.
+                شكل وجهي: ${shape}.
+                بلهجة عربية لطيفة ومختصرة:
+                1. ما هي القاعدة العامة لهذا الوجه؟
+                2. اقترح 3 أنواع إطارات تناسبني.
+                استخدم الإيموجي.
+                `;
+
+                const result = await model.generateContent(prompt);
+                const response = await result.response;
+                const text = response.text();
+
+                // تنسيق وعرض النتيجة
+                resultDiv.innerHTML = text.replace(/\*/g, '').replace(/\n/g, '<br>');
+                
+            } catch (error) {
+                console.error(error);
+                resultDiv.innerHTML = "عذراً، حدث خطأ في الاتصال. حاول مرة أخرى.";
+            } finally {
+                askBtn.disabled = false;
+                askBtn.innerHTML = 'انصحني الآن';
+            }
+        });
+    </script>
+
     <script>
+        // دوال الصفحة الأساسية (الفلاتر، اللغة، الصور)
+        
+        function toggleAI() {
+            const panel = document.getElementById('aiPanel');
+            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+        }
+
         const translations = {
             ar: { page_title: "التشكيلة", all: "الكل", medical: "طبية", sun: "شمسية", wa_btn: "واتساب", wa_msg: "استفسار عن" },
             en: { page_title: "Collection", all: "All", medical: "Medical", sun: "Sunglasses", wa_btn: "WhatsApp", wa_msg: "Inquiry about" }
         };
 
         let currentLang = localStorage.getItem('delta_lang') || 'ar';
-        const CHECK_LIMIT = 20; // زدت العدد لـ 20 لضمان ظهور كل الصور
+        const CHECK_LIMIT = 15; 
 
         document.addEventListener('DOMContentLoaded', () => {
             updateLanguage();
             const container = document.getElementById('galleryContainer');
             let html = '';
-            // توليد الصور (سيحاول الاسم المكرر .jpg.jpg أولاً كما هي في ملفاتك)
             for (let i = 1; i <= CHECK_LIMIT; i++) { html += createCard('medical', i, `m${i}.jpg.jpg`); }
             for (let i = 1; i <= CHECK_LIMIT; i++) { html += createCard('sun', i, `s${i}.jpg.jpg`); }
             container.innerHTML = html;
@@ -108,20 +212,15 @@
             </div>`;
         }
 
-        // دالة ذكية لمعالجة أخطاء الصور
         function handleImageError(img, type, index) {
             if (!img.dataset.retried) {
-                // المحاولة الأولى فشلت؟ نجرب الامتداد العادي .jpg
                 img.dataset.retried = "true";
                 const normalName = type === 'medical' ? `m${index}.jpg` : `s${index}.jpg`;
                 img.src = normalName;
-                
-                // تحديث رابط الواتساب أيضاً
                 const btn = img.closest('.product-card').querySelector('.dynamic-wa');
                 btn.dataset.filename = normalName;
                 updateLink(btn);
             } else {
-                // المحاولتين فشلوا؟ نحذف الكرت
                 img.closest('.product-card').remove();
             }
         }
@@ -152,10 +251,8 @@
 
         function updateLink(btn) {
             const t = translations[currentLang];
-            // رابط ديناميكي للصورة
             const baseUrl = window.location.href.split('collection.html')[0].split('#')[0];
             const fullImgUrl = baseUrl + btn.dataset.filename;
-            
             const typeText = btn.dataset.type === 'medical' ? t.medical : t.sun;
             const title = `${typeText} #${btn.dataset.index}`;
             const msg = encodeURIComponent(`${t.wa_msg}: ${title}\nURL: ${fullImgUrl}`);

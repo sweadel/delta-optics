@@ -145,13 +145,13 @@
                     { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" },
                 ];
 
-                // ⚠️ التعديل المهم هنا: اسم الموديل الرسمي الكامل ⚠️
+                // ✅✅✅ التعديل النهائي: استخدام اسم الموديل الموجود في قائمتك ✅✅✅
                 const model = genAI.getGenerativeModel({ 
-                    model: "gemini-1.5-flash-001",
+                    model: "gemini-2.0-flash", 
                     safetySettings: safetySettings
                 });
                 
-                const prompt = "حلل شكل وجه هذا الشخص في الصورة بدقة، واقترح أفضل 3 موديلات نظارات تناسبه. الرد بالعربي وبإيموجي.";
+                const prompt = "أنت خبير بصريات. حلل شكل الوجه في الصورة (دائري، بيضاوي، مربع؟) واقترح 3 موديلات نظارات تناسبه. الرد بالعربي.";
                 const imagePart = await fileToGenerativePart(file);
 
                 const result = await model.generateContent([prompt, imagePart]);
@@ -166,12 +166,10 @@
                 console.error("Gemini Error:", error);
                 loader.style.display = 'none';
                 responseDiv.style.display = 'block';
-                
                 responseDiv.innerHTML = `
-                    <div style="color:red; font-weight:bold; direction:ltr; text-align:left; font-size:0.8rem;">
+                    <div style="color:red; font-weight:bold; direction:ltr; text-align:left;">
                         Error: ${error.message}
-                    </div>
-                `;
+                    </div>`;
             }
             
             event.target.value = '';

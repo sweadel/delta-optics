@@ -3,260 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Delta Optics | التشكيلة والمستشار الذكي</title>
+    <title>Delta Optics | التشكيلة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        :root { --primary: #00796B; --gold: #D4AF37; --bg: #FAFAFA; --text: #37474F; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 60px; }
-        a { text-decoration: none; color: inherit; }
+        :root { --primary: #00796B; --gold: #D4AF37; --bg: #FAFAFA; }
+        * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+        body { background: var(--bg); margin: 0; padding-bottom: 50px; }
         
-        header { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: fixed; width: 100%; top: 0; z-index: 1000; height: 60px; display: flex; align-items: center; }
-        .nav-container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 15px; display: flex; justify-content: space-between; align-items: center; }
-        .back-btn { font-size: 1.2rem; color: var(--primary); font-weight: bold; }
-        .logo-text { font-size: 1.2rem; font-weight: 800; color: var(--primary); }
+        /* الهيدر */
+        header { background: white; padding: 15px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+        .back-btn { font-size: 1.2rem; color: var(--primary); margin-left: 15px; }
         
-        .page-title { text-align: center; margin-top: 80px; font-size: 1.5rem; color: var(--primary); font-weight: 800; }
-        
-        /* --- قسم الذكاء الاصطناعي الجديد --- */
-        .ai-toggle-btn {
-            display: block; margin: 10px auto; background: linear-gradient(45deg, var(--primary), #004D40);
-            color: white; padding: 10px 25px; border-radius: 50px; font-weight: bold; cursor: pointer;
-            border: none; box-shadow: 0 4px 15px rgba(0,121,107,0.3); transition: 0.3s;
+        /* قسم الذكاء الاصطناعي */
+        .ai-container {
+            background: linear-gradient(135deg, #00796B, #004D40);
+            color: white;
+            margin: 20px 15px;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,121,107,0.3);
         }
-        .ai-toggle-btn:hover { transform: scale(1.05); }
-
-        .ai-panel {
-            max-width: 600px; margin: 10px auto 30px; background: white; padding: 20px;
-            border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.08); border: 2px solid var(--gold);
-            display: none; /* مخفي افتراضياً */
-            animation: slideDown 0.4s ease-out;
+        
+        .ai-options { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
+        
+        .ai-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white; padding: 10px 15px; border-radius: 8px; cursor: pointer;
+            flex: 1; font-size: 0.9rem; transition: 0.3s;
         }
-        @keyframes slideDown { from {opacity: 0; transform: translateY(-20px);} to {opacity: 1; transform: translateY(0);} }
+        .ai-btn:hover, .ai-btn.active { background: white; color: var(--primary); font-weight: bold; }
         
-        .ai-panel select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; }
-        .ai-panel button { width: 100%; background: var(--gold); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .ai-result { margin-top: 15px; background: #f9f9f9; padding: 15px; border-radius: 8px; font-size: 0.95rem; line-height: 1.6; white-space: pre-line; }
-
-        /* --- الفلاتر والعرض --- */
-        .filter-tabs { display: flex; justify-content: center; gap: 10px; margin: 20px 0; flex-wrap: wrap; position: sticky; top: 60px; z-index: 900; background: var(--bg); padding: 10px 0; }
-        .tab { padding: 8px 25px; border-radius: 30px; border: 1px solid #ddd; cursor: pointer; font-weight: 700; background: white; transition: 0.2s; color: #777; }
-        .tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding: 0 15px 30px 15px; max-width: 1200px; margin: 0 auto; min-height: 400px; }
-        .product-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.04); border: 1px solid #f0f0f0; transition: 0.3s; }
-        .product-card:hover { transform: translateY(-5px); border-color: var(--gold); }
+        /* منطقة النتائج */
+        #aiResultArea { 
+            background: rgba(255,255,255,0.95); color: #333; 
+            margin-top: 15px; padding: 15px; border-radius: 10px; 
+            display: none; text-align: right; line-height: 1.6; font-size: 0.95rem;
+        }
         
-        .img-box { height: 180px; background: #f0f0f0; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        .img-box::after { content: '...'; position: absolute; color: #ccc; font-weight: bold; font-size: 24px; z-index: 0; }
-        .img-box img { width: 100%; height: 100%; object-fit: cover; position: relative; z-index: 1; opacity: 0; transition: opacity 0.5s; }
-        .img-box img.loaded { opacity: 1; }
-
-        .info { padding: 10px; text-align: start; }
-        html[dir="ltr"] .info { text-align: left; }
-
-        .wa-btn { display: flex; align-items: center; justify-content: center; gap:5px; background: #f1f3f4; text-align: center; padding: 9px; border-radius: 8px; font-weight: 700; margin-top: 8px; color: var(--text); font-size: 0.85rem; text-decoration: none; }
-        .wa-btn:hover { background: #25D366; color: #fff; }
+        /* معرض الصور */
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; padding: 15px; }
+        .product-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .img-box { height: 140px; background: #eee; display: flex; align-items: center; justify-content: center; }
+        .img-box img { width: 100%; height: 100%; object-fit: cover; }
         
-        .floating-container { position: fixed; bottom: 20px; left: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
-        html[dir="ltr"] .floating-container { left: auto; right: 20px; }
-        .float-btn { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .btn-whatsapp { background: #25D366; } .btn-phone { background: var(--primary); }
-
-        @media (max-width: 600px) { .gallery-grid { grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; } .img-box { height: 160px; } }
+        /* Input مخفي */
+        #cameraInput { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="floating-container">
-        <a href="tel:+962775549700" class="float-btn btn-phone"><i class="fas fa-phone-alt"></i></a>
-        <a href="https://wa.me/962775549700" class="float-btn btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a>
-    </div>
-
     <header>
-        <div class="nav-container">
-            <a href="index.html" class="back-btn"><i class="fas fa-arrow-right"></i></a>
-            <span class="logo-text" data-i18n="page_title">التشكيلة</span>
-            <div style="width:20px;"></div> </div>
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-right"></i></a>
+        <h2 style="margin:0; font-size:1.1rem; color:var(--primary);">التشكيلة والمستشار الذكي</h2>
     </header>
 
-    <h1 class="page-title" data-i18n="page_title">التشكيلة الكاملة</h1>
-
-    <button class="ai-toggle-btn" onclick="toggleAI()">
-        <i class="fas fa-robot"></i> محتار؟ استشر الذكاء الاصطناعي
-    </button>
-
-    <div class="ai-panel" id="aiPanel">
-        <h3 style="color:var(--primary); text-align:center;">مستشار Delta Optics 🕶️</h3>
-        <p style="font-size:0.9rem; text-align:center; color:#666; margin-bottom:10px;">اختر شكل وجهك وسنخبرك بما يناسبك</p>
+    <div class="ai-container">
+        <h3>🤖 محتار شو تختار؟</h3>
+        <p style="font-size:0.9rem; opacity:0.9;">دع الذكاء الاصطناعي يحلل وجهك ويقترح الأنسب</p>
         
-        <select id="faceShape">
-            <option value="" disabled selected>-- اختر شكل الوجه --</option>
-            <option value="Round">دائري (Round)</option>
-            <option value="Square">مربع (Square)</option>
-            <option value="Oval">بيضاوي (Oval)</option>
-            <option value="Heart">قلبي (Heart)</option>
-            <option value="Oblong">مستطيل (Oblong)</option>
-        </select>
+        <div class="ai-options">
+            <button class="ai-btn" onclick="triggerCamera()">
+                <i class="fas fa-camera"></i> صورني
+            </button>
+            <button class="ai-btn" onclick="showManualSelect()">
+                <i class="fas fa-list"></i> اختر يدوياً
+            </button>
+        </div>
+
+        <input type="file" id="cameraInput" accept="image/*" capture="user" onchange="handleImage(event)">
         
-        <button id="askAiBtn">انصحني الآن</button>
-        <div id="aiResult" class="ai-result" style="display:none;"></div>
+        <div id="manualSelectDiv" style="display:none; margin-top:15px;">
+            <select id="faceShapeSelect" style="width:100%; padding:10px; border-radius:5px; border:none;">
+                <option value="" disabled selected>-- اختر شكل وجهك --</option>
+                <option value="دائري">وجه دائري (Round)</option>
+                <option value="مربع">وجه مربع (Square)</option>
+                <option value="بيضاوي">وجه بيضاوي (Oval)</option>
+                <option value="قلبي">وجه قلبي (Heart)</option>
+            </select>
+            <button onclick="analyzeManual()" style="margin-top:10px; background:var(--gold); border:none; padding:8px 20px; border-radius:5px; width:100%; font-weight:bold;">انصحني</button>
+        </div>
+
+        <div id="aiResultArea"></div>
     </div>
 
-    <div class="filter-tabs">
-        <div class="tab active" onclick="filter('all')" data-i18n="all">الكل</div>
-        <div class="tab" onclick="filter('medical')" data-i18n="medical">طبية</div>
-        <div class="tab" onclick="filter('sun')" data-i18n="sun">شمسية</div>
-    </div>
-
-    <div class="gallery-grid" id="galleryContainer"></div>
+    <h3 style="padding-right:20px; margin-bottom:0;">أحدث الموديلات</h3>
+    <div class="gallery-grid" id="gallery">
+        </div>
 
     <script type="module">
-        // 1. استيراد مكتبة Gemini
         import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
-
-        // 2. المفتاح الخاص بك
+        
         const API_KEY = "AIzaSyABNvhPDxPcRPMSA6ZeRrnLzvJfnKynBHw";
         const genAI = new GoogleGenerativeAI(API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        
+        // إعدادات الأمان
+        const safetySettings = [
+            { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
+            { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" },
+        ];
 
-        // 3. تعريف العناصر
-        const askBtn = document.getElementById('askAiBtn');
-        const resultDiv = document.getElementById('aiResult');
-        const faceSelect = document.getElementById('faceShape');
+        // 1. التعامل مع الصور (الكاميرا)
+        window.handleImage = async function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-        // 4. دالة الاستدعاء عند الضغط
-        askBtn.addEventListener('click', async () => {
-            const shape = faceSelect.value;
-            if (!shape) {
-                alert("الرجاء اختيار شكل الوجه أولاً");
-                return;
-            }
-
-            // واجهة التحميل
-            askBtn.disabled = true;
-            askBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التفكير...';
+            const resultDiv = document.getElementById('aiResultArea');
             resultDiv.style.display = 'block';
-            resultDiv.innerHTML = "جاري استشارة خبير الموضة...";
+            resultDiv.innerHTML = '⏳ جاري تحليل ملامح الوجه...';
 
             try {
-                // نص الطلب (Prompt)
-                const prompt = `
-                أنا زبون في محل نظارات اسمه Delta Optics.
-                شكل وجهي: ${shape}.
-                بلهجة عربية لطيفة ومختصرة:
-                1. ما هي القاعدة العامة لهذا الوجه؟
-                2. اقترح 3 أنواع إطارات تناسبني.
-                استخدم الإيموجي.
-                `;
-
-                const result = await model.generateContent(prompt);
-                const response = await result.response;
-                const text = response.text();
-
-                // تنسيق وعرض النتيجة
-                resultDiv.innerHTML = text.replace(/\*/g, '').replace(/\n/g, '<br>');
+                // استخدام الموديل المتوافق gemini-2.0-flash
+                const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash", safetySettings });
                 
-            } catch (error) {
-                console.error(error);
-                resultDiv.innerHTML = "عذراً، حدث خطأ في الاتصال. حاول مرة أخرى.";
-            } finally {
-                askBtn.disabled = false;
-                askBtn.innerHTML = 'انصحني الآن';
-            }
-        });
-    </script>
+                // تحويل الصورة
+                const reader = new FileReader();
+                reader.onloadend = async () => {
+                    const base64Data = reader.result.split(',')[1];
+                    const imagePart = { inlineData: { data: base64Data, mimeType: file.type } };
+                    
+                    const prompt = "حلل شكل وجه الشخص في الصورة (دائري، مربع، بيضاوي؟) واقترح 3 موديلات نظارات تناسبه. رد قصير وبالعربي.";
+                    const result = await model.generateContent([prompt, imagePart]);
+                    resultDiv.innerHTML = '<strong>💡 اقتراح المستشار:</strong><br>' + result.response.text().replace(/\n/g, '<br>');
+                };
+                reader.readAsDataURL(file);
 
-    <script>
-        // دوال الصفحة الأساسية (الفلاتر، اللغة، الصور)
-        
-        function toggleAI() {
-            const panel = document.getElementById('aiPanel');
-            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+            } catch (error) {
+                resultDiv.innerHTML = '<span style="color:red">حدث خطأ، حاول مرة أخرى.</span>';
+                console.error(error);
+            }
         }
 
-        const translations = {
-            ar: { page_title: "التشكيلة", all: "الكل", medical: "طبية", sun: "شمسية", wa_btn: "واتساب", wa_msg: "استفسار عن" },
-            en: { page_title: "Collection", all: "All", medical: "Medical", sun: "Sunglasses", wa_btn: "WhatsApp", wa_msg: "Inquiry about" }
+        // 2. التعامل اليدوي
+        window.analyzeManual = async function() {
+            const shape = document.getElementById('faceShapeSelect').value;
+            if(!shape) return alert("اختر الشكل أولاً");
+
+            const resultDiv = document.getElementById('aiResultArea');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '⏳ جاري البحث عن أفضل خيار...';
+
+            try {
+                const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash", safetySettings });
+                const prompt = `وجهي شكله ${shape}. اقترح لي 3 موديلات نظارات تناسبني باختصار.`;
+                const result = await model.generateContent(prompt);
+                resultDiv.innerHTML = '<strong>💡 اقتراح المستشار:</strong><br>' + result.response.text().replace(/\n/g, '<br>');
+            } catch (error) {
+                resultDiv.innerHTML = 'حدث خطأ في الاتصال.';
+            }
+        }
+
+        // دوال مساعدة
+        window.triggerCamera = () => document.getElementById('cameraInput').click();
+        window.showManualSelect = () => {
+            document.getElementById('manualSelectDiv').style.display = 'block';
+            document.getElementById('aiResultArea').style.display = 'none';
         };
 
-        let currentLang = localStorage.getItem('delta_lang') || 'ar';
-        const CHECK_LIMIT = 15; 
-
-        document.addEventListener('DOMContentLoaded', () => {
-            updateLanguage();
-            const container = document.getElementById('galleryContainer');
-            let html = '';
-            for (let i = 1; i <= CHECK_LIMIT; i++) { html += createCard('medical', i, `m${i}.jpg.jpg`); }
-            for (let i = 1; i <= CHECK_LIMIT; i++) { html += createCard('sun', i, `s${i}.jpg.jpg`); }
-            container.innerHTML = html;
-        });
-
-        function createCard(type, index, fileName) {
-            return `
-            <div class="product-card ${type}">
-                <div class="img-box">
-                    <img src="${fileName}" loading="lazy" 
-                         onload="this.classList.add('loaded')" 
-                         onerror="handleImageError(this, '${type}', ${index})">
+        // توليد صور وهمية للمعرض (للتجربة)
+        const gallery = document.getElementById('gallery');
+        for(let i=1; i<=6; i++) {
+            gallery.innerHTML += `
+                <div class="product-card">
+                    <div class="img-box"><i class="fas fa-glasses" style="font-size:30px; color:#ccc;"></i></div>
+                    <div style="padding:10px;">
+                        <h4 style="margin:0; font-size:0.9rem;">موديل #${i}</h4>
+                        <span style="color:var(--primary); font-weight:bold;">جديد</span>
+                    </div>
                 </div>
-                <div class="info">
-                    <span class="cat-label" style="color:var(--gold); font-size:0.7rem; font-weight:800;" data-type="${type}"></span>
-                    <h3 class="prod-title" style="margin:5px 0; font-size:0.9rem;" data-index="${index}" data-type="${type}"></h3>
-                    <a href="#" target="_blank" class="wa-btn dynamic-wa" data-filename="${fileName}" data-index="${index}" data-type="${type}">
-                        <i class="fab fa-whatsapp"></i> <span data-i18n="wa_btn">واتساب</span>
-                    </a>
-                </div>
-            </div>`;
-        }
-
-        function handleImageError(img, type, index) {
-            if (!img.dataset.retried) {
-                img.dataset.retried = "true";
-                const normalName = type === 'medical' ? `m${index}.jpg` : `s${index}.jpg`;
-                img.src = normalName;
-                const btn = img.closest('.product-card').querySelector('.dynamic-wa');
-                btn.dataset.filename = normalName;
-                updateLink(btn);
-            } else {
-                img.closest('.product-card').remove();
-            }
-        }
-
-        function filter(category) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
-            document.querySelectorAll('.product-card').forEach(card => {
-                card.style.display = (category === 'all' || card.classList.contains(category)) ? 'block' : 'none';
-            });
-        }
-
-        function updateLanguage() {
-            const t = translations[currentLang];
-            document.documentElement.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
-            document.documentElement.setAttribute('lang', currentLang);
-            document.querySelectorAll('[data-i18n]').forEach(el => { if(t[el.dataset.i18n]) el.textContent = t[el.dataset.i18n]; });
-            
-            document.querySelector('.back-btn i').className = currentLang === 'ar' ? 'fas fa-arrow-right' : 'fas fa-arrow-left';
-
-            document.querySelectorAll('.cat-label').forEach(el => { el.textContent = el.dataset.type === 'medical' ? t.medical : t.sun; });
-            document.querySelectorAll('.prod-title').forEach(el => { 
-                const typeText = el.dataset.type === 'medical' ? t.medical : t.sun;
-                el.textContent = `${typeText} #${el.dataset.index}`;
-            });
-            document.querySelectorAll('.dynamic-wa').forEach(btn => updateLink(btn));
-        }
-
-        function updateLink(btn) {
-            const t = translations[currentLang];
-            const baseUrl = window.location.href.split('collection.html')[0].split('#')[0];
-            const fullImgUrl = baseUrl + btn.dataset.filename;
-            const typeText = btn.dataset.type === 'medical' ? t.medical : t.sun;
-            const title = `${typeText} #${btn.dataset.index}`;
-            const msg = encodeURIComponent(`${t.wa_msg}: ${title}\nURL: ${fullImgUrl}`);
-            btn.href = `https://wa.me/962775549700?text=${msg}`;
+            `;
         }
     </script>
 </body>

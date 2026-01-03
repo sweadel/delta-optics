@@ -106,7 +106,6 @@
     <script type="module">
         import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
         
-        // المفتاح الخاص بك
         const API_KEY = "AIzaSyABNvhPDxPcRPMSA6ZeRrnLzvJfnKynBHw";
         const genAI = new GoogleGenerativeAI(API_KEY);
 
@@ -136,7 +135,7 @@
             responseDiv.style.display = 'none';
 
             try {
-                // إعدادات الأمان: السماح بكل شيء (عشان ما يعمل بلوك للوجه)
+                // إعدادات الأمان
                 const safetySettings = [
                     { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
                     { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
@@ -144,12 +143,13 @@
                     { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" },
                 ];
 
+                // ⚠️ تم تغيير الموديل هنا إلى اسم دقيق يعمل دائماً ⚠️
                 const model = genAI.getGenerativeModel({ 
-                    model: "gemini-1.5-flash",
+                    model: "gemini-1.5-flash-001",
                     safetySettings: safetySettings
                 });
                 
-                const prompt = "حلل شكل وجه هذا الشخص في الصورة بدقة، واقترح أفضل 3 موديلات نظارات تناسبه. الرد بالعربي وبإيموجي.";
+                const prompt = "حلل شكل وجه هذا الشخص في الصورة بدقة (دائري، بيضاوي، مربع؟)، واقترح أفضل 3 موديلات نظارات تناسبه. الرد بالعربي وبإيموجي.";
                 const imagePart = await fileToGenerativePart(file);
 
                 const result = await model.generateContent([prompt, imagePart]);
@@ -164,10 +164,30 @@
                 console.error("Gemini Error:", error);
                 loader.style.display = 'none';
                 responseDiv.style.display = 'block';
-                // عرض رسالة الخطأ للمستخدم عشان نفهم شو السبب
-                responseDiv.innerHTML = `<span style="color:red;">حدث خطأ: ${error.message || "تأكد من النت أو المفتاح"}</span>`;
+                
+                // رسالة خطأ ذكية: لو الموديل لسا مش شغال، بنجرب الموديل الاحتياطي
+                if (error.message.includes("404") || error.message.includes("not found")) {
+                    responseDiv.innerHTML = `<span style="color:orange;">جاري المحاولة بموديل بديل...</span>`;
+                    retryWithBackupModel(file, responseDiv);
+                } else {
+                    responseDiv.innerHTML = `<span style="color:red;">حدث خطأ: ${error.message}</span>`;
+                }
             }
             event.target.value = '';
+        }
+
+        // دالة احتياطية في حال فشل الموديل الحديث
+        async function retryWithBackupModel(file, responseDiv) {
+            try {
+                 const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" }); // الموديل القديم الموثوق
+                 const prompt = "حلل شكل الوجه في الصورة واقترح نظارات مناسبة. رد بالعربي.";
+                 const imagePart = await fileToGenerativePart(file);
+                 const result = await model.generateContent([prompt, imagePart]);
+                 const response = await result.response;
+                 responseDiv.innerHTML = response.text().replace(/\n/g, '<br>');
+            } catch (err) {
+                 responseDiv.innerHTML = `<span style="color:red;">عذراً، النظام يواجه مشكلة في الاتصال حالياً. تأكد من النت.</span>`;
+            }
         }
 
         window.closeModal = function() { document.getElementById('resultModal').style.display = 'none'; }

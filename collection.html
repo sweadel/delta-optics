@@ -5,28 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Delta Optics | التشكيلة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --primary: #00796B; --gold: #D4AF37; --bg: #FAFAFA; }
-        body { background: var(--bg); font-family: 'Tajawal', sans-serif; }
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding: 15px; }
-        .product-card { background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #f0f0f0; transition: 0.3s; }
-        .img-box { height: 180px; background: #eee; display: flex; align-items: center; justify-content: center; }
+        * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+        body { background: var(--bg); margin: 0; padding-bottom: 60px; }
+        header { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 15px; display: flex; align-items: center; sticky: top; }
+        .back-btn { font-size: 1.2rem; color: var(--primary); text-decoration: none; margin-left: 15px; }
+        .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; }
+        .product-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.04); border: 1px solid #f0f0f0; }
+        .img-box { height: 160px; background: #eee; display: flex; align-items: center; justify-content: center; }
         .img-box img { width: 100%; height: 100%; object-fit: cover; }
+        .wa-btn { display: flex; align-items: center; justify-content: center; gap: 5px; background: #f1f3f4; padding: 10px; text-decoration: none; color: #333; font-weight: bold; font-size: 0.8rem; }
     </style>
 </head>
 <body>
-    <h1 style="text-align:center; padding:20px; color:var(--primary);">التشكيلة الكاملة</h1>
+    <header>
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-right"></i> التشكيلة</a>
+    </header>
     <div class="gallery-grid" id="galleryContainer"></div>
-
     <script>
         const container = document.getElementById('galleryContainer');
-        for (let i = 1; i <= 10; i++) {
-            container.innerHTML += `
-                <div class="product-card">
-                    <div class="img-box"><img src="m${i}.jpg" onerror="this.src='https://via.placeholder.com/150'"></div>
-                    <div style="padding:10px; text-align:center;">موديل #${i}</div>
+        const limit = 15;
+        function loadImages() {
+            let html = '';
+            for (let i = 1; i <= limit; i++) {
+                html += `
+                <div class="product-card" id="card-m${i}">
+                    <div class="img-box">
+                        <img src="m${i}.jpg" onerror="document.getElementById('card-m${i}').remove()">
+                    </div>
+                    <a href="https://wa.me/962775549700?text=استفسار عن موديل m${i}" class="wa-btn"><i class="fab fa-whatsapp"></i> واتساب</a>
+                </div>
+                <div class="product-card" id="card-s${i}">
+                    <div class="img-box">
+                        <img src="s${i}.jpg" onerror="document.getElementById('card-s${i}').remove()">
+                    </div>
+                    <a href="https://wa.me/962775549700?text=استفسار عن موديل s${i}" class="wa-btn"><i class="fab fa-whatsapp"></i> واتساب</a>
                 </div>`;
+            }
+            container.innerHTML = html;
         }
+        window.onload = loadImages;
     </script>
 </body>
 </html>

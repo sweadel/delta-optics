@@ -39,7 +39,8 @@
         
         .close-modal { position: absolute; top: 15px; left: 15px; font-size: 1.5rem; cursor: pointer; color: #999; }
         #previewImage { width: 100%; max-height: 200px; object-fit: contain; border-radius: 10px; margin: 10px 0; display: none; }
-        .ai-result-box { margin-top: 15px; background: #f0f8ff; padding: 15px; border-radius: 10px; font-size: 0.95rem; text-align: right; line-height: 1.6; }
+        
+        .ai-result-box { margin-top: 15px; background: #f0f8ff; padding: 15px; border-radius: 10px; font-size: 0.95rem; text-align: right; line-height: 1.6; min-height: 50px; }
         
         .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--gold); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; display: none; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -104,8 +105,10 @@
     </div>
 
     <script type="module">
-        import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+        // 1. استخدام رابط محدد لأحدث إصدار مستقر من المكتبة
+        import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai@0.21.0";
         
+        // مفتاحك
         const API_KEY = "AIzaSyABNvhPDxPcRPMSA6ZeRrnLzvJfnKynBHw";
         const genAI = new GoogleGenerativeAI(API_KEY);
 
@@ -133,9 +136,10 @@
             preview.src = URL.createObjectURL(file);
             loader.style.display = 'block';
             responseDiv.style.display = 'none';
+            responseDiv.innerHTML = ''; // مسح النتائج السابقة
 
             try {
-                // إعدادات الأمان
+                // إعدادات الأمان لعدم حظر صورة الوجه
                 const safetySettings = [
                     { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
                     { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
@@ -143,13 +147,13 @@
                     { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" },
                 ];
 
-                // ⚠️ تم تغيير الموديل هنا إلى اسم دقيق يعمل دائماً ⚠️
+                // 2. استخدام الموديل القياسي المعتمد للصور
                 const model = genAI.getGenerativeModel({ 
-                    model: "gemini-1.5-flash-001",
+                    model: "gemini-1.5-flash",
                     safetySettings: safetySettings
                 });
                 
-                const prompt = "حلل شكل وجه هذا الشخص في الصورة بدقة (دائري، بيضاوي، مربع؟)، واقترح أفضل 3 موديلات نظارات تناسبه. الرد بالعربي وبإيموجي.";
+                const prompt = "حلل شكل وجه هذا الشخص في الصورة بدقة، واقترح أفضل 3 موديلات نظارات تناسبه. الرد بالعربي وبإيموجي.";
                 const imagePart = await fileToGenerativePart(file);
 
                 const result = await model.generateContent([prompt, imagePart]);
@@ -165,29 +169,18 @@
                 loader.style.display = 'none';
                 responseDiv.style.display = 'block';
                 
-                // رسالة خطأ ذكية: لو الموديل لسا مش شغال، بنجرب الموديل الاحتياطي
-                if (error.message.includes("404") || error.message.includes("not found")) {
-                    responseDiv.innerHTML = `<span style="color:orange;">جاري المحاولة بموديل بديل...</span>`;
-                    retryWithBackupModel(file, responseDiv);
-                } else {
-                    responseDiv.innerHTML = `<span style="color:red;">حدث خطأ: ${error.message}</span>`;
-                }
+                // 3. عرض رسالة الخطأ الحقيقية باللون الأحمر للمساعدة في الحل
+                responseDiv.innerHTML = `
+                    <div style="color:red; font-weight:bold; direction:ltr; text-align:left; font-size:0.8rem;">
+                        Error: ${error.message}
+                    </div>
+                    <br>
+                    <small style="color:#555;">الرجاء تصوير هذا الخطأ وإرساله لحله فوراً.</small>
+                `;
             }
+            
+            // إعادة تعيين الإدخال للسماح بإعادة اختيار نفس الصورة
             event.target.value = '';
-        }
-
-        // دالة احتياطية في حال فشل الموديل الحديث
-        async function retryWithBackupModel(file, responseDiv) {
-            try {
-                 const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" }); // الموديل القديم الموثوق
-                 const prompt = "حلل شكل الوجه في الصورة واقترح نظارات مناسبة. رد بالعربي.";
-                 const imagePart = await fileToGenerativePart(file);
-                 const result = await model.generateContent([prompt, imagePart]);
-                 const response = await result.response;
-                 responseDiv.innerHTML = response.text().replace(/\n/g, '<br>');
-            } catch (err) {
-                 responseDiv.innerHTML = `<span style="color:red;">عذراً، النظام يواجه مشكلة في الاتصال حالياً. تأكد من النت.</span>`;
-            }
         }
 
         window.closeModal = function() { document.getElementById('resultModal').style.display = 'none'; }

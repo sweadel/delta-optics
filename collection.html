@@ -2,98 +2,30 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Delta Optics | التشكيلة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --primary: #00796B; --gold: #D4AF37; --bg: #FAFAFA; }
-        * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg); margin: 0; }
-        header { background: white; padding: 15px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
-        .back-btn { font-size: 1.2rem; color: var(--primary); margin-left: 15px; text-decoration: none; }
-        .ai-container { background: linear-gradient(135deg, #00796B, #004D40); color: white; margin: 15px; padding: 20px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,121,107,0.3); }
-        .ai-options { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
-        .ai-btn { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); color: white; padding: 10px 15px; border-radius: 8px; cursor: pointer; flex: 1; font-size: 0.9rem; }
-        #aiResultArea { background: rgba(255,255,255,0.95); color: #333; margin-top: 15px; padding: 15px; border-radius: 10px; display: none; text-align: right; line-height: 1.6; }
-        .filter-tabs { display: flex; justify-content: center; gap: 10px; margin: 10px 0; }
-        .tab { padding: 6px 20px; border-radius: 20px; background: #fff; border: 1px solid #ddd; cursor: pointer; color: #555; }
-        .tab.active { background: var(--primary); color: white; }
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; padding: 15px; }
-        .product-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.05); border: 1px solid #eee; }
-        .img-box { height: 180px; background: #f9f9f9; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .img-box img { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: 0.5s; }
-        .img-box img.loaded { opacity: 1; }
-        .info { padding: 10px; text-align: center; }
-        .wa-btn { display: flex; align-items: center; justify-content: center; gap: 5px; background: #f0fdf4; color: #166534; padding: 8px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; text-decoration: none; }
-        footer { padding: 30px; background: #263238; color: #ccc; text-align: center; border-radius: 20px 20px 0 0; }
-        .social-links { margin-top: 15px; font-size: 1.5rem; display: flex; justify-content: center; gap: 20px; }
-        #cameraInput { display: none; }
+        body { background: var(--bg); font-family: 'Tajawal', sans-serif; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding: 15px; }
+        .product-card { background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #f0f0f0; transition: 0.3s; }
+        .img-box { height: 180px; background: #eee; display: flex; align-items: center; justify-content: center; }
+        .img-box img { width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
 <body>
-    <header>
-        <a href="index.html" class="back-btn"><i class="fas fa-arrow-right"></i></a>
-        <h2 style="margin:0; font-size:1.1rem; color:var(--primary);">التشكيلة</h2>
-    </header>
-    <div class="ai-container">
-        <h3 style="margin:0;">🤖 مستشار النظارات</h3>
-        <div class="ai-options">
-            <button class="ai-btn" onclick="document.getElementById('cameraInput').click()"><i class="fas fa-camera"></i> صورني</button>
-            <button class="ai-btn" onclick="document.getElementById('manualSelectDiv').style.display='block'"><i class="fas fa-list"></i> اختر يدوياً</button>
-        </div>
-        <input type="file" id="cameraInput" accept="image/*" capture="user" onchange="handleImage(event)">
-        <div id="manualSelectDiv" style="display:none; margin-top:15px;">
-            <select id="faceShapeSelect" style="width:100%; padding:10px; border-radius:5px;"><option value="دائري">دائري</option><option value="مربع">مربع</option><option value="بيضاوي">بيضاوي</option></select>
-            <button onclick="analyzeManual()" style="margin-top:10px; background:var(--gold); border:none; padding:8px; width:100%; font-weight:bold; border-radius:5px;">انصحني</button>
-        </div>
-        <div id="aiResultArea"></div>
-    </div>
-    <div class="filter-tabs">
-        <div class="tab active" onclick="filter('all')">الكل</div>
-        <div class="tab" onclick="filter('medical')">طبية</div>
-        <div class="tab" onclick="filter('sun')">شمسية</div>
-    </div>
+    <h1 style="text-align:center; padding:20px; color:var(--primary);">التشكيلة الكاملة</h1>
     <div class="gallery-grid" id="galleryContainer"></div>
-    <footer>
-        <p>المقابلين - شارع الصخرة المشرفة</p>
-        <div class="social-links">
-            <a href="#" style="color:white;"><i class="fab fa-facebook"></i></a>
-            <a href="#" style="color:white;"><i class="fab fa-instagram"></i></a>
-        </div>
-    </footer>
-    <script type="module">
-        import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
-        const API_KEY = "AIzaSyABNvhPDxPcRPMSA6ZeRrnLzvJfnKynBHw";
-        const genAI = new GoogleGenerativeAI(API_KEY);
-        window.handleImage = async (e) => {
-            const file = e.target.files[0]; if(!file) return;
-            const res = document.getElementById('aiResultArea'); res.style.display='block'; res.innerHTML='جاري التحليل...';
-            const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-            const reader = new FileReader();
-            reader.onloadend = async () => {
-                const base64 = reader.result.split(',')[1];
-                const result = await model.generateContent(["حلل شكل وجه الشخص واقترح نظارات مناسبة بالعربي.", { inlineData: { data: base64, mimeType: file.type } }]);
-                res.innerHTML = result.response.text().replace(/\n/g, '<br>');
-            }; reader.readAsDataURL(file);
-        };
-    </script>
+
     <script>
-        const CHECK_LIMIT = 20;
-        document.addEventListener('DOMContentLoaded', () => {
-            const container = document.getElementById('galleryContainer');
-            let html = '';
-            for (let i = 1; i <= CHECK_LIMIT; i++) html += createCard('medical', i, `m${i}.jpg`);
-            for (let i = 1; i <= CHECK_LIMIT; i++) html += createCard('sun', i, `s${i}.jpg`);
-            container.innerHTML = html;
-        });
-        function createCard(type, index, fileName) {
-            return `<div class="product-card ${type}"><div class="img-box"><img src="${fileName}" onload="this.classList.add('loaded')" onerror="this.closest('.product-card').remove()"></div><div class="info"><h3 style="font-size:0.9rem;">موديل #${index}</h3><a href="https://wa.me/962775549700?text=استفسار عن موديل ${index}" class="wa-btn"><i class="fab fa-whatsapp"></i> استفسار</a></div></div>`;
-        }
-        function filter(cat) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
-            document.querySelectorAll('.product-card').forEach(c => c.style.display = (cat==='all' || c.classList.contains(cat)) ? 'block' : 'none');
+        const container = document.getElementById('galleryContainer');
+        for (let i = 1; i <= 10; i++) {
+            container.innerHTML += `
+                <div class="product-card">
+                    <div class="img-box"><img src="m${i}.jpg" onerror="this.src='https://via.placeholder.com/150'"></div>
+                    <div style="padding:10px; text-align:center;">موديل #${i}</div>
+                </div>`;
         }
     </script>
 </body>

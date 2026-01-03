@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <meta name="description" content="دلتا للبصريات - فحص نظر، نظارات طبية وشمسية، وعدسات لاصقة في الأردن.">
     <title>Delta Optics | الرئيسية</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,14 +12,14 @@
     
     <style>
         :root { 
-            --primary: #00796B; /* زمردي */
-            --gold: #D4AF37;    /* ذهبي */
-            --bg: #FAFAFA;      /* خلفية فاتحة */
-            --text: #37474F;    /* نص غامق */
+            --primary: #00796B; 
+            --gold: #D4AF37; 
+            --bg: #FAFAFA; 
+            --text: #37474F; 
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 60px; scroll-behavior: smooth; transition: 0.3s; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 60px; scroll-behavior: smooth; }
         a { text-decoration: none; color: inherit; }
         
         /* --- الهيدر --- */
@@ -37,11 +36,9 @@
         .lang-btn {
             border: 1px solid #ddd; background: white; padding: 5px 15px; 
             border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: 700; color: var(--primary);
-            transition: 0.3s;
         }
-        .lang-btn:hover { background: var(--primary); color: white; }
 
-        /* --- الهيرو (الواجهة الرئيسية) --- */
+        /* --- الهيرو --- */
         .hero { 
             min-height: 85vh; 
             background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.85)), url('https://images.unsplash.com/photo-1570222094114-28a9d8894566?auto=format&fit=crop&w=600&q=40'); 
@@ -58,80 +55,54 @@
         /* --- الأزرار --- */
         .btn-group { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; margin-top: 25px; }
         
-        /* زر التشكيلة (الرئيسي) */
         .hero-btn {
             background: var(--primary); color: white; padding: 12px 30px; 
             border-radius: 50px; font-weight: 800; font-size: 1.1rem; 
             box-shadow: 0 5px 15px rgba(0,121,107,0.3); transition: 0.3s; text-align: center;
         }
-        .hero-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,121,107,0.4); }
 
-        /* زر الفحص (الثانوي - أبيض) */
-        .hero-btn-outline {
-            background: #fff; color: var(--primary); border: 2px solid var(--primary);
-            padding: 12px 30px; border-radius: 50px; font-weight: 800; font-size: 1.1rem; 
-            transition: 0.3s; text-align: center;
-        }
-        .hero-btn-outline:hover { background: #E0F2F1; }
-
-        /* زر الذكاء الاصطناعي (الجديد) */
+        /* زر الذكاء الاصطناعي الجديد */
         .ai-btn-glow {
             background: linear-gradient(45deg, #D4AF37, #F9A825); color: white; border: none;
             padding: 12px 30px; border-radius: 50px; font-weight: 800; font-size: 1.1rem; 
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.5); text-align: center; cursor: pointer;
-            animation: pulse 2s infinite;
+            animation: pulse 2s infinite; position: relative; overflow: hidden;
         }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); } 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); } }
-        
-        /* زر التقييم (جوجل) */
-        .google-rate-btn {
-            background: #fff; border: 1px solid #ddd; padding: 10px 25px; 
-            border-radius: 50px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; 
-            font-weight: 700; color: #3c4043; box-shadow: 0 4px 10px rgba(0,0,0,0.08); margin-top: 5px;
-        }
+        /* اخفاء الانبوت تبع الملفات */
+        #imageInput { display: none; }
 
-        /* --- نافذة الذكاء الاصطناعي (Modal) --- */
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); } 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); } }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
+
+        /* --- نافذة عرض النتيجة (Modal) --- */
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center; padding: 20px;
+            background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; padding: 20px;
         }
         .modal-content {
             background: white; width: 100%; max-width: 400px; padding: 25px; border-radius: 20px;
-            text-align: center; position: relative; animation: slideUp 0.3s ease-out;
+            text-align: center; position: relative; animation: slideUp 0.3s ease-out; max-height: 80vh; overflow-y: auto;
         }
         @keyframes slideUp { from {transform: translateY(20px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
         
         .close-modal { position: absolute; top: 15px; left: 15px; font-size: 1.5rem; cursor: pointer; color: #999; }
-        .ai-result-box { margin-top: 15px; background: #f0f8ff; padding: 15px; border-radius: 10px; font-size: 0.95rem; text-align: right; line-height: 1.6; display: none; }
+        
+        #previewImage { width: 100%; max-height: 200px; object-fit: contain; border-radius: 10px; margin: 10px 0; display: none; }
+        .ai-result-box { margin-top: 15px; background: #f0f8ff; padding: 15px; border-radius: 10px; font-size: 0.95rem; text-align: right; line-height: 1.6; }
+        
+        /* دوائر التحميل */
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--gold); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; display: none; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* --- الخدمات والتقييمات --- */
+        /* --- باقي التنسيقات --- */
         .section-title { text-align: center; margin: 50px 0 20px; color: var(--primary); font-size: 1.5rem; font-weight: 800; }
         .services-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 0 15px; }
         .srv-card { background: white; padding: 15px; border-radius: 10px; width: calc(50% - 10px); text-align: center; box-shadow: 0 3px 10px rgba(0,0,0,0.03); }
         .srv-card i { font-size: 1.8rem; color: var(--primary); margin-bottom: 8px; }
-
-        .reviews-scroll { display: flex; overflow-x: auto; gap: 15px; padding: 10px 15px; scroll-snap-type: x mandatory; padding-bottom: 20px; }
-        .review-card { min-width: 260px; background: white; padding: 15px; border-radius: 10px; scroll-snap-align: center; box-shadow: 0 3px 10px rgba(0,0,0,0.03); border: 1px solid #eee; }
-
         footer { background: #263238; color: #90A4AE; text-align: center; padding: 30px 15px; margin-top: 40px; font-size: 0.8rem; }
-        
-        /* --- أزرار عائمة --- */
-        .floating-container { position: fixed; bottom: 20px; left: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
-        html[dir="ltr"] .floating-container { left: auto; right: 20px; }
-        .float-btn { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .btn-whatsapp { background: #25D366; } .btn-phone { background: var(--primary); }
-        .google-icon { background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat; -webkit-background-clip: text; color: transparent; }
-        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
-
-        @media (max-width: 600px) { .main-logo { width: 130px; height: 130px; } }
     </style>
 </head>
 <body>
-
-    <div class="floating-container">
-        <a href="tel:+962775549700" class="float-btn btn-phone"><i class="fas fa-phone-alt"></i></a>
-        <a href="https://wa.me/962775549700" class="float-btn btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a>
-    </div>
 
     <header>
         <div class="nav-container">
@@ -146,162 +117,135 @@
     <section class="hero">
         <img src="logo.jpg" class="main-logo" onerror="this.src='https://via.placeholder.com/160?text=Delta'">
         
-        <div style="margin-top:10px; font-weight:bold; background:white; padding:6px 20px; border-radius:20px; box-shadow:0 3px 8px rgba(0,0,0,0.05); font-size: 0.9rem;">
-            <i class="fab fa-google google-icon"></i> 4.9 <span style="color:#FFD700">★★★★★</span>
-        </div>
-        
         <h1 style="margin-top:15px; font-size:1.3rem; color:var(--text); max-width: 90%; line-height: 1.5;" data-i18n="slogan">دقة في الفحص .. أناقة في المظهر</h1>
 
         <div class="btn-group">
-            <a href="collection.html" class="hero-btn" data-i18n="view_collection">
-                تصفح التشكيلة الجديدة
-            </a>
-
-            <button class="ai-btn-glow" onclick="openAIModal()">
-                <i class="fas fa-robot"></i> مستشار النظارات الذكي
+            <button class="ai-btn-glow" onclick="document.getElementById('imageInput').click()">
+                <i class="fas fa-camera"></i> حلل وجهي بالكاميرا
             </button>
+            <input type="file" id="imageInput" accept="image/*" capture="user" onchange="handleImageUpload(event)">
 
-            <a href="test.html" class="hero-btn-outline">
-                <i class="fas fa-eye"></i> <span data-i18n="eye_test_btn">افحص نظرك الآن</span>
-            </a>
-
-            <a href="YOUR_GOOGLE_MAPS_LINK" target="_blank" class="google-rate-btn">
-                <i class="fab fa-google google-icon" style="font-size:1.2rem;"></i>
-                <span data-i18n="rate_us">قيّمنا على Google</span>
+            <a href="collection.html" class="hero-btn" data-i18n="view_collection">تصفح التشكيلة الجديدة</a>
+            
+            <a href="test.html" style="background:#fff; color:var(--primary); border:2px solid var(--primary); padding:12px 30px; border-radius:50px; font-weight:800; text-align:center; display:block;">
+                <i class="fas fa-eye"></i> افحص نظرك الآن
             </a>
         </div>
     </section>
 
-    <h2 class="section-title" data-i18n="services">خدماتنا</h2>
+    <h2 class="section-title">خدماتنا</h2>
     <div class="services-grid">
-        <div class="srv-card"><i class="fas fa-eye"></i><h3 data-i18n="srv_exam">فحص نظر</h3></div>
-        <div class="srv-card"><i class="fas fa-glasses"></i><h3 data-i18n="srv_glasses">نظارات طبية</h3></div>
-        <div class="srv-card"><i class="fas fa-sun"></i><h3 data-i18n="srv_sun">نظارات شمسية</h3></div>
-        <div class="srv-card"><i class="fas fa-eye-dropper"></i><h3 data-i18n="srv_lenses">عدسات لاصقة</h3></div>
-    </div>
-
-    <h2 class="section-title" data-i18n="reviews">قالوا عنا</h2>
-    <div class="reviews-scroll">
-        <div class="review-card">
-            <div style="color:#FFC107; margin-bottom:5px;">★★★★★</div>
-            <p data-i18n="rev1">"المحل مرتب والتعامل راقي جداً والأسعار مناسبة."</p>
-            <small style="color:#888; display:block; margin-top:5px;">- Ahmad Ali</small>
-        </div>
-        <div class="review-card">
-            <div style="color:#FFC107; margin-bottom:5px;">★★★★★</div>
-            <p data-i18n="rev2">"فحص النظر دقيق جداً، اشتريت نظارة شمسية طبية وكانت ممتازة."</p>
-            <small style="color:#888; display:block; margin-top:5px;">- Sara Kh</small>
-        </div>
+        <div class="srv-card"><i class="fas fa-eye"></i><h3>فحص نظر</h3></div>
+        <div class="srv-card"><i class="fas fa-glasses"></i><h3>نظارات طبية</h3></div>
+        <div class="srv-card"><i class="fas fa-sun"></i><h3>نظارات شمسية</h3></div>
+        <div class="srv-card"><i class="fas fa-eye-dropper"></i><h3>عدسات لاصقة</h3></div>
     </div>
 
     <footer>
-        <p data-i18n="address">المقابلين - شارع الصخرة المشرفة</p>
-        <div style="margin-top:15px; font-size:1.5rem;">
-            <a href="https://facebook.com/delta.optics1" target="_blank" style="margin:0 10px; color:#fff;"><i class="fab fa-facebook"></i></a>
-            <a href="https://instagram.com/delta.optics1" target="_blank" style="margin:0 10px; color:#fff;"><i class="fab fa-instagram"></i></a>
-        </div>
+        <p>المقابلين - شارع الصخرة المشرفة</p>
         <p style="margin-top:20px; font-size:0.75rem; opacity:0.7;">© 2026 Delta Optics</p>
     </footer>
 
-    <div class="modal-overlay" id="aiModal">
+    <div class="modal-overlay" id="resultModal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeAIModal()">&times;</span>
-            <h3 style="color:var(--primary); margin-bottom:15px;">🤖 مستشار Delta Optics</h3>
-            <p>اختر شكل وجهك لنقترح عليك الأفضل:</p>
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h3 style="color:var(--primary); margin-bottom:10px;">🤖 تحليل المستشار الذكي</h3>
             
-            <select id="faceShapeSelect" style="width:100%; padding:10px; margin:15px 0; border:1px solid #ddd; border-radius:5px;">
-                <option value="Round">دائري (Round)</option>
-                <option value="Square">مربع (Square)</option>
-                <option value="Oval">بيضاوي (Oval)</option>
-                <option value="Heart">قلبي (Heart)</option>
-                <option value="Oblong">مستطيل (Oblong)</option>
-            </select>
+            <img id="previewImage" alt="صورتك">
             
-            <button onclick="askAI()" style="width:100%; background:var(--primary); color:white; padding:10px; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">انصحني الآن</button>
+            <div id="loader" class="loader"></div>
+            <div id="aiResponse" class="ai-result-box" style="display:none;"></div>
             
-            <div id="aiResponse" class="ai-result-box"></div>
+            <button onclick="closeModal()" style="margin-top:15px; background:var(--primary); color:white; padding:10px 30px; border:none; border-radius:20px; cursor:pointer;">إغلاق</button>
         </div>
     </div>
 
     <script type="module">
         import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+        
+        // ⚠️ تأكد أن هذا المفتاح مفعل عليه Gemini API
         const API_KEY = "AIzaSyABNvhPDxPcRPMSA6ZeRrnLzvJfnKynBHw";
         const genAI = new GoogleGenerativeAI(API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-        window.askAI = async function() {
-            const shape = document.getElementById('faceShapeSelect').value;
+        // دالة تحويل الصورة لـ Base64
+        async function fileToGenerativePart(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve({
+                    inlineData: { data: reader.result.split(',')[1], mimeType: file.type },
+                });
+                reader.readAsDataURL(file);
+            });
+        }
+
+        window.handleImageUpload = async function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // 1. فتح النافذة وعرض الصورة
+            const modal = document.getElementById('resultModal');
+            const preview = document.getElementById('previewImage');
+            const loader = document.getElementById('loader');
             const responseDiv = document.getElementById('aiResponse');
-            const btn = document.querySelector('.modal-content button');
             
-            responseDiv.style.display = 'block';
-            responseDiv.innerHTML = "جاري استشارة الخبير... ⏳";
-            btn.disabled = true;
+            modal.style.display = 'flex';
+            preview.style.display = 'block';
+            preview.src = URL.createObjectURL(file);
+            
+            loader.style.display = 'block';
+            responseDiv.style.display = 'none';
+            responseDiv.innerHTML = '';
 
             try {
-                const prompt = `أنا زبون في متجر نظارات اسمه دلتا للبصريات. شكل وجهي: ${shape}. 
-                أعطني نصيحة واحدة قصيرة واقترح 3 موديلات نظارات تناسبني. استخدم الايموجي.`;
+                // 2. استخدام موديل Flash لأنه سريع ويدعم الصور
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
                 
-                const result = await model.generateContent(prompt);
+                const prompt = "أنت خبير بصريات في متجر Delta Optics. حلل شكل وجه هذا الشخص في الصورة بدقة، ثم اقترح عليه أفضل 3 موديلات نظارات تناسبه. اجعل الرد باللهجة الأردنية اللطيفة واستخدم الإيموجي.";
+                const imagePart = await fileToGenerativePart(file);
+
+                // 3. إرسال الطلب
+                const result = await model.generateContent([prompt, imagePart]);
                 const response = await result.response;
-                responseDiv.innerHTML = response.text().replace(/\n/g, '<br>');
+                const text = response.text();
+
+                // 4. عرض النتيجة
+                loader.style.display = 'none';
+                responseDiv.style.display = 'block';
+                responseDiv.innerHTML = text.replace(/\n/g, '<br>'); // تنسيق الأسطر
+
             } catch (error) {
-                responseDiv.innerHTML = "حدث خطأ في الاتصال، حاول مجدداً.";
-            } finally {
-                btn.disabled = false;
+                console.error(error);
+                loader.style.display = 'none';
+                responseDiv.style.display = 'block';
+                responseDiv.innerHTML = `<span style="color:red; font-weight:bold;">عذراً، حدث خطأ أثناء الاتصال.</span><br><small>تأكد من الإنترنت، أو جرب صورة أخرى.</small>`;
             }
+            
+            // تصفير الإدخال عشان يقدر يختار نفس الصورة مرة ثانية لو حب
+            event.target.value = '';
+        }
+
+        window.closeModal = function() {
+            document.getElementById('resultModal').style.display = 'none';
+        }
+        
+        // إغلاق عند النقر خارج الصندوق
+        window.onclick = function(e) {
+            if(e.target == document.getElementById('resultModal')) closeModal();
         }
     </script>
-
+    
     <script>
-        // سكربتات الموقع الأساسية (اللغة والمودال)
-        function openAIModal() { document.getElementById('aiModal').style.display = 'flex'; }
-        function closeAIModal() { document.getElementById('aiModal').style.display = 'none'; }
-
-        // إغلاق المودال عند النقر في الخارج
-        window.onclick = function(event) {
-            const modal = document.getElementById('aiModal');
-            if (event.target == modal) { modal.style.display = "none"; }
-        }
-
+        // دالة اللغة البسيطة
         const translations = {
-            ar: {
-                title: "دلتا للبصريات", slogan: "دقة في الفحص .. أناقة في المظهر", 
-                view_collection: "تصفح التشكيلة الجديدة", 
-                eye_test_btn: "افحص نظرك الآن",
-                rate_us: "قيّمنا على Google",
-                services: "خدماتنا", srv_exam: "فحص نظر", srv_glasses: "نظارات طبية", srv_sun: "نظارات شمسية", srv_lenses: "عدسات لاصقة",
-                reviews: "قالوا عنا", rev1: "المحل مرتب والتعامل راقي جداً.", rev2: "فحص النظر دقيق جداً.",
-                address: "المقابلين - شارع الصخرة المشرفة", btn_lang: "English"
-            },
-            en: {
-                title: "Delta Optics", slogan: "Precision in Eye Care .. Elegance in Look", 
-                view_collection: "View Collection", 
-                eye_test_btn: "Test Your Eyes",
-                rate_us: "Rate us on Google",
-                services: "Our Services", srv_exam: "Eye Exam", srv_glasses: "Eyeglasses", srv_sun: "Sunglasses", srv_lenses: "Contact Lenses",
-                reviews: "Testimonials", rev1: "Very organized shop, classy dealing.", rev2: "Accurate eye exam.",
-                address: "Al-Muqabalain St.", btn_lang: "عربي"
-            }
+            ar: { title: "دلتا للبصريات", slogan: "دقة في الفحص .. أناقة في المظهر", view_collection: "تصفح التشكيلة الجديدة" },
+            en: { title: "Delta Optics", slogan: "Precision in Eye Care .. Elegance in Look", view_collection: "View Collection" }
         };
-
-        let currentLang = localStorage.getItem('delta_lang') || 'ar';
-        
+        let currentLang = 'ar';
         function toggleLanguage() {
             currentLang = currentLang === 'ar' ? 'en' : 'ar';
-            localStorage.setItem('delta_lang', currentLang);
-            updateLanguage();
-        }
-
-        function updateLanguage() {
-            const t = translations[currentLang];
             document.documentElement.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
-            document.documentElement.setAttribute('lang', currentLang);
-            document.querySelectorAll('[data-i18n]').forEach(el => { if(t[el.dataset.i18n]) el.textContent = t[el.dataset.i18n]; });
-            document.querySelector('.lang-btn').textContent = t.btn_lang;
+            document.querySelector('.lang-btn').textContent = currentLang === 'ar' ? 'English' : 'عربي';
         }
-
-        document.addEventListener('DOMContentLoaded', updateLanguage);
     </script>
 </body>
 </html>

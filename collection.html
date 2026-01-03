@@ -6,206 +6,95 @@
     <title>Delta Optics | التشكيلة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <style>
         :root { --primary: #00796B; --gold: #D4AF37; --bg: #FAFAFA; }
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg); margin: 0; padding-bottom: 0; }
-        a { text-decoration: none; color: inherit; }
-        
+        body { background: var(--bg); margin: 0; }
         header { background: white; padding: 15px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
-        .back-btn { font-size: 1.2rem; color: var(--primary); margin-left: 15px; }
-        
-        .ai-container {
-            background: linear-gradient(135deg, #00796B, #004D40);
-            color: white; margin: 15px; padding: 20px;
-            border-radius: 15px; text-align: center;
-            box-shadow: 0 5px 15px rgba(0,121,107,0.3);
-        }
+        .back-btn { font-size: 1.2rem; color: var(--primary); margin-left: 15px; text-decoration: none; }
+        .ai-container { background: linear-gradient(135deg, #00796B, #004D40); color: white; margin: 15px; padding: 20px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,121,107,0.3); }
         .ai-options { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
-        .ai-btn {
-            background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
-            color: white; padding: 10px 15px; border-radius: 8px; cursor: pointer;
-            flex: 1; font-size: 0.9rem; transition: 0.3s;
-        }
-        .ai-btn:hover { background: white; color: var(--primary); font-weight: bold; }
-        
-        #aiResultArea { 
-            background: rgba(255,255,255,0.95); color: #333; margin-top: 15px; 
-            padding: 15px; border-radius: 10px; display: none; text-align: right; 
-            line-height: 1.6; font-size: 0.95rem;
-        }
-        
+        .ai-btn { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); color: white; padding: 10px 15px; border-radius: 8px; cursor: pointer; flex: 1; font-size: 0.9rem; }
+        #aiResultArea { background: rgba(255,255,255,0.95); color: #333; margin-top: 15px; padding: 15px; border-radius: 10px; display: none; text-align: right; line-height: 1.6; }
         .filter-tabs { display: flex; justify-content: center; gap: 10px; margin: 10px 0; }
-        .tab { padding: 6px 20px; border-radius: 20px; background: #fff; border: 1px solid #ddd; cursor: pointer; color: #555; font-size: 0.9rem; }
-        .tab.active { background: var(--primary); color: white; border-color: var(--primary); }
-
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; padding: 15px; min-height: 300px; }
-        .product-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.05); border: 1px solid #eee; transition: 0.3s; }
-        .img-box { height: 180px; background: #f9f9f9; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        .img-box img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; opacity: 0; }
+        .tab { padding: 6px 20px; border-radius: 20px; background: #fff; border: 1px solid #ddd; cursor: pointer; color: #555; }
+        .tab.active { background: var(--primary); color: white; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; padding: 15px; }
+        .product-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.05); border: 1px solid #eee; }
+        .img-box { height: 180px; background: #f9f9f9; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .img-box img { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: 0.5s; }
         .img-box img.loaded { opacity: 1; }
         .info { padding: 10px; text-align: center; }
-        
-        .wa-btn {
-            display: flex; align-items: center; justify-content: center; gap: 5px;
-            background: #f0fdf4; color: #166534; padding: 8px; border-radius: 6px;
-            font-size: 0.85rem; font-weight: bold; margin-top: 5px;
-        }
-        
-        footer { margin-top: 40px; padding: 30px; background: #263238; color: #ccc; font-size: 0.9rem; border-radius: 20px 20px 0 0; text-align: center; }
+        .wa-btn { display: flex; align-items: center; justify-content: center; gap: 5px; background: #f0fdf4; color: #166534; padding: 8px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; text-decoration: none; }
+        footer { padding: 30px; background: #263238; color: #ccc; text-align: center; border-radius: 20px 20px 0 0; }
         .social-links { margin-top: 15px; font-size: 1.5rem; display: flex; justify-content: center; gap: 20px; }
-        .social-links a:hover { color: var(--gold); transform: scale(1.1); transition: 0.3s; }
-
         #cameraInput { display: none; }
     </style>
 </head>
 <body>
-
     <header>
         <a href="index.html" class="back-btn"><i class="fas fa-arrow-right"></i></a>
         <h2 style="margin:0; font-size:1.1rem; color:var(--primary);">التشكيلة</h2>
     </header>
-
     <div class="ai-container">
         <h3 style="margin:0;">🤖 مستشار النظارات</h3>
-        <p style="font-size:0.85rem; opacity:0.9; margin:5px 0 15px;">صور وجهك لنقترح عليك الأنسب</p>
         <div class="ai-options">
-            <button class="ai-btn" onclick="triggerCamera()"><i class="fas fa-camera"></i> صورني</button>
-            <button class="ai-btn" onclick="showManualSelect()"><i class="fas fa-list"></i> اختر يدوياً</button>
+            <button class="ai-btn" onclick="document.getElementById('cameraInput').click()"><i class="fas fa-camera"></i> صورني</button>
+            <button class="ai-btn" onclick="document.getElementById('manualSelectDiv').style.display='block'"><i class="fas fa-list"></i> اختر يدوياً</button>
         </div>
         <input type="file" id="cameraInput" accept="image/*" capture="user" onchange="handleImage(event)">
         <div id="manualSelectDiv" style="display:none; margin-top:15px;">
-            <select id="faceShapeSelect" style="width:100%; padding:10px; border-radius:5px;">
-                <option value="" disabled selected>-- اختر شكل وجهك --</option>
-                <option value="دائري">دائري (Round)</option>
-                <option value="مربع">مربع (Square)</option>
-                <option value="بيضاوي">بيضاوي (Oval)</option>
-                <option value="قلبي">قلبي (Heart)</option>
-            </select>
-            <button onclick="analyzeManual()" style="margin-top:10px; background:var(--gold); border:none; padding:8px; border-radius:5px; width:100%; font-weight:bold;">انصحني</button>
+            <select id="faceShapeSelect" style="width:100%; padding:10px; border-radius:5px;"><option value="دائري">دائري</option><option value="مربع">مربع</option><option value="بيضاوي">بيضاوي</option></select>
+            <button onclick="analyzeManual()" style="margin-top:10px; background:var(--gold); border:none; padding:8px; width:100%; font-weight:bold; border-radius:5px;">انصحني</button>
         </div>
         <div id="aiResultArea"></div>
     </div>
-
     <div class="filter-tabs">
         <div class="tab active" onclick="filter('all')">الكل</div>
         <div class="tab" onclick="filter('medical')">طبية</div>
         <div class="tab" onclick="filter('sun')">شمسية</div>
     </div>
-
     <div class="gallery-grid" id="galleryContainer"></div>
-
     <footer>
         <p>المقابلين - شارع الصخرة المشرفة</p>
         <div class="social-links">
-            <a href="https://facebook.com/delta.optics1" target="_blank" style="color:white;"><i class="fab fa-facebook"></i></a>
-            <a href="https://instagram.com/delta.optics1" target="_blank" style="color:white;"><i class="fab fa-instagram"></i></a>
+            <a href="#" style="color:white;"><i class="fab fa-facebook"></i></a>
+            <a href="#" style="color:white;"><i class="fab fa-instagram"></i></a>
         </div>
-        <p style="margin-top:20px; font-size:0.75rem; opacity:0.6;">© 2026 Delta Optics</p>
     </footer>
-
     <script type="module">
         import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
         const API_KEY = "AIzaSyABNvhPDxPcRPMSA6ZeRrnLzvJfnKynBHw";
         const genAI = new GoogleGenerativeAI(API_KEY);
-        const safetySettings = [{ category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },{ category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }];
-
-        window.handleImage = async function(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const resultDiv = document.getElementById('aiResultArea');
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = '⏳ جاري تحليل الوجه...';
-            try {
-                const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash", safetySettings });
-                const reader = new FileReader();
-                reader.onloadend = async () => {
-                    const base64Data = reader.result.split(',')[1];
-                    const imagePart = { inlineData: { data: base64Data, mimeType: file.type } };
-                    const prompt = "حلل شكل وجه الشخص (دائري، مربع؟) واقترح 3 نظارات. رد قصير بالعربي.";
-                    const result = await model.generateContent([prompt, imagePart]);
-                    resultDiv.innerHTML = '<strong>💡 النصيحة:</strong><br>' + result.response.text().replace(/\n/g, '<br>');
-                };
-                reader.readAsDataURL(file);
-            } catch (error) { resultDiv.innerHTML = 'خطأ في الاتصال.'; }
-        }
-
-        window.analyzeManual = async function() {
-            const shape = document.getElementById('faceShapeSelect').value;
-            if(!shape) return alert("اختر الشكل");
-            const resultDiv = document.getElementById('aiResultArea');
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = '⏳ جاري البحث...';
-            try {
-                const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash", safetySettings });
-                const result = await model.generateContent(`وجهي ${shape}. اقترح نظارات مناسبة باختصار.`);
-                resultDiv.innerHTML = '<strong>💡 النصيحة:</strong><br>' + result.response.text().replace(/\n/g, '<br>');
-            } catch (error) { resultDiv.innerHTML = 'خطأ في الاتصال.'; }
-        }
-
-        window.triggerCamera = () => document.getElementById('cameraInput').click();
-        window.showManualSelect = () => { document.getElementById('manualSelectDiv').style.display = 'block'; document.getElementById('aiResultArea').style.display = 'none'; };
+        window.handleImage = async (e) => {
+            const file = e.target.files[0]; if(!file) return;
+            const res = document.getElementById('aiResultArea'); res.style.display='block'; res.innerHTML='جاري التحليل...';
+            const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+            const reader = new FileReader();
+            reader.onloadend = async () => {
+                const base64 = reader.result.split(',')[1];
+                const result = await model.generateContent(["حلل شكل وجه الشخص واقترح نظارات مناسبة بالعربي.", { inlineData: { data: base64, mimeType: file.type } }]);
+                res.innerHTML = result.response.text().replace(/\n/g, '<br>');
+            }; reader.readAsDataURL(file);
+        };
     </script>
-
     <script>
-        const CHECK_LIMIT = 20; 
+        const CHECK_LIMIT = 20;
         document.addEventListener('DOMContentLoaded', () => {
             const container = document.getElementById('galleryContainer');
             let html = '';
-            for (let i = 1; i <= CHECK_LIMIT; i++) { html += createCard('medical', i, `m${i}.jpg.jpg`); } 
-            for (let i = 1; i <= CHECK_LIMIT; i++) { html += createCard('sun', i, `s${i}.jpg.jpg`); }
+            for (let i = 1; i <= CHECK_LIMIT; i++) html += createCard('medical', i, `m${i}.jpg`);
+            for (let i = 1; i <= CHECK_LIMIT; i++) html += createCard('sun', i, `s${i}.jpg`);
             container.innerHTML = html;
         });
-
         function createCard(type, index, fileName) {
-            const typeLabel = type === 'medical' ? 'طبية' : 'شمسية';
-            return `
-            <div class="product-card ${type}">
-                <div class="img-box">
-                    <img src="${fileName}" loading="lazy" 
-                         onload="this.classList.add('loaded')" 
-                         onerror="handleImageError(this, '${type}', ${index})">
-                </div>
-                <div class="info">
-                    <span style="color:var(--gold); font-size:0.75rem; font-weight:bold;">${typeLabel}</span>
-                    <h3 style="margin:5px 0; font-size:0.9rem;">موديل #${index}</h3>
-                    <a href="#" class="wa-btn dynamic-wa" data-filename="${fileName}" data-index="${index}" data-type="${typeLabel}">
-                        <i class="fab fa-whatsapp"></i> استفسار
-                    </a>
-                </div>
-            </div>`;
+            return `<div class="product-card ${type}"><div class="img-box"><img src="${fileName}" onload="this.classList.add('loaded')" onerror="this.closest('.product-card').remove()"></div><div class="info"><h3 style="font-size:0.9rem;">موديل #${index}</h3><a href="https://wa.me/962775549700?text=استفسار عن موديل ${index}" class="wa-btn"><i class="fab fa-whatsapp"></i> استفسار</a></div></div>`;
         }
-
-        function handleImageError(img, type, index) {
-            if (!img.dataset.retried) {
-                img.dataset.retried = "true";
-                const normalName = type === 'medical' ? `m${index}.jpg` : `s${index}.jpg`;
-                img.src = normalName;
-                const btn = img.closest('.product-card').querySelector('.dynamic-wa');
-                btn.dataset.filename = normalName;
-                updateLink(btn);
-            } else {
-                img.closest('.product-card').remove();
-            }
-        }
-
-        function filter(category) {
+        function filter(cat) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             event.target.classList.add('active');
-            document.querySelectorAll('.product-card').forEach(card => {
-                card.style.display = (category === 'all' || card.classList.contains(category)) ? 'block' : 'none';
-            });
+            document.querySelectorAll('.product-card').forEach(c => c.style.display = (cat==='all' || c.classList.contains(cat)) ? 'block' : 'none');
         }
-
-        function updateLink(btn) {
-            const baseUrl = window.location.href.split('collection.html')[0];
-            const fullImgUrl = baseUrl + btn.dataset.filename;
-            const msg = encodeURIComponent(`مرحباً، استفسار عن النظارة ${btn.dataset.type} رقم #${btn.dataset.index}\nالرابط: ${fullImgUrl}`);
-            btn.href = `https://wa.me/962775549700?text=${msg}`;
-        }
-        
-        setTimeout(() => document.querySelectorAll('.dynamic-wa').forEach(updateLink), 500);
     </script>
 </body>
 </html>

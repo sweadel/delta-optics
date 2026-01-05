@@ -14,7 +14,7 @@
 
         header { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: fixed; width: 100%; top: 0; z-index: 1000; height: 60px; display: flex; align-items: center; }
         .nav-container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 15px; display: flex; justify-content: space-between; align-items: center; }
-        .logo-text { font-size: 1.2rem; font-weight: 800; color: var(--primary); }
+        .logo-text { font-size: 1.2rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 8px; }
 
         .hero { min-height: 85vh; background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.85)), url('https://images.unsplash.com/photo-1570222094114-28a9d8894566?auto=format&fit=crop&w=600&q=40'); background-size: cover; background-position: center; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; margin-top: 60px; padding: 20px; }
         .main-logo { width: 150px; height: 150px; border-radius: 50%; border: 4px solid #fff; box-shadow: 0 10px 30px rgba(0,121,107,0.2); margin-bottom: 20px; object-fit: cover; animation: float 6s ease-in-out infinite; }
@@ -31,10 +31,9 @@
         .srv-card { background: white; padding: 15px; border-radius: 10px; width: calc(50% - 10px); text-align: center; box-shadow: 0 3px 10px rgba(0,0,0,0.03); }
         .srv-card i { font-size: 1.8rem; color: var(--primary); margin-bottom: 8px; }
 
-        .reviews-scroll { display: flex; overflow-x: auto; gap: 15px; padding: 10px 15px; scroll-snap-type: x mandatory; }
-        .review-card { min-width: 260px; background: white; padding: 15px; border-radius: 10px; scroll-snap-align: center; box-shadow: 0 3px 10px rgba(0,0,0,0.03); border: 1px solid #eee; }
-
         footer { background: #263238; color: #90A4AE; text-align: center; padding: 30px 15px; margin-top: 40px; }
+        .address-link { display: flex; align-items: center; justify-content: center; gap: 8px; color: #fff; text-decoration: none; margin-bottom: 15px; font-weight: bold; }
+        
         .floating-container { position: fixed; bottom: 20px; left: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
         .float-btn { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
         
@@ -50,7 +49,10 @@
 
     <header>
         <div class="nav-container">
-            <span class="logo-text" data-i18n="title">دلتا للبصريات</span>
+            <span class="logo-text">
+                <i class="fas fa-map-marker-alt" style="font-size: 1rem; color: var(--gold);"></i>
+                <span data-i18n="title">دلتا للبصريات</span>
+            </span>
             <button class="lang-btn" onclick="toggleLanguage()" style="border:1px solid #ddd; background:white; padding:5px 15px; border-radius:20px; font-weight:bold; color:var(--primary);">English</button>
         </div>
     </header>
@@ -61,7 +63,7 @@
         <div class="btn-group">
             <a href="collection.html" class="hero-btn" data-i18n="view_collection">تصفح التشكيلة الجديدة</a>
             <a href="test.html" class="hero-btn-outline" data-i18n="eye_test_btn">افحص نظرك الآن</a>
-            <a href="YOUR_GOOGLE_MAPS_LINK" target="_blank" class="google-rate-btn">
+            <a href="https://maps.app.goo.gl/uPka4fS7YmUayzVw6" target="_blank" class="google-rate-btn">
                 <i class="fab fa-google google-icon"></i> <span data-i18n="rate_us">قيّمنا على Google</span>
             </a>
         </div>
@@ -75,22 +77,11 @@
         <div class="srv-card"><i class="fas fa-eye-dropper"></i><h3 data-i18n="srv_lenses">عدسات لاصقة</h3></div>
     </div>
 
-    <h2 class="section-title" data-i18n="reviews">قالوا عنا</h2>
-    <div class="reviews-scroll">
-        <div class="review-card">
-            <div style="color:#FFC107">★★★★★</div>
-            <p data-i18n="rev1">"المحل مرتب والتعامل راقي جداً والأسعار مناسبة."</p>
-            <small>- Ahmad Ali</small>
-        </div>
-        <div class="review-card">
-            <div style="color:#FFC107">★★★★★</div>
-            <p data-i18n="rev2">"فحص النظر دقيق جداً، اشتريت نظارة ممتازة."</p>
-            <small>- Sara Kh</small>
-        </div>
-    </div>
-
     <footer>
-        <p data-i18n="address">المقابلين - شارع الصخرة المشرفة</p>
+        <a href="https://maps.app.goo.gl/uPka4fS7YmUayzVw6" target="_blank" class="address-link">
+            <i class="fas fa-map-marked-alt" style="color: var(--gold);"></i>
+            <span data-i18n="address">المقابلين - شارع الصخرة المشرفة</span>
+        </a>
         <div style="margin-top:15px; font-size:1.5rem;">
             <a href="https://facebook.com/delta.optics1" target="_blank" style="margin:0 10px; color:#fff;"><i class="fab fa-facebook"></i></a>
             <a href="https://instagram.com/delta.optics1" target="_blank" style="margin:0 10px; color:#fff;"><i class="fab fa-instagram"></i></a>
@@ -105,27 +96,23 @@
                 view_collection: "تصفح التشكيلة الجديدة", eye_test_btn: "افحص نظرك الآن",
                 rate_us: "قيّمنا على Google", services: "خدماتنا", srv_exam: "فحص نظر", 
                 srv_glasses: "نظارات طبية", srv_sun: "نظارات شمسية", srv_lenses: "عدسات لاصقة",
-                reviews: "قالوا عنا", rev1: "المحل مرتب والتعامل راقي جداً.", 
-                rev2: "فحص النظر دقيق جداً.", address: "المقابلين - شارع الصخرة المشرفة", btn_lang: "English"
+                address: "المقابلين - شارع الصخرة المشرفة", btn_lang: "English"
             },
             en: {
                 title: "Delta Optics", slogan: "Precision in Eye Care .. Elegance in Look", 
                 view_collection: "View Collection", eye_test_btn: "Test Your Eyes",
                 rate_us: "Rate us on Google", services: "Our Services", srv_exam: "Eye Exam", 
                 srv_glasses: "Eyeglasses", srv_sun: "Sunglasses", srv_lenses: "Contact Lenses",
-                reviews: "Testimonials", rev1: "Very organized shop, classy dealing.", 
-                rev2: "Accurate eye exam.", address: "Al-Muqabalain - Al-Sakhra St.", btn_lang: "عربي"
+                address: "Al-Muqabalain - Al-Sakhra St.", btn_lang: "عربي"
             }
         };
 
         let currentLang = localStorage.getItem('delta_lang') || 'ar';
-        
         function toggleLanguage() {
             currentLang = currentLang === 'ar' ? 'en' : 'ar';
             localStorage.setItem('delta_lang', currentLang);
             updateLanguage();
         }
-
         function updateLanguage() {
             const t = translations[currentLang];
             document.documentElement.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
@@ -135,7 +122,6 @@
             });
             document.querySelector('.lang-btn').textContent = t.btn_lang;
         }
-
         document.addEventListener('DOMContentLoaded', updateLanguage);
     </script>
 </body>

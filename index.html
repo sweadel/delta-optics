@@ -3,41 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Delta Optics | الرئيسية</title>
+    <title>Delta Optics | دلتا للبصريات</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
         :root { --primary: #00796B; --gold: #D4AF37; --bg: #FAFAFA; --text: #37474F; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 60px; scroll-behavior: smooth; }
-        a { text-decoration: none; color: inherit; }
-
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        
+        /* الهيدر */
         header { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: fixed; width: 100%; top: 0; z-index: 1000; height: 60px; display: flex; align-items: center; }
         .nav-container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 15px; display: flex; justify-content: space-between; align-items: center; }
-        .logo-text { font-size: 1.2rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .logo-box { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .logo-text { font-size: 1.25rem; font-weight: 800; color: var(--primary); }
+        .location-icon-head { color: var(--gold); font-size: 1.1rem; animation: pulse 2s infinite; }
 
-        .hero { min-height: 85vh; background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.85)), url('https://images.unsplash.com/photo-1570222094114-28a9d8894566?auto=format&fit=crop&w=600&q=40'); background-size: cover; background-position: center; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; margin-top: 60px; padding: 20px; }
-        .main-logo { width: 150px; height: 150px; border-radius: 50%; border: 4px solid #fff; box-shadow: 0 10px 30px rgba(0,121,107,0.2); margin-bottom: 20px; object-fit: cover; animation: float 6s ease-in-out infinite; }
+        /* الهيرو */
+        .hero { min-height: 85vh; background: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.85)), url('https://images.unsplash.com/photo-1570222094114-28a9d8894566?auto=format&fit=crop&w=600&q=40'); background-size: cover; background-position: center; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; margin-top: 60px; padding: 20px; }
+        .main-logo { width: 150px; height: 150px; border-radius: 50%; border: 4px solid #fff; box-shadow: 0 10px 30px rgba(0,121,107,0.2); margin-bottom: 15px; object-fit: cover; animation: float 6s ease-in-out infinite; }
         
-        .btn-group { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; margin-top: 25px; }
-        .hero-btn { background: var(--primary); color: white; padding: 12px 30px; border-radius: 50px; font-weight: 800; font-size: 1.1rem; box-shadow: 0 5px 15px rgba(0,121,107,0.3); text-align: center; }
-        .hero-btn-outline { background: #fff; color: var(--primary); border: 2px solid var(--primary); padding: 12px 30px; border-radius: 50px; font-weight: 800; font-size: 1.1rem; text-align: center; }
-
-        .google-rate-btn { background: #fff; border: 1px solid #ddd; padding: 10px 25px; border-radius: 50px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-weight: 700; color: #3c4043; box-shadow: 0 4px 10px rgba(0,0,0,0.08); margin-top: 5px; }
-        .google-icon { background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat; -webkit-background-clip: text; color: transparent; }
-
-        .section-title { text-align: center; margin: 50px 0 20px; color: var(--primary); font-size: 1.5rem; font-weight: 800; }
-        .services-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 0 15px; }
-        .srv-card { background: white; padding: 15px; border-radius: 10px; width: calc(50% - 10px); text-align: center; box-shadow: 0 3px 10px rgba(0,0,0,0.03); }
-        .srv-card i { font-size: 1.8rem; color: var(--primary); margin-bottom: 8px; }
-
-        footer { background: #263238; color: #90A4AE; text-align: center; padding: 30px 15px; margin-top: 40px; }
-        .address-link { display: flex; align-items: center; justify-content: center; gap: 8px; color: #fff; text-decoration: none; margin-bottom: 15px; font-weight: bold; }
+        /* التقييم */
+        .rating-badge { background: white; padding: 6px 15px; border-radius: 20px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
         
-        .floating-container { position: fixed; bottom: 20px; left: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
-        .float-btn { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        
-        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
+        /* الأزرار */
+        .btn-group { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 320px; margin-top: 20px; }
+        .hero-btn { background: var(--primary); color: white; padding: 14px 30px; border-radius: 50px; font-weight: 800; font-size: 1.1rem; box-shadow: 0 5px 15px rgba(0,121,107,0.3); text-align: center; }
+        .hero-btn-outline { background: #fff; color: var(--primary); border: 2px solid var(--primary); padding: 14px 30px; border-radius: 50px; font-weight: 800; font-size: 1.1rem; text-align: center; }
+        .hero-btn:hover, .hero-btn-outline:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+
+        /* التقييم في جوجل */
+        .google-btn { background: #fff; border: 1px solid #ddd; padding: 12px; border-radius: 50px; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 700; color: #444; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .google-icon { background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat; -webkit-background-clip: text; color: transparent; font-size: 1.2rem; }
+
+        /* الخدمات */
+        .section-title { text-align: center; margin: 50px 0 25px; color: var(--primary); font-size: 1.6rem; font-weight: 800; position: relative; }
+        .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 15px; max-width: 800px; margin: 0 auto; }
+        .srv-card { background: white; padding: 20px; border-radius: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #f0f0f0; }
+        .srv-card i { font-size: 2rem; color: var(--primary); margin-bottom: 10px; display: block; }
+        .srv-card h3 { font-size: 1rem; font-weight: 700; }
+
+        /* الفوتر */
+        footer { background: #263238; color: #fff; text-align: center; padding: 40px 15px; margin-top: 50px; border-radius: 30px 30px 0 0; }
+        .footer-location { display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.08); padding: 12px 25px; border-radius: 50px; margin-bottom: 25px; font-weight: bold; }
+        .social-links { display: flex; justify-content: center; gap: 25px; margin-bottom: 20px; font-size: 1.8rem; }
+        .social-links a:hover { color: var(--gold); }
+
+        /* الأزرار العائمة */
+        .floating-container { position: fixed; bottom: 25px; left: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 15px; }
+        .float-btn { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 26px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: 0.3s; }
+        .float-btn:hover { transform: scale(1.1); }
+
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.1); } 100% { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
@@ -49,27 +71,37 @@
 
     <header>
         <div class="nav-container">
-            <span class="logo-text">
-                <i class="fas fa-map-marker-alt" style="font-size: 1rem; color: var(--gold);"></i>
-                <span data-i18n="title">دلتا للبصريات</span>
-            </span>
-            <button class="lang-btn" onclick="toggleLanguage()" style="border:1px solid #ddd; background:white; padding:5px 15px; border-radius:20px; font-weight:bold; color:var(--primary);">English</button>
+            <a href="https://maps.app.goo.gl/YOUR_ACTUAL_LINK" target="_blank" class="logo-box">
+                <i class="fas fa-map-marker-alt location-icon-head"></i>
+                <span class="logo-text" data-i18n="title">دلتا للبصريات</span>
+            </a>
+            <button onclick="toggleLanguage()" id="langBtn" style="border:1px solid #ddd; background:white; padding:6px 18px; border-radius:20px; font-weight:bold; color:var(--primary); cursor:pointer;">English</button>
         </div>
     </header>
 
     <section class="hero">
-        <img src="logo.jpg" class="main-logo" onerror="this.src='https://via.placeholder.com/150'">
-        <h1 data-i18n="slogan">دقة في الفحص .. أناقة في المظهر</h1>
+        <img src="logo.jpg" class="main-logo" onerror="this.src='https://via.placeholder.com/150?text=Delta'">
+        
+        <div class="rating-badge">
+            <i class="fab fa-google google-icon" style="font-size:1.1rem;"></i>
+            <span>4.9</span>
+            <span style="color: #FFD700;">★★★★★</span>
+        </div>
+
+        <h1 style="max-width: 90%; line-height: 1.4; font-size: 1.4rem;" data-i18n="slogan">دقة في الفحص .. أناقة في المظهر</h1>
+
         <div class="btn-group">
             <a href="collection.html" class="hero-btn" data-i18n="view_collection">تصفح التشكيلة الجديدة</a>
             <a href="test.html" class="hero-btn-outline" data-i18n="eye_test_btn">افحص نظرك الآن</a>
-            <a href="https://maps.app.goo.gl/uPka4fS7YmUayzVw6" target="_blank" class="google-rate-btn">
-                <i class="fab fa-google google-icon"></i> <span data-i18n="rate_us">قيّمنا على Google</span>
+            
+            <a href="https://g.page/r/YOUR_GOOGLE_REVIEW_LINK/review" target="_blank" class="google-btn">
+                <i class="fab fa-google google-icon"></i>
+                <span data-i18n="rate_us">قيّمنا على Google</span>
             </a>
         </div>
     </section>
 
-    <h2 class="section-title" data-i18n="services">خدماتنا</h2>
+    <h2 class="section-title" data-i18n="services">خدماتنا المميزة</h2>
     <div class="services-grid">
         <div class="srv-card"><i class="fas fa-eye"></i><h3 data-i18n="srv_exam">فحص نظر</h3></div>
         <div class="srv-card"><i class="fas fa-glasses"></i><h3 data-i18n="srv_glasses">نظارات طبية</h3></div>
@@ -78,15 +110,17 @@
     </div>
 
     <footer>
-        <a href="https://maps.app.goo.gl/uPka4fS7YmUayzVw6" target="_blank" class="address-link">
-            <i class="fas fa-map-marked-alt" style="color: var(--gold);"></i>
+        <a href="https://maps.app.goo.gl/YOUR_ACTUAL_LINK" target="_blank" class="footer-location">
+            <i class="fas fa-map-marked-alt" style="color: var(--gold); font-size: 1.3rem;"></i>
             <span data-i18n="address">المقابلين - شارع الصخرة المشرفة</span>
         </a>
-        <div style="margin-top:15px; font-size:1.5rem;">
-            <a href="https://facebook.com/delta.optics1" target="_blank" style="margin:0 10px; color:#fff;"><i class="fab fa-facebook"></i></a>
-            <a href="https://instagram.com/delta.optics1" target="_blank" style="margin:0 10px; color:#fff;"><i class="fab fa-instagram"></i></a>
+
+        <div class="social-links">
+            <a href="https://facebook.com/delta.optics1" target="_blank" style="color:white;"><i class="fab fa-facebook"></i></a>
+            <a href="https://instagram.com/delta.optics1" target="_blank" style="color:white;"><i class="fab fa-instagram"></i></a>
         </div>
-        <p style="margin-top:20px; font-size:0.75rem; opacity:0.7;">© 2026 Delta Optics</p>
+        
+        <p style="opacity: 0.6; font-size: 0.8rem; margin-top: 10px;">© 2026 Delta Optics - All Rights Reserved</p>
     </footer>
 
     <script>
@@ -94,13 +128,13 @@
             ar: {
                 title: "دلتا للبصريات", slogan: "دقة في الفحص .. أناقة في المظهر", 
                 view_collection: "تصفح التشكيلة الجديدة", eye_test_btn: "افحص نظرك الآن",
-                rate_us: "قيّمنا على Google", services: "خدماتنا", srv_exam: "فحص نظر", 
+                rate_us: "قيّمنا على Google", services: "خدماتنا المميزة", srv_exam: "فحص نظر", 
                 srv_glasses: "نظارات طبية", srv_sun: "نظارات شمسية", srv_lenses: "عدسات لاصقة",
                 address: "المقابلين - شارع الصخرة المشرفة", btn_lang: "English"
             },
             en: {
-                title: "Delta Optics", slogan: "Precision in Eye Care .. Elegance in Look", 
-                view_collection: "View Collection", eye_test_btn: "Test Your Eyes",
+                title: "Delta Optics", slogan: "Precision Eye Care .. Elegant Look", 
+                view_collection: "View New Collection", eye_test_btn: "Test Your Eyes Now",
                 rate_us: "Rate us on Google", services: "Our Services", srv_exam: "Eye Exam", 
                 srv_glasses: "Eyeglasses", srv_sun: "Sunglasses", srv_lenses: "Contact Lenses",
                 address: "Al-Muqabalain - Al-Sakhra St.", btn_lang: "عربي"
@@ -108,11 +142,13 @@
         };
 
         let currentLang = localStorage.getItem('delta_lang') || 'ar';
+        
         function toggleLanguage() {
             currentLang = currentLang === 'ar' ? 'en' : 'ar';
             localStorage.setItem('delta_lang', currentLang);
             updateLanguage();
         }
+
         function updateLanguage() {
             const t = translations[currentLang];
             document.documentElement.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
@@ -120,8 +156,9 @@
                 const key = el.getAttribute('data-i18n');
                 if(t[key]) el.textContent = t[key];
             });
-            document.querySelector('.lang-btn').textContent = t.btn_lang;
+            document.getElementById('langBtn').textContent = t.btn_lang;
         }
+
         document.addEventListener('DOMContentLoaded', updateLanguage);
     </script>
 </body>

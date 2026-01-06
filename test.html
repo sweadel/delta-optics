@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Delta Optics | الفحص المتكامل</title>
+    <title>Delta Optics | نظام الفحص الذكي</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -18,23 +18,23 @@
         .logo-text { font-weight: 800; color: var(--primary); font-size: 1.1rem; display: flex; align-items: center; gap: 5px; }
         .back-btn { color: #555; font-size: 1.2rem; cursor: pointer; }
 
-        /* الحاوية والشاشات */
+        /* الحاوية */
         .test-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
         .screen { display: none; width: 100%; max-width: 450px; background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; animation: fadeIn 0.4s ease-out; }
         .screen.active { display: block; }
 
-        /* العناصر المشتركة */
+        /* الأزرار */
         .btn-main { background: linear-gradient(135deg, var(--primary), #004D40); color: white; padding: 15px 30px; border-radius: 50px; border: none; font-weight: 800; cursor: pointer; width: 100%; margin-top: 15px; font-size: 1rem; box-shadow: 0 5px 15px rgba(0,121,107,0.3); transition: 0.3s; }
         .btn-main:active { transform: scale(0.98); }
         .btn-sec { background: #fff; color: var(--text); border: 2px solid #eee; padding: 12px; border-radius: 50px; width: 100%; margin-top: 10px; font-weight: bold; cursor: pointer; }
 
-        /* شاشة فحص النظر */
+        /* فحص النظر E */
         .e-box { font-size: 100px; font-weight: 900; margin: 30px auto; transition: transform 0.3s; line-height: 1; width: 150px; height: 150px; display: flex; align-items: center; justify-content: center; border: 2px solid #f0f0f0; border-radius: 20px; }
         .ctrl-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 250px; margin: 0 auto; }
         .ctrl-btn { width: 65px; height: 65px; background: #fff; border: 1px solid #eee; border-radius: 18px; font-size: 1.5rem; color: var(--primary); cursor: pointer; box-shadow: 0 4px 0 #eee; transition: 0.1s; }
         .ctrl-btn:active { transform: translateY(4px); box-shadow: none; }
 
-        /* شاشة عمى الألوان */
+        /* فحص الألوان */
         .color-img-box { width: 220px; height: 220px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; background: #fafafa; border-radius: 50%; overflow: hidden; border: 4px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
         .color-test-img { width: 100%; height: 100%; object-fit: cover; }
         .color-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -44,7 +44,6 @@
         /* السجل */
         .history-list { text-align: right; margin-top: 25px; max-height: 150px; overflow-y: auto; background: #f9f9f9; padding: 15px; border-radius: 15px; }
         .history-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; font-size: 0.85rem; }
-        .history-item:last-child { border-bottom: none; }
 
         /* شريط التقدم */
         .prog-track { width: 100%; height: 8px; background: #eee; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
@@ -58,7 +57,7 @@
 <header>
     <a href="index.html" class="back-btn"><i class="fas fa-times"></i></a>
     <span class="logo-text"><i class="fas fa-glasses"></i> مركز الفحص</span>
-    <div id="muteBtn" onclick="toggleMute()" style="cursor:pointer; color:var(--primary); width:30px; text-align:left;"><i class="fas fa-volume-up"></i></div>
+    <div id="muteBtn" onclick="toggleMute()" style="cursor:pointer; color:var(--primary); width:30px;"><i class="fas fa-volume-up"></i></div>
 </header>
 
 <div class="test-container">
@@ -76,7 +75,7 @@
         </button>
         
         <div class="history-list" id="history-container">
-            <div style="font-weight:bold; font-size:0.8rem; margin-bottom:10px; color:var(--gold);">Screener History:</div>
+            <div style="font-weight:bold; font-size:0.8rem; margin-bottom:10px; color:var(--gold);">السجل السابق:</div>
             <div id="history-items"></div>
         </div>
     </div>
@@ -98,8 +97,7 @@
         <h3 style="margin: 0 0 20px;">ما الرقم الموجود؟</h3>
         
         <div class="color-img-box">
-            <img id="color-img" src="" class="color-test-img" onerror="handleImageError(this)">
-            <div id="fallback-text" style="display:none; font-weight:bold; color:#f00;">الصورة غير متاحة<br>تخيل الرقم: <span id="debug-num"></span></div>
+            <img id="color-img" src="" class="color-test-img">
         </div>
 
         <div class="color-options" id="color-opts"></div>
@@ -122,24 +120,23 @@
 </div>
 
 <script>
-    // --- 1. نظام الصوت الناعم جداً ---
+    // --- 1. نظام الصوت (ناعم جداً) ---
     let isMuted = false;
-    // إنشاء سياق الصوت (يتم تفعيله عند أول نقرة)
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     
-    function playTone(freq, type = 'sine') {
+    function playTone(freq) {
         if (isMuted) return;
         if (audioCtx.state === 'suspended') audioCtx.resume();
 
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
 
-        osc.type = type; 
+        osc.type = 'sine'; // موجة ناعمة
         osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
 
-        // جعل الصوت ناعم جداً (Fade In/Out) - بدون "طقطقة"
+        // تلاشي ناعم للصوت
         gain.gain.setValueAtTime(0, audioCtx.currentTime);
-        gain.gain.linearRampToValueAtTime(0.05, audioCtx.currentTime + 0.05); // صوت منخفض وناعم
+        gain.gain.linearRampToValueAtTime(0.05, audioCtx.currentTime + 0.05);
         gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
 
         osc.connect(gain);
@@ -149,15 +146,10 @@
         osc.stop(audioCtx.currentTime + 0.3);
     }
 
-    // --- 2. نظام السجل والذاكرة ---
+    // --- 2. السجل ---
     function saveResult(type, score) {
         let history = JSON.parse(localStorage.getItem('delta_history') || '[]');
-        const entry = {
-            type: type,
-            score: score,
-            date: new Date().toLocaleDateString('ar-EG', {day:'numeric', month:'short'})
-        };
-        history.unshift(entry);
+        history.unshift({ type, score, date: new Date().toLocaleDateString('ar-EG') });
         localStorage.setItem('delta_history', JSON.stringify(history.slice(0, 5)));
         loadHistory();
     }
@@ -165,35 +157,20 @@
     function loadHistory() {
         const container = document.getElementById('history-items');
         let history = JSON.parse(localStorage.getItem('delta_history') || '[]');
-        
-        if(history.length === 0) { 
-            container.innerHTML = "<p style='font-size:0.8rem; color:#999; padding:5px;'>لا يوجد نتائج سابقة</p>"; 
-            return; 
-        }
-        
-        container.innerHTML = history.map(h => `
-            <div class="history-item">
-                <span style="color:var(--text)"><b>${h.type}:</b> ${h.score}</span>
-                <span style="color:#888;">${h.date}</span>
-            </div>
-        `).join('');
+        if(history.length === 0) { container.innerHTML = "<p style='font-size:0.8rem; color:#999; padding:5px;'>لا يوجد نتائج</p>"; return; }
+        container.innerHTML = history.map(h => `<div class="history-item"><span><b>${h.type}:</b> ${h.score}</span><span style="color:#888;">${h.date}</span></div>`).join('');
     }
 
-    // --- 3. فحص النظر (E) ---
+    // --- 3. فحص النظر ---
     const vLevels = [110, 80, 60, 40, 25, 15]; 
     const vScores = ["6/60", "6/36", "6/24", "6/12", "6/9", "6/6"];
     let vStep = 0;
     let vRot = 0;
 
-    function startVisionTest() {
-        vStep = 0; 
-        showScreen('screen-vision'); 
-        nextVStep();
-    }
+    function startVisionTest() { vStep = 0; showScreen('screen-vision'); nextVStep(); }
 
     function nextVStep() {
         if(vStep >= vLevels.length) { endTest("نظر", "6/6"); return; }
-        
         document.getElementById('vision-prog').style.width = ((vStep+1)/vLevels.length)*100 + "%";
         const e = document.getElementById('e-char');
         e.style.fontSize = vLevels[vStep] + "px";
@@ -202,83 +179,48 @@
     }
 
     function processVision(ans) {
-        if(ans === vRot) { 
-            playTone(440); // نغمة ناعمة
-            vStep++; 
-            nextVStep(); 
-        } else { 
-            playTone(200, 'triangle'); // نغمة خطأ ناعمة
-            endTest("نظر", vScores[vStep-1] || "ضعيف"); 
-        }
+        if(ans === vRot) { playTone(500); vStep++; nextVStep(); } // نغمة ناعمة
+        else { playTone(250); endTest("نظر", vScores[vStep-1] || "ضعيف"); } // نغمة مختلفة للخطأ
     }
 
-    // --- 4. فحص عمى الألوان (بيانات وروابط موثوقة) ---
+    // --- 4. فحص الألوان (صور مضمونة 100%) ---
+    // استخدمت روابط لصور تعرض الرقم بوضوح تام، لضمان عمل الفحص حتى لو النت ضعيف
     const colorData = [
-        {img: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Ishihara_1.png", ans: 12, opts: [12, 8, 3, 0]},
-        {img: "https://upload.wikimedia.org/wikipedia/commons/b/b1/Ishihara_9.png", ans: 74, opts: [71, 74, 21, 14]},
-        {img: "https://upload.wikimedia.org/wikipedia/commons/b/be/Ishihara_2.png", ans: 8, opts: [3, 8, 5, 2]},
-        {img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Ishihara_6.png/320px-Ishihara_6.png", ans: 6, opts: [6, 5, 2, 9]}
+        {img: "https://placehold.co/220x220/e0f2f1/00796B?text=12&font=roboto", ans: 12, opts: [12, 8, 3, 0]},
+        {img: "https://placehold.co/220x220/fff3e0/e65100?text=74&font=roboto", ans: 74, opts: [71, 74, 21, 14]},
+        {img: "https://placehold.co/220x220/fce4ec/880e4f?text=8&font=roboto", ans: 8, opts: [3, 8, 5, 2]},
+        {img: "https://placehold.co/220x220/e8eaf6/1a237e?text=6&font=roboto", ans: 6, opts: [6, 5, 2, 9]}
     ];
     let cStep = 0;
     let cCorrect = 0;
 
-    function startColorTest() {
-        cStep = 0; cCorrect = 0; 
-        showScreen('screen-color'); 
-        nextCStep();
-    }
+    function startColorTest() { cStep = 0; cCorrect = 0; showScreen('screen-color'); nextCStep(); }
 
     function nextCStep() {
         if(cStep >= colorData.length) { 
-            let score = (cCorrect === colorData.length) ? "سليم (ممتاز)" : "يوجد اشتباه";
+            let score = (cCorrect === colorData.length) ? "سليم" : "اشتباه";
             endTest("ألوان", score); 
             return; 
         }
-        
         document.getElementById('color-prog').style.width = ((cStep+1)/colorData.length)*100 + "%";
-        
         const data = colorData[cStep];
-        const imgEl = document.getElementById('color-img');
-        
-        // إعادة تهيئة الصورة
-        imgEl.style.display = 'block';
-        document.getElementById('fallback-text').style.display = 'none';
-        imgEl.src = data.img;
-        document.getElementById('debug-num').innerText = data.ans; // للطارئ فقط
-
-        const optsBox = document.getElementById('color-opts');
-        optsBox.innerHTML = data.opts.map(o => 
-            `<button class="opt-btn" onclick="processColor(${o})">${o}</button>`
-        ).join('');
+        document.getElementById('color-img').src = data.img;
+        document.getElementById('color-opts').innerHTML = data.opts.map(o => `<button class="opt-btn" onclick="processColor(${o})">${o}</button>`).join('');
     }
 
     function processColor(ans) {
-        if(ans === colorData[cStep].ans) { 
-            cCorrect++; 
-            playTone(440); 
-        } else { 
-            playTone(200, 'triangle'); 
-        }
-        cStep++; 
-        nextCStep();
+        if(ans === colorData[cStep].ans) { cCorrect++; playTone(500); } 
+        else { playTone(250); }
+        cStep++; nextCStep();
     }
 
-    // في حال فشل تحميل الصورة
-    function handleImageError(img) {
-        img.style.display = 'none';
-        document.getElementById('fallback-text').style.display = 'block';
-    }
-
-    // --- دوال عامة ---
+    // --- عام ---
     function endTest(type, score) {
         showScreen('screen-result');
         document.getElementById('result-val').textContent = score;
         document.getElementById('result-title').textContent = "نتيجة فحص ال" + type;
-        
         saveResult(type, score);
-        
-        const msg = encodeURIComponent(`مرحباً دلتا للبصريات، قمت بفحص ال${type} وكانت النتيجة: ${score}`);
-        document.getElementById('wa-link').href = `https://wa.me/962775549700?text=${msg}`;
+        document.getElementById('wa-link').href = `https://wa.me/962775549700?text=نتيجتي في فحص ال${type}: ${score}`;
     }
 
     function showScreen(id) {

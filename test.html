@@ -3,64 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Delta Optics | نظام التشخيص المتقدم</title>
+    <title>دلتا للبصريات | نظام الفحص</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root { 
-            --primary: #004D40; 
-            --accent: #D4AF37; 
-            --bg: #F0F4F8; 
-            --surface: #FFFFFF;
-            --text-main: #263238;
-            --success: #2E7D32;
-            --error: #C62828;
+            --primary: #00695C; --accent: #D4AF37; --bg: #F5F7FA; 
+            --surface: #FFFFFF; --text-main: #263238; --success: #2E7D32; --error: #C62828;
         }
 
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
-        body { background: var(--bg); color: var(--text-main); margin: 0; min-height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        body { background: var(--bg); color: var(--text-main); margin: 0; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
         
         header { 
-            background: var(--surface); padding: 15px 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); 
-            display: flex; align-items: center; justify-content: space-between; z-index: 1000; 
+            background: var(--surface); padding: 12px 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); 
+            display: flex; align-items: center; justify-content: space-between; z-index: 1000; position: sticky; top: 0;
         }
-        .logo-area { display: flex; align-items: center; gap: 10px; font-weight: 800; color: var(--primary); font-size: 1.1rem; }
-        .back-btn { width: 40px; height: 40px; border-radius: 12px; background: #f4f6f8; display: flex; align-items: center; justify-content: center; color: var(--text-main); text-decoration: none; }
+        .logo-area { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
+        .logo-text { font-weight: 800; color: var(--primary); font-size: 1.1rem; line-height: 1.2; }
+        .location-small { font-size: 0.7rem; color: var(--accent); display: block; }
+        
+        .lang-btn { background: #f4f6f8; border: 1px solid #ddd; padding: 5px 12px; border-radius: 15px; font-weight: bold; cursor: pointer; color: var(--primary); font-size: 0.8rem; }
 
         .main-stage { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; width: 100%; max-width: 500px; margin: 0 auto; }
 
-        .screen { 
-            display: none; width: 100%; background: var(--surface); padding: 35px 25px; border-radius: 30px; 
-            box-shadow: 0 15px 40px rgba(0,0,0,0.06); text-align: center; animation: slideUp 0.5s ease;
-        }
+        .screen { display: none; width: 100%; background: var(--surface); padding: 30px 20px; border-radius: 30px; box-shadow: 0 15px 40px rgba(0,0,0,0.06); text-align: center; animation: slideUp 0.5s ease; position: relative; }
         .screen.active { display: block; }
 
-        .btn-modern { 
-            background: linear-gradient(135deg, var(--primary), #00695C); color: white; padding: 18px; 
-            border-radius: 20px; border: none; font-weight: 800; width: 100%; cursor: pointer; 
-            box-shadow: 0 8px 25px rgba(0, 105, 92, 0.3); transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 15px;
-        }
+        .btn-modern { background: linear-gradient(135deg, var(--primary), #004D40); color: white; padding: 16px; border-radius: 18px; border: none; font-weight: 800; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 15px; font-size: 1rem; }
+        .btn-outline { background: transparent; border: 2px solid #E0E0E0; color: var(--text-main); padding: 15px; border-radius: 18px; font-weight: 700; width: 100%; cursor: pointer; margin-top: 12px; }
 
-        /* منطقة الرسم البرمجي للوحات إيشيهارا */
-        .ishihara-container { 
-            width: 240px; height: 240px; border-radius: 50%; margin: 0 auto 30px; 
-            border: 6px solid #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; background: #fff;
-        }
+        .plate-container { width: 220px; height: 220px; border-radius: 50%; margin: 0 auto 25px; border: 6px solid #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; background: #fff; }
         canvas { width: 100%; height: 100%; }
 
-        .num-display { font-size: 2.5rem; font-weight: 800; color: var(--primary); height: 50px; margin-bottom: 20px; letter-spacing: 5px; }
-
+        .num-display { font-size: 2.2rem; font-weight: 800; color: var(--primary); height: 45px; margin-bottom: 15px; letter-spacing: 5px; border-bottom: 2px dashed #eee; }
         .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 280px; margin: 0 auto; }
         .n-btn { background: #f5f7f9; border: none; padding: 15px; border-radius: 15px; font-size: 1.3rem; font-weight: 700; cursor: pointer; }
-        .n-btn:active { background: var(--primary); color: white; }
 
-        /* فحص النظر E */
-        .e-box { width: 160px; height: 160px; background: #fff; border-radius: 25px; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; margin: 20px auto 40px; }
-        .e-char { font-size: 90px; font-weight: 900; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .e-box { width: 150px; height: 150px; background: #fff; border-radius: 25px; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; margin: 20px auto 30px; }
+        .e-char { font-size: 85px; font-weight: 900; transition: transform 0.4s; }
 
         .d-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 240px; margin: 0 auto; }
+        .d-btn { width: 60px; height: 60px; background: #f5f7f9; border-radius: 15px; border: none; font-size: 1.5rem; color: var(--primary); cursor: pointer; }
+
+        .progress-track { position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: #f0f0f0; border-radius: 30px 30px 0 0; }
+        .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: 0.4s; }
+
+        .score-ring { width: 100px; height: 100px; border-radius: 50%; border: 8px solid var(--success); margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 800; color: var(--success); }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <img src="logo.jpg" class="logo-img" onerror="this.src='https://via.placeholder.com/50'">
+            <div>
+                <span class="logo-text" data-i18n="title">دلتا للبصريات</span>
+                <span class="location-small" data-i18n="location"><i class="fas fa-map-marker-alt"></i> المقابلين</span>
+            </div>
+        </div>
+        <button class="lang-btn" onclick="toggleLang()" id="langBtn">English</button>
+    </header>
+
+    <div class="main-stage">
+        <div id="screen-home" class="screen active">
+            <div style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"><i class="fas fa-eye"></i></div>
+            <h2 data-i18n="welcome">نظام التشخيص المتطور</h2>
+            <p data-i18n="description">اختر الاختبار لبدء فحص دقيق وشامل</p>
+            <button class="btn-modern" onclick="startTest('vision')"><i class="fas fa-glasses"></i> <span data-i18n="vision_test">فحص حدة النظر (E)</span></button>
+            <button class="btn-outline" onclick="startTest('color')"><i class="fas fa-palette"></i> <span data-i18n="color_test">فحص عمى الألوان</span></button>
+        </div>
+
+        <div id="screen-vision" class="screen">
+            <div class="progress-track"><div id="v-prog" class="progress-fill"></div></div>
+            <div class="e-box"><div id="e-char" class="e-char">E</div></div>
+            <div class="d-pad">
+                <button class="d-btn" style="grid-column:2" onclick="checkVision(270)"><i class="fas fa-chevron-up"></i></button>
+                <button class="d-btn" style="grid-column:1; grid-row:2" onclick="checkVision(180)"><i class="fas fa-chevron-left"></i></button>
+                <button class="d-btn" style="grid-column:2; grid-row:2" onclick="checkVision(90)"><i class="fas fa-chevron-down"></i></button>
+                <button class="d-btn" style="grid-column:3; grid-row:2" onclick="checkVision(0)"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+
+        <div id="screen-color" class="screen">
+            <div class="progress-track"><div id="c-prog" class="progress-fill"></div></div>
+            <div class="plate-container"><canvas id="plateCanvas" width="220" height="220"></canvas></div>
+            <div id="user-input" class="num-display"></div>
+            <div class="numpad">
+                <script>
+                    for(let i=1; i<=9; i++) document.write(`<button class="n-btn" onclick="addNum(${i})">${i}</button>`);
+                </script>
+                <button class="n-btn" style="color:var(--error);" onclick="clearIn()"><i class="fas fa-backspace"></i></button>
+                <button class="n-btn" onclick="addNum(0)">0</button>
+                <button class="n-btn" style="color:var(--success);" onclick="submitColor()"><i class="fas fa-check"></i></button>
+            </div>
+        </div>
+
+        <div id="screen-result" class="screen">
+            <div id="res-ring" class="score-ring">--</div>
+            <h2 id="res-title" data-i18n="result_title">النتيجة</h2>
+            <p id="res-msg">...</p>
+            <a id="wa-link" href="#" class="btn-modern" style="background:#25D366; text-decoration:none;"><i class="fab fa-whatsapp"></i> <span data-i18n="whatsapp_btn">حجز موعد بالنتيجة</span></a>
+            <button class="btn-outline" onclick="location.reload()" data-i18n="restart">إعادة الفحص</button>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. نظام اللغات (i18n) ---
+        const translations = {
+            ar: {
+                title: "دلتا للبصريات", location: "المقابلين", welcome: "نظام التشخيص المتطور", 
+                description: "اختر الاختبار لبدء فحص دقيق وشامل", vision_test: "فحص حدة النظر (E)", 
+                color_test: "فحص عمى الألوان", result_title: "النتيجة", whatsapp_btn: "حجز موعد بالنتيجة",
+                restart: "إعادة الفحص", excellent: "ممتاز!", alert: "تنبيه", btn_lang: "English"
+            },
+            en: {
+                title: "Delta Optics", location: "Al-Muqabalain", welcome: "Advanced Diagnosis System", 
+                description: "Choose a test for a comprehensive diagnosis", vision_test: "Visual Acuity (E)", 
+                color_test: "Color Blindness Test", result_title: "Result", whatsapp_btn: "Book Appointment",
+                restart: "Restart Test", excellent: "Excellent!", alert: "Attention", btn_lang: "عربي"
+            }
+        };
+
+        let currentLang = 'ar';
+        function toggleLang() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            document.documentElement.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+            document.getElementById('langBtn').innerText = translations[currentLang].btn_lang;
+            updateUI();
+        }
+
+        function updateUI() {
+            const t = translations[currentLang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) el.innerText = t[key];
+            });
+        }
+
+        // --- 2. محرك الرسم البرمجي (Ishihara Plates) ---
+        
+        function drawIshihara(number) {
+            const canvas = document.getElementById('plateCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, 220, 220);
+            for(let i=0; i<800; i++) {
+                const x = Math.random()*220, y = Math.random()*220;
+                if(Math.sqrt((x-110)**2 + (y-110)**2) > 105) continue;
+                ctx.beginPath(); ctx.arc(x, y, Math.random()*4+2, 0, Math.PI*2);
+                ctx.fillStyle = Math.random() > 0.5 ? '#81C784' : '#CFD8DC'; ctx.fill();
+            }
+            ctx.fillStyle = "#FF7043"; ctx.font = "bold 125px Tajawal"; ctx.textAlign = "center";
+            ctx.textBaseline = "middle"; ctx.fillText(number, 110, 120);
+        }
+
+        const ui = { show: (id) => { 
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }};
+
+        // --- 3. فحص النظر ---
+        
+        const vLevels = [110, 80, 55, 35, 20, 15], vScores = ["6/60", "6/36", "6/24", "6/12", "6/9", "6/6"];
+        let vIdx = 0, vRot = 0;
+
+        function startTest(t) {
+            if(t === 'vision') { vIdx = 0; ui.show('screen-vision'); nextV(); }
+            if(t === 'color') { cIdx = 0; cCorrect = 0; ui.show('screen-color'); nextC(); }
+        }
+
+        function nextV() {
+            if(vIdx >= vLevels.length) { finish('vision', '6/6', true); return; }
+            document.getElementById('v-prog').style.width = ((vIdx+1)/vLevels.length)*100 + '%';
+            const e = document.getElementById('e-char');
+            e.style.fontSize = vLevels[vIdx] + 'px';
+            vRot = [0, 90, 180, 270][Math.floor(Math.random()*4)];
+            e.style.transform = `rotate(${vRot}deg)`;
+        }
+
+        function checkVision(a) { if(a === vRot) { vIdx++; nextV(); } else finish('vision', vScores[vIdx-1] || 'Weak', false); }
+
+        // --- 4. فحص الألوان ---
+        const cData = [12, 8, 5, 29, 74, 6];
+        let cIdx = 0, cCorrect = 0, userIn = "";
+
+        function nextC() {
+            if(cIdx >= cData.length) { finish('color', cCorrect === cData.length ? "Normal" : "Weak", cCorrect > 4); return; }
+            document.getElementById('c-prog').style.width = ((cIdx+1)/cData.length)*100 + '%';
+            userIn = ""; updateIn(); drawIshihara(cData[cIdx]);
+        }
+
+        function addNum(n) { if(userIn.length < 2) { userIn += n; updateIn(); } }
+        function clearIn() { userIn = ""; updateIn(); }
+        function updateIn() { document.getElementById('user-input').textContent = userIn; }
+        function submitColor() { if(userIn == cData[cIdx]) cCorrect++; cIdx++; nextC(); }
+
+        function finish(type, score, good) {
+            ui.show('screen-result');
+            const t = translations[currentLang];
+            const ring = document.getElementById('res-ring');
+            ring.textContent = score;
+            ring.style.borderColor = good ? "var(--success)" : "var(--error)";
+            ring.style.color = good ? "var(--success)" : "var(--error)";
+            document.getElementById('res-title').innerText = good ? t.excellent : t.alert;
+            document.getElementById('res-msg').innerText = good ? "Your result is within normal range." : "Please visit our clinic for a professional exam.";
+            document.getElementById('wa-link').href = `https://wa.me/962775549700?text=Result for ${type}: ${score}`;
+        }
+    </script>
+</body>
+</html>
         .d-btn { width: 65px; height: 65px; background: #f5f7f9; border-radius: 15px; border: none; font-size: 1.5rem; color: var(--primary); cursor: pointer; }
         .d-btn:active { background: var(--primary); color: white; }
 

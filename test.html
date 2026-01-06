@@ -3,218 +3,279 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Delta Optics | فحص النظر الذكي</title>
+    <title>Delta Optics | النظام المتكامل</title>
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        :root { --primary: #00796B; --gold: #D4AF37; --bg: #e0f2f1; --text: #37474F; --success: #4CAF50; --error: #F44336; }
+        :root { --primary: #00796B; --gold: #D4AF37; --bg: #f0f4f4; --text: #37474F; --success: #4CAF50; --error: #F44336; }
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
-        body { background: var(--bg); color: var(--text); overflow: hidden; margin: 0; height: 100vh; display: flex; flex-direction: column; }
+        body { background: var(--bg); color: var(--text); margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
         
-        /* الهيدر */
-        header { background: #fff; padding: 15px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-between; z-index: 100; }
-        .back-btn { font-size: 1rem; color: var(--text); text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 5px; transition: 0.3s; }
-        .back-btn:hover { color: var(--primary); }
-        .logo-text { font-size: 1.1rem; font-weight: 800; color: var(--primary); }
-
-        /* زر الصوت */
-        .sound-toggle { background: none; border: none; font-size: 1.2rem; color: var(--primary); cursor: pointer; padding: 5px; transition: 0.3s; }
-        .sound-toggle:hover { color: var(--gold); }
-
-        /* الحاوية الرئيسية */
-        .test-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; position: relative; }
+        header { background: #fff; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1000; }
+        .logo-text { font-weight: 800; color: var(--primary); font-size: 1.1rem; }
         
-        /* الشاشات */
-        .screen { display: none; width: 100%; max-width: 450px; text-align: center; animation: fadeIn 0.5s ease; background: rgba(255,255,255,0.85); backdrop-filter: blur(10px); padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.6); }
+        .test-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .screen { display: none; width: 100%; max-width: 450px; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; animation: fadeIn 0.4s; }
         .screen.active { display: block; }
 
-        /* شاشة البداية */
-        .icon-pulse { font-size: 4rem; color: var(--primary); margin-bottom: 20px; animation: pulse 2s infinite; }
-        .instructions { font-size: 1rem; color: #666; margin-bottom: 30px; line-height: 1.8; background: #fff; padding: 15px; border-radius: 15px; text-align: right; border-right: 4px solid var(--gold); }
-        .start-btn { background: linear-gradient(45deg, var(--primary), #004D40); color: white; padding: 15px 50px; border-radius: 50px; font-weight: 800; font-size: 1.2rem; border: none; cursor: pointer; box-shadow: 0 5px 15px rgba(0,121,107,0.4); transition: 0.3s; width: 100%; }
-        .start-btn:active { transform: scale(0.98); }
+        /* شاشة عمى الألوان */
+        .color-test-img { width: 220px; height: 220px; border-radius: 50%; margin-bottom: 20px; border: 5px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .color-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .opt-btn { padding: 15px; border: 1px solid #eee; border-radius: 12px; background: #fafafa; cursor: pointer; font-weight: bold; font-size: 1.1rem; transition: 0.2s; }
+        .opt-btn:active { background: var(--primary); color: white; }
 
-        /* شاشة الفحص */
-        .progress-bar { width: 100%; height: 8px; background: #ddd; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: 0.3s; }
-        
-        .e-display { width: 220px; height: 220px; background: #fff; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px; box-shadow: inset 0 0 20px rgba(0,0,0,0.05); border: 2px solid #eee; position: relative; }
-        #testChar { font-family: sans-serif; font-weight: 900; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); line-height: 1; color: #000; }
-        
-        .controls { display: grid; grid-template-columns: 70px 70px 70px; gap: 10px; justify-content: center; }
-        .ctrl-btn { width: 70px; height: 70px; background: #fff; border: 1px solid #e0e0e0; border-radius: 18px; font-size: 1.8rem; color: var(--primary); cursor: pointer; box-shadow: 0 4px 0 #ddd; transition: 0.1s; }
-        .ctrl-btn:active { transform: translateY(4px); box-shadow: none; background: #f9f9f9; }
-        .btn-up { grid-column: 2; } .btn-left { grid-column: 1; grid-row: 2; } .btn-right { grid-column: 3; grid-row: 2; } .btn-down { grid-column: 2; grid-row: 2; }
+        /* سجل النتائج */
+        .history-list { text-align: right; margin-top: 20px; max-height: 180px; overflow-y: auto; background: #fafafa; padding: 10px; border-radius: 10px; }
+        .history-item { padding: 8px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-size: 0.85rem; }
+        .history-item:last-child { border-bottom: none; }
 
-        /* شاشة النتيجة */
-        .score-circle { width: 140px; height: 140px; border: 8px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; font-weight: 800; color: var(--primary); margin: 0 auto 20px; background: #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .result-msg { font-size: 1.2rem; font-weight: bold; margin-bottom: 20px; }
-        .wa-btn { background: #25D366; color: white; padding: 12px; border-radius: 12px; text-decoration: none; display: block; font-weight: bold; margin-top: 15px; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); }
-
-        .feedback-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0; transition: 0.3s; z-index: 50; }
+        .btn-main { background: var(--primary); color: white; padding: 15px 30px; border-radius: 50px; border: none; font-weight: 800; cursor: pointer; width: 100%; margin-top: 10px; transition: 0.3s; font-size: 1rem; }
+        .btn-secondary { background: #fff; color: var(--text); border: 1px solid #ddd; padding: 12px; border-radius: 50px; width: 100%; margin-top: 10px; font-weight: bold; cursor: pointer; }
         
-        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.8; } 100% { transform: scale(1); opacity: 1; } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* شريط التقدم */
+        .prog-container { width: 100%; height: 8px; background: #eee; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        .prog-bar { height: 100%; background: var(--primary); width: 0%; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        .e-box { font-size: 100px; font-weight: 900; margin: 30px 0; transition: transform 0.3s; display: inline-block; line-height: 1; }
+        
+        /* أزرار التحكم */
+        .ctrl-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 250px; margin: 0 auto; }
+        .ctrl-btn { width: 60px; height: 60px; background: #fff; border: 1px solid #eee; border-radius: 15px; font-size: 1.5rem; color: var(--primary); cursor: pointer; box-shadow: 0 4px 0 #eee; }
+        .ctrl-btn:active { transform: translateY(4px); box-shadow: none; }
     </style>
 </head>
 <body>
 
-    <div id="feedback" class="feedback-overlay"></div>
+<header>
+    <a href="index.html" style="text-decoration:none; color:inherit; font-size: 1.2rem;"><i class="fas fa-times"></i></a>
+    <span class="logo-text">مركز الفحص الذكي</span>
+    <div id="muteBtn" onclick="toggleMute()" style="cursor:pointer; color:var(--primary); font-size: 1.2rem;"><i class="fas fa-volume-up"></i></div>
+</header>
 
-    <header>
-        <a href="index.html" class="back-btn"><i class="fas fa-arrow-right"></i> خروج</a>
-        <span class="logo-text">فحص النظر</span>
-        <button class="sound-toggle" onclick="toggleMute()" id="muteBtn"><i class="fas fa-volume-up"></i></button>
-    </header>
+<div class="test-container">
 
-    <div class="test-container">
-        <div id="screen-start" class="screen active">
-            <i class="fas fa-eye icon-pulse"></i>
-            <h2 style="margin:0 0 10px 0; color:var(--primary);">فحص النظر السريع</h2>
-            <div class="instructions">
-                <p><i class="fas fa-ruler-horizontal" style="color:var(--primary)"></i> <b>المسافة:</b> ابعد الهاتف 40 سم.</p>
-                <p><i class="fas fa-volume-up" style="color:var(--primary)"></i> <b>الصوت:</b> ارفع الصوت لتجربة أفضل.</p>
-            </div>
-            <button class="start-btn" onclick="startGame()">ابدأ الاختبار 🚀</button>
-        </div>
-
-        <div id="screen-game" class="screen">
-            <div class="progress-bar"><div id="progress" class="progress-fill"></div></div>
-            <div class="e-display"><div id="testChar">E</div></div>
-            <p style="margin: -15px 0 15px; font-size:0.9rem; color:#777;">حدد اتجاه الفتحة</p>
-            <div class="controls">
-                <button class="ctrl-btn btn-up" onclick="checkAnswer(270)"><i class="fas fa-chevron-up"></i></button>
-                <button class="ctrl-btn btn-left" onclick="checkAnswer(180)"><i class="fas fa-chevron-left"></i></button>
-                <button class="ctrl-btn btn-down" onclick="checkAnswer(90)"><i class="fas fa-chevron-down"></i></button>
-                <button class="ctrl-btn btn-right" onclick="checkAnswer(0)"><i class="fas fa-chevron-right"></i></button>
-            </div>
-        </div>
-
-        <div id="screen-result" class="screen">
-            <h3 style="color:#555;">النتيجة التقريبية</h3>
-            <div class="score-circle" id="final-score">6/6</div>
-            <div id="result-text" class="result-msg">ممتاز!</div>
-            <div style="background:#f9f9f9; padding:15px; border-radius:15px; text-align:right; font-size:0.9rem;">
-                <p style="margin:0 0 5px;">🩺 <b>توصية دلتا للبصريات:</b></p>
-                <p id="recommendation" style="margin:0; color:#555;">يرجى زيارتنا للحصول على فحص دقيق.</p>
-            </div>
-            <a href="#" id="wa-share" class="wa-btn" target="_blank"><i class="fab fa-whatsapp"></i> حجز موعد</a>
-            <button onclick="location.reload()" style="background:none; border:none; color:#777; margin-top:15px; cursor:pointer;">إعادة الفحص</button>
+    <div id="screen-start" class="screen active">
+        <i class="fas fa-eye-low-vision" style="font-size: 3.5rem; color: var(--primary); margin-bottom: 15px;"></i>
+        <h2>اختر نوع الفحص</h2>
+        <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">نقدم لك تجربة فحص دقيقة وسريعة</p>
+        
+        <button class="btn-main" onclick="startVisionTest()">
+            <i class="fas fa-eye"></i> فحص حدة النظر
+        </button>
+        <button class="btn-secondary" onclick="startColorTest()">
+            <i class="fas fa-palette"></i> فحص عمى الألوان
+        </button>
+        
+        <div class="history-list" id="history-container">
+            <div style="font-weight:bold; font-size:0.8rem; margin-bottom:5px; color:var(--gold);">سجل نتائجك السابقة:</div>
+            <div id="history-items"></div>
         </div>
     </div>
 
-    <script>
-        const levels = [120, 90, 70, 50, 40, 30, 20, 10]; 
-        const scores = ["أقل من 6/60", "6/60", "6/36", "6/24", "6/18", "6/12", "6/9", "6/6"];
+    <div id="screen-vision" class="screen">
+        <div class="prog-container"><div id="vision-prog" class="prog-bar"></div></div>
+        <div id="e-char" class="e-box">E</div>
+        <p style="color:#999; font-size:0.9rem;">حدد اتجاه الفتحة</p>
+        <div class="ctrl-grid">
+            <button class="ctrl-btn" style="grid-column: 2" onclick="processVision(270)"><i class="fas fa-arrow-up"></i></button>
+            <button class="ctrl-btn" style="grid-column: 1; grid-row: 2" onclick="processVision(180)"><i class="fas fa-arrow-left"></i></button>
+            <button class="ctrl-btn" style="grid-column: 2; grid-row: 2" onclick="processVision(90)"><i class="fas fa-arrow-down"></i></button>
+            <button class="ctrl-btn" style="grid-column: 3; grid-row: 2" onclick="processVision(0)"><i class="fas fa-arrow-right"></i></button>
+        </div>
+    </div>
+
+    <div id="screen-color" class="screen">
+        <h3 style="margin-bottom:20px;">ما هو الرقم في الصورة؟</h3>
+        <img id="color-img" src="" class="color-test-img" alt="اختبار الألوان">
+        <div class="color-options" id="color-opts"></div>
+    </div>
+
+    <div id="screen-result" class="screen">
+        <div style="width:100px; height:100px; background:var(--bg); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 15px; font-size:2.5rem; color:var(--primary);">
+            <i class="fas fa-check"></i>
+        </div>
+        <h3 id="result-title">النتيجة</h3>
+        <div style="font-size: 2.5rem; font-weight: 800; color: var(--primary); margin: 10px 0;" id="result-val">---</div>
+        <p id="result-desc" style="color:#666; font-size:0.9rem;">يرجى مراجعة المركز للحصول على تقرير طبي معتمد.</p>
         
-        let currentLevel = 0;
-        let currentRotation = 0; 
-        let mistakes = 0;
-        let isMuted = false;
+        <a id="wa-link" href="#" class="btn-main" style="display:block; text-decoration:none; background:#25D366; color:white;">
+            <i class="fab fa-whatsapp"></i> حجز موعد بالنتيجة
+        </a>
+        <button class="btn-secondary" onclick="location.reload()">العودة للرئيسية</button>
+    </div>
 
-        // --- نظام الصوت المطور ---
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+</div>
+
+<script>
+    // --- 1. نظام الصوت الناعم (Soft Sound) ---
+    let isMuted = false;
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    function playTone(freq, type = 'sine') {
+        if (isMuted) return;
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = type; 
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+        // جعل الصوت ناعم جداً (Fade In/Out)
+        gain.gain.setValueAtTime(0, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.05, audioCtx.currentTime + 0.05); // صوت هادئ
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+    }
+
+    // --- 2. نظام السجل (LocalStorage) ---
+    function saveResult(type, score) {
+        let history = JSON.parse(localStorage.getItem('delta_history') || '[]');
+        const entry = {
+            type: type,
+            score: score,
+            date: new Date().toLocaleDateString('ar-EG', {day:'numeric', month:'short'})
+        };
+        history.unshift(entry);
+        localStorage.setItem('delta_history', JSON.stringify(history.slice(0, 5))); // حفظ آخر 5 فقط
+        loadHistory();
+    }
+
+    function loadHistory() {
+        const container = document.getElementById('history-items');
+        let history = JSON.parse(localStorage.getItem('delta_history') || '[]');
         
-        function playTone(type) {
-            if (isMuted) return;
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-
-            if (type === 'correct') { // نغمة نجاح (عالية ومتصاعدة)
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
-            } else { // نغمة خطأ (منخفضة وهابطة)
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-                osc.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.2);
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
-            }
+        if(history.length === 0) { 
+            container.innerHTML = "<p style='font-size:0.8rem; color:#999; padding:10px;'>لا يوجد سجل فحوصات سابق</p>"; 
+            return; 
         }
+        
+        container.innerHTML = history.map(h => `
+            <div class="history-item">
+                <span style="color:var(--text)"><b>${h.type}:</b> ${h.score}</span>
+                <span style="color:#888;">${h.date}</span>
+            </div>
+        `).join('');
+    }
 
-        function toggleMute() {
-            isMuted = !isMuted;
-            document.getElementById('muteBtn').innerHTML = isMuted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+    // --- 3. فحص النظر (E) ---
+    const vLevels = [110, 80, 60, 40, 20, 10]; // أحجام أصغر تدريجياً
+    const vScores = ["6/60", "6/36", "6/24", "6/12", "6/9", "6/6"];
+    let vStep = 0;
+    let vRot = 0;
+
+    function startVisionTest() {
+        vStep = 0; 
+        showScreen('screen-vision'); 
+        nextVStep();
+    }
+
+    function nextVStep() {
+        if(vStep >= vLevels.length) { endTest("نظر", "6/6"); return; }
+        
+        // تحديث شريط التقدم
+        document.getElementById('vision-prog').style.width = ((vStep+1)/vLevels.length)*100 + "%";
+        
+        const e = document.getElementById('e-char');
+        e.style.fontSize = vLevels[vStep] + "px";
+        
+        // تدوير عشوائي
+        vRot = [0, 90, 180, 270][Math.floor(Math.random()*4)];
+        e.style.transform = `rotate(${vRot}deg)`;
+    }
+
+    function processVision(ans) {
+        if(ans === vRot) { 
+            playTone(523.25); // نغمة "Do" ناعمة
+            vStep++; 
+            nextVStep(); 
+        } else { 
+            playTone(196.00, 'triangle'); // نغمة "So" منخفضة للخطأ
+            endTest("نظر", vScores[vStep-1] || "ضعيف"); 
         }
+    }
 
-        // --- منطق اللعبة ---
-        function startGame() {
-            showScreen('screen-game');
-            // تشغيل الـ Audio Context عند أول تفاعل
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            loadLevel();
+    // --- 4. فحص عمى الألوان ---
+    // صور حقيقية لاختبار إيشيهارا
+    const colorData = [
+        {img: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Ishihara_1.png", ans: 12, opts: [12, 8, 3, 0]},
+        {img: "https://upload.wikimedia.org/wikipedia/commons/b/b1/Ishihara_9.png", ans: 74, opts: [71, 74, 21, 14]},
+        {img: "https://upload.wikimedia.org/wikipedia/commons/b/be/Ishihara_2.png", ans: 8, opts: [3, 8, 5, 2]}
+    ];
+    let cStep = 0;
+    let cCorrect = 0;
+
+    function startColorTest() {
+        cStep = 0; cCorrect = 0; 
+        showScreen('screen-color'); 
+        nextCStep();
+    }
+
+    function nextCStep() {
+        if(cStep >= colorData.length) { 
+            // تقييم النتيجة
+            let score = (cCorrect === colorData.length) ? "ممتاز" : "يوجد اشتباه";
+            endTest("ألوان", score); 
+            return; 
         }
+        
+        const data = colorData[cStep];
+        document.getElementById('color-img').src = data.img;
+        
+        // توليد الأزرار
+        const optsBox = document.getElementById('color-opts');
+        optsBox.innerHTML = data.opts.map(o => 
+            `<button class="opt-btn" onclick="processColor(${o})">${o}</button>`
+        ).join('');
+    }
 
-        function loadLevel() {
-            if (currentLevel >= levels.length) { finishTest(true); return; }
-            let progress = ((currentLevel) / levels.length) * 100;
-            document.getElementById('progress').style.width = progress + '%';
-            const char = document.getElementById('testChar');
-            char.style.fontSize = levels[currentLevel] + 'px';
-            const rotations = [0, 90, 180, 270];
-            let newRotation = currentRotation;
-            while(newRotation === currentRotation) { newRotation = rotations[Math.floor(Math.random() * rotations.length)]; }
-            currentRotation = newRotation;
-            char.style.transform = `rotate(${currentRotation}deg)`;
+    function processColor(ans) {
+        if(ans === colorData[cStep].ans) { 
+            cCorrect++; 
+            playTone(523.25); 
+        } else { 
+            playTone(196.00, 'triangle'); 
         }
+        cStep++; 
+        nextCStep();
+    }
 
-        function checkAnswer(userChoice) {
-            const feedback = document.getElementById('feedback');
-            if (userChoice === currentRotation) {
-                playTone('correct'); // تشغيل الصوت
-                feedback.style.background = 'rgba(76, 175, 80, 0.2)';
-                feedback.style.opacity = '1';
-                setTimeout(() => feedback.style.opacity = '0', 200);
-                currentLevel++; loadLevel();
-            } else {
-                playTone('wrong'); // تشغيل الصوت
-                feedback.style.background = 'rgba(244, 67, 54, 0.2)';
-                feedback.style.opacity = '1';
-                setTimeout(() => feedback.style.opacity = '0', 200);
-                mistakes++;
-                if (mistakes > 1) { finishTest(false); } else { loadLevel(); }
-            }
-        }
+    // --- دوال مساعدة ---
+    function endTest(type, score) {
+        showScreen('screen-result');
+        document.getElementById('result-val').textContent = score;
+        document.getElementById('result-title').textContent = "نتيجة فحص ال" + type;
+        
+        saveResult(type, score);
+        
+        // تجهيز رابط الواتساب
+        const msg = encodeURIComponent(`مرحباً دلتا للبصريات، قمت بفحص ال${type} وكانت النتيجة: ${score}، أرغب بحجز موعد للفحص الطبي.`);
+        document.getElementById('wa-link').href = `https://wa.me/962775549700?text=${msg}`;
+    }
 
-        function finishTest(completed) {
-            showScreen('screen-result');
-            playTone('correct'); // نغمة النهاية
-            let finalScore = (currentLevel > 0) ? scores[currentLevel - 1] : "ضعيف جداً";
-            if (completed) finalScore = "6/6";
-            
-            const scoreEl = document.getElementById('final-score');
-            const msgEl = document.getElementById('result-text');
-            const recEl = document.getElementById('recommendation');
-            const waBtn = document.getElementById('wa-share');
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
 
-            scoreEl.textContent = finalScore;
-            if (currentLevel >= 6) {
-                scoreEl.style.borderColor = "#4CAF50"; scoreEl.style.color = "#4CAF50";
-                msgEl.textContent = "نظر ممتاز!"; recEl.textContent = "حافظ على صحة عينيك.";
-            } else {
-                scoreEl.style.borderColor = "#F44336"; scoreEl.style.color = "#F44336";
-                msgEl.textContent = "تحتاج لنظارة"; recEl.textContent = "الفحص الطبي ضروري جداً.";
-            }
-            waBtn.href = `https://wa.me/962775549700?text=مرحباً، نتيجتي في الفحص: ${finalScore}`;
-        }
+    function toggleMute() {
+        isMuted = !isMuted;
+        const icon = isMuted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+        document.getElementById('muteBtn').innerHTML = icon;
+    }
 
-        function showScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
-    </script>
+    // تحميل السجل عند فتح الصفحة
+    window.onload = loadHistory;
+</script>
+
 </body>
 </html>

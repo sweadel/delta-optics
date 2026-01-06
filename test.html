@@ -5,151 +5,116 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>دلتا للبصريات | Delta Optics</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- إعدادات التصميم الأساسية --- */
         :root { 
-            --primary: #00695C; 
-            --accent: #D4AF37; 
-            --bg: #F3F4F6; 
-            --surface: #FFFFFF; 
-            --text: #1F2937;
-            --success: #10B981;
-            --error: #EF4444;
+            --primary: #00695C; --accent: #D4AF37; --bg: #F3F4F6; 
+            --surface: #FFFFFF; --text: #1F2937; --success: #10B981; --error: #EF4444;
         }
 
+        /* تحسين الأداء العام */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
         
         body { 
-            background: var(--bg); 
-            color: var(--text); 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            overflow-x: hidden; 
+            background: var(--bg); color: var(--text); min-height: 100vh; 
+            display: flex; flex-direction: column; overflow-x: hidden; 
+            text-rendering: optimizeLegibility; /* تحسين قراءة النص */
         }
 
-        /* --- الهيدر (الشريط العلوي) --- */
+        /* هيدر خفيف وسريع */
         header { 
-            background: var(--surface); 
-            padding: 15px 20px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03); 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            position: sticky; 
-            top: 0; 
-            z-index: 100; 
+            background: var(--surface); padding: 10px 15px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+            display: flex; align-items: center; justify-content: space-between; 
+            position: sticky; top: 0; z-index: 100; will-change: transform;
         }
 
-        .brand-area { display: flex; align-items: center; gap: 12px; }
+        .brand-area { display: flex; align-items: center; gap: 10px; }
         .logo-box { 
-            width: 48px; height: 48px; 
-            border-radius: 12px; 
-            background: var(--primary); 
-            color: white; 
-            display: flex; align-items: center; justify-content: center; 
-            font-size: 1.5rem;
+            width: 40px; height: 40px; border-radius: 10px; 
+            background: var(--primary); color: white; 
+            display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
         }
-        .brand-text h1 { font-size: 1rem; font-weight: 800; color: var(--primary); line-height: 1.2; }
-        .brand-text span { font-size: 0.75rem; color: var(--accent); font-weight: 600; }
+        .brand-text h1 { font-size: 0.95rem; font-weight: 800; color: var(--primary); line-height: 1.2; }
+        .brand-text span { font-size: 0.7rem; color: var(--accent); font-weight: 600; }
 
         .lang-btn {
-            background: #E5E7EB; color: var(--text);
-            border: none; padding: 8px 16px; border-radius: 20px;
-            font-weight: 700; font-size: 0.85rem; cursor: pointer;
-            transition: 0.2s;
+            background: #E5E7EB; color: var(--text); border: none; 
+            padding: 6px 12px; border-radius: 15px; font-weight: 700; 
+            font-size: 0.8rem; cursor: pointer;
         }
 
-        /* --- الحاوية الرئيسية --- */
         .container { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            padding: 20px; 
-            width: 100%; 
-            max-width: 480px; 
-            margin: 0 auto; 
+            flex: 1; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; 
+            padding: 15px; width: 100%; max-width: 450px; margin: 0 auto; 
         }
 
-        /* --- الشاشات (الكروت) --- */
+        /* تحسين أداء الكروت */
         .screen { 
-            display: none; 
-            width: 100%; 
-            background: var(--surface); 
-            padding: 30px 25px; 
-            border-radius: 24px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
-            text-align: center; 
-            animation: fadeScale 0.4s ease-out; 
+            display: none; width: 100%; background: var(--surface); 
+            padding: 25px 20px; border-radius: 20px; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.03); text-align: center; 
+            /* إزالة الأنيميشن الثقيل لتسريع العرض */
         }
-        .screen.active { display: block; }
+        .screen.active { display: block; animation: fadeIn 0.3s ease-out; }
 
-        @keyframes fadeScale { 
-            from { opacity: 0; transform: scale(0.95); } 
-            to { opacity: 1; transform: scale(1); } 
-        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- الأزرار --- */
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary), #004D40);
-            color: white; border: none; padding: 18px;
-            border-radius: 16px; font-weight: 800; font-size: 1rem;
-            width: 100%; cursor: pointer; margin-bottom: 15px;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            box-shadow: 0 8px 20px rgba(0, 105, 92, 0.25);
-            transition: transform 0.2s;
+            background: var(--primary); color: white; border: none; padding: 15px;
+            border-radius: 14px; font-weight: 800; font-size: 1rem; width: 100%; 
+            cursor: pointer; margin-bottom: 12px; display: flex; align-items: center; 
+            justify-content: center; gap: 8px;
         }
-        .btn-primary:active { transform: scale(0.98); }
-
+        
         .btn-secondary {
             background: white; color: var(--text); border: 2px solid #E5E7EB;
-            padding: 16px; border-radius: 16px; font-weight: 700;
-            width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 14px; border-radius: 14px; font-weight: 700; width: 100%; 
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
         }
 
-        /* --- عناصر الفحص --- */
-        .e-box {
-            width: 160px; height: 160px; background: #F9FAFB;
-            border: 2px solid #E5E7EB; border-radius: 20px;
-            display: flex; align-items: center; justify-content: center;
-            margin: 20px auto 40px;
-        }
-        .e-char { font-size: 90px; font-weight: 900; transition: transform 0.3s; color: var(--text); }
-
-        .controls-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 240px; margin: 0 auto; }
-        .ctrl-btn { height: 65px; background: white; border: 1px solid #E5E7EB; border-radius: 16px; font-size: 1.4rem; color: var(--primary); cursor: pointer; box-shadow: 0 4px 0 #E5E7EB; }
-        .ctrl-btn:active { transform: translateY(4px); box-shadow: none; background: var(--primary); color: white; }
-
-        /* --- فحص الألوان --- */
+        /* تحسين رسم الـ Canvas */
         .plate-wrapper {
-            width: 240px; height: 240px; margin: 0 auto 25px;
-            background: white; border-radius: 50%;
-            border: 6px solid white; box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            overflow: hidden;
+            width: 220px; height: 220px; margin: 0 auto 20px;
+            background: #fff; border-radius: 50%; overflow: hidden;
+            /* خاصية لتسريع الرسم */
+            transform: translateZ(0); 
         }
         canvas { width: 100%; height: 100%; }
 
-        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .num-btn { background: #F3F4F6; border: none; padding: 15px; border-radius: 14px; font-size: 1.25rem; font-weight: 700; cursor: pointer; }
+        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .num-btn { background: #F3F4F6; border: none; padding: 12px; border-radius: 12px; font-size: 1.2rem; font-weight: 700; cursor: pointer; }
         .num-btn:active { background: #D1D5DB; }
 
         .input-display {
-            font-size: 2.5rem; font-weight: 800; color: var(--primary);
-            height: 60px; margin-bottom: 20px; letter-spacing: 5px;
+            font-size: 2rem; font-weight: 800; color: var(--primary);
+            height: 50px; margin-bottom: 15px; letter-spacing: 3px;
             border-bottom: 2px dashed #E5E7EB;
         }
 
-        /* --- النتيجة --- */
-        .score-circle {
-            width: 120px; height: 120px; border-radius: 50%;
-            border: 8px solid var(--success); margin: 0 auto 20px;
+        .e-box {
+            width: 140px; height: 140px; background: #F9FAFB;
+            border: 2px solid #E5E7EB; border-radius: 18px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 2rem; font-weight: 800; color: var(--success);
+            margin: 15px auto 30px;
+        }
+        .e-char { font-size: 80px; font-weight: 900; transition: transform 0.2s; color: var(--text); }
+
+        .controls-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 220px; margin: 0 auto; }
+        .ctrl-btn { height: 60px; background: white; border: 1px solid #E5E7EB; border-radius: 14px; font-size: 1.3rem; color: var(--primary); cursor: pointer; }
+        .ctrl-btn:active { background: var(--primary); color: white; }
+
+        .score-circle {
+            width: 100px; height: 100px; border-radius: 50%;
+            border: 6px solid var(--success); margin: 0 auto 15px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; font-weight: 800; color: var(--success);
             background: #F0FDF4;
         }
     </style>
@@ -170,8 +135,8 @@
     <div class="container">
 
         <div id="screen-home" class="screen active">
-            <h2 data-i18n="welcome" style="margin-bottom: 10px; font-size: 1.5rem; color: var(--primary);">نظام الفحص الذكي</h2>
-            <p data-i18n="desc" style="color: #6B7280; margin-bottom: 30px;">اختر نوع الفحص للبدء</p>
+            <h2 data-i18n="welcome" style="margin-bottom: 8px; font-size: 1.4rem; color: var(--primary);">نظام الفحص الذكي</h2>
+            <p data-i18n="desc" style="color: #6B7280; margin-bottom: 25px; font-size: 0.9rem;">اختر نوع الفحص للبدء</p>
             
             <button class="btn-primary" onclick="startTest('vision')">
                 <i class="fas fa-glasses"></i> <span data-i18n="btn_vision">فحص حدة النظر</span>
@@ -183,7 +148,7 @@
 
         <div id="screen-vision" class="screen">
             <div class="e-box"><div id="e-char" class="e-char">E</div></div>
-            <p data-i18n="vision_instr" style="margin-bottom: 20px; color: #6B7280;">حدد اتجاه الفتحة</p>
+            <p data-i18n="vision_instr" style="margin-bottom: 15px; color: #6B7280;">حدد اتجاه الفتحة</p>
             <div class="controls-grid">
                 <button class="ctrl-btn" style="grid-column: 2" onclick="checkVision(270)"><i class="fas fa-chevron-up"></i></button>
                 <button class="ctrl-btn" style="grid-column: 1; grid-row: 2" onclick="checkVision(180)"><i class="fas fa-chevron-left"></i></button>
@@ -193,7 +158,7 @@
         </div>
 
         <div id="screen-color" class="screen">
-            <div class="plate-wrapper"><canvas id="plateCanvas" width="240" height="240"></canvas></div>
+            <div class="plate-wrapper"><canvas id="plateCanvas" width="220" height="220"></canvas></div>
             <div id="user-input" class="input-display"></div>
             <div class="numpad">
                 <script>
@@ -207,8 +172,8 @@
 
         <div id="screen-result" class="screen">
             <div id="res-circle" class="score-circle">--</div>
-            <h2 id="res-title" style="margin-bottom: 10px;">--</h2>
-            <p id="res-msg" style="color: #6B7280; margin-bottom: 25px;">--</p>
+            <h2 id="res-title" style="margin-bottom: 8px;">--</h2>
+            <p id="res-msg" style="color: #6B7280; margin-bottom: 20px; font-size: 0.9rem;">--</p>
             
             <a id="wa-link" href="#" class="btn-primary" style="background:#25D366; text-decoration:none;">
                 <i class="fab fa-whatsapp"></i> <span data-i18n="whatsapp">حجز موعد بالنتيجة</span>
@@ -219,20 +184,20 @@
     </div>
 
     <script>
-        // --- بيانات اللغات ---
+        // --- إعدادات اللغة ---
         const i18n = {
             ar: {
                 title: "دلتا للبصريات", location: "المقابلين", welcome: "نظام الفحص الذكي",
                 desc: "اختر نوع الفحص للبدء", btn_vision: "فحص حدة النظر", btn_color: "فحص عمى الألوان",
                 vision_instr: "حدد اتجاه الفتحة", whatsapp: "حجز موعد بالنتيجة", restart: "إعادة الفحص",
-                excellent: "ممتاز", alert: "انتبه", msg_good: "نتيجتك ضمن المعدل الطبيعي", msg_bad: "يُنصح بزيارة المركز للفحص",
+                excellent: "ممتاز", alert: "انتبه", msg_good: "نتيجتك طبيعية", msg_bad: "يُنصح بزيارة المركز",
                 lang_btn: "English"
             },
             en: {
                 title: "Delta Optics", location: "Al-Muqabalain", welcome: "Smart Eye Test",
                 desc: "Choose a test to start", btn_vision: "Visual Acuity Test", btn_color: "Color Blindness Test",
                 vision_instr: "Indicate direction", whatsapp: "Book Appointment", restart: "Restart",
-                excellent: "Excellent", alert: "Attention", msg_good: "Result is normal", msg_bad: "Please visit clinic for checkup",
+                excellent: "Excellent", alert: "Attention", msg_good: "Result is normal", msg_bad: "Please visit clinic",
                 lang_btn: "عربي"
             }
         };
@@ -243,22 +208,23 @@
             curLang = curLang === 'ar' ? 'en' : 'ar';
             document.documentElement.dir = curLang === 'ar' ? 'rtl' : 'ltr';
             document.getElementById('langBtn').innerText = i18n[curLang].lang_btn;
-            
-            // تحديث النصوص
+            updateUI();
+        }
+
+        function updateUI() {
+            const t = i18n[curLang];
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if(i18n[curLang][key]) el.innerText = i18n[curLang][key];
+                if(t[key]) el.innerText = t[key];
             });
         }
 
-        // --- إدارة الشاشات ---
         const show = (id) => {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
         };
 
         // --- فحص النظر (E) ---
-        
         const vLevels = [110, 80, 50, 30, 20], vScores = ["6/60", "6/36", "6/18", "6/9", "6/6"];
         let vIdx = 0, vRot = 0;
 
@@ -277,28 +243,32 @@
 
         function checkVision(ang) { if(ang === vRot) { vIdx++; nextV(); } else finish(vScores[vIdx] || "Weak", false); }
 
-        // --- فحص الألوان (رسم برمجي) ---
-        
+        // --- فحص الألوان (نسخة خفيفة وسريعة) ---
         const cData = [12, 8, 5, 29, 74];
         let cIdx = 0, cCorrect = 0, userIn = "";
-        const ctx = document.getElementById('plateCanvas').getContext('2d');
+        const ctx = document.getElementById('plateCanvas').getContext('2d', { alpha: false }); // تحسين الأداء
 
         function drawPlate(num) {
-            ctx.clearRect(0,0,240,240);
-            for(let i=0; i<700; i++) {
-                const x = Math.random()*240, y = Math.random()*240;
-                if(Math.sqrt((x-120)**2+(y-120)**2) > 115) continue;
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, 220, 220); // مسح سريع
+            
+            // تقليل عدد النقاط من 800 إلى 450 لزيادة السرعة
+            for(let i=0; i<450; i++) {
+                const x = Math.random()*220, y = Math.random()*220;
+                if(Math.sqrt((x-110)**2+(y-110)**2) > 105) continue;
                 ctx.beginPath(); ctx.arc(x,y, Math.random()*4+2, 0, Math.PI*2);
                 ctx.fillStyle = Math.random()>0.5 ? '#A5D6A7' : '#E0E0E0'; ctx.fill();
             }
-            ctx.fillStyle = "#E53935"; ctx.font = "bold 130px Tajawal"; 
+            ctx.fillStyle = "#E53935"; ctx.font = "bold 120px Tajawal"; 
             ctx.textAlign = "center"; ctx.textBaseline = "middle"; 
-            ctx.fillText(num, 120, 130);
+            ctx.fillText(num, 110, 120);
         }
 
         function nextC() {
             if(cIdx >= cData.length) { finish(cCorrect === cData.length ? "100%" : "Low", cCorrect > 3); return; }
-            userIn = ""; updateIn(); drawPlate(cData[cIdx]);
+            userIn = ""; updateIn(); 
+            // استخدام requestAnimationFrame لتجنب تعليق المتصفح
+            requestAnimationFrame(() => drawPlate(cData[cIdx]));
         }
         
         function addNum(n) { if(userIn.length<2) { userIn+=n; updateIn(); } }
@@ -318,555 +288,6 @@
             document.getElementById('res-title').innerText = good ? t.excellent : t.alert;
             document.getElementById('res-msg').innerText = good ? t.msg_good : t.msg_bad;
             document.getElementById('wa-link').href = `https://wa.me/962775549700?text=Result: ${score}`;
-        }
-    </script>
-</body>
-</html>
-            <img src="logo.jpg" class="logo-img" onerror="this.src='https://via.placeholder.com/50'">
-            <div>
-                <span class="logo-text" data-i18n="title">دلتا للبصريات</span>
-                <span class="location-small" data-i18n="location"><i class="fas fa-map-marker-alt"></i> المقابلين</span>
-            </div>
-        </div>
-        <button class="lang-btn" onclick="toggleLang()" id="langBtn">English</button>
-    </header>
-
-    <div class="main-stage">
-        <div id="screen-home" class="screen active">
-            <div style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"><i class="fas fa-eye"></i></div>
-            <h2 data-i18n="welcome">نظام التشخيص المتطور</h2>
-            <p data-i18n="description">اختر الاختبار لبدء فحص دقيق وشامل</p>
-            <button class="btn-modern" onclick="startTest('vision')"><i class="fas fa-glasses"></i> <span data-i18n="vision_test">فحص حدة النظر (E)</span></button>
-            <button class="btn-outline" onclick="startTest('color')"><i class="fas fa-palette"></i> <span data-i18n="color_test">فحص عمى الألوان</span></button>
-        </div>
-
-        <div id="screen-vision" class="screen">
-            <div class="progress-track"><div id="v-prog" class="progress-fill"></div></div>
-            <div class="e-box"><div id="e-char" class="e-char">E</div></div>
-            <div class="d-pad">
-                <button class="d-btn" style="grid-column:2" onclick="checkVision(270)"><i class="fas fa-chevron-up"></i></button>
-                <button class="d-btn" style="grid-column:1; grid-row:2" onclick="checkVision(180)"><i class="fas fa-chevron-left"></i></button>
-                <button class="d-btn" style="grid-column:2; grid-row:2" onclick="checkVision(90)"><i class="fas fa-chevron-down"></i></button>
-                <button class="d-btn" style="grid-column:3; grid-row:2" onclick="checkVision(0)"><i class="fas fa-chevron-right"></i></button>
-            </div>
-        </div>
-
-        <div id="screen-color" class="screen">
-            <div class="progress-track"><div id="c-prog" class="progress-fill"></div></div>
-            <div class="plate-container"><canvas id="plateCanvas" width="220" height="220"></canvas></div>
-            <div id="user-input" class="num-display"></div>
-            <div class="numpad">
-                <script>
-                    for(let i=1; i<=9; i++) document.write(`<button class="n-btn" onclick="addNum(${i})">${i}</button>`);
-                </script>
-                <button class="n-btn" style="color:var(--error);" onclick="clearIn()"><i class="fas fa-backspace"></i></button>
-                <button class="n-btn" onclick="addNum(0)">0</button>
-                <button class="n-btn" style="color:var(--success);" onclick="submitColor()"><i class="fas fa-check"></i></button>
-            </div>
-        </div>
-
-        <div id="screen-result" class="screen">
-            <div id="res-ring" class="score-ring">--</div>
-            <h2 id="res-title" data-i18n="result_title">النتيجة</h2>
-            <p id="res-msg">...</p>
-            <a id="wa-link" href="#" class="btn-modern" style="background:#25D366; text-decoration:none;"><i class="fab fa-whatsapp"></i> <span data-i18n="whatsapp_btn">حجز موعد بالنتيجة</span></a>
-            <button class="btn-outline" onclick="location.reload()" data-i18n="restart">إعادة الفحص</button>
-        </div>
-    </div>
-
-    <script>
-        // --- 1. نظام اللغات (i18n) ---
-        const translations = {
-            ar: {
-                title: "دلتا للبصريات", location: "المقابلين", welcome: "نظام التشخيص المتطور", 
-                description: "اختر الاختبار لبدء فحص دقيق وشامل", vision_test: "فحص حدة النظر (E)", 
-                color_test: "فحص عمى الألوان", result_title: "النتيجة", whatsapp_btn: "حجز موعد بالنتيجة",
-                restart: "إعادة الفحص", excellent: "ممتاز!", alert: "تنبيه", btn_lang: "English"
-            },
-            en: {
-                title: "Delta Optics", location: "Al-Muqabalain", welcome: "Advanced Diagnosis System", 
-                description: "Choose a test for a comprehensive diagnosis", vision_test: "Visual Acuity (E)", 
-                color_test: "Color Blindness Test", result_title: "Result", whatsapp_btn: "Book Appointment",
-                restart: "Restart Test", excellent: "Excellent!", alert: "Attention", btn_lang: "عربي"
-            }
-        };
-
-        let currentLang = 'ar';
-        function toggleLang() {
-            currentLang = currentLang === 'ar' ? 'en' : 'ar';
-            document.documentElement.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
-            document.getElementById('langBtn').innerText = translations[currentLang].btn_lang;
-            updateUI();
-        }
-
-        function updateUI() {
-            const t = translations[currentLang];
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (t[key]) el.innerText = t[key];
-            });
-        }
-
-        // --- 2. محرك الرسم البرمجي (Ishihara Plates) ---
-        
-        function drawIshihara(number) {
-            const canvas = document.getElementById('plateCanvas');
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, 220, 220);
-            for(let i=0; i<800; i++) {
-                const x = Math.random()*220, y = Math.random()*220;
-                if(Math.sqrt((x-110)**2 + (y-110)**2) > 105) continue;
-                ctx.beginPath(); ctx.arc(x, y, Math.random()*4+2, 0, Math.PI*2);
-                ctx.fillStyle = Math.random() > 0.5 ? '#81C784' : '#CFD8DC'; ctx.fill();
-            }
-            ctx.fillStyle = "#FF7043"; ctx.font = "bold 125px Tajawal"; ctx.textAlign = "center";
-            ctx.textBaseline = "middle"; ctx.fillText(number, 110, 120);
-        }
-
-        const ui = { show: (id) => { 
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }};
-
-        // --- 3. فحص النظر ---
-        
-        const vLevels = [110, 80, 55, 35, 20, 15], vScores = ["6/60", "6/36", "6/24", "6/12", "6/9", "6/6"];
-        let vIdx = 0, vRot = 0;
-
-        function startTest(t) {
-            if(t === 'vision') { vIdx = 0; ui.show('screen-vision'); nextV(); }
-            if(t === 'color') { cIdx = 0; cCorrect = 0; ui.show('screen-color'); nextC(); }
-        }
-
-        function nextV() {
-            if(vIdx >= vLevels.length) { finish('vision', '6/6', true); return; }
-            document.getElementById('v-prog').style.width = ((vIdx+1)/vLevels.length)*100 + '%';
-            const e = document.getElementById('e-char');
-            e.style.fontSize = vLevels[vIdx] + 'px';
-            vRot = [0, 90, 180, 270][Math.floor(Math.random()*4)];
-            e.style.transform = `rotate(${vRot}deg)`;
-        }
-
-        function checkVision(a) { if(a === vRot) { vIdx++; nextV(); } else finish('vision', vScores[vIdx-1] || 'Weak', false); }
-
-        // --- 4. فحص الألوان ---
-        const cData = [12, 8, 5, 29, 74, 6];
-        let cIdx = 0, cCorrect = 0, userIn = "";
-
-        function nextC() {
-            if(cIdx >= cData.length) { finish('color', cCorrect === cData.length ? "Normal" : "Weak", cCorrect > 4); return; }
-            document.getElementById('c-prog').style.width = ((cIdx+1)/cData.length)*100 + '%';
-            userIn = ""; updateIn(); drawIshihara(cData[cIdx]);
-        }
-
-        function addNum(n) { if(userIn.length < 2) { userIn += n; updateIn(); } }
-        function clearIn() { userIn = ""; updateIn(); }
-        function updateIn() { document.getElementById('user-input').textContent = userIn; }
-        function submitColor() { if(userIn == cData[cIdx]) cCorrect++; cIdx++; nextC(); }
-
-        function finish(type, score, good) {
-            ui.show('screen-result');
-            const t = translations[currentLang];
-            const ring = document.getElementById('res-ring');
-            ring.textContent = score;
-            ring.style.borderColor = good ? "var(--success)" : "var(--error)";
-            ring.style.color = good ? "var(--success)" : "var(--error)";
-            document.getElementById('res-title').innerText = good ? t.excellent : t.alert;
-            document.getElementById('res-msg').innerText = good ? "Your result is within normal range." : "Please visit our clinic for a professional exam.";
-            document.getElementById('wa-link').href = `https://wa.me/962775549700?text=Result for ${type}: ${score}`;
-        }
-    </script>
-</body>
-</html>
-        .d-btn { width: 65px; height: 65px; background: #f5f7f9; border-radius: 15px; border: none; font-size: 1.5rem; color: var(--primary); cursor: pointer; }
-        .d-btn:active { background: var(--primary); color: white; }
-
-        .progress-track { position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: #f0f0f0; }
-        .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: 0.4s; }
-
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
-</head>
-<body>
-
-    <header>
-        <a href="index.html" class="back-btn"><i class="fas fa-times"></i></a>
-        <div class="logo-area"><i class="fas fa-microscope"></i> Delta Pro Diag</div>
-        <div onclick="toggleMute()" id="muteIcon" style="cursor:pointer; color:#90A4AE;"><i class="fas fa-volume-up"></i></div>
-    </header>
-
-    <div class="main-stage">
-        <div id="screen-home" class="screen active">
-            <div style="background:rgba(0,105,92,0.05); width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:2.5rem; color:var(--primary);">
-                <i class="fas fa-eye"></i>
-            </div>
-            <h2>نظام التشخيص المتطور</h2>
-            <p>اختر الاختبار لبدء فحص دقيق وشامل</p>
-            <button class="btn-modern" onclick="startTest('vision')"><i class="fas fa-glasses"></i> فحص حدة النظر (E)</button>
-            <button class="btn-modern" style="background:var(--surface); color:var(--primary); border:2px solid var(--primary);" onclick="startTest('color')"><i class="fas fa-palette"></i> فحص عمى الألوان</button>
-        </div>
-
-        <div id="screen-vision" class="screen">
-            <div class="progress-track"><div id="v-prog" class="progress-fill"></div></div>
-            <div class="e-box"><div id="e-char" class="e-char">E</div></div>
-            <div class="d-pad">
-                <button class="d-btn" style="grid-column:2" onclick="checkVision(270)"><i class="fas fa-chevron-up"></i></button>
-                <button class="d-btn" style="grid-column:1; grid-row:2" onclick="checkVision(180)"><i class="fas fa-chevron-left"></i></button>
-                <button class="d-btn" style="grid-column:2; grid-row:2" onclick="checkVision(90)"><i class="fas fa-chevron-down"></i></button>
-                <button class="d-btn" style="grid-column:3; grid-row:2" onclick="checkVision(0)"><i class="fas fa-chevron-right"></i></button>
-            </div>
-        </div>
-
-        <div id="screen-color" class="screen">
-            <div class="progress-track"><div id="c-prog" class="progress-fill"></div></div>
-            <div class="ishihara-container"><canvas id="plateCanvas" width="240" height="240"></canvas></div>
-            <div id="user-input" class="num-display"></div>
-            <div class="numpad">
-                <script>
-                    for(let i=1; i<=9; i++) document.write(`<button class="n-btn" onclick="addNum(${i})">${i}</button>`);
-                </script>
-                <button class="n-btn" style="color:var(--error);" onclick="clearIn()"><i class="fas fa-backspace"></i></button>
-                <button class="n-btn" onclick="addNum(0)">0</button>
-                <button class="n-btn" style="color:var(--success); font-weight:800;" onclick="submitColor()">تأكيد</button>
-            </div>
-        </div>
-
-        <div id="screen-result" class="screen">
-            <div id="res-ring" style="width:120px; height:120px; border-radius:50%; border:8px solid var(--success); margin:0 auto 20px; display:flex; align-items:center; justify-content:center; font-size:2rem; font-weight:800; color:var(--success);">--</div>
-            <h2 id="res-title">النتيجة</h2>
-            <p id="res-msg">...</p>
-            <a id="wa-link" href="#" class="btn-modern" style="background:#25D366; text-decoration:none;"><i class="fab fa-whatsapp"></i> حجز موعد بالنتيجة</a>
-            <button class="btn-modern" style="background:none; color:var(--text-main); box-shadow:none; border:1px solid #ddd;" onclick="location.reload()">إعادة</button>
-        </div>
-    </div>
-
-    <script>
-        // --- 1. محرك رسم لوحات إيشيهارا (Canvas) لمنع الصور المكسورة ---
-        function drawIshihara(number) {
-            const canvas = document.getElementById('plateCanvas');
-            const ctx = canvas.getContext('2d');
-            const w = 240, h = 240;
-            ctx.clearRect(0, 0, w, h);
-            // رسم النقاط الخلفية
-            for(let i=0; i<800; i++) {
-                const x = Math.random()*w, y = Math.random()*h;
-                if(Math.sqrt((x-w/2)**2 + (y-h/2)**2) > w/2 - 10) continue;
-                ctx.beginPath(); ctx.arc(x, y, Math.random()*4+2, 0, Math.PI*2);
-                ctx.fillStyle = Math.random() > 0.5 ? '#81C784' : '#CFD8DC'; ctx.fill();
-            }
-            // رسم الرقم بنقاط ملونة (أحمر/برتقالي)
-            ctx.fillStyle = "#FF7043"; ctx.font = "bold 130px Tajawal"; ctx.textAlign = "center";
-            ctx.textBaseline = "middle"; ctx.fillText(number, w/2, h/2 + 10);
-        }
-
-        // --- 2. الصوت والنظام ---
-        let muted = false;
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function playSound(freq) {
-            if(muted) return; if(audioCtx.state === 'suspended') audioCtx.resume();
-            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
-            o.frequency.value = freq; g.gain.setValueAtTime(0.05, audioCtx.currentTime);
-            g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
-            o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.2);
-        }
-        function toggleMute() { muted = !muted; document.getElementById('muteIcon').className = muted ? 'fas fa-volume-mute' : 'fas fa-volume-up'; }
-
-        // --- 3. منطق الاختبارات ---
-        const screens = document.querySelectorAll('.screen');
-        function show(id) { screens.forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
-
-        // فحص النظر E
-        const vLevels = [110, 80, 50, 30, 20, 15];
-        const vScores = ["6/60", "6/36", "6/24", "6/12", "6/9", "6/6"];
-        let vIdx = 0, vRot = 0;
-
-        function startTest(t) {
-            if(t === 'vision') { vIdx = 0; show('screen-vision'); nextV(); }
-            if(t === 'color') { cIdx = 0; cCorrect = 0; show('screen-color'); nextC(); }
-        }
-
-        function nextV() {
-            if(vIdx >= vLevels.length) { finish('نظر', '6/6', true); return; }
-            document.getElementById('v-prog').style.width = ((vIdx+1)/vLevels.length)*100 + '%';
-            const e = document.getElementById('e-char');
-            e.style.fontSize = vLevels[vIdx] + 'px';
-            vRot = [0, 90, 180, 270][Math.floor(Math.random()*4)];
-            e.style.transform = `rotate(${vRot}deg)`;
-        }
-
-        function checkVision(a) {
-            if(a === vRot) { playSound(600); vIdx++; nextV(); }
-            else { playSound(200); finish('نظر', vScores[vIdx-1] || 'ضعيف', false); }
-        }
-
-        // فحص الألوان
-        const cData = [12, 8, 5, 29, 74, 6];
-        let cIdx = 0, cCorrect = 0, userIn = "";
-
-        function nextC() {
-            if(cIdx >= cData.length) { 
-                let res = cCorrect === cData.length ? "سليم" : "اشتباه";
-                finish('ألوان', res, cCorrect > 4); return;
-            }
-            document.getElementById('c-prog').style.width = ((cIdx+1)/cData.length)*100 + '%';
-            userIn = ""; updateIn(); drawIshihara(cData[cIdx]);
-        }
-
-        function addNum(n) { if(userIn.length < 2) { userIn += n; updateIn(); playSound(800); } }
-        function clearIn() { userIn = ""; updateIn(); playSound(800); }
-        function updateIn() { document.getElementById('user-input').textContent = userIn; }
-        function submitColor() { if(userIn == cData[cIdx]) cCorrect++; cIdx++; nextC(); }
-
-        function finish(type, score, good) {
-            show('screen-result');
-            const ring = document.getElementById('res-ring');
-            ring.textContent = score;
-            ring.style.borderColor = good ? "var(--success)" : "var(--error)";
-            ring.style.color = good ? "var(--success)" : "var(--error)";
-            document.getElementById('res-title').textContent = good ? "ممتاز!" : "تنبيه";
-            document.getElementById('res-msg').textContent = good ? `فحص ال${type} سليم تماماً.` : `ننصحك بمراجعة العيادة لفحص ال${type} بدقة.`;
-            document.getElementById('wa-link').href = `https://wa.me/962775549700?text=نتيجة فحص ال${type}: ${score}`;
-        }
-    </script>
-</body>
-</html>
-        }
-        .btn-modern:active { transform: scale(0.98); box-shadow: 0 4px 15px rgba(0, 105, 92, 0.2); }
-        
-        .btn-outline {
-            background: transparent; border: 2px solid #E0E0E0; color: var(--text-main);
-            padding: 16px; border-radius: 20px; font-weight: 700; width: 100%; cursor: pointer;
-        }
-
-        /* فحص النظر E */
-        .e-container { 
-            width: 180px; height: 180px; background: #fff; 
-            border-radius: 25px; border: 1px solid #eee;
-            display: flex; align-items: center; justify-content: center; 
-            margin: 20px auto 40px; box-shadow: inset 0 0 40px rgba(0,0,0,0.03);
-        }
-        .e-char { font-size: 100px; font-weight: 900; line-height: 1; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
-
-        .d-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 260px; margin: 0 auto; }
-        .d-btn { 
-            width: 70px; height: 70px; background: #F5F7FA; border-radius: 20px; border: none; 
-            font-size: 1.5rem; color: var(--text-main); cursor: pointer; 
-            box-shadow: 0 4px 0 #E0E0E0; transition: 0.1s;
-        }
-        .d-btn:active { transform: translateY(4px); box-shadow: none; background: var(--primary); color: white; }
-
-        /* فحص الألوان الاحترافي */
-        .ishihara-plate {
-            width: 240px; height: 240px; border-radius: 50%; 
-            margin: 0 auto 30px; overflow: hidden; 
-            border: 6px solid #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            background: #f0f0f0 url('https://i.gifer.com/ZKZg.gif') no-repeat center center; /* لودر */
-            background-size: 30px;
-        }
-        .ishihara-img { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.5s; }
-        .ishihara-img.loaded { opacity: 1; }
-
-        .num-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .num-btn { 
-            padding: 15px; background: #fff; border: 1px solid #eee; border-radius: 15px; 
-            font-size: 1.2rem; font-weight: 800; cursor: pointer; transition: 0.2s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-        }
-        .num-btn:active { background: var(--primary); color: white; border-color: var(--primary); }
-
-        /* شريط التقدم */
-        .progress-track { position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: #f0f0f0; }
-        .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
-
-        /* النتيجة */
-        .score-ring { 
-            width: 130px; height: 130px; border-radius: 50%; 
-            border: 8px solid var(--success); margin: 0 auto 20px; 
-            display: flex; align-items: center; justify-content: center; 
-            font-size: 2.5rem; font-weight: 800; color: var(--success);
-            background: #fff;
-        }
-        
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
-</head>
-<body>
-
-    <header>
-        <a href="index.html" class="back-btn"><i class="fas fa-times"></i></a>
-        <div class="logo-area">
-            <i class="fas fa-user-md"></i> Delta Clinic
-        </div>
-        <div onclick="toggleMute()" id="muteIcon" style="cursor:pointer; color:#90A4AE;"><i class="fas fa-volume-up"></i></div>
-    </header>
-
-    <div class="main-stage">
-
-        <div id="screen-home" class="screen active">
-            <div class="pulse-icon"><i class="fas fa-eye-low-vision"></i></div>
-            <h2>عيادة الفحص الرقمي</h2>
-            <p>اختر نوع الاختبار لبدء التشخيص الدقيق</p>
-            
-            <button class="btn-modern" onclick="startTest('vision')">
-                <i class="fas fa-eye"></i> فحص حدة النظر
-            </button>
-            <button class="btn-outline" onclick="startTest('color')">
-                <i class="fas fa-palette"></i> فحص عمى الألوان
-            </button>
-        </div>
-
-        <div id="screen-vision" class="screen">
-            <div class="progress-track"><div id="v-prog" class="progress-fill"></div></div>
-            <div style="margin-top: 15px; color:#90A4AE; font-size:0.9rem;">اتجاه الفتحة؟</div>
-            
-            <div class="e-container">
-                <div id="e-char" class="e-char">E</div>
-            </div>
-
-            <div class="d-pad">
-                <button class="d-btn" style="grid-column:2" onclick="checkVision(270)"><i class="fas fa-chevron-up"></i></button>
-                <button class="d-btn" style="grid-column:1; grid-row:2" onclick="checkVision(180)"><i class="fas fa-chevron-left"></i></button>
-                <button class="d-btn" style="grid-column:2; grid-row:2" onclick="checkVision(90)"><i class="fas fa-chevron-down"></i></button>
-                <button class="d-btn" style="grid-column:3; grid-row:2" onclick="checkVision(0)"><i class="fas fa-chevron-right"></i></button>
-            </div>
-        </div>
-
-        <div id="screen-color" class="screen">
-            <div class="progress-track"><div id="c-prog" class="progress-fill"></div></div>
-            <h3 style="margin: 20px 0;">ما الرقم الظاهر؟</h3>
-            
-            <div class="ishihara-plate">
-                <img id="color-img" src="" class="ishihara-img" onload="this.classList.add('loaded')">
-            </div>
-
-            <div class="num-grid" id="color-opts"></div>
-        </div>
-
-        <div id="screen-result" class="screen">
-            <div class="score-ring" id="res-ring">6/6</div>
-            <h2 id="res-title">ممتاز!</h2>
-            <p id="res-msg">نظرك سليم، حافظ عليه.</p>
-            
-            <a id="wa-link" href="#" class="btn-modern" style="background: #25D366; text-decoration:none;">
-                <i class="fab fa-whatsapp"></i> إرسال التقرير للطبيب
-            </a>
-            <button class="btn-outline" onclick="location.reload()">إعادة الفحص</button>
-        </div>
-
-    </div>
-
-    <script>
-        // --- نظام الصوت الهادئ (بدون ملفات) ---
-        let muted = false;
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        
-        function beep(freq = 500, type = 'sine') {
-            if(muted) return;
-            if(ctx.state === 'suspended') ctx.resume();
-            const o = ctx.createOscillator();
-            const g = ctx.createGain();
-            o.type = type; o.frequency.value = freq;
-            g.gain.setValueAtTime(0.05, ctx.currentTime);
-            g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
-            o.connect(g); g.connect(ctx.destination);
-            o.start(); o.stop(ctx.currentTime + 0.2);
-        }
-
-        function toggleMute() {
-            muted = !muted;
-            document.getElementById('muteIcon').innerHTML = muted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
-        }
-
-        // --- البيانات والمنطق ---
-        const ui = {
-            screens: document.querySelectorAll('.screen'),
-            show: (id) => {
-                ui.screens.forEach(s => s.classList.remove('active'));
-                document.getElementById(id).classList.add('active');
-            }
-        };
-
-        // 1. منطق فحص النظر
-        const vLevels = [120, 90, 60, 40, 25, 15];
-        const vScores = ["6/60", "6/36", "6/24", "6/12", "6/9", "6/6"];
-        let vIdx = 0, vRot = 0;
-
-        function startTest(type) {
-            if(type === 'vision') { vIdx = 0; ui.show('screen-vision'); nextV(); }
-            if(type === 'color') { cIdx = 0; cCorrect = 0; ui.show('screen-color'); nextC(); }
-        }
-
-        function nextV() {
-            if(vIdx >= vLevels.length) { finish('vision', '6/6', true); return; }
-            document.getElementById('v-prog').style.width = ((vIdx+1)/vLevels.length)*100 + '%';
-            
-            const el = document.getElementById('e-char');
-            el.style.fontSize = vLevels[vIdx] + 'px';
-            vRot = [0, 90, 180, 270][Math.floor(Math.random()*4)];
-            el.style.transform = `rotate(${vRot}deg)`;
-        }
-
-        function checkVision(ans) {
-            if(ans === vRot) { beep(600); vIdx++; nextV(); }
-            else { beep(200, 'square'); finish('vision', vScores[vIdx-1] || 'يحتاج فحص', false); }
-        }
-
-        // 2. منطق فحص الألوان (صور طبية أصلية)
-        // روابط صور Ishihara Plates الأصلية
-        const cData = [
-            { src: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Ishihara_1.png", ans: 12, opts: [12, 8, 3, 0] },
-            { src: "https://upload.wikimedia.org/wikipedia/commons/b/b1/Ishihara_9.png", ans: 74, opts: [71, 74, 21, 14] },
-            { src: "https://upload.wikimedia.org/wikipedia/commons/9/91/Ishihara_6.png", ans: 6, opts: [6, 5, 2, 8] },
-            { src: "https://upload.wikimedia.org/wikipedia/commons/b/be/Ishihara_2.png", ans: 8, opts: [3, 8, 5, 2] }
-        ];
-        let cIdx = 0, cCorrect = 0;
-
-        function nextC() {
-            if(cIdx >= cData.length) { 
-                let score = cCorrect === cData.length ? "سليم" : "اشتباه";
-                finish('color', score, cCorrect === cData.length);
-                return;
-            }
-            document.getElementById('c-prog').style.width = ((cIdx+1)/cData.length)*100 + '%';
-            
-            const cur = cData[cIdx];
-            const img = document.getElementById('color-img');
-            img.classList.remove('loaded');
-            img.src = cur.src;
-            
-            // احتياط لو الصورة ما حملت
-            img.onerror = function() { this.src = "https://placehold.co/240x240/eee/999?text=" + cur.ans; };
-
-            const grid = document.getElementById('color-opts');
-            grid.innerHTML = cur.opts.map(n => `<button class="num-btn" onclick="checkColor(${n})">${n}</button>`).join('');
-        }
-
-        function checkColor(ans) {
-            if(ans === cData[cIdx].ans) { cCorrect++; beep(600); }
-            else { beep(200, 'square'); }
-            cIdx++; nextC();
-        }
-
-        // 3. إنهاء الفحص
-        function finish(type, result, isGood) {
-            ui.show('screen-result');
-            const ring = document.getElementById('res-ring');
-            const title = document.getElementById('res-title');
-            const msg = document.getElementById('res-msg');
-            
-            ring.textContent = result;
-            if(isGood) {
-                ring.style.borderColor = "#2E7D32"; ring.style.color = "#2E7D32";
-                title.textContent = "ممتاز!";
-                msg.textContent = type === 'vision' ? "حدة النظر عندك 6/6" : "تمييز الألوان عندك سليم تماماً";
-            } else {
-                ring.style.borderColor = "#C62828"; ring.style.color = "#C62828";
-                title.textContent = "انتبه";
-                msg.textContent = "ننصحك بزيارة المركز لإجراء فحص شامل.";
-            }
-
-            const txt = encodeURIComponent(`مرحباً دكتور، قمت بالفحص الرقمي (${type}) وكانت النتيجة: ${result}`);
-            document.getElementById('wa-link').href = `https://wa.me/962775549700?text=${txt}`;
         }
     </script>
 </body>

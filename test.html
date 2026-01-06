@@ -21,11 +21,15 @@
         .back-btn:hover { color: var(--primary); }
         .logo-text { font-size: 1.1rem; font-weight: 800; color: var(--primary); }
 
+        /* زر الصوت */
+        .sound-toggle { background: none; border: none; font-size: 1.2rem; color: var(--primary); cursor: pointer; padding: 5px; transition: 0.3s; }
+        .sound-toggle:hover { color: var(--gold); }
+
         /* الحاوية الرئيسية */
         .test-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; position: relative; }
         
         /* الشاشات */
-        .screen { display: none; width: 100%; max-width: 450px; text-align: center; animation: fadeIn 0.5s ease; background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.5); }
+        .screen { display: none; width: 100%; max-width: 450px; text-align: center; animation: fadeIn 0.5s ease; background: rgba(255,255,255,0.85); backdrop-filter: blur(10px); padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.6); }
         .screen.active { display: block; }
 
         /* شاشة البداية */
@@ -51,7 +55,6 @@
         .result-msg { font-size: 1.2rem; font-weight: bold; margin-bottom: 20px; }
         .wa-btn { background: #25D366; color: white; padding: 12px; border-radius: 12px; text-decoration: none; display: block; font-weight: bold; margin-top: 15px; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); }
 
-        /* مؤشرات النجاح والفشل */
         .feedback-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0; transition: 0.3s; z-index: 50; }
         
         @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.8; } 100% { transform: scale(1); opacity: 1; } }
@@ -64,173 +67,148 @@
 
     <header>
         <a href="index.html" class="back-btn"><i class="fas fa-arrow-right"></i> خروج</a>
-        <span class="logo-text">فحص النظر <i class="fas fa-glasses" style="color:var(--gold)"></i></span>
+        <span class="logo-text">فحص النظر</span>
+        <button class="sound-toggle" onclick="toggleMute()" id="muteBtn"><i class="fas fa-volume-up"></i></button>
     </header>
 
     <div class="test-container">
-        
         <div id="screen-start" class="screen active">
             <i class="fas fa-eye icon-pulse"></i>
             <h2 style="margin:0 0 10px 0; color:var(--primary);">فحص النظر السريع</h2>
             <div class="instructions">
-                <p><i class="fas fa-ruler-horizontal" style="color:var(--primary)"></i> <b>المسافة:</b> امسك الهاتف بيدك ممدودة بالكامل (40 سم).</p>
-                <p><i class="far fa-eye" style="color:var(--primary)"></i> <b>الطريقة:</b> غطِ عين واحدة وافحص الأخرى، ثم العكس.</p>
-                <p><i class="fas fa-lightbulb" style="color:var(--primary)"></i> <b>الإضاءة:</b> اجعل سطوع الشاشة 100%.</p>
+                <p><i class="fas fa-ruler-horizontal" style="color:var(--primary)"></i> <b>المسافة:</b> ابعد الهاتف 40 سم.</p>
+                <p><i class="fas fa-volume-up" style="color:var(--primary)"></i> <b>الصوت:</b> ارفع الصوت لتجربة أفضل.</p>
             </div>
             <button class="start-btn" onclick="startGame()">ابدأ الاختبار 🚀</button>
-            <p style="margin-top:15px; font-size:0.8rem; color:#888;">* هذا الفحص تقريبي ولا يغني عن زيارة العيادة</p>
         </div>
 
         <div id="screen-game" class="screen">
             <div class="progress-bar"><div id="progress" class="progress-fill"></div></div>
             <div class="e-display"><div id="testChar">E</div></div>
-            
-            <p style="margin: -15px 0 15px; font-size:0.9rem; color:#777;">إلى أين تتجه الفتحة؟</p>
-            
+            <p style="margin: -15px 0 15px; font-size:0.9rem; color:#777;">حدد اتجاه الفتحة</p>
             <div class="controls">
                 <button class="ctrl-btn btn-up" onclick="checkAnswer(270)"><i class="fas fa-chevron-up"></i></button>
                 <button class="ctrl-btn btn-left" onclick="checkAnswer(180)"><i class="fas fa-chevron-left"></i></button>
                 <button class="ctrl-btn btn-down" onclick="checkAnswer(90)"><i class="fas fa-chevron-down"></i></button>
                 <button class="ctrl-btn btn-right" onclick="checkAnswer(0)"><i class="fas fa-chevron-right"></i></button>
             </div>
-            
-            <div style="margin-top:20px; font-size:0.8rem; color:#aaa; display:none;" id="desktop-hint">
-                <i class="fas fa-keyboard"></i> يمكنك استخدام أسهم الكيبورد
-            </div>
         </div>
 
         <div id="screen-result" class="screen">
-            <h3 style="color:#555;">نتيجة الفحص التقريبي</h3>
+            <h3 style="color:#555;">النتيجة التقريبية</h3>
             <div class="score-circle" id="final-score">6/6</div>
             <div id="result-text" class="result-msg">ممتاز!</div>
-            
             <div style="background:#f9f9f9; padding:15px; border-radius:15px; text-align:right; font-size:0.9rem;">
                 <p style="margin:0 0 5px;">🩺 <b>توصية دلتا للبصريات:</b></p>
-                <p id="recommendation" style="margin:0; color:#555;">يرجى زيارتنا للحصول على فحص دقيق بأحدث الأجهزة.</p>
+                <p id="recommendation" style="margin:0; color:#555;">يرجى زيارتنا للحصول على فحص دقيق.</p>
             </div>
-
-            <a href="#" id="wa-share" class="wa-btn" target="_blank">
-                <i class="fab fa-whatsapp"></i> حجز موعد للفحص
-            </a>
-            <button onclick="location.reload()" style="background:none; border:none; color:#777; margin-top:15px; cursor:pointer; text-decoration:underline;">إعادة الفحص</button>
+            <a href="#" id="wa-share" class="wa-btn" target="_blank"><i class="fab fa-whatsapp"></i> حجز موعد</a>
+            <button onclick="location.reload()" style="background:none; border:none; color:#777; margin-top:15px; cursor:pointer;">إعادة الفحص</button>
         </div>
-
     </div>
 
     <script>
-        // إعدادات الفحص
-        const levels = [120, 90, 70, 50, 40, 30, 20, 10]; // أحجام الحرف (px)
+        const levels = [120, 90, 70, 50, 40, 30, 20, 10]; 
         const scores = ["أقل من 6/60", "6/60", "6/36", "6/24", "6/18", "6/12", "6/9", "6/6"];
         
         let currentLevel = 0;
-        let currentRotation = 0; // 0=Right, 90=Down, 180=Left, 270=Up
+        let currentRotation = 0; 
         let mistakes = 0;
+        let isMuted = false;
 
-        // دعم الكيبورد
-        document.addEventListener('keydown', (e) => {
-            if(document.getElementById('screen-game').classList.contains('active')) {
-                if(e.key === 'ArrowUp') checkAnswer(270);
-                else if(e.key === 'ArrowDown') checkAnswer(90);
-                else if(e.key === 'ArrowLeft') checkAnswer(180);
-                else if(e.key === 'ArrowRight') checkAnswer(0);
+        // --- نظام الصوت المطور ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playTone(type) {
+            if (isMuted) return;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (type === 'correct') { // نغمة نجاح (عالية ومتصاعدة)
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+            } else { // نغمة خطأ (منخفضة وهابطة)
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.2);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
             }
-        });
-
-        // إظهار تلميح الكيبورد على الكمبيوتر
-        if(!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
-            document.getElementById('desktop-hint').style.display = 'block';
         }
 
+        function toggleMute() {
+            isMuted = !isMuted;
+            document.getElementById('muteBtn').innerHTML = isMuted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+        }
+
+        // --- منطق اللعبة ---
         function startGame() {
             showScreen('screen-game');
+            // تشغيل الـ Audio Context عند أول تفاعل
+            if (audioCtx.state === 'suspended') audioCtx.resume();
             loadLevel();
         }
 
         function loadLevel() {
-            if (currentLevel >= levels.length) {
-                finishTest(true);
-                return;
-            }
-
-            // تحديث شريط التقدم
+            if (currentLevel >= levels.length) { finishTest(true); return; }
             let progress = ((currentLevel) / levels.length) * 100;
             document.getElementById('progress').style.width = progress + '%';
-
-            // تدوير وتغيير حجم الحرف
             const char = document.getElementById('testChar');
             char.style.fontSize = levels[currentLevel] + 'px';
-            
             const rotations = [0, 90, 180, 270];
-            // تأكد أن الاتجاه الجديد مختلف عن السابق لتجنب الملل
             let newRotation = currentRotation;
-            while(newRotation === currentRotation) {
-                newRotation = rotations[Math.floor(Math.random() * rotations.length)];
-            }
+            while(newRotation === currentRotation) { newRotation = rotations[Math.floor(Math.random() * rotations.length)]; }
             currentRotation = newRotation;
             char.style.transform = `rotate(${currentRotation}deg)`;
         }
 
         function checkAnswer(userChoice) {
             const feedback = document.getElementById('feedback');
-            
             if (userChoice === currentRotation) {
-                // إجابة صحيحة - وميض أخضر
+                playTone('correct'); // تشغيل الصوت
                 feedback.style.background = 'rgba(76, 175, 80, 0.2)';
                 feedback.style.opacity = '1';
                 setTimeout(() => feedback.style.opacity = '0', 200);
-                
-                currentLevel++;
-                loadLevel();
+                currentLevel++; loadLevel();
             } else {
-                // إجابة خاطئة - وميض أحمر
+                playTone('wrong'); // تشغيل الصوت
                 feedback.style.background = 'rgba(244, 67, 54, 0.2)';
                 feedback.style.opacity = '1';
                 setTimeout(() => feedback.style.opacity = '0', 200);
-
                 mistakes++;
-                if (mistakes > 1) { // السماح بخطأ واحد فقط قبل إنهاء الفحص
-                    finishTest(false);
-                } else {
-                    // فرصة ثانية بنفس المستوى ولكن اتجاه مختلف
-                    loadLevel();
-                }
+                if (mistakes > 1) { finishTest(false); } else { loadLevel(); }
             }
         }
 
         function finishTest(completed) {
             showScreen('screen-result');
+            playTone('correct'); // نغمة النهاية
             let finalScore = (currentLevel > 0) ? scores[currentLevel - 1] : "ضعيف جداً";
             if (completed) finalScore = "6/6";
-
+            
             const scoreEl = document.getElementById('final-score');
             const msgEl = document.getElementById('result-text');
             const recEl = document.getElementById('recommendation');
             const waBtn = document.getElementById('wa-share');
 
             scoreEl.textContent = finalScore;
-
-            if (currentLevel >= 6) { // 6/9 or 6/6
-                scoreEl.style.borderColor = "#4CAF50";
-                scoreEl.style.color = "#4CAF50";
-                msgEl.textContent = "نظر ممتاز! ماشاء الله";
-                msgEl.style.color = "#4CAF50";
-                recEl.textContent = "حافظ على صحة عينيك، ولا تنسَ ارتداء النظارات الشمسية.";
-            } else if (currentLevel >= 4) { // 6/18 or 6/12
-                scoreEl.style.borderColor = "#FFC107";
-                scoreEl.style.color = "#FF9800";
-                msgEl.textContent = "نظر جيد، ولكن..";
-                msgEl.style.color = "#FF9800";
-                recEl.textContent = "قد تعاني من إجهاد بسيط، ننصحك بفحص دقيق لراحة أكبر.";
-            } else { // Less than 6/18
-                scoreEl.style.borderColor = "#F44336";
-                scoreEl.style.color = "#F44336";
-                msgEl.textContent = "تحتاج إلى نظارة";
-                msgEl.style.color = "#F44336";
-                recEl.textContent = "يبدو أنك تواجه صعوبة في الرؤية، الفحص الطبي ضروري جداً.";
+            if (currentLevel >= 6) {
+                scoreEl.style.borderColor = "#4CAF50"; scoreEl.style.color = "#4CAF50";
+                msgEl.textContent = "نظر ممتاز!"; recEl.textContent = "حافظ على صحة عينيك.";
+            } else {
+                scoreEl.style.borderColor = "#F44336"; scoreEl.style.color = "#F44336";
+                msgEl.textContent = "تحتاج لنظارة"; recEl.textContent = "الفحص الطبي ضروري جداً.";
             }
-
-            // رابط واتساب جاهز بالنتيجة
-            waBtn.href = `https://wa.me/962775549700?text=مرحباً دلتا للبصريات، قمت بالفحص الإلكتروني وكانت نتيجتي: ${finalScore}، أرغب بحجز موعد.`;
+            waBtn.href = `https://wa.me/962775549700?text=مرحباً، نتيجتي في الفحص: ${finalScore}`;
         }
 
         function showScreen(id) {

@@ -7,289 +7,220 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- متغيرات الفخامة --- */
+        /* --- لوحة ألوان الهوية البصرية --- */
         :root { 
-            --bg-dark: #0f172a;       /* كحلي ليلي عميق */
-            --bg-card: rgba(30, 41, 59, 0.7); /* زجاجي غامق */
-            --primary-gold: #fbbf24;  /* ذهبي فاخر */
-            --primary-glow: rgba(251, 191, 36, 0.3);
-            --text-white: #f8fafc;
-            --text-gray: #94a3b8;
-            --accent-blue: #38bdf8;
+            /* لون التركواز الطبي المميز */
+            --brand-primary: #00897B; 
+            /* لون كحلي داكن للنصوص والعناوين */
+            --brand-dark: #1E3A5F;
+            /* لون ذهبي للتقييمات */
+            --accent-gold: #FFB300;
+            /* خلفيات */
+            --bg-light: #F8FAFC;
+            --bg-white: #FFFFFF;
+            /* نصوص ثانوية */
+            --text-gray: #64748B;
         }
-
+        
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
         
         body { 
-            background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
-            color: var(--text-white);
-            min-height: 100vh;
-            display: flex; flex-direction: column;
-            overflow-x: hidden;
+            background: var(--bg-light); color: var(--brand-dark); min-height: 100vh; 
+            display: flex; flex-direction: column; overflow-x: hidden;
+            padding-bottom: 80px; /* مساحة للأزرار الطائرة */
         }
 
-        /* تأثير الخلفية المتحركة الخفيفة */
-        body::before {
-            content: ''; position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(56, 189, 248, 0.03) 0%, transparent 60%);
-            z-index: -1; animation: bgMove 20s infinite linear;
-        }
-        @keyframes bgMove { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* --- الهيدر الزجاجي --- */
+        /* --- الهيدر البسيط --- */
         header { 
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            padding: 15px 25px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex; align-items: center; justify-content: center;
-            position: sticky; top: 0; z-index: 100;
+            background: rgba(255, 255, 255, 0.95); padding: 15px 20px; 
+            display: flex; align-items: center; justify-content: center; 
+            position: sticky; top: 0; z-index: 90; border-bottom: 1px solid #E2E8F0;
+            backdrop-filter: blur(8px);
         }
-        
-        .brand-text {
-            font-size: 1.2rem; font-weight: 800; color: var(--text-white);
-            letter-spacing: 1px; text-transform: uppercase;
-            background: linear-gradient(to right, #fff, #94a3b8);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
+        .brand-header-text { font-weight: 800; font-size: 1.1rem; color: var(--brand-dark); letter-spacing: -0.5px; }
 
-        /* --- المحتوى الرئيسي --- */
+        /* --- القسم الرئيسي (Hero) --- */
         main { 
             flex: 1; display: flex; flex-direction: column; align-items: center; 
-            padding: 40px 20px; text-align: center; width: 100%; max-width: 500px; margin: 0 auto;
-            animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+            padding: 40px 20px 20px; text-align: center; 
         }
 
-        /* اللوجو الفخم */
-        .logo-wrapper {
-            width: 130px; height: 130px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 40px rgba(0,0,0,0.3);
-            position: relative;
-        }
-        .logo-wrapper::after {
-            content: ''; position: absolute; inset: -5px; border-radius: 50%;
-            background: linear-gradient(45deg, transparent, rgba(251, 191, 36, 0.1), transparent);
-            animation: spinGlow 4s linear infinite;
-        }
-        @keyframes spinGlow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        .hero-img { 
-            width: 100%; height: 100%; object-fit: contain; padding: 15px;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
-            z-index: 2;
-        }
-
-        h1 { 
-            font-size: 2rem; font-weight: 800; margin-bottom: 10px; 
-            color: var(--primary-gold); text-shadow: 0 0 20px rgba(251, 191, 36, 0.2);
+        /* اللوجو الأساسي */
+        .main-logo { 
+            width: 150px; height: 150px; object-fit: contain; margin-bottom: 20px;
+            /* ظل خفيف جداً ليبرز عن الخلفية */
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.05));
         }
         
-        .subtitle { 
-            color: var(--text-gray); font-size: 0.95rem; line-height: 1.6; 
-            margin-bottom: 30px; max-width: 80%;
-        }
+        h1 { font-size: 1.8rem; font-weight: 900; margin-bottom: 10px; color: var(--brand-dark); }
+        .subtitle { color: var(--text-gray); margin-bottom: 25px; line-height: 1.6; max-width: 450px; font-size: 0.95rem; }
 
-        /* حالة المحل والتقييم */
-        .info-bar {
-            display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px;
+        /* الشارات (حالة المحل + التقييم) */
+        .badges-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 30px; }
+        
+        .status-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 14px; border-radius: 30px; font-size: 0.85rem; font-weight: 700;
+            background: var(--bg-white); box-shadow: 0 2px 8px rgba(0,0,0,0.04); color: var(--brand-dark);
         }
-        .info-badge {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 6px 16px; border-radius: 30px;
-            font-size: 0.85rem; font-weight: 500; color: var(--text-white);
-            display: flex; align-items: center; gap: 8px;
-            backdrop-filter: blur(5px);
-        }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 0 10px currentColor; }
-        .open { color: #4ade80; } .closed { color: #f87171; }
-        .stars { color: var(--primary-gold); }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .open .status-dot { background: #10B981; box-shadow: 0 0 0 2px #D1FAE5; }
+        .closed .status-dot { background: #EF4444; box-shadow: 0 0 0 2px #FEE2E2; }
+        .rating-stars { color: var(--accent-gold); letter-spacing: 1px; }
 
-        /* كروت الخدمات - زجاجية */
-        .services-row {
-            display: flex; justify-content: center; gap: 15px; width: 100%; margin-bottom: 40px;
+        /* --- كروت الخدمات --- */
+        .services-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+            width: 100%; max-width: 420px; margin-bottom: 35px;
         }
-        .service-glass {
-            flex: 1; background: var(--bg-card);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 15px 10px; border-radius: 16px;
+        .service-card {
+            background: var(--bg-white); padding: 15px 10px; border-radius: 16px;
             display: flex; flex-direction: column; align-items: center; gap: 10px;
-            transition: 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid #F1F5F9;
         }
-        .service-glass:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.08); border-color: var(--primary-gold); }
-        .ser-icon { font-size: 1.4rem; color: var(--accent-blue); }
-        .ser-text { font-size: 0.8rem; color: var(--text-white); font-weight: 700; }
+        .ser-icon { font-size: 1.4rem; color: var(--brand-primary); }
+        .ser-text { font-size: 0.8rem; font-weight: 700; color: var(--brand-dark); }
 
-        /* الأزرار الفاخرة */
-        .btn {
-            width: 100%; padding: 18px; border-radius: 16px;
-            font-size: 1rem; font-weight: 800; text-decoration: none;
-            display: flex; align-items: center; justify-content: center; gap: 12px;
-            margin-bottom: 15px; transition: 0.3s;
-            position: relative; overflow: hidden;
+        /* --- الأزرار الرئيسية (المنظمة) --- */
+        .btn-container { width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 40px; }
+        .btn { 
+            width: 100%; padding: 16px; border-radius: 14px; 
+            font-size: 1rem; font-weight: 800; text-decoration: none; 
+            display: flex; align-items: center; justify-content: center; gap: 10px; 
+            transition: all 0.2s; 
         }
-        
-        /* الزر الرئيسي (ذهبي متدرج) */
-        .btn-gold {
-            background: linear-gradient(135deg, #d97706, #fbbf24);
-            color: #0f172a;
-            box-shadow: 0 10px 30px -5px rgba(251, 191, 36, 0.3);
-            border: none;
+        /* زر الفحص (لون الهوية الأساسي) */
+        .btn-primary { 
+            background: var(--brand-primary); color: white; 
+            box-shadow: 0 8px 20px -5px rgba(0, 137, 123, 0.3);
         }
-        .btn-gold:hover { transform: scale(1.02); box-shadow: 0 15px 40px -5px rgba(251, 191, 36, 0.5); }
-        
-        /* الزر الثانوي (زجاجي) */
-        .btn-glass {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-white);
+        /* زر الموقع وجوجل (مدمج) */
+        .btn-secondary { 
+            background: var(--bg-white); color: var(--brand-dark); 
+            border: 2px solid #E2E8F0; 
         }
-        .btn-glass:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--text-white); }
-        
-        /* زر جوجل */
-        .btn-google {
-            background: #fff; color: #1e293b;
-            margin-top: 10px; margin-bottom: 40px;
-        }
+        .btn:active { transform: scale(0.98); }
 
-        /* التقييمات */
-        .reviews-wrapper { width: 100%; text-align: right; margin-bottom: 30px; }
-        .sec-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 15px; color: var(--text-white); display: flex; align-items: center; gap: 10px; }
-        .sec-title::before { content:''; width: 3px; height: 20px; background: var(--primary-gold); border-radius: 2px; }
-        
-        .review-item {
-            background: var(--bg-card); padding: 15px; border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.05); margin-bottom: 10px;
+        /* --- شريط الماركات الأنيق --- */
+        .marquee-container { 
+            width: 100%; overflow: hidden; background: var(--bg-white); 
+            padding: 18px 0; margin-top: auto;
+            border-top: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0;
         }
-        .r-head { display: flex; justify-content: space-between; margin-bottom: 8px; }
-        .r-name { font-weight: 700; font-size: 0.9rem; color: var(--text-white); }
-        .r-body { font-size: 0.85rem; color: var(--text-gray); line-height: 1.5; }
-
-        /* شريط الماركات */
-        .marquee {
-            width: 100%; background: rgba(0,0,0,0.3); padding: 15px 0;
-            border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05);
-            overflow: hidden; margin-top: auto;
-        }
-        .marquee-inner { display: flex; gap: 50px; animation: scroll 20s linear infinite; width: max-content; }
-        .brand-name { font-size: 1.1rem; font-weight: 800; color: rgba(255,255,255,0.3); letter-spacing: 2px; text-transform: uppercase; }
+        .marquee-content { display: flex; gap: 50px; animation: scroll 25s linear infinite; width: max-content; }
+        /* لون الماركات كحلي هادئ */
+        .brand-item { font-size: 1rem; font-weight: 700; color: var(--brand-dark); opacity: 0.7; letter-spacing: 1.5px; }
         @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(50%); } }
 
-        /* تواصل اجتماعي */
-        .socials { display: flex; gap: 20px; margin-bottom: 30px; justify-content: center; }
-        .s-icon { 
-            width: 45px; height: 45px; border-radius: 50%; 
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-            color: var(--text-white); display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem; text-decoration: none; transition: 0.3s;
+        /* --- الأزرار الطائرة (Floating Action Buttons) --- */
+        .floating-contact {
+            position: fixed; bottom: 25px; right: 20px; /* مكانها في الزاوية اليمين تحت */
+            display: flex; flex-direction: column-reverse; gap: 15px; z-index: 1000;
+            align-items: flex-end;
         }
-        .s-icon:hover { background: var(--primary-gold); color: #000; border-color: var(--primary-gold); transform: translateY(-3px); }
+        .fab-wrapper { display: flex; align-items: center; gap: 10px; }
+        /* النص اللي بيطلع جنب الزر */
+        .fab-label {
+            background: var(--bg-white); color: var(--brand-dark);
+            padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            opacity: 0; transition: 0.3s; pointer-events: none; /* مخفي افتراضياً */
+        }
+        .fab-btn {
+            width: 55px; height: 55px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1.5rem; text-decoration: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .fab-whatsapp { background: #25D366; }
+        .fab-phone { background: var(--brand-dark); }
+        
+        /* إظهار النص عند اللمس أو المرور */
+        .fab-btn:hover { transform: scale(1.1); }
+        .fab-wrapper:hover .fab-label { opacity: 1; transform: translateX(-5px); }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <header>
-        <span class="brand-text">DELTA OPTICS</span>
+        <span class="brand-header-text">DELTA OPTICS</span>
     </header>
 
     <main>
-        <div class="logo-wrapper">
-            <img src="logo.png" class="hero-img" alt="Logo" onerror="this.style.display='none'; document.getElementById('alt-logo').style.display='block'">
-            <div id="alt-logo" style="display:none; font-size:2rem; font-weight:800; color:var(--primary-gold);">D</div>
-        </div>
-
+        <img src="logo.png" class="main-logo" onerror="this.src='https://via.placeholder.com/150?text=Delta+Optics'" alt="Delta Logo">
+        
         <h1>دلتا للبصريات</h1>
-        <p class="subtitle">الوجهة الأولى للنظارات الفاخرة والفحص الدقيق. حيث تلتقي الأناقة مع دقة التشخيص.</p>
+        <p class="subtitle">رؤية أوضح لحياة أفضل. نجمع بين الخبرة وأحدث التقنيات لخدمة عينيك في فرع المقابلين.</p>
 
-        <div class="info-bar">
-            <div id="shop-status" class="info-badge">
+        <div class="badges-row">
+            <div id="shop-status" class="status-badge closed">
                 <div class="status-dot"></div> <span id="status-text">...</span>
             </div>
-            <div class="info-badge">
-                <span class="stars">★★★★★</span> 4.9
+            <div class="status-badge">
+                4.9 <span class="rating-stars">★★★★★</span>
             </div>
         </div>
 
-        <div class="services-row">
-            <div class="service-glass">
-                <i class="fas fa-eye ser-icon"></i>
-                <span class="ser-text">فحص نظر</span>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="ser-icon"><i class="fas fa-clipboard-list"></i></div>
+                <div class="ser-text">فحص شامل</div>
             </div>
-            <div class="service-glass">
-                <i class="fas fa-gem ser-icon" style="color:#fbbf24"></i>
-                <span class="ser-text">ماركات</span>
+            <div class="service-card">
+                <div class="ser-icon"><i class="fas fa-glasses"></i></div>
+                <div class="ser-text">ماركات عالمية</div>
             </div>
-            <div class="service-glass">
-                <i class="fas fa-wrench ser-icon" style="color:#f472b6"></i>
-                <span class="ser-text">صيانة</span>
-            </div>
-        </div>
-
-        <a href="test.html" class="btn btn-gold">
-            <i class="fas fa-stethoscope"></i> ابدأ الفحص الذكي
-        </a>
-
-        <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Al-Muqabalain" target="_blank" class="btn btn-glass">
-            <i class="fas fa-location-dot" style="color:#f87171"></i> موقعنا (المقابلين)
-        </a>
-
-        <a href="tel:+962775549700" class="btn btn-glass">
-            <i class="fas fa-phone" style="color:#4ade80"></i> اتصل بنا
-        </a>
-
-        <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Al-Muqabalain" target="_blank" class="btn btn-google">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="18"> قيّمنا على Google
-        </a>
-
-        <div class="reviews-wrapper">
-            <div class="sec-title">تجارب عملاء النخبة</div>
-            <div class="review-item">
-                <div class="r-head">
-                    <span class="r-name">محمد العلي</span>
-                    <span class="stars" style="font-size:0.7rem">★★★★★</span>
-                </div>
-                <div class="r-body">احترافية عالية في التعامل، وفحص النظر عندهم دقيق جداً. أنصح بهم بشدة.</div>
-            </div>
-            <div class="review-item">
-                <div class="r-head">
-                    <span class="r-name">ليان السالم</span>
-                    <span class="stars" style="font-size:0.7rem">★★★★★</span>
-                </div>
-                <div class="r-body">أجمل تشكيلة نظارات شفتها، والمحل قمة في الفخامة والترتيب.</div>
+            <div class="service-card">
+                <div class="ser-icon"><i class="fas fa-screwdriver-wrench"></i></div>
+                <div class="ser-text">خدمات صيانة</div>
             </div>
         </div>
 
-        <div class="socials">
-            <a href="https://wa.me/962775549700" class="s-icon"><i class="fab fa-whatsapp"></i></a>
-            <a href="#" class="s-icon"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" class="s-icon"><i class="fab fa-instagram"></i></a>
+        <div class="btn-container">
+            <a href="test.html" class="btn btn-primary">
+                <i class="fas fa-stethoscope"></i> ابدأ الفحص الذكي
+            </a>
+
+            <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Al-Muqabalain" target="_blank" class="btn btn-secondary">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="18" alt="G">
+                موقع الفرع وتقييمات Google
+            </a>
         </div>
+
     </main>
 
-    <div class="marquee">
-        <div class="marquee-inner">
-            <span class="brand-name">RAY-BAN</span>
-            <span class="brand-name">GUCCI</span>
-            <span class="brand-name">CARTIER</span>
-            <span class="brand-name">TOM FORD</span>
-            <span class="brand-name">PRADA</span>
-            <span class="brand-name">VERSACE</span>
-            <span class="brand-name">DIOR</span>
-            <span class="brand-name">RAY-BAN</span>
-            <span class="brand-name">GUCCI</span>
-            <span class="brand-name">CARTIER</span>
-            <span class="brand-name">TOM FORD</span>
+    <div class="marquee-container">
+        <div class="marquee-content">
+            <span class="brand-item">RAY-BAN</span>
+            <span class="brand-item">GUCCI</span>
+            <span class="brand-item">POLICE</span>
+            <span class="brand-item">TOM FORD</span>
+            <span class="brand-item">PRADA</span>
+            <span class="brand-item">VERSACE</span>
+            <span class="brand-item">CARRERA</span>
+            <span class="brand-item">RAY-BAN</span>
+            <span class="brand-item">GUCCI</span>
+            <span class="brand-item">POLICE</span>
+        </div>
+    </div>
+
+    <div class="floating-contact">
+        <div class="fab-wrapper">
+            <span class="fab-label">تواصل واتساب</span>
+            <a href="https://wa.me/962775549700" class="fab-btn fab-whatsapp">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+        </div>
+        <div class="fab-wrapper">
+            <span class="fab-label">اتصل الآن</span>
+            <a href="tel:+962775549700" class="fab-btn fab-phone">
+                <i class="fas fa-phone-alt"></i>
+            </a>
         </div>
     </div>
 
@@ -305,16 +236,13 @@
         if (day === 5) { if (hour >= 16) isOpen = true; } else { if (hour >= 10) isOpen = true; }
 
         if (isOpen) {
-            statusDiv.style.color = "#4ade80";
-            statusDiv.querySelector('.status-dot').style.background = "#4ade80";
-            statusDiv.querySelector('.status-dot').style.boxShadow = "0 0 10px #4ade80";
-            statusText.innerText = "مفتوح الآن";
+            statusDiv.className = 'status-badge open';
+            statusText.innerText = 'مفتوح الآن';
         } else {
-            statusDiv.style.color = "#f87171";
-            statusDiv.querySelector('.status-dot').style.background = "#f87171";
-            statusDiv.querySelector('.status-dot').style.boxShadow = "0 0 10px #f87171";
-            statusText.innerText = "مغلق الآن";
+            statusDiv.className = 'status-badge closed';
+            statusText.innerText = 'مغلق الآن';
         }
     </script>
+
 </body>
 </html>

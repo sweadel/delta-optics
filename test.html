@@ -7,172 +7,199 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* --- الأساسيات --- */
         :root { 
-            --primary: #00695C; --accent: #D4AF37; --bg: #F3F4F6; 
-            --surface: #FFFFFF; --text: #1F2937; --success: #10B981; --error: #EF4444;
+            --primary: #00695C; 
+            --accent: #D4AF37; 
+            --bg: #F8FAFC; 
+            --card-bg: #FFFFFF; 
+            --text: #1E293B;
+            --success: #10B981;
+            --error: #EF4444;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
         
         body { 
-            background: var(--bg); color: var(--text); min-height: 100vh; 
-            display: flex; flex-direction: column; overflow-x: hidden; 
-            text-rendering: optimizeLegibility;
+            background: var(--bg); 
+            color: var(--text); 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow-x: hidden; 
         }
 
-        /* --- الهيدر --- */
+        /* --- الهيدر الاحترافي --- */
         header { 
-            background: var(--surface); padding: 10px 15px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
-            display: flex; align-items: center; justify-content: space-between; 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(10px);
+            padding: 12px 20px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03); 
+            display: grid; 
+            grid-template-columns: 1fr auto 1fr; /* تقسيم ثلاثي متساوي */
+            align-items: center; 
             position: sticky; top: 0; z-index: 100;
         }
 
-        .header-left { display: flex; align-items: center; gap: 10px; }
-
-        /* منطقة اللوجو (زر رجوع أيضاً) */
-        .brand-link { 
-            display: flex; align-items: center; gap: 10px; text-decoration: none; 
-            cursor: pointer; -webkit-tap-highlight-color: transparent;
-        }
-        .logo-box { 
-            width: 40px; height: 40px; border-radius: 10px; 
-            background: var(--primary); color: white; 
-            display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
-        }
-        .brand-text h1 { font-size: 0.95rem; font-weight: 800; color: var(--primary); line-height: 1.2; }
-        .brand-text span { font-size: 0.7rem; color: var(--accent); font-weight: 600; display: block; }
-
-        /* أزرار التحكم العلوية */
+        /* اليمين: زر اللغة */
         .lang-btn {
-            background: #E5E7EB; color: var(--text); border: none; 
-            padding: 6px 12px; border-radius: 15px; font-weight: 700; 
-            font-size: 0.8rem; cursor: pointer;
+            justify-self: start; 
+            background: #F1F5F9; color: var(--primary); border: none; 
+            padding: 8px 16px; border-radius: 20px; font-weight: 700; 
+            font-size: 0.8rem; cursor: pointer; transition: 0.2s;
         }
-        
-        .home-btn {
-            width: 32px; height: 32px; border-radius: 50%;
-            background: #fff; border: 1px solid #E5E7EB;
-            color: var(--primary); display: flex; align-items: center; justify-content: center;
-            text-decoration: none; font-size: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
+        .lang-btn:active { transform: scale(0.95); background: #E2E8F0; }
 
-        /* --- الحاوية --- */
+        /* الوسط: اللوجو والاسم */
+        .brand-center { 
+            display: flex; flex-direction: column; align-items: center; 
+            text-decoration: none; cursor: pointer;
+        }
+        .logo-icon { font-size: 1.8rem; color: var(--primary); margin-bottom: 2px; }
+        .brand-text h1 { font-size: 1rem; font-weight: 800; color: var(--primary); line-height: 1; margin: 0; }
+        .brand-text span { font-size: 0.7rem; color: var(--accent); font-weight: 600; }
+
+        /* اليسار: زر الرجوع */
+        .home-btn {
+            justify-self: end; 
+            width: 38px; height: 38px; border-radius: 12px;
+            background: #fff; border: 1px solid #E2E8F0;
+            color: var(--text); display: flex; align-items: center; justify-content: center;
+            text-decoration: none; font-size: 1.1rem; transition: 0.2s;
+        }
+        .home-btn:active { transform: scale(0.9); background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* --- منطقة المحتوى --- */
         .container { 
             flex: 1; display: flex; flex-direction: column; 
             align-items: center; justify-content: center; 
-            padding: 15px; width: 100%; max-width: 450px; margin: 0 auto; 
+            padding: 20px; width: 100%; max-width: 480px; margin: 0 auto; 
         }
 
         .screen { 
-            display: none; width: 100%; background: var(--surface); 
-            padding: 25px 20px; border-radius: 20px; 
-            box-shadow: 0 5px 20px rgba(0,0,0,0.03); text-align: center; 
+            display: none; width: 100%; 
+            background: var(--card-bg); 
+            padding: 30px 25px; 
+            border-radius: 24px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.04); 
+            text-align: center; 
+            animation: fadeInScale 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .screen.active { display: block; animation: fadeIn 0.3s ease-out; }
+        .screen.active { display: block; }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInScale { from { opacity: 0; transform: scale(0.98) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
 
-        .btn-primary {
-            background: var(--primary); color: white; border: none; padding: 15px;
-            border-radius: 14px; font-weight: 800; font-size: 1rem; width: 100%; 
-            cursor: pointer; margin-bottom: 12px; display: flex; align-items: center; 
-            justify-content: center; gap: 8px;
+        /* --- الأزرار الكبيرة --- */
+        .btn-card {
+            width: 100%; padding: 18px; border-radius: 18px; border: none;
+            font-size: 1rem; font-weight: 800; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            margin-bottom: 15px; transition: transform 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
         }
-        
-        .btn-secondary {
-            background: white; color: var(--text); border: 2px solid #E5E7EB;
-            padding: 14px; border-radius: 14px; font-weight: 700; width: 100%; 
-            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 8px 25px rgba(0, 105, 92, 0.25); }
+        .btn-outline { background: white; color: var(--text); border: 2px solid #F1F5F9; }
+        .btn-card:active { transform: scale(0.98); }
 
-        /* الكانفس للفحص */
+        /* --- فحص النظر --- */
+        .e-box {
+            width: 150px; height: 150px; background: #F8FAFC;
+            border: 2px solid #E2E8F0; border-radius: 24px;
+            display: flex; align-items: center; justify-content: center;
+            margin: 20px auto 40px;
+        }
+        .e-char { font-size: 90px; font-weight: 900; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); color: var(--text); }
+
+        .d-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 240px; margin: 0 auto; }
+        .d-btn { 
+            height: 65px; background: white; border: 1px solid #E2E8F0; border-radius: 16px; 
+            font-size: 1.4rem; color: var(--primary); cursor: pointer; 
+            box-shadow: 0 4px 0 #E2E8F0; transition: 0.1s;
+        }
+        .d-btn:active { transform: translateY(4px); box-shadow: none; background: var(--primary); color: white; }
+
+        /* --- فحص الألوان --- */
         .plate-wrapper {
-            width: 220px; height: 220px; margin: 0 auto 20px;
+            width: 230px; height: 230px; margin: 0 auto 25px;
             background: #fff; border-radius: 50%; overflow: hidden;
-            transform: translateZ(0); 
+            border: 6px solid #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            transform: translateZ(0); /* تسريع */
         }
         canvas { width: 100%; height: 100%; }
 
-        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .num-btn { background: #F3F4F6; border: none; padding: 12px; border-radius: 12px; font-size: 1.2rem; font-weight: 700; cursor: pointer; }
-        .num-btn:active { background: #D1D5DB; }
+        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .num-btn { 
+            background: #F8FAFC; border: none; padding: 15px; border-radius: 14px; 
+            font-size: 1.3rem; font-weight: 700; color: var(--text); cursor: pointer; 
+        }
+        .num-btn:active { background: #CBD5E1; }
 
         .input-display {
-            font-size: 2rem; font-weight: 800; color: var(--primary);
-            height: 50px; margin-bottom: 15px; letter-spacing: 3px;
-            border-bottom: 2px dashed #E5E7EB;
+            font-size: 2.2rem; font-weight: 800; color: var(--primary);
+            height: 50px; margin-bottom: 20px; letter-spacing: 4px;
+            border-bottom: 2px dashed #E2E8F0;
         }
 
-        .e-box {
-            width: 140px; height: 140px; background: #F9FAFB;
-            border: 2px solid #E5E7EB; border-radius: 18px;
-            display: flex; align-items: center; justify-content: center;
-            margin: 15px auto 30px;
-        }
-        .e-char { font-size: 80px; font-weight: 900; transition: transform 0.2s; color: var(--text); }
-
-        .controls-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 220px; margin: 0 auto; }
-        .ctrl-btn { height: 60px; background: white; border: 1px solid #E5E7EB; border-radius: 14px; font-size: 1.3rem; color: var(--primary); cursor: pointer; }
-        .ctrl-btn:active { background: var(--primary); color: white; }
-
+        /* --- النتيجة --- */
         .score-circle {
-            width: 100px; height: 100px; border-radius: 50%;
-            border: 6px solid var(--success); margin: 0 auto 15px;
+            width: 110px; height: 110px; border-radius: 50%;
+            border: 6px solid var(--success); margin: 0 auto 20px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.8rem; font-weight: 800; color: var(--success);
+            font-size: 2rem; font-weight: 800; color: var(--success);
             background: #F0FDF4;
         }
+
+        /* إخفاء السكرول */
+        ::-webkit-scrollbar { width: 0px; }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="index.html" class="brand-link">
-             <div class="logo-box"><i class="fas fa-eye"></i></div>
+        <button class="lang-btn" onclick="toggleLang()" id="langBtn">English</button>
+
+        <a href="index.html" class="brand-center">
+            <div class="logo-icon"><i class="fas fa-eye"></i></div>
             <div class="brand-text">
                 <h1 data-i18n="title">دلتا للبصريات</h1>
                 <span data-i18n="location">المقابلين</span>
             </div>
         </a>
 
-        <div class="header-left">
-            <button class="lang-btn" onclick="toggleLang()" id="langBtn">English</button>
-            <a href="index.html" class="home-btn"><i class="fas fa-home"></i></a>
-        </div>
+        <a href="index.html" class="home-btn"><i class="fas fa-arrow-left"></i></a>
     </header>
 
     <div class="container">
 
         <div id="screen-home" class="screen active">
-            <h2 data-i18n="welcome" style="margin-bottom: 8px; font-size: 1.4rem; color: var(--primary);">نظام الفحص الذكي</h2>
-            <p data-i18n="desc" style="color: #6B7280; margin-bottom: 25px; font-size: 0.9rem;">اختر نوع الفحص للبدء</p>
+            <h2 data-i18n="welcome" style="font-size: 1.5rem; color: var(--primary); margin-bottom: 10px;">نظام الفحص الذكي</h2>
+            <p data-i18n="desc" style="color: #64748B; margin-bottom: 30px;">اختر نوع الفحص للبدء</p>
             
-            <button class="btn-primary" onclick="startTest('vision')">
+            <button class="btn-card btn-primary" onclick="startTest('vision')">
                 <i class="fas fa-glasses"></i> <span data-i18n="btn_vision">فحص حدة النظر</span>
             </button>
-            <button class="btn-secondary" onclick="startTest('color')">
+            <button class="btn-card btn-outline" onclick="startTest('color')">
                 <i class="fas fa-palette"></i> <span data-i18n="btn_color">فحص عمى الألوان</span>
             </button>
         </div>
 
         <div id="screen-vision" class="screen">
             <div class="e-box"><div id="e-char" class="e-char">E</div></div>
-            <p data-i18n="vision_instr" style="margin-bottom: 15px; color: #6B7280;">حدد اتجاه الفتحة</p>
-            <div class="controls-grid">
-                <button class="ctrl-btn" style="grid-column: 2" onclick="checkVision(270)"><i class="fas fa-chevron-up"></i></button>
-                <button class="ctrl-btn" style="grid-column: 1; grid-row: 2" onclick="checkVision(180)"><i class="fas fa-chevron-left"></i></button>
-                <button class="ctrl-btn" style="grid-column: 2; grid-row: 2" onclick="checkVision(90)"><i class="fas fa-chevron-down"></i></button>
-                <button class="ctrl-btn" style="grid-column: 3; grid-row: 2" onclick="checkVision(0)"><i class="fas fa-chevron-right"></i></button>
+            <p data-i18n="vision_instr" style="color: #64748B; margin-bottom: 20px;">حدد اتجاه الفتحة</p>
+            <div class="d-pad">
+                <button class="d-btn" style="grid-column: 2" onclick="checkVision(270)"><i class="fas fa-chevron-up"></i></button>
+                <button class="d-btn" style="grid-column: 1; grid-row: 2" onclick="checkVision(180)"><i class="fas fa-chevron-left"></i></button>
+                <button class="d-btn" style="grid-column: 2; grid-row: 2" onclick="checkVision(90)"><i class="fas fa-chevron-down"></i></button>
+                <button class="d-btn" style="grid-column: 3; grid-row: 2" onclick="checkVision(0)"><i class="fas fa-chevron-right"></i></button>
             </div>
         </div>
 
         <div id="screen-color" class="screen">
-            <div class="plate-wrapper"><canvas id="plateCanvas" width="220" height="220"></canvas></div>
+            <div class="plate-wrapper"><canvas id="plateCanvas" width="230" height="230"></canvas></div>
             <div id="user-input" class="input-display"></div>
             <div class="numpad">
                 <script>
@@ -186,18 +213,19 @@
 
         <div id="screen-result" class="screen">
             <div id="res-circle" class="score-circle">--</div>
-            <h2 id="res-title" style="margin-bottom: 8px;">--</h2>
-            <p id="res-msg" style="color: #6B7280; margin-bottom: 20px; font-size: 0.9rem;">--</p>
+            <h2 id="res-title" style="margin-bottom: 5px;">--</h2>
+            <p id="res-msg" style="color: #64748B; margin-bottom: 25px;">--</p>
             
-            <a id="wa-link" href="#" class="btn-primary" style="background:#25D366; text-decoration:none;">
+            <a id="wa-link" href="#" class="btn-card btn-primary" style="background:#10B981; text-decoration:none;">
                 <i class="fab fa-whatsapp"></i> <span data-i18n="whatsapp">حجز موعد بالنتيجة</span>
             </a>
-            <button class="btn-secondary" onclick="location.reload()" data-i18n="restart">إعادة الفحص</button>
+            <button class="btn-card btn-outline" onclick="location.reload()" data-i18n="restart">إعادة الفحص</button>
         </div>
 
     </div>
 
     <script>
+        // --- إعدادات اللغة ---
         const i18n = {
             ar: {
                 title: "دلتا للبصريات", location: "المقابلين", welcome: "نظام الفحص الذكي",
@@ -232,12 +260,13 @@
             });
         }
 
+        // --- إدارة الشاشات ---
         const show = (id) => {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
         };
 
-        // فحص النظر
+        // --- فحص النظر ---
         const vLevels = [110, 80, 50, 30, 20], vScores = ["6/60", "6/36", "6/18", "6/9", "6/6"];
         let vIdx = 0, vRot = 0;
 
@@ -256,22 +285,23 @@
 
         function checkVision(ang) { if(ang === vRot) { vIdx++; nextV(); } else finish(vScores[vIdx] || "Weak", false); }
 
-        // فحص الألوان
+        // --- فحص الألوان (سريع جداً) ---
         const cData = [12, 8, 5, 29, 74];
         let cIdx = 0, cCorrect = 0, userIn = "";
         const ctx = document.getElementById('plateCanvas').getContext('2d', { alpha: false });
 
         function drawPlate(num) {
-            ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, 220, 220);
-            for(let i=0; i<450; i++) {
-                const x = Math.random()*220, y = Math.random()*220;
-                if(Math.sqrt((x-110)**2+(y-110)**2) > 105) continue;
+            ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, 230, 230);
+            // رسم 400 نقطة فقط للسرعة
+            for(let i=0; i<400; i++) {
+                const x = Math.random()*230, y = Math.random()*230;
+                if(Math.sqrt((x-115)**2+(y-115)**2) > 110) continue;
                 ctx.beginPath(); ctx.arc(x,y, Math.random()*4+2, 0, Math.PI*2);
-                ctx.fillStyle = Math.random()>0.5 ? '#A5D6A7' : '#E0E0E0'; ctx.fill();
+                ctx.fillStyle = Math.random()>0.5 ? '#86EFAC' : '#E2E8F0'; ctx.fill();
             }
-            ctx.fillStyle = "#E53935"; ctx.font = "bold 120px Tajawal"; 
+            ctx.fillStyle = "#EF4444"; ctx.font = "bold 130px Tajawal"; 
             ctx.textAlign = "center"; ctx.textBaseline = "middle"; 
-            ctx.fillText(num, 110, 120);
+            ctx.fillText(num, 115, 125);
         }
 
         function nextC() {
@@ -284,6 +314,7 @@
         function updateIn() { document.getElementById('user-input').innerText = userIn; }
         function submitColor() { if(parseInt(userIn) === cData[cIdx]) cCorrect++; cIdx++; nextC(); }
 
+        // --- النتيجة ---
         function finish(score, good) {
             show('screen-result');
             const t = i18n[curLang];

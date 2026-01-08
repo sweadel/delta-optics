@@ -11,236 +11,256 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- لوحة ألوان الهوية البصرية --- */
+        /* --- الألوان --- */
         :root { 
-            /* لون التركواز الطبي المميز */
-            --brand-primary: #00897B; 
-            /* لون كحلي داكن للنصوص والعناوين */
-            --brand-dark: #1E3A5F;
-            /* لون ذهبي للتقييمات */
-            --accent-gold: #FFB300;
-            /* خلفيات */
-            --bg-light: #F8FAFC;
-            --bg-white: #FFFFFF;
-            /* نصوص ثانوية */
-            --text-gray: #64748B;
+            --primary: #0D9488;       /* تركواز */
+            --primary-dark: #0F766E;
+            --secondary: #1E293B;     /* كحلي غامق للنصوص */
+            --bg-body: #F8FAFC;       /* خلفية سكني فاتح جداً */
+            --white: #FFFFFF;
+            --gold: #F59E0B;
         }
-        
+
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
         
         body { 
-            background: var(--bg-light); color: var(--brand-dark); min-height: 100vh; 
-            display: flex; flex-direction: column; overflow-x: hidden;
-            padding-bottom: 80px; /* مساحة للأزرار الطائرة */
+            background: var(--bg-body); 
+            color: var(--secondary); 
+            min-height: 100vh; 
+            display: flex; flex-direction: column;
+            padding-bottom: 80px; /* مساحة عشان الأزرار الطائرة ما تغطي عشي */
         }
 
-        /* --- الهيدر البسيط --- */
-        header { 
-            background: rgba(255, 255, 255, 0.95); padding: 15px 20px; 
-            display: flex; align-items: center; justify-content: center; 
-            position: sticky; top: 0; z-index: 90; border-bottom: 1px solid #E2E8F0;
-            backdrop-filter: blur(8px);
+        /* --- الهيدر --- */
+        header {
+            background: var(--white);
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky; top: 0; z-index: 50;
         }
-        .brand-header-text { font-weight: 800; font-size: 1.1rem; color: var(--brand-dark); letter-spacing: -0.5px; }
+        .header-title { font-weight: 800; font-size: 1.2rem; color: var(--primary); margin: 0; }
 
-        /* --- القسم الرئيسي (Hero) --- */
-        main { 
-            flex: 1; display: flex; flex-direction: column; align-items: center; 
-            padding: 40px 20px 20px; text-align: center; 
+        /* --- المحتوى --- */
+        main {
+            flex: 1;
+            padding: 20px;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
         }
 
-        /* اللوجو الأساسي */
-        .main-logo { 
-            width: 150px; height: 150px; object-fit: contain; margin-bottom: 20px;
-            /* ظل خفيف جداً ليبرز عن الخلفية */
+        /* اللوجو - بسيط ومباشر */
+        .main-logo {
+            width: 140px; height: 140px;
+            object-fit: contain; /* يضمن ظهور اللوجو كامل بدون قص */
+            margin-bottom: 15px;
+            /* فلتر خفيف للظل */
             filter: drop-shadow(0 5px 10px rgba(0,0,0,0.05));
         }
+
+        h1 { font-size: 1.8rem; margin-bottom: 5px; color: var(--secondary); }
+        .subtitle { color: #64748B; font-size: 0.95rem; margin-bottom: 25px; line-height: 1.5; }
+
+        /* الشارات (الحالة والتقييم) */
+        .info-row {
+            display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 30px;
+        }
+        .badge {
+            background: var(--white);
+            padding: 6px 15px; border-radius: 50px;
+            font-size: 0.85rem; font-weight: 700;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            display: flex; align-items: center; gap: 6px; border: 1px solid #E2E8F0;
+        }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; }
         
-        h1 { font-size: 1.8rem; font-weight: 900; margin-bottom: 10px; color: var(--brand-dark); }
-        .subtitle { color: var(--text-gray); margin-bottom: 25px; line-height: 1.6; max-width: 450px; font-size: 0.95rem; }
-
-        /* الشارات (حالة المحل + التقييم) */
-        .badges-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 30px; }
+        /* ألوان الحالة */
+        .status-open { color: #059669; }
+        .status-open .status-dot { background: #10B981; box-shadow: 0 0 0 2px #D1FAE5; }
         
-        .status-badge {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 6px 14px; border-radius: 30px; font-size: 0.85rem; font-weight: 700;
-            background: var(--bg-white); box-shadow: 0 2px 8px rgba(0,0,0,0.04); color: var(--brand-dark);
-        }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; }
-        .open .status-dot { background: #10B981; box-shadow: 0 0 0 2px #D1FAE5; }
-        .closed .status-dot { background: #EF4444; box-shadow: 0 0 0 2px #FEE2E2; }
-        .rating-stars { color: var(--accent-gold); letter-spacing: 1px; }
+        .status-closed { color: #DC2626; }
+        .status-closed .status-dot { background: #EF4444; box-shadow: 0 0 0 2px #FEE2E2; }
 
-        /* --- كروت الخدمات --- */
-        .services-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
-            width: 100%; max-width: 420px; margin-bottom: 35px;
+        /* --- الخدمات (التشكيلات) --- */
+        .services-container {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+            width: 100%; max-width: 400px; margin-bottom: 30px;
         }
-        .service-card {
-            background: var(--bg-white); padding: 15px 10px; border-radius: 16px;
-            display: flex; flex-direction: column; align-items: center; gap: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid #F1F5F9;
+        .service-box {
+            background: var(--white); padding: 15px 5px; border-radius: 12px;
+            border: 1px solid #F1F5F9;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
         }
-        .ser-icon { font-size: 1.4rem; color: var(--brand-primary); }
-        .ser-text { font-size: 0.8rem; font-weight: 700; color: var(--brand-dark); }
+        .ser-icon { font-size: 1.4rem; color: var(--primary); }
+        .ser-title { font-size: 0.8rem; font-weight: 700; color: var(--secondary); }
 
-        /* --- الأزرار الرئيسية (المنظمة) --- */
-        .btn-container { width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 40px; }
-        .btn { 
-            width: 100%; padding: 16px; border-radius: 14px; 
-            font-size: 1rem; font-weight: 800; text-decoration: none; 
-            display: flex; align-items: center; justify-content: center; gap: 10px; 
-            transition: all 0.2s; 
-        }
-        /* زر الفحص (لون الهوية الأساسي) */
-        .btn-primary { 
-            background: var(--brand-primary); color: white; 
-            box-shadow: 0 8px 20px -5px rgba(0, 137, 123, 0.3);
-        }
-        /* زر الموقع وجوجل (مدمج) */
-        .btn-secondary { 
-            background: var(--bg-white); color: var(--brand-dark); 
-            border: 2px solid #E2E8F0; 
+        /* --- الأزرار --- */
+        .buttons-area { width: 100%; max-width: 350px; display: flex; flex-direction: column; gap: 12px; }
+        
+        .btn {
+            width: 100%; padding: 16px; border-radius: 12px;
+            text-decoration: none; font-weight: 700; font-size: 1rem;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            transition: transform 0.2s;
         }
         .btn:active { transform: scale(0.98); }
 
-        /* --- شريط الماركات الأنيق --- */
-        .marquee-container { 
-            width: 100%; overflow: hidden; background: var(--bg-white); 
-            padding: 18px 0; margin-top: auto;
-            border-top: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0;
+        /* زر الفحص - الأساسي */
+        .btn-main {
+            background: var(--primary); color: var(--white);
+            box-shadow: 0 4px 15px rgba(13, 148, 136, 0.3);
+            border: none;
         }
-        .marquee-content { display: flex; gap: 50px; animation: scroll 25s linear infinite; width: max-content; }
-        /* لون الماركات كحلي هادئ */
-        .brand-item { font-size: 1rem; font-weight: 700; color: var(--brand-dark); opacity: 0.7; letter-spacing: 1.5px; }
+
+        /* زر الموقع - ثانوي */
+        .btn-loc {
+            background: var(--white); color: var(--secondary);
+            border: 1px solid #E2E8F0;
+        }
+        
+        /* زر جوجل - مميز */
+        .btn-google {
+            background: var(--white); color: #1F293B;
+            border: 1px solid #E2E8F0;
+            margin-bottom: 20px;
+        }
+        .google-icon { color: #EA4335; font-size: 1.2rem; } /* لون جوجل الرسمي */
+
+        /* --- شريط الماركات --- */
+        .marquee-strip {
+            background: var(--white);
+            padding: 15px 0;
+            border-top: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0;
+            overflow: hidden; margin-top: auto;
+        }
+        .marquee-track {
+            display: flex; gap: 40px; width: max-content;
+            animation: scroll 20s linear infinite;
+        }
+        .brand-name { font-weight: 800; color: #94A3B8; letter-spacing: 1px; font-size: 1rem; }
+        
         @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(50%); } }
 
-        /* --- الأزرار الطائرة (Floating Action Buttons) --- */
-        .floating-contact {
-            position: fixed; bottom: 25px; right: 20px; /* مكانها في الزاوية اليمين تحت */
-            display: flex; flex-direction: column-reverse; gap: 15px; z-index: 1000;
-            align-items: flex-end;
-        }
-        .fab-wrapper { display: flex; align-items: center; gap: 10px; }
-        /* النص اللي بيطلع جنب الزر */
-        .fab-label {
-            background: var(--bg-white); color: var(--brand-dark);
-            padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            opacity: 0; transition: 0.3s; pointer-events: none; /* مخفي افتراضياً */
+        /* --- الأيقونات الطائرة (تحت) --- */
+        .fab-container {
+            position: fixed; bottom: 20px; right: 20px;
+            display: flex; flex-direction: column; gap: 15px; z-index: 100;
         }
         .fab-btn {
             width: 55px; height: 55px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             color: white; font-size: 1.5rem; text-decoration: none;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.15); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
         }
         .fab-whatsapp { background: #25D366; }
-        .fab-phone { background: var(--brand-dark); }
-        
-        /* إظهار النص عند اللمس أو المرور */
-        .fab-btn:hover { transform: scale(1.1); }
-        .fab-wrapper:hover .fab-label { opacity: 1; transform: translateX(-5px); }
+        .fab-phone { background: var(--secondary); }
+        .fab-btn:active { transform: scale(0.9); }
 
     </style>
 </head>
 <body>
 
     <header>
-        <span class="brand-header-text">DELTA OPTICS</span>
+        <h2 class="header-title">DELTA OPTICS</h2>
     </header>
 
     <main>
-        <img src="logo.png" class="main-logo" onerror="this.src='https://via.placeholder.com/150?text=Delta+Optics'" alt="Delta Logo">
-        
-        <h1>دلتا للبصريات</h1>
-        <p class="subtitle">رؤية أوضح لحياة أفضل. نجمع بين الخبرة وأحدث التقنيات لخدمة عينيك في فرع المقابلين.</p>
+        <img src="logo.png" class="main-logo" alt="Delta Logo">
 
-        <div class="badges-row">
-            <div id="shop-status" class="status-badge closed">
+        <h1>دلتا للبصريات</h1>
+        <p class="subtitle">المقابلين - نجمع بين دقة الفحص وأناقة المظهر.</p>
+
+        <div class="info-row">
+            <div id="status-badge" class="badge status-closed">
                 <div class="status-dot"></div> <span id="status-text">...</span>
             </div>
-            <div class="status-badge">
-                4.9 <span class="rating-stars">★★★★★</span>
+            <div class="badge">
+                <i class="fas fa-star" style="color: var(--gold);"></i> 4.9 (128 تقييم)
             </div>
         </div>
 
-        <div class="services-grid">
-            <div class="service-card">
-                <div class="ser-icon"><i class="fas fa-clipboard-list"></i></div>
-                <div class="ser-text">فحص شامل</div>
+        <div class="services-container">
+            <div class="service-box">
+                <i class="fas fa-clipboard-check ser-icon"></i>
+                <span class="ser-title">فحص دقيق</span>
             </div>
-            <div class="service-card">
-                <div class="ser-icon"><i class="fas fa-glasses"></i></div>
-                <div class="ser-text">ماركات عالمية</div>
+            <div class="service-box">
+                <i class="fas fa-glasses ser-icon"></i>
+                <span class="ser-title">نظارات طبية</span>
             </div>
-            <div class="service-card">
-                <div class="ser-icon"><i class="fas fa-screwdriver-wrench"></i></div>
-                <div class="ser-text">خدمات صيانة</div>
+            <div class="service-box">
+                <i class="fas fa-tools ser-icon"></i>
+                <span class="ser-title">صيانة وخدمة</span>
             </div>
         </div>
 
-        <div class="btn-container">
-            <a href="test.html" class="btn btn-primary">
+        <div class="buttons-area">
+            <a href="test.html" class="btn btn-main">
                 <i class="fas fa-stethoscope"></i> ابدأ الفحص الذكي
             </a>
 
-            <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Al-Muqabalain" target="_blank" class="btn btn-secondary">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="18" alt="G">
-                موقع الفرع وتقييمات Google
+            <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Al-Muqabalain" target="_blank" class="btn btn-loc">
+                <i class="fas fa-map-marker-alt" style="color:#EF4444;"></i> موقع الفرع
+            </a>
+
+            <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Al-Muqabalain" target="_blank" class="btn btn-google">
+                <i class="fab fa-google google-icon"></i> &nbsp; قيّمنا على Google
             </a>
         </div>
 
     </main>
 
-    <div class="marquee-container">
-        <div class="marquee-content">
-            <span class="brand-item">RAY-BAN</span>
-            <span class="brand-item">GUCCI</span>
-            <span class="brand-item">POLICE</span>
-            <span class="brand-item">TOM FORD</span>
-            <span class="brand-item">PRADA</span>
-            <span class="brand-item">VERSACE</span>
-            <span class="brand-item">CARRERA</span>
-            <span class="brand-item">RAY-BAN</span>
-            <span class="brand-item">GUCCI</span>
-            <span class="brand-item">POLICE</span>
+    <div class="marquee-strip">
+        <div class="marquee-track">
+            <span class="brand-name">RAY-BAN</span>
+            <span class="brand-name">GUCCI</span>
+            <span class="brand-name">POLICE</span>
+            <span class="brand-name">PRADA</span>
+            <span class="brand-name">CARRERA</span>
+            <span class="brand-name">DIOR</span>
+            <span class="brand-name">RAY-BAN</span>
+            <span class="brand-name">GUCCI</span>
+            <span class="brand-name">POLICE</span>
+            <span class="brand-name">PRADA</span>
         </div>
     </div>
 
-    <div class="floating-contact">
-        <div class="fab-wrapper">
-            <span class="fab-label">تواصل واتساب</span>
-            <a href="https://wa.me/962775549700" class="fab-btn fab-whatsapp">
-                <i class="fab fa-whatsapp"></i>
-            </a>
-        </div>
-        <div class="fab-wrapper">
-            <span class="fab-label">اتصل الآن</span>
-            <a href="tel:+962775549700" class="fab-btn fab-phone">
-                <i class="fas fa-phone-alt"></i>
-            </a>
-        </div>
+    <div class="fab-container">
+        <a href="https://wa.me/962775549700" class="fab-btn fab-whatsapp">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+        <a href="tel:+962775549700" class="fab-btn fab-phone">
+            <i class="fas fa-phone-alt"></i>
+        </a>
     </div>
 
     <script>
-        // منطق الدوام
+        // منطق الدوام البسيط والمضمون
         const now = new Date();
-        const day = now.getDay(); const hour = now.getHours();
-        const statusDiv = document.getElementById('shop-status');
-        const statusText = document.getElementById('status-text');
+        const day = now.getDay(); 
+        const hour = now.getHours();
         
+        const badge = document.getElementById('status-badge');
+        const text = document.getElementById('status-text');
+
         let isOpen = false;
-        // الجمعة (5): 16 - 24 | باقي الأيام: 10 - 24
-        if (day === 5) { if (hour >= 16) isOpen = true; } else { if (hour >= 10) isOpen = true; }
+        
+        // الجمعة (5): من 16 (4 العصر) لـ 24 (12 الليل)
+        if (day === 5) {
+            if (hour >= 16) isOpen = true;
+        } 
+        // باقي الأيام: من 10 الصبح لـ 24 (12 الليل)
+        else {
+            if (hour >= 10) isOpen = true;
+        }
 
         if (isOpen) {
-            statusDiv.className = 'status-badge open';
-            statusText.innerText = 'مفتوح الآن';
+            badge.className = 'badge status-open';
+            text.innerText = "مفتوح الآن";
         } else {
-            statusDiv.className = 'status-badge closed';
-            statusText.innerText = 'مغلق الآن';
+            badge.className = 'badge status-closed';
+            text.innerText = "مغلق الآن";
         }
     </script>
 

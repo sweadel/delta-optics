@@ -11,150 +11,168 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* --- إعدادات الألوان والأساسيات --- */
         :root { 
-            --primary: #0D9488; 
-            --bg: #F8FAFC; 
-            --surface: #FFFFFF; 
-            --text: #1E293B; 
-            --gold: #F59E0B;
-            --gray: #64748B;
+            --primary: #0D9488; /* لون التركواز الأساسي */
+            --primary-dark: #0F766E;
+            --accent-gold: #B45309; /* ذهبي داكن للفخامة */
+            --bg-main: #FFFFFF;
+            --bg-secondary: #F8FAFC;
+            --text-dark: #1E293B;
+            --text-light: #64748B;
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
         
         body { 
-            background: var(--bg); color: var(--text); min-height: 100vh; 
+            background: var(--bg-main); color: var(--text-dark); min-height: 100vh; 
             display: flex; flex-direction: column; overflow-x: hidden;
         }
 
+        /* --- الهيدر البسيط --- */
         header { 
-            background: rgba(255, 255, 255, 0.95); padding: 12px 20px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03); 
+            background: rgba(255, 255, 255, 0.98); padding: 15px 20px; 
             display: flex; align-items: center; justify-content: center; 
-            position: sticky; top: 0; z-index: 100; backdrop-filter: blur(5px);
+            position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #F1F5F9;
         }
-        .brand { 
+        .brand-header { 
             display: flex; align-items: center; gap: 10px; 
-            font-weight: 800; font-size: 1.2rem; color: var(--primary); 
+            font-weight: 800; font-size: 1.1rem; color: var(--primary-dark); 
             text-decoration: none; 
         }
-        .brand img { width: 40px; height: 40px; object-fit: contain; }
+        .brand-header img { width: 35px; height: 35px; object-fit: contain; }
 
-        main { 
-            flex: 1; display: flex; flex-direction: column; align-items: center; 
-            padding: 30px 20px; text-align: center; 
+        /* --- القسم الرئيسي (Hero Section) --- */
+        .hero-section {
+            background: linear-gradient(180deg, #F0FDFA 0%, #FFFFFF 100%);
+            padding: 40px 20px 30px;
+            text-align: center;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        .main-logo { 
+            width: 140px; height: 140px; object-fit: contain; margin-bottom: 20px; 
+            filter: drop-shadow(0 8px 12px rgba(13, 148, 136, 0.1));
         }
         
-        .hero-img { 
-            width: 130px; height: 130px; object-fit: contain; margin-bottom: 15px; 
-            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
-        }
-        
-        h1 { font-size: 1.6rem; margin-bottom: 5px; color: var(--primary); }
+        h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 10px; color: var(--primary-dark); letter-spacing: -0.5px; }
+        .subtitle { color: var(--text-light); margin-bottom: 25px; line-height: 1.6; max-width: 450px; font-size: 0.95rem; }
 
-        /* حالة المحل */
+        /* الشارات (Badges) */
+        .badges-container { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 30px; }
+        
         .status-badge {
-            display: inline-flex; align-items: center; gap: 6px;
-            padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 700;
-            margin-bottom: 10px; transition: all 0.3s ease;
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 14px; border-radius: 30px; font-size: 0.85rem; font-weight: 600;
+            background: white; border: 1px solid #E2E8F0; box-shadow: 0 2px 5px rgba(0,0,0,0.03);
         }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; animation: pulse 1.5s infinite; }
-        .open { background: #ECFDF5; color: #047857; border: 1px solid #D1FAE5; }
-        .open .status-dot { background: #10B981; }
-        .closed { background: #FEF2F2; color: #B91C1C; border: 1px solid #FEE2E2; }
-        .closed .status-dot { background: #EF4444; }
-        
-        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .open .status-dot { background: #10B981; box-shadow: 0 0 0 3px #D1FAE5; }
+        .closed .status-dot { background: #EF4444; box-shadow: 0 0 0 3px #FEE2E2; }
 
         .rating-badge {
-            font-size: 0.9rem; color: var(--text); margin-bottom: 20px;
-            font-weight: 600; display: flex; align-items: center; gap: 5px;
+            background: #FFFBEB; color: var(--accent-gold); border: 1px solid #FEF3C7;
         }
-        .stars { color: var(--gold); }
 
+        /* --- قسم الخدمات الأنيق --- */
+        .section-container { padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        
         .services-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
-            width: 100%; max-width: 400px; margin-bottom: 30px;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+            width: 100%; max-width: 450px; margin-bottom: 35px;
         }
         .service-card {
-            background: white; padding: 15px 10px; border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid #F1F5F9;
-            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            background: var(--bg-secondary); padding: 18px 10px; border-radius: 16px;
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+            transition: transform 0.2s;
         }
-        .ser-icon { font-size: 1.2rem; color: var(--primary); background: #F0FDFA; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
-        .ser-text { font-size: 0.75rem; font-weight: 700; color: var(--text); }
+        .ser-icon { font-size: 1.3rem; color: var(--primary); }
+        .ser-text { font-size: 0.8rem; font-weight: 700; color: var(--text-dark); }
 
+        /* --- الأزرار الفخمة --- */
         .btn { 
-            width: 100%; max-width: 350px; padding: 15px; border-radius: 14px; 
-            font-size: 0.95rem; font-weight: 800; text-decoration: none; 
+            width: 100%; max-width: 380px; padding: 16px; border-radius: 16px; 
+            font-size: 1rem; font-weight: 700; text-decoration: none; 
             display: flex; align-items: center; justify-content: center; gap: 10px; 
-            margin-bottom: 10px; transition: transform 0.2s; 
+            margin-bottom: 12px; transition: all 0.2s; 
         }
-        .btn-primary { background: linear-gradient(135deg, var(--primary), #0F766E); color: white; box-shadow: 0 8px 20px -5px rgba(13, 148, 136, 0.4); }
-        .btn-outline { background: white; color: var(--text); border: 1px solid #E2E8F0; }
-        .btn-google { background: white; color: #1F293B; border: 1px solid #E2E8F0; margin-bottom: 25px; }
-        .btn:active { transform: scale(0.97); }
+        .btn-primary { 
+            background: var(--primary); color: white; 
+            box-shadow: 0 10px 20px -5px rgba(13, 148, 136, 0.3);
+        }
+        .btn-outline { 
+            background: white; color: var(--text-dark); border: 1px solid #E2E8F0; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .btn-google {
+            background: white; color: #1F293B; border: 1px solid #E2E8F0;
+            margin-top: 10px; margin-bottom: 30px; font-size: 0.9rem;
+        }
+        .btn:active { transform: scale(0.98); }
 
-        .reviews-section { width: 100%; max-width: 350px; text-align: right; margin-bottom: 30px; }
-        .section-title { font-size: 1rem; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; color: var(--text); }
-        .review-card { background: white; padding: 12px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); margin-bottom: 8px; border: 1px solid #F1F5F9; }
-        .user-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
-        .user-info { display: flex; align-items: center; gap: 8px; }
-        .user-avatar { width: 28px; height: 28px; background: #E2E8F0; border-radius: 50%; color: var(--gray); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; }
-        .user-name { font-weight: 700; font-size: 0.85rem; }
-        .review-text { font-size: 0.8rem; color: var(--gray); line-height: 1.4; }
-
-        .marquee-container {
-            width: 100%; overflow: hidden; background: white; padding: 15px 0;
-            border-top: 1px solid #F1F5F9; margin-top: auto;
-        }
-        .marquee-content {
-            display: flex; gap: 40px; animation: scroll 15s linear infinite;
-            width: max-content;
-        }
-        .brand-item { font-size: 1.1rem; font-weight: 800; color: #94A3B8; text-transform: uppercase; letter-spacing: 1px; }
+        /* --- قسم التقييمات --- */
+        .reviews-section { width: 100%; max-width: 380px; margin-bottom: 30px; }
+        .section-title { font-size: 1rem; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; color: var(--text-dark); }
         
+        .review-card { 
+            background: white; padding: 15px; border-radius: 14px; 
+            box-shadow: 0 2px 15px rgba(0,0,0,0.04); margin-bottom: 10px; 
+            border: 1px solid #F1F5F9; text-align: right;
+        }
+        .user-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+        .user-info { display: flex; align-items: center; gap: 10px; }
+        .user-avatar { width: 32px; height: 32px; background: #F1F5F9; border-radius: 50%; color: var(--text-light); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: bold; }
+        .user-name { font-weight: 700; font-size: 0.9rem; }
+        .review-text { font-size: 0.85rem; color: var(--text-light); line-height: 1.5; }
+        .stars { color: #FBBF24; letter-spacing: 1px; font-size: 0.8rem; }
+
+        /* --- الفوتر وشريط الماركات --- */
+        .social-bar { display: flex; gap: 15px; margin-bottom: 20px; }
+        .social-icon { width: 42px; height: 42px; border-radius: 50%; background: var(--bg-secondary); display: flex; align-items: center; justify-content: center; color: var(--primary-dark); font-size: 1.3rem; text-decoration: none; transition: 0.2s; }
+        
+        .marquee-container { width: 100%; overflow: hidden; background: white; padding: 20px 0; border-top: 1px solid #F1F5F9; margin-top: auto; }
+        .marquee-content { display: flex; gap: 40px; animation: scroll 20s linear infinite; width: max-content; }
+        .brand-item { font-size: 1rem; font-weight: 700; color: #CBD5E1; text-transform: uppercase; letter-spacing: 1.5px; }
         @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(50%); } }
-
-        .social-bar { display: flex; gap: 15px; margin: 20px 0; }
-        .social-icon { width: 40px; height: 40px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 1.2rem; text-decoration: none; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-
     </style>
 </head>
 <body>
 
     <header>
-        <a href="#" class="brand">
-            <img src="logo.png" onerror="this.style.display='none'" alt="Logo">
+        <a href="#" class="brand-header">
+            <img src="logo.png" onerror="this.style.display='none'" alt="Delta Logo">
             دلتا للبصريات
         </a>
     </header>
 
-    <main>
-        <img src="logo.png" class="hero-img" onerror="this.src='https://via.placeholder.com/150?text=Delta'" alt="Delta Logo">
-        
+    <div class="hero-section">
+        <img src="logo.png" class="main-logo" onerror="this.src='https://via.placeholder.com/150?text=Delta'" alt="Delta Optics Logo">
         <h1>دلتا للبصريات</h1>
-        
-        <div id="shop-status" class="status-badge closed">
-            <div class="status-dot"></div> <span id="status-text">جاري التحقق...</span>
-        </div>
+        <p class="subtitle">رؤية أوضح لحياة أفضل. نجمع بين الخبرة وأحدث التقنيات لخدمة عينيك.</p>
 
-        <div class="rating-badge">
-            4.9 <span class="stars">★★★★★</span> (128 تقييم)
+        <div class="badges-container">
+            <div id="shop-status" class="status-badge closed">
+                <div class="status-dot"></div> <span id="status-text">جاري التحقق...</span>
+            </div>
+            <div class="status-badge rating-badge">
+                <i class="fas fa-star"></i> 4.9 (128 تقييم)
+            </div>
         </div>
+    </div>
 
+    <div class="section-container">
         <div class="services-grid">
             <div class="service-card">
-                <div class="ser-icon"><i class="fas fa-eye"></i></div>
+                <div class="ser-icon"><i class="fas fa-clipboard-check"></i></div>
                 <div class="ser-text">فحص دقيق</div>
             </div>
             <div class="service-card">
                 <div class="ser-icon"><i class="fas fa-glasses"></i></div>
-                <div class="ser-text">تجهيز فوري</div>
+                <div class="ser-text">نظارات طبية</div>
             </div>
             <div class="service-card">
                 <div class="ser-icon"><i class="fas fa-tools"></i></div>
-                <div class="ser-text">صيانة مجانية</div>
+                <div class="ser-text">صيانة فورية</div>
             </div>
         </div>
 
@@ -171,19 +189,19 @@
         </a>
 
         <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Al-Muqabalain" target="_blank" class="btn btn-google">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="18" alt="G">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="16" alt="G">
             قيّمنا على Google
         </a>
 
         <div class="reviews-section">
-            <div class="section-title"><i class="fas fa-comment-alt" style="color:var(--gold)"></i> آراء العملاء</div>
+            <div class="section-title">آراء عملائنا</div>
             <div class="review-card">
                 <div class="user-header">
                     <div class="user-info">
                         <div class="user-avatar">م</div>
                         <div class="user-name">محمد العلي</div>
                     </div>
-                    <span class="stars" style="font-size:0.7rem">★★★★★</span>
+                    <span class="stars">★★★★★</span>
                 </div>
                 <div class="review-text">خدمة ممتازة، الدكتور شاطر وفحصهم دقيق جداً.</div>
             </div>
@@ -193,7 +211,7 @@
                         <div class="user-avatar" style="background:#FCE7F3; color:#9D174D">س</div>
                         <div class="user-name">سارة الأحمد</div>
                     </div>
-                    <span class="stars" style="font-size:0.7rem">★★★★★</span>
+                    <span class="stars">★★★★★</span>
                 </div>
                 <div class="review-text">التشكيلة عندهم روعة والتعامل راقي.</div>
             </div>
@@ -204,7 +222,7 @@
             <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
             <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
         </div>
-    </main>
+    </div>
 
     <div class="marquee-container">
         <div class="marquee-content">
@@ -223,32 +241,25 @@
     </div>
 
     <script>
-        // منطق الدوام الجديد
+        // منطق الدوام
         const now = new Date();
-        const day = now.getDay(); // 0 = أحد, 1 = اثنين, ... 5 = جمعة, 6 = سبت
-        const hour = now.getHours(); // الساعة 0 - 23
+        const day = now.getDay(); 
+        const hour = now.getHours();
         
         const statusDiv = document.getElementById('shop-status');
         const statusText = document.getElementById('status-text');
 
         let isOpen = false;
-
-        // يوم الجمعة (5): من 4 العصر (16) لـ 12 بالليل
-        if (day === 5) {
-            if (hour >= 16) isOpen = true; 
-        } 
-        // باقي الأيام: من 10 الصبح لـ 12 بالليل
-        else {
-            if (hour >= 10) isOpen = true;
-        }
+        // الجمعة: 4 عصر - 12 ليل
+        if (day === 5) { if (hour >= 16) isOpen = true; } 
+        // باقي الأيام: 10 صبح - 12 ليل
+        else { if (hour >= 10) isOpen = true; }
 
         if (isOpen) {
             statusDiv.className = 'status-badge open';
             statusText.innerText = 'مفتوح الآن';
         } else {
             statusDiv.className = 'status-badge closed';
-            statusText.innerText = 'مغلق - يفتح ' + (day === 5 ? '10 صباحاً' : (day === 4 ? '4 عصراً' : '10 صباحاً'));
-            // ملاحظة صغيرة: النص "يفتح..." تقريبي، الأهم كلمة مغلق
             statusText.innerText = 'مغلق الآن';
         }
     </script>

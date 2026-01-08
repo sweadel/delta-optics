@@ -11,88 +11,45 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- الأساسيات --- */
         :root { 
-            --primary: #00695C; 
-            --accent: #D4AF37; 
-            --bg: #F8FAFC; 
-            --card-bg: #FFFFFF; 
-            --text: #1E293B;
-            --success: #10B981;
-            --error: #EF4444;
+            --primary: #00695C; --accent: #D4AF37; --bg: #F8FAFC; 
+            --card-bg: #FFFFFF; --text: #1E293B; --success: #10B981; --error: #EF4444;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
         
-        body { 
-            background: var(--bg); 
-            color: var(--text); 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            overflow-x: hidden; 
-            text-rendering: optimizeSpeed;
-        }
+        body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; text-rendering: optimizeSpeed; }
 
-        /* --- الهيدر الجديد (يمين: رجوع | وسط: لوجو | يسار: لغة) --- */
+        /* الهيدر */
         header { 
-            background: rgba(255, 255, 255, 0.95); 
-            backdrop-filter: blur(10px);
-            padding: 10px 20px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03); 
-            display: grid; 
-            grid-template-columns: 1fr auto 1fr; /* تقسيم ثلاثي */
-            align-items: center; 
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+            padding: 10px 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); 
+            display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; 
             position: sticky; top: 0; z-index: 100;
         }
 
-        /* 1. زر الرجوع (يمين في العربي) */
-        .home-btn {
-            justify-self: start; 
-            width: 40px; height: 40px; border-radius: 12px;
-            background: #fff; border: 1px solid #E2E8F0;
-            color: var(--text); display: flex; align-items: center; justify-content: center;
-            text-decoration: none; font-size: 1.1rem; transition: 0.2s;
+        /* 1. زر الرجوع (يمين) */
+        .back-btn-header {
+            justify-self: start; width: 40px; height: 40px; border-radius: 12px;
+            background: #fff; border: 1px solid #E2E8F0; color: var(--text); 
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; cursor: pointer; transition: 0.2s;
         }
-        .home-btn:active { transform: scale(0.9); background: var(--primary); color: white; }
+        .back-btn-header:active { transform: scale(0.9); background: var(--primary); color: white; }
 
-        /* 2. اللوجو والاسم (وسط) */
-        .brand-center { 
-            display: flex; flex-direction: column; align-items: center; 
-            text-decoration: none; cursor: pointer;
-        }
-        /* تنسيق صورة اللوجو */
-        .logo-img {
-            width: 45px; height: 45px; /* حجم اللوجو */
-            object-fit: contain; /* عشان الصورة تبين كاملة */
-            margin-bottom: 2px;
-        }
+        /* 2. اللوجو (وسط) */
+        .brand-center { display: flex; flex-direction: column; align-items: center; text-decoration: none; cursor: pointer; }
+        .logo-img { width: 45px; height: 45px; object-fit: contain; margin-bottom: 2px; }
         .brand-text h1 { font-size: 1rem; font-weight: 800; color: var(--primary); line-height: 1; margin: 0; }
         .brand-text span { font-size: 0.7rem; color: var(--accent); font-weight: 600; }
 
-        /* 3. زر اللغة (يسار في العربي) */
-        .lang-btn {
-            justify-self: end; 
-            background: #F1F5F9; color: var(--primary); border: none; 
-            padding: 8px 16px; border-radius: 20px; font-weight: 700; 
-            font-size: 0.8rem; cursor: pointer; transition: 0.2s;
-        }
-        .lang-btn:active { transform: scale(0.95); background: #E2E8F0; }
+        /* 3. اللغة (يسار) */
+        .lang-btn { justify-self: end; background: #F1F5F9; color: var(--primary); border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; cursor: pointer; }
 
+        /* الحاوية */
+        .container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; width: 100%; max-width: 480px; margin: 0 auto; }
 
-        /* --- الحاوية --- */
-        .container { 
-            flex: 1; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; 
-            padding: 20px; width: 100%; max-width: 480px; margin: 0 auto; 
-        }
-
-        .screen { 
-            display: none; width: 100%; 
-            background: var(--card-bg); padding: 30px 25px; 
-            border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.04); 
-            text-align: center; animation: fadeInScale 0.3s ease-out;
-        }
+        .screen { display: none; width: 100%; background: var(--card-bg); padding: 30px 25px; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.04); text-align: center; animation: fadeInScale 0.3s ease-out; }
         .screen.active { display: block; }
         @keyframes fadeInScale { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
@@ -104,6 +61,12 @@
         .btn-magic { background: linear-gradient(135deg, #6366F1, #8B5CF6); color: white; }
         .btn-card:active { transform: scale(0.98); }
 
+        /* شاشة التعليمات */
+        .instr-icon { font-size: 3rem; color: var(--accent); margin-bottom: 20px; }
+        .instr-list { text-align: right; margin: 20px 0; padding: 0 10px; list-style: none; }
+        .instr-list li { margin-bottom: 12px; font-size: 0.95rem; color: #475569; display: flex; align-items: flex-start; gap: 10px; }
+        .instr-list li i { color: var(--primary); margin-top: 5px; }
+
         /* العناصر */
         .e-box { width: 150px; height: 150px; background: #F8FAFC; border: 2px solid #E2E8F0; border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 20px auto 40px; }
         .e-char { font-size: 90px; font-weight: 900; transition: transform 0.1s; color: var(--text); }
@@ -111,17 +74,14 @@
         .plate-wrapper { width: 230px; height: 230px; margin: 0 auto 25px; background: #fff; border-radius: 50%; overflow: hidden; border: 6px solid #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.06); transform: translateZ(0); }
         canvas { width: 100%; height: 100%; }
         
-        /* أزرار التحكم */
         .d-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 240px; margin: 0 auto; }
         .d-btn { height: 65px; background: white; border: 1px solid #E2E8F0; border-radius: 16px; font-size: 1.4rem; color: var(--primary); cursor: pointer; box-shadow: 0 4px 0 #E2E8F0; }
         .d-btn:active { transform: translateY(4px); box-shadow: none; background: var(--primary); color: white; }
         
         .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .num-btn { background: #F8FAFC; border: none; padding: 15px; border-radius: 14px; font-size: 1.3rem; font-weight: 700; color: var(--text); cursor: pointer; }
-        
         .input-display { font-size: 2.2rem; font-weight: 800; color: var(--primary); height: 50px; margin-bottom: 20px; letter-spacing: 4px; border-bottom: 2px dashed #E2E8F0; }
         
-        /* النقطة العمياء والانحراف */
         .asti-canvas-box { width: 220px; height: 220px; margin: 0 auto 20px; }
         .blind-spot-box { display: flex; justify-content: space-between; align-items: center; width: 100%; height: 100px; background: #f8fafc; border-radius: 15px; padding: 0 30px; margin-bottom: 20px; border: 2px solid #e2e8f0; }
         .score-circle { width: 110px; height: 110px; border-radius: 50%; border: 6px solid var(--success); margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800; color: var(--success); background: #F0FDF4; }
@@ -130,17 +90,18 @@
 <body>
 
     <header>
-        <a href="index.html" class="home-btn"><i class="fas fa-home"></i></a>
+        <button class="back-btn-header" onclick="goBack()">
+            <i id="backIcon" class="fas fa-arrow-right"></i>
+        </button>
 
-        <a href="index.html" class="brand-center">
-            <img src="logo.png" class="logo-img" alt="Delta Logo" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-            <div class="logo-icon-fallback" style="display:none; font-size: 1.5rem; color: var(--primary);"><i class="fas fa-glasses"></i></div>
-            
+        <div class="brand-center" onclick="showScreen('screen-home')">
+            <img src="logo.png" class="logo-img" alt="Logo" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+            <div style="display:none; font-size:1.5rem; color:var(--primary);"><i class="fas fa-eye"></i></div>
             <div class="brand-text">
                 <h1 data-i18n="title">دلتا للبصريات</h1>
                 <span data-i18n="location">المقابلين</span>
             </div>
-        </a>
+        </div>
 
         <button class="lang-btn" onclick="toggleLang()" id="langBtn">English</button>
     </header>
@@ -151,29 +112,36 @@
             <h2 data-i18n="welcome" style="font-size: 1.5rem; color: var(--primary); margin-bottom: 10px;">نظام الفحص الذكي</h2>
             <p data-i18n="desc" style="color: #64748B; margin-bottom: 25px;">اختر نوع الفحص للبدء</p>
             
-            <button class="btn-card btn-primary" onclick="startTest('vision')">
+            <button class="btn-card btn-primary" onclick="prepTest('vision')">
                 <i class="fas fa-glasses"></i> <span data-i18n="btn_vision">فحص حدة النظر</span>
             </button>
-            <button class="btn-card btn-outline" onclick="startTest('color')">
+            <button class="btn-card btn-outline" onclick="prepTest('color')">
                 <i class="fas fa-palette"></i> <span data-i18n="btn_color">فحص عمى الألوان</span>
             </button>
-            
-            <button class="btn-card btn-dark" onclick="startTest('asti')">
+            <button class="btn-card btn-dark" onclick="prepTest('asti')">
                 <i class="fas fa-bullseye"></i> <span data-i18n="btn_asti">فحص الانحراف</span>
             </button>
-            <button class="btn-card btn-magic" onclick="startTest('blind')">
+            <button class="btn-card btn-magic" onclick="prepTest('blind')">
                 <i class="fas fa-ghost"></i> <span data-i18n="btn_blind">اكتشف النقطة العمياء</span>
             </button>
+        </div>
+
+        <div id="screen-instr" class="screen">
+            <div class="instr-icon"><i class="fas fa-info-circle"></i></div>
+            <h3 data-i18n="instr_title" style="margin-bottom:15px; color:var(--text);">تعليمات هامة</h3>
+            <ul class="instr-list" id="instrList">
+                </ul>
+            <button class="btn-card btn-primary" onclick="runTest()" data-i18n="start_now">ابدأ الفحص الآن</button>
         </div>
 
         <div id="screen-vision" class="screen">
             <div class="e-box"><div id="e-char" class="e-char">E</div></div>
             <p data-i18n="vision_instr" style="color: #64748B; margin-bottom: 20px;">حدد اتجاه الفتحة</p>
             <div class="d-pad">
-                <button class="d-btn" style="grid-column: 2" onclick="checkVision(270)"><i class="fas fa-chevron-up"></i></button>
-                <button class="d-btn" style="grid-column: 1; grid-row: 2" onclick="checkVision(180)"><i class="fas fa-chevron-left"></i></button>
-                <button class="d-btn" style="grid-column: 2; grid-row: 2" onclick="checkVision(90)"><i class="fas fa-chevron-down"></i></button>
-                <button class="d-btn" style="grid-column: 3; grid-row: 2" onclick="checkVision(0)"><i class="fas fa-chevron-right"></i></button>
+                <button class="d-btn" style="grid-column:2" onclick="checkVision(270)"><i class="fas fa-chevron-up"></i></button>
+                <button class="d-btn" style="grid-column:1; grid-row:2" onclick="checkVision(180)"><i class="fas fa-chevron-left"></i></button>
+                <button class="d-btn" style="grid-column:2; grid-row:2" onclick="checkVision(90)"><i class="fas fa-chevron-down"></i></button>
+                <button class="d-btn" style="grid-column:3; grid-row:2" onclick="checkVision(0)"><i class="fas fa-chevron-right"></i></button>
             </div>
         </div>
 
@@ -181,9 +149,7 @@
             <div class="plate-wrapper"><canvas id="plateCanvas" width="230" height="230"></canvas></div>
             <div id="user-input" class="input-display"></div>
             <div class="numpad">
-                <script>
-                    for(let i=1; i<=9; i++) document.write(`<button class="num-btn" onclick="addNum(${i})">${i}</button>`);
-                </script>
+                <script>for(let i=1;i<=9;i++)document.write(`<button class="num-btn" onclick="addNum(${i})">${i}</button>`);</script>
                 <button class="num-btn" style="color:var(--error);" onclick="clearIn()"><i class="fas fa-backspace"></i></button>
                 <button class="num-btn" onclick="addNum(0)">0</button>
                 <button class="num-btn" style="color:var(--success);" onclick="submitColor()"><i class="fas fa-check"></i></button>
@@ -192,36 +158,26 @@
 
         <div id="screen-asti" class="screen">
             <div class="asti-canvas-box"><canvas id="astiCanvas" width="220" height="220"></canvas></div>
-            <p data-i18n="asti_msg" style="font-weight:bold; color:var(--text); margin-bottom:10px;">هل الخطوط بنفس السواد؟</p>
-            
-            <button class="btn-card btn-primary" onclick="finish('Astigmatism', i18n[curLang].res_yes, true)">
-                <i class="fas fa-check"></i> <span data-i18n="yes_all_black">نعم، متساوية</span>
-            </button>
-            <button class="btn-card btn-outline" onclick="finish('Astigmatism', i18n[curLang].res_no, false)">
-                <i class="fas fa-times"></i> <span data-i18n="no_diff_black">لا، مختلفة</span>
-            </button>
+            <p data-i18n="asti_msg" style="font-weight:bold; margin-bottom:20px;">هل جميع الخطوط سوداء بنفس الدرجة؟</p>
+            <button class="btn-card btn-primary" onclick="finish('Astigmatism', i18n[curLang].res_yes, true)"><span data-i18n="yes_all_black">نعم</span></button>
+            <button class="btn-card btn-outline" onclick="finish('Astigmatism', i18n[curLang].res_no, false)"><span data-i18n="no_diff_black">لا، بعضها باهت</span></button>
         </div>
 
         <div id="screen-blind" class="screen">
-            <h3 data-i18n="blind_title" style="margin-bottom:20px; color:var(--primary);">تجربة النقطة العمياء</h3>
+            <h3 data-i18n="blind_title" style="margin-bottom:20px;">النقطة العمياء</h3>
             <div class="blind-spot-box">
-                <div class="blind-shape" style="font-weight:900;">+</div>
-                <div class="blind-shape"><i class="fas fa-circle" style="font-size:1.2rem;"></i></div>
+                <div style="font-weight:900; font-size:2rem;">+</div>
+                <div><i class="fas fa-circle"></i></div>
             </div>
-            <p data-i18n="blind_instr" style="line-height:1.8; color:#475569; margin-bottom:25px; text-align:right; direction:rtl;">
-                تعليمات
-            </p>
-            <button class="btn-card btn-outline" onclick="show('screen-home')" data-i18n="back_home">رجوع</button>
+            <p data-i18n="blind_step" style="line-height:1.6; margin-bottom:20px; color:#64748B;">قرب وابعد الهاتف حتى تختفي الدائرة</p>
+            <button class="btn-card btn-outline" onclick="showScreen('screen-home')" data-i18n="back_home">رجوع</button>
         </div>
 
         <div id="screen-result" class="screen">
             <div id="res-circle" class="score-circle">--</div>
-            <h2 id="res-title" style="margin-bottom: 5px;">--</h2>
-            <p id="res-msg" style="color: #64748B; margin-bottom: 25px;">--</p>
-            
-            <a id="wa-link" href="#" class="btn-card btn-primary" style="background:#10B981; text-decoration:none;">
-                <i class="fab fa-whatsapp"></i> <span data-i18n="whatsapp">حجز موعد بالنتيجة</span>
-            </a>
+            <h2 id="res-title" style="margin-bottom:5px;">--</h2>
+            <p id="res-msg" style="color:#64748B; margin-bottom:25px;">--</p>
+            <a id="wa-link" href="#" class="btn-card btn-primary" style="background:#10B981; text-decoration:none;"><i class="fab fa-whatsapp"></i> <span data-i18n="whatsapp">حجز موعد</span></a>
             <button class="btn-card btn-outline" onclick="location.reload()" data-i18n="restart">إعادة الفحص</button>
         </div>
 
@@ -233,35 +189,46 @@
                 title: "دلتا للبصريات", location: "المقابلين", welcome: "نظام الفحص الذكي",
                 desc: "اختر نوع الفحص للبدء", btn_vision: "فحص حدة النظر", btn_color: "فحص عمى الألوان",
                 btn_asti: "فحص الانحراف", btn_blind: "اكتشف النقطة العمياء",
+                instr_title: "تعليمات للحصول على أدق نتيجة", start_now: "فهمت، ابدأ الفحص",
                 vision_instr: "حدد اتجاه الفتحة", whatsapp: "حجز موعد بالنتيجة", restart: "إعادة الفحص",
                 excellent: "سليم", alert: "اشتباه", msg_good: "نتيجة ممتازة، العين سليمة.", msg_bad: "يُنصح بزيارة المركز للفحص.",
                 lang_btn: "English", back_home: "القائمة الرئيسية",
-                asti_msg: "هل الخطوط بنفس السواد؟",
-                yes_all_black: "نعم، متساوية", no_diff_black: "لا، مختلفة",
-                res_yes: "سليم", res_no: "يوجد انحراف",
-                blind_title: "أين اختفت النقطة؟",
-                blind_instr: "1. أغلق عينك اليسرى.\n2. ركّز بعينك اليمنى على (+).\n3. قرّب الهاتف وأبعده ببطء.\n4. ستختفي الدائرة فجأة!"
+                asti_msg: "هل الخطوط بنفس السواد؟", yes_all_black: "نعم، متساوية", no_diff_black: "لا، مختلفة",
+                res_yes: "سليم", res_no: "انحراف",
+                blind_title: "تجربة النقطة العمياء", blind_step: "قرب وأبعد الهاتف ببطء وعينك مغلقة حتى تختفي الدائرة",
+                // تعليمات الفحوصات
+                tips_vision: ["اجعل الهاتف على بعد ذراع (40 سم)", "غطِ عين واحدة وافحص الأخرى", "تأكد أن إضاءة الغرفة جيدة"],
+                tips_color: ["ارفع سطوع الشاشة للأعلى", "أغلق وضع 'حماية العين' أو الفلتر الليلي", "حاول التعرف على الرقم خلال 3 ثواني"],
+                tips_asti: ["غطِ عين واحدة", "انظر إلى مركز الدائرة", "هل ترى خطوطاً أغمق من غيرها؟"],
+                tips_blind: ["أغلق عينك اليسرى", "ركز باليمنى على علامة (+)", "حرك الهاتف ببطء للأمام والخلف"]
             },
             en: {
                 title: "Delta Optics", location: "Al-Muqabalain", welcome: "Smart Eye Test",
                 desc: "Choose a test to start", btn_vision: "Visual Acuity", btn_color: "Color Blindness",
                 btn_asti: "Astigmatism", btn_blind: "Blind Spot",
+                instr_title: "Instructions for Best Results", start_now: "Got it, Start",
                 vision_instr: "Indicate direction", whatsapp: "Book Appointment", restart: "Restart",
-                excellent: "Normal", alert: "Attention", msg_good: "Result is normal.", msg_bad: "Please visit clinic.",
+                excellent: "Normal", alert: "Checkup", msg_good: "Result is normal.", msg_bad: "Visit clinic recommended.",
                 lang_btn: "عربي", back_home: "Main Menu",
-                asti_msg: "Are lines equally black?",
-                yes_all_black: "Yes, Equal", no_diff_black: "No, Different",
+                asti_msg: "Are lines equally black?", yes_all_black: "Yes, Equal", no_diff_black: "No, Different",
                 res_yes: "Normal", res_no: "Astigmatism",
-                blind_title: "Where did it go?",
-                blind_instr: "1. Close Left Eye.\n2. Focus Right Eye on (+).\n3. Move phone closer/further.\n4. The dot will vanish!"
+                blind_title: "Blind Spot Test", blind_step: "Move phone closer/further until dot vanishes",
+                tips_vision: ["Hold phone at arm's length (40cm)", "Cover one eye at a time", "Ensure good room lighting"],
+                tips_color: ["Max screen brightness", "Disable Night Light / Blue Filter", "Identify number within 3 seconds"],
+                tips_asti: ["Cover one eye", "Focus on the center", "Do some lines look darker?"],
+                tips_blind: ["Close Left Eye", "Focus Right Eye on (+)", "Move phone slowly back and forth"]
             }
         };
 
         let curLang = 'ar';
+        let currentTestType = '';
+        let activeScreen = 'screen-home';
+
         function toggleLang() {
             curLang = curLang === 'ar' ? 'en' : 'ar';
             document.documentElement.dir = curLang === 'ar' ? 'rtl' : 'ltr';
             document.getElementById('langBtn').innerText = i18n[curLang].lang_btn;
+            document.getElementById('backIcon').className = curLang === 'ar' ? "fas fa-arrow-right" : "fas fa-arrow-left";
             updateUI();
         }
 
@@ -269,26 +236,63 @@
             const t = i18n[curLang];
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if(t[key]) {
-                    if(key === 'blind_instr') el.innerText = t[key]; 
-                    else el.innerText = t[key];
-                }
+                if(t[key]) el.innerText = t[key];
             });
         }
 
-        const show = (id) => {
+        // --- نظام التنقل والرجوع الذكي ---
+        function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-        };
-
-        function startTest(type) {
-            if(type === 'vision') { vIdx=0; show('screen-vision'); nextV(); }
-            if(type === 'color') { cIdx=0; cCorrect=0; show('screen-color'); nextC(); }
-            if(type === 'asti') { show('screen-asti'); drawAsti(); }
-            if(type === 'blind') { show('screen-blind'); }
+            activeScreen = id;
+            
+            // تغيير أيقونة الرجوع حسب الشاشة
+            const backIcon = document.getElementById('backIcon');
+            if (id === 'screen-home') {
+                backIcon.className = curLang === 'ar' ? "fas fa-arrow-right" : "fas fa-arrow-left"; // أو أيقونة "خروج"
+            } else {
+                backIcon.className = curLang === 'ar' ? "fas fa-arrow-right" : "fas fa-arrow-left";
+            }
         }
 
-        // 1. فحص النظر
+        function goBack() {
+            if (activeScreen === 'screen-home') {
+                // إذا في الرئيسية، ارجع لصفحة الموقع (index.html)
+                window.location.href = 'index.html';
+            } else {
+                // إذا في أي شاشة ثانية، ارجع للرئيسية
+                location.reload(); // أسهل طريقة لتصفير الفحوصات والعودة
+            }
+        }
+
+        // --- نظام التعليمات ---
+        function prepTest(type) {
+            currentTestType = type;
+            const t = i18n[curLang];
+            const list = document.getElementById('instrList');
+            list.innerHTML = '';
+            
+            let tips = [];
+            if(type === 'vision') tips = t.tips_vision;
+            if(type === 'color') tips = t.tips_color;
+            if(type === 'asti') tips = t.tips_asti;
+            if(type === 'blind') tips = t.tips_blind;
+
+            tips.forEach(tip => {
+                list.innerHTML += `<li><i class="fas fa-check-circle"></i> ${tip}</li>`;
+            });
+
+            showScreen('screen-instr');
+        }
+
+        function runTest() {
+            if(currentTestType === 'vision') { vIdx=0; showScreen('screen-vision'); nextV(); }
+            if(currentTestType === 'color') { cIdx=0; cCorrect=0; showScreen('screen-color'); nextC(); }
+            if(currentTestType === 'asti') { showScreen('screen-asti'); drawAsti(); }
+            if(currentTestType === 'blind') { showScreen('screen-blind'); }
+        }
+
+        // --- منطق الفحوصات ---
         const vLevels = [110, 80, 50, 30, 20], vScores = ["6/60", "6/36", "6/18", "6/9", "6/6"];
         let vIdx = 0, vRot = 0;
         function nextV() {
@@ -298,7 +302,6 @@
         }
         function checkVision(ang) { if(ang === vRot) { vIdx++; nextV(); } else finish(vScores[vIdx] || "Weak", false); }
 
-        // 2. فحص الألوان (تيربو)
         const cData = [12, 8, 5, 29, 74];
         let cIdx = 0, cCorrect = 0, userIn = "";
         const ctxPlate = document.getElementById('plateCanvas').getContext('2d', { alpha: false });
@@ -321,13 +324,10 @@
         function updateIn() { document.getElementById('user-input').innerText = userIn; }
         function submitColor() { if(parseInt(userIn) === cData[cIdx]) cCorrect++; cIdx++; nextC(); }
 
-        // 3. انحراف
         function drawAsti() {
-            const canvas = document.getElementById('astiCanvas');
-            const ctx = canvas.getContext('2d');
+            const canvas = document.getElementById('astiCanvas'); const ctx = canvas.getContext('2d');
             const cx = 110, cy = 110, radius = 100;
-            ctx.clearRect(0, 0, 220, 220);
-            ctx.lineWidth = 4; ctx.strokeStyle = "#000";
+            ctx.clearRect(0, 0, 220, 220); ctx.lineWidth = 4; ctx.strokeStyle = "#000";
             for(let i=0; i<12; i++) {
                 const angle = (i * 30) * Math.PI / 180;
                 ctx.beginPath(); ctx.moveTo(cx, cy);
@@ -338,7 +338,7 @@
         }
 
         function finish(score, good) {
-            show('screen-result');
+            showScreen('screen-result');
             const t = i18n[curLang];
             const el = document.getElementById('res-circle');
             el.innerText = score;

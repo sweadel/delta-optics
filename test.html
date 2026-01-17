@@ -19,42 +19,64 @@
         
         body { background: var(--bg-body); color: var(--text-main); margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 
-        /* الهيدر */
+        /* --- الهيدر الجديد (توزيع العناصر) --- */
         header { 
-            background: var(--white); padding: 12px 20px; 
+            background: var(--white); 
+            height: 60px; padding: 0 20px;
             box-shadow: 0 2px 15px rgba(14, 116, 144, 0.08); 
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex; align-items: center; justify-content: space-between;
             position: sticky; top: 0; z-index: 100;
         }
         
-        .header-branding { display: flex; align-items: center; gap: 10px; }
-        .header-logo { width: 40px; height: 40px; object-fit: contain; }
-        .header-title { font-weight: 800; font-size: 1.1rem; color: var(--brand-color); margin: 0; }
-        
-        .header-actions { display: flex; gap: 10px; align-items: center; }
-
-        /* زر اللغة */
+        /* زر اللغة (يسار) */
         .lang-btn {
             background: #F1F5F9; border: 1px solid #E2E8F0; border-radius: 8px;
-            padding: 5px 12px; font-weight: 700; color: var(--brand-color);
-            cursor: pointer; font-size: 0.9rem; transition: 0.2s;
+            padding: 6px 12px; font-weight: 700; color: var(--brand-color);
+            cursor: pointer; font-size: 0.9rem; transition: 0.2s; z-index: 2;
         }
-        .lang-btn:hover { background: var(--brand-color); color: white; }
+        
+        /* الحاوية الوسطية (اللوجو والعنوان) - موسطة بدقة */
+        .header-center {
+            position: absolute; left: 50%; transform: translateX(-50%);
+            display: flex; align-items: center; gap: 8px;
+            white-space: nowrap;
+        }
+        .header-logo { width: 35px; height: 35px; object-fit: contain; }
+        .header-title { font-weight: 800; font-size: 1.1rem; color: var(--brand-color); margin: 0; }
 
+        /* زر الخروج (يمين) */
         .back-btn { 
-            width: 35px; height: 35px; border-radius: 50%; background: #F1F5F9; 
+            width: 38px; height: 38px; border-radius: 50%; background: #F1F5F9; 
             color: var(--text-main); display: flex; align-items: center; justify-content: center;
-            text-decoration: none; font-size: 1rem;
+            text-decoration: none; font-size: 1.1rem; z-index: 2;
+            transition: 0.2s;
         }
+        .back-btn:active { background: var(--error); color: white; }
 
+        /* --- الحاوية والشاشات --- */
         .container { flex: 1; padding: 20px; max-width: 500px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; align-items: center; }
         .screen { display: none; width: 100%; animation: fadeIn 0.4s ease-out; }
         .screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* القائمة */
+        /* --- القائمة الرئيسية واللوجو الكبير --- */
         .welcome-box { text-align: center; margin-bottom: 30px; padding: 20px; }
-        .welcome-logo { width: 90px; height: 90px; object-fit: contain; margin-bottom: 15px; }
+        
+        /* تعديل اللوجو الكبير والحركة */
+        .welcome-logo { 
+            width: 120px; height: 120px; /* تكبير الحجم */
+            object-fit: contain; margin-bottom: 20px; 
+            animation: pulseLogo 3s infinite ease-in-out; /* حركة النبض */
+            filter: drop-shadow(0 5px 15px rgba(14, 116, 144, 0.15));
+        }
+
+        @keyframes pulseLogo {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); } /* يكبر شوي */
+            100% { transform: scale(1); }
+        }
+
+        /* باقي الستايلات (نفس السابقة) */
         .menu-grid { display: grid; gap: 15px; }
         .test-card { 
             background: var(--white); padding: 20px; border-radius: 16px; 
@@ -64,7 +86,7 @@
         .test-card:active { transform: scale(0.98); background: #F8FAFC; }
         .icon-wrap { width: 50px; height: 50px; background: #ECFEFF; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: var(--brand-color); font-size: 1.5rem; }
         
-        /* الأسهم في البطاقات تدور مع اللغة */
+        /* تدوير السهم حسب اللغة */
         html[dir="rtl"] .arrow-icon { transform: rotate(0deg); }
         html[dir="ltr"] .arrow-icon { transform: rotate(180deg); }
 
@@ -102,24 +124,20 @@
         .action-btn { width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 700; font-size: 1rem; cursor: pointer; margin-bottom: 10px; display: flex; justify-content: center; gap: 8px; align-items: center; text-decoration: none; }
         .btn-primary { background: var(--gold); color: #000; }
         .btn-outline { background: transparent; border: 2px solid #E2E8F0; color: var(--text-light); }
-        
-        /* تبديل الاتجاه */
-        html[dir="ltr"] .back-btn i { transform: rotate(180deg); }
-        html[dir="ltr"] .card-info { text-align: left; }
 
     </style>
 </head>
 <body>
 
     <header>
-        <div class="header-branding">
+        <a href="index.html" class="back-btn"><i class="fas fa-times"></i></a>
+
+        <div class="header-center">
             <img src="logo.jpg" class="header-logo" alt="Delta" onerror="this.style.display='none'">
             <h1 class="header-title" id="txt-app-title">العيادة الذكية</h1>
         </div>
-        <div class="header-actions">
-            <button class="lang-btn" onclick="toggleLang()">EN</button>
-            <a href="index.html" class="back-btn"><i class="fas fa-arrow-right"></i></a>
-        </div>
+
+        <button class="lang-btn" onclick="toggleLang()">EN</button>
     </header>
 
     <div class="container">
@@ -223,7 +241,7 @@
     </div>
 
     <script>
-        // --- 1. قاموس اللغات (Dictionary) ---
+        // --- القاموس ---
         const i18n = {
             ar: {
                 appTitle: "العيادة الذكية",
@@ -232,17 +250,13 @@
                 t1Title: "حدة النظر (Snellen)", t1Desc: "قياس دقة الإبصار عن بعد",
                 t2Title: "عمى الألوان (Ishihara)", t2Desc: "اختبار التمييز اللوني الدقيق",
                 t3Title: "فحص الشبكية (Amsler)", t3Desc: "للكشف عن البقع العمياء",
-                vInstr: "المسافة المطلوبة: 40 سم",
-                cInstr: "ارفع سطوع الشاشة",
-                aInstr: "غطِ عين واحدة وانظر للمركز",
-                aQ: "هل الخطوط مستقيمة تماماً؟",
-                btnYes: "نعم، سليمة", btnNo: "لا، يوجد تعرج",
+                vInstr: "المسافة المطلوبة: 40 سم", cInstr: "ارفع سطوع الشاشة", aInstr: "غطِ عين واحدة وانظر للمركز",
+                aQ: "هل الخطوط مستقيمة تماماً؟", btnYes: "نعم، سليمة", btnNo: "لا، يوجد تعرج",
                 repTitle: "التقرير الطبي", repSub: "نتائج الفحص الأولي",
                 disclaimer: "هذه النتيجة تقريبية ولا تغني عن الفحص السريري. نتشرف بزيارتك في فرع المقابلين.",
                 book: "حجز موعد بالنتيجة", retry: "إعادة الفحص",
                 resVision: "حدة النظر", resColor: "رؤية الألوان", resAmsler: "فحص الشبكية",
-                perfect: "ممتاز", good: "طبيعي", bad: "يحتاج فحص",
-                waMsg: "مرحبا دلتا، قمت بالفحص وكانت النتيجة:"
+                perfect: "ممتاز", good: "طبيعي", bad: "يحتاج فحص", waMsg: "مرحبا دلتا، قمت بالفحص وكانت النتيجة:"
             },
             en: {
                 appTitle: "Smart Clinic",
@@ -251,17 +265,13 @@
                 t1Title: "Visual Acuity (Snellen)", t1Desc: "Measure distance vision",
                 t2Title: "Color Blindness (Ishihara)", t2Desc: "Precise color perception test",
                 t3Title: "Amsler Grid (Retina)", t3Desc: "Detect blind spots & distortion",
-                vInstr: "Required Distance: 40 cm",
-                cInstr: "Increase Screen Brightness",
-                aInstr: "Cover one eye & focus on center",
-                aQ: "Are all lines perfectly straight?",
-                btnYes: "Yes, Straight", btnNo: "No, Distorted",
+                vInstr: "Required Distance: 40 cm", cInstr: "Increase Screen Brightness", aInstr: "Cover one eye & focus on center",
+                aQ: "Are all lines perfectly straight?", btnYes: "Yes, Straight", btnNo: "No, Distorted",
                 repTitle: "Medical Report", repSub: "Preliminary Screening Results",
                 disclaimer: "This is a screening test and does not replace a clinical exam. Please visit our branch.",
                 book: "Book Appointment", retry: "Retry Test",
                 resVision: "Visual Acuity", resColor: "Color Vision", resAmsler: "Amsler Grid",
-                perfect: "Excellent", good: "Normal", bad: "Check Required",
-                waMsg: "Hi Delta, I did the test and the result was:"
+                perfect: "Excellent", good: "Normal", bad: "Check Required", waMsg: "Hi Delta, I did the test and the result was:"
             }
         };
 
@@ -273,31 +283,25 @@
             const html = document.documentElement;
             const t = i18n[curLang];
 
-            // تحديث الاتجاه والنصوص
-            html.lang = curLang;
-            html.dir = curLang === 'ar' ? 'rtl' : 'ltr';
+            html.lang = curLang; html.dir = curLang === 'ar' ? 'rtl' : 'ltr';
             langBtn.innerText = curLang === 'ar' ? 'EN' : 'عربي';
 
-            // تحديث العناصر
+            // تحديث النصوص
             document.getElementById('txt-app-title').innerText = t.appTitle;
             document.getElementById('txt-welcome').innerText = t.welcome;
             document.getElementById('txt-subtitle').innerText = t.subtitle;
-            
             document.getElementById('txt-t1-title').innerText = t.t1Title;
             document.getElementById('txt-t1-desc').innerText = t.t1Desc;
             document.getElementById('txt-t2-title').innerText = t.t2Title;
             document.getElementById('txt-t2-desc').innerText = t.t2Desc;
             document.getElementById('txt-t3-title').innerText = t.t3Title;
             document.getElementById('txt-t3-desc').innerText = t.t3Desc;
-
             document.getElementById('txt-v-instr').innerHTML = `<i class="fas fa-ruler-horizontal"></i> ${t.vInstr}`;
             document.getElementById('txt-c-instr').innerHTML = `<i class="fas fa-sun"></i> ${t.cInstr}`;
             document.getElementById('txt-a-instr').innerHTML = `<i class="fas fa-eye-slash"></i> ${t.aInstr}`;
-            
             document.getElementById('txt-a-q').innerText = t.aQ;
             document.getElementById('btn-a-yes').innerText = t.btnYes;
             document.getElementById('btn-a-no').innerText = t.btnNo;
-
             document.getElementById('txt-rep-title').innerText = t.repTitle;
             document.getElementById('txt-rep-sub').innerText = t.repSub;
             document.getElementById('txt-disclaimer').innerText = t.disclaimer;
@@ -310,8 +314,7 @@
             document.getElementById(id).classList.add('active');
         }
 
-        // --- Logic (Scientific) ---
-        // 1. Vision
+        // --- Logic ---
         const vSizes = [130, 100, 70, 50, 35, 25]; 
         const vLabels = ["6/60", "6/36", "6/24", "6/18", "6/12", "6/6"];
         let vStep = 0, vRot = 0, vErrors = 0;
@@ -334,7 +337,6 @@
             showResult(i18n[curLang].resVision, score, perfect ? i18n[curLang].perfect : i18n[curLang].bad);
         }
 
-        // 2. Color (Real Ishihara Gen)
         let cRound = 0, cScore = 0, cInput = "";
         const cTests = [12, 5, 29, 74, 6]; 
         function startColor() { cRound=0; cScore=0; nextColorPlate(); show('test-color'); }
@@ -375,13 +377,11 @@
         function clearColor() { cInput = ""; document.getElementById('color-display').innerText = ""; }
         function checkColor() { if(parseInt(cInput) === cTests[cRound]) cScore++; cRound++; nextColorPlate(); }
 
-        // 3. Amsler
         function startAmsler() { show('test-amsler'); }
         function finishAmsler(isGood) {
             showResult(i18n[curLang].resAmsler, isGood ? i18n[curLang].good : i18n[curLang].bad, isGood ? i18n[curLang].perfect : "Distortion");
         }
 
-        // Result
         function showResult(title, score, desc) {
             show('result');
             document.getElementById('res-score').innerText = score;

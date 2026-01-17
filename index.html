@@ -3,26 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>دلتا للبصريات | Delta Optics</title>
+    <title>Delta Optics | دلتا للبصريات</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:ital,wght@1,900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:ital,wght@1,900&family=Playfair+Display:wght@700&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- لوحة الألوان الجديدة (طبي حديث - بدون ذهبي) --- */
+        /* --- الألوان (Medical Tech Theme) --- */
         :root { 
-            --primary: #0e7490;       /* تركواز غامق (الأساسي) */
-            --secondary: #0ea5e9;     /* سماوي فاتح (للأزرار والتمييز) */
-            --dark: #0f172a;          /* كحلي ليلي للنصوص */
-            --light: #f1f5f9;         /* خلفية رمادي ثلجي */
+            --primary: #0e7490;       /* تركواز غامق */
+            --secondary: #0ea5e9;     /* سماوي */
+            --dark: #0f172a;          
+            --light: #f8fafc;         
             --white: #ffffff;
             --gray: #64748b;
-            --success: #10b981;       /* أخضر */
-            --error: #ef4444;         /* أحمر */
+            --success: #10b981;
+            --error: #ef4444;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -30,32 +30,37 @@
         body { 
             background: var(--light); color: var(--dark); 
             min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden;
-            padding-bottom: 90px;
+            padding-bottom: 90px; transition: 0.3s;
         }
 
-        /* --- الهيدر --- */
+        /* --- الهيدر (مع زر اللغة) --- */
         header { 
             background: var(--white); padding: 12px 20px;
             box-shadow: 0 4px 20px rgba(14, 116, 144, 0.05);
-            display: flex; align-items: center; justify-content: center; gap: 10px;
+            display: flex; align-items: center; justify-content: space-between;
             position: sticky; top: 0; z-index: 100;
         }
+        .header-brand { display: flex; align-items: center; gap: 10px; }
         .header-logo { width: 35px; height: 35px; object-fit: contain; }
-        .header-title { font-size: 1.1rem; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; margin: 0; }
+        .header-title { font-size: 1.1rem; font-weight: 800; color: var(--primary); margin: 0; }
+        
+        .lang-btn {
+            background: #f1f5f9; border: 1px solid #e2e8f0;
+            padding: 6px 12px; border-radius: 8px; font-weight: 700;
+            color: var(--primary); cursor: pointer; font-size: 0.9rem;
+            transition: 0.2s; font-family: sans-serif;
+        }
+        .lang-btn:hover { background: var(--primary); color: white; }
 
         /* --- المحتوى --- */
         main { 
             flex: 1; display: flex; flex-direction: column; align-items: center; 
             padding: 30px 20px; text-align: center; width: 100%; max-width: 500px; margin: 0 auto;
-            animation: fadeIn 0.5s ease-out;
         }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* اللوجو الكبير */
         .logo-box {
-            width: 130px; height: 130px; 
+            width: 140px; height: 140px; 
             object-fit: contain; margin-bottom: 20px;
-            /* حركة تنفس هادئة */
             animation: breathe 4s infinite ease-in-out;
             filter: drop-shadow(0 10px 20px rgba(14, 116, 144, 0.15));
         }
@@ -76,7 +81,6 @@
         .dot { width: 8px; height: 8px; border-radius: 50%; }
         .open-dot { background: var(--success); box-shadow: 0 0 0 2px #d1fae5; }
         .closed-dot { background: var(--error); box-shadow: 0 0 0 2px #fee2e2; }
-        .star-icon { color: #f59e0b; } /* أصفر بدل الذهبي */
 
         /* الشبكة */
         .cards-grid {
@@ -88,22 +92,16 @@
             display: flex; flex-direction: column; align-items: center; gap: 12px;
             text-decoration: none; transition: transform 0.2s;
             box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid #f1f5f9;
-            height: 130px; justify-content: center;
+            height: 140px; justify-content: center;
         }
         .main-card:active { transform: scale(0.98); }
-        
         .card-icon { font-size: 2rem; color: var(--primary); margin-bottom: 5px; }
         .card-title { font-size: 1rem; font-weight: 800; color: var(--dark); }
 
-        /* تمييز زر الفحص (أزرق سماوي متدرج) */
-        .highlight-card { 
-            background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
-            border-color: var(--secondary); 
-        }
+        .highlight-card { background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%); border-color: var(--secondary); }
         .highlight-card .card-icon { color: var(--secondary); }
         .highlight-card .card-title { color: var(--primary); }
 
-        /* زر الموقع */
         .wide-btn {
             width: 100%; padding: 18px; border-radius: 16px;
             font-size: 1rem; font-weight: 700; text-decoration: none;
@@ -113,7 +111,7 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
 
-        /* سوشيال ميديا */
+        /* السوشيال */
         .social-section { width: 100%; margin-bottom: 20px; }
         .sec-title { font-size: 0.85rem; font-weight: 700; color: var(--gray); margin-bottom: 12px; display: block; }
         .social-row { display: flex; gap: 12px; justify-content: center; }
@@ -126,57 +124,58 @@
         .fb-btn { background: #1877F2; } 
         .insta-btn { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
 
-        /* --- التقييمات المتغيرة --- */
-        .reviews-box { width: 100%; text-align: right; margin-bottom: 10px; }
+        /* التقييمات */
+        .reviews-box { width: 100%; margin-bottom: 10px; }
         .rev-head-title { font-size: 0.95rem; font-weight: 700; color: var(--gray); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
-        
         .review {
             background: var(--white); padding: 15px; border-radius: 16px;
             margin-bottom: 10px; border: 1px solid #f1f5f9; animation: slideUp 0.5s ease;
+            text-align: start;
         }
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
         .rev-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
         .rev-user { font-weight: 700; font-size: 0.9rem; color: var(--dark); }
         .rev-stars { font-size: 0.8rem; color: #f59e0b; }
         .rev-msg { font-size: 0.85rem; color: var(--gray); line-height: 1.4; }
 
-        /* --- شريط الماركات المتصل (Infinite Loop) --- */
+        /* --- شريط الماركات الاحترافي (Seamless & Colorful) --- */
         .marquee-wrap {
-            background: var(--white); padding: 20px 0;
+            background: var(--white); padding: 22px 0;
             border-top: 1px solid #e2e8f0; margin-top: auto; overflow: hidden;
             position: relative; white-space: nowrap;
         }
-        /* تظليل الجوانب */
         .marquee-wrap::before, .marquee-wrap::after {
             content: ""; position: absolute; top: 0; width: 60px; height: 100%; z-index: 2;
+            pointer-events: none;
         }
         .marquee-wrap::before { left: 0; background: linear-gradient(to right, var(--white), transparent); }
         .marquee-wrap::after { right: 0; background: linear-gradient(to left, var(--white), transparent); }
 
-        .marquee-content {
-            display: inline-block;
-            animation: scroll 40s linear infinite; /* حركة مستمرة */
-        }
+        .marquee-content { display: inline-flex; animation: scroll 50s linear infinite; align-items: center; }
         
-        /* ستايل الماركات ليحاكي اللوجو */
         .brand-item {
-            display: inline-block; margin: 0 30px;
-            font-size: 1.2rem; color: #94a3b8;
-            opacity: 0.8;
+            margin: 0 35px; font-size: 1.4rem; opacity: 0.9;
+            transition: 0.3s; display: inline-block;
         }
         
-        /* محاكاة الخطوط */
-        .font-serif { font-family: 'Playfair Display', serif; font-weight: 700; letter-spacing: 1px; } /* Gucci, Dior */
-        .font-sans { font-family: 'Montserrat', sans-serif; font-weight: 900; letter-spacing: -0.5px; } /* RayBan, Police */
-        .font-classic { font-family: 'Cinzel', serif; font-weight: 700; } /* Versace */
+        /* ألوان الماركات الحقيقية */
+        .rayban { font-family: 'Montserrat', sans-serif; font-weight: 900; font-style: italic; color: #E01E26; }
+        .gucci { font-family: 'Playfair Display', serif; font-weight: 700; color: #000; letter-spacing: 2px; font-size: 1.2rem; }
+        .lacoste { font-family: 'Montserrat', sans-serif; font-weight: 800; color: #004526; }
+        .tomford { font-family: 'Montserrat', sans-serif; font-weight: 700; letter-spacing: 1px; color: #333; border: 2px solid #333; padding: 0 5px; font-size: 1rem; }
+        .prada { font-family: 'Playfair Display', serif; font-weight: 700; color: #000; letter-spacing: 3px; font-size: 1.1rem; }
+        .versace { font-family: 'Cinzel', serif; font-weight: 700; color: #EAB308; }
+        .police { font-family: 'Impact', sans-serif; color: #000; letter-spacing: 1px; font-style: italic; }
+        .carrera { font-family: 'Roboto Condensed', sans-serif; font-weight: 700; color: #C51D24; font-style: italic; }
+        .dior { font-family: 'Playfair Display', serif; font-weight: 700; color: #000; letter-spacing: 2px; }
+        .cartier { font-family: 'Playfair Display', serif; font-style: italic; color: #000; font-weight: 700; }
+        .armani { font-family: 'Montserrat', sans-serif; font-weight: 400; letter-spacing: 2px; color: #000; }
+        .burberry { font-family: 'Montserrat', sans-serif; font-weight: 800; color: #000; letter-spacing: 1px; font-size: 1.1rem; }
+        .oakley { font-family: 'Montserrat', sans-serif; font-weight: 900; font-style: italic; color: #000; font-size: 1.5rem; letter-spacing: -1px; }
 
-        @keyframes scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); } /* يتحرك نصف المسافة ويعيد نفسه */
-        }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-        /* الاتصال */
+        /* FABs */
         .fab-area {
             position: fixed; bottom: 25px; right: 25px;
             display: flex; flex-direction: column; gap: 15px; z-index: 200;
@@ -190,48 +189,54 @@
         .fab-wa { background: #25D366; }
         .fab-call { background: var(--primary); }
         .fab:active { transform: scale(0.9); }
+        
+        /* عكس مكان الـ FABs عند اللغة الإنجليزية */
+        html[dir="ltr"] .fab-area { right: auto; left: 25px; }
 
     </style>
 </head>
 <body>
 
     <header>
-        <img src="logo.jpg" class="header-logo" alt="logo" onerror="this.style.display='none'">
-        <h2 class="header-title">DELTA OPTICS</h2>
+        <div class="header-brand">
+            <img src="logo.jpg" class="header-logo" alt="logo" onerror="this.style.display='none'">
+            <h2 class="header-title" id="txt-header">DELTA OPTICS</h2>
+        </div>
+        <button class="lang-btn" onclick="toggleLang()">EN</button>
     </header>
 
     <main>
         <img src="logo.jpg" class="logo-box" alt="Delta Logo" onerror="this.src='https://via.placeholder.com/150?text=LOGO'">
 
-        <h1>دلتا للبصريات</h1>
-        <p class="subtitle">الفرع الرئيسي - المقابلين<br>خبراء العناية بالعين وأحدث الماركات</p>
+        <h1 id="txt-hero">دلتا للبصريات</h1>
+        <p class="subtitle" id="txt-sub">الفرع الرئيسي - المقابلين<br>خبراء العناية بالعين وأحدث الماركات</p>
 
         <div class="info-row">
             <div id="status-badge" class="badge">
                 <div class="dot closed-dot"></div> <span id="status-text">...</span>
             </div>
             <div class="badge">
-                <i class="fas fa-star star-icon"></i> 4.9 (Google)
+                <i class="fas fa-star" style="color:#f59e0b"></i> 4.9
             </div>
         </div>
 
         <div class="cards-grid">
             <a href="test.html" class="main-card highlight-card">
                 <i class="fas fa-microscope card-icon"></i>
-                <span class="card-title">الفحص الذكي</span>
+                <span class="card-title" id="txt-test">الفحص الذكي</span>
             </a>
             <a href="collection.html" class="main-card">
                 <i class="fas fa-glasses card-icon"></i>
-                <span class="card-title">التشكيلات</span>
+                <span class="card-title" id="txt-coll">التشكيلات</span>
             </a>
         </div>
 
         <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Al-Muqabalain" target="_blank" class="wide-btn">
-            <i class="fas fa-location-dot" style="color:var(--secondary)"></i> موقع الفرع
+            <i class="fas fa-location-dot" style="color:var(--secondary)"></i> <span id="txt-loc">موقع الفرع</span>
         </a>
 
         <div class="social-section">
-            <span class="sec-title">تابعونا على منصات التواصل</span>
+            <span class="sec-title" id="txt-follow">تابعونا على منصات التواصل</span>
             <div class="social-row">
                 <a href="https://www.facebook.com/" target="_blank" class="soc-btn fb-btn"><i class="fab fa-facebook-f"></i> Facebook</a>
                 <a href="https://www.instagram.com/" target="_blank" class="soc-btn insta-btn"><i class="fab fa-instagram"></i> Instagram</a>
@@ -239,35 +244,40 @@
         </div>
 
         <div class="reviews-box">
-            <div class="rev-head-title"><i class="fas fa-comment-dots"></i> آراء عملائنا</div>
-            <div id="reviews-container">
-                </div>
+            <div class="rev-head-title"><i class="fas fa-comment-dots"></i> <span id="txt-rev-title">آراء عملائنا</span></div>
+            <div id="reviews-container"></div>
         </div>
     </main>
 
     <div class="marquee-wrap">
         <div class="marquee-content">
-            <span class="brand-item font-sans" style="font-style:italic">Ray-Ban</span>
-            <span class="brand-item font-serif">GUCCI</span>
-            <span class="brand-item font-classic">VERSACE</span>
-            <span class="brand-item font-sans">POLICE</span>
-            <span class="brand-item font-serif">DIOR</span>
-            <span class="brand-item font-serif">PRADA</span>
-            <span class="brand-item font-sans" style="letter-spacing:1px">TOM FORD</span>
-            <span class="brand-item font-sans">CARRERA</span>
-            <span class="brand-item font-serif">Cartier</span>
-            <span class="brand-item font-sans" style="font-weight:700">LACOSTE</span>
+            <span class="brand-item rayban">Ray-Ban</span>
+            <span class="brand-item gucci">GUCCI</span>
+            <span class="brand-item lacoste">LACOSTE</span>
+            <span class="brand-item prada">PRADA</span>
+            <span class="brand-item versace">VERSACE</span>
+            <span class="brand-item tomford">TOM FORD</span>
+            <span class="brand-item dior">DIOR</span>
+            <span class="brand-item police">POLICE</span>
+            <span class="brand-item carrera">CARRERA</span>
+            <span class="brand-item cartier">Cartier</span>
+            <span class="brand-item armani">GIORGIO ARMANI</span>
+            <span class="brand-item oakley">OAKLEY</span>
+            <span class="brand-item burberry">BURBERRY</span>
             
-            <span class="brand-item font-sans" style="font-style:italic">Ray-Ban</span>
-            <span class="brand-item font-serif">GUCCI</span>
-            <span class="brand-item font-classic">VERSACE</span>
-            <span class="brand-item font-sans">POLICE</span>
-            <span class="brand-item font-serif">DIOR</span>
-            <span class="brand-item font-serif">PRADA</span>
-            <span class="brand-item font-sans" style="letter-spacing:1px">TOM FORD</span>
-            <span class="brand-item font-sans">CARRERA</span>
-            <span class="brand-item font-serif">Cartier</span>
-            <span class="brand-item font-sans" style="font-weight:700">LACOSTE</span>
+            <span class="brand-item rayban">Ray-Ban</span>
+            <span class="brand-item gucci">GUCCI</span>
+            <span class="brand-item lacoste">LACOSTE</span>
+            <span class="brand-item prada">PRADA</span>
+            <span class="brand-item versace">VERSACE</span>
+            <span class="brand-item tomford">TOM FORD</span>
+            <span class="brand-item dior">DIOR</span>
+            <span class="brand-item police">POLICE</span>
+            <span class="brand-item carrera">CARRERA</span>
+            <span class="brand-item cartier">Cartier</span>
+            <span class="brand-item armani">GIORGIO ARMANI</span>
+            <span class="brand-item oakley">OAKLEY</span>
+            <span class="brand-item burberry">BURBERRY</span>
         </div>
     </div>
 
@@ -277,44 +287,98 @@
     </div>
 
     <script>
-        // 1. منطق الدوام
-        const now = new Date();
-        const day = now.getDay(); const hour = now.getHours();
-        const statusDiv = document.getElementById('status-badge'); 
-        const statusText = document.getElementById('status-text');
+        // --- 1. إعدادات اللغة ---
+        const i18n = {
+            ar: {
+                hero: "دلتا للبصريات",
+                sub: "الفرع الرئيسي - المقابلين<br>خبراء العناية بالعين وأحدث الماركات",
+                statusOpen: "مفتوح الآن", statusClosed: "مغلق الآن",
+                test: "الفحص الذكي", coll: "التشكيلات", loc: "موقع الفرع",
+                follow: "تابعونا على منصات التواصل", revTitle: "آراء عملائنا"
+            },
+            en: {
+                hero: "DELTA OPTICS",
+                sub: "Main Branch - Al Muqablain<br>Eye Care Experts & Premium Brands",
+                statusOpen: "Open Now", statusClosed: "Closed Now",
+                test: "Smart Test", coll: "Collections", loc: "Location",
+                follow: "Follow Us", revTitle: "Customer Reviews"
+            }
+        };
         
-        let isOpen = false;
-        // الجمعة (5): 16 - 24 | باقي الأيام: 10 - 24
-        if (day === 5) { if (hour >= 16) isOpen = true; } else { if (hour >= 10) isOpen = true; }
+        // بيانات التعليقات باللغتين
+        const reviewsData = {
+            ar: [
+                { name: "محمد العلي", text: "خدمة ممتازة، الدكتور شاطر والفحص دقيق جداً." },
+                { name: "سعاد محمد", text: "المحل مرتب والتعامل راقي، الأسعار مناسبة." },
+                { name: "خالد الزعبي", text: "أفضل محل بصريات في المقابلين، أنصح به بشدة." },
+                { name: "ليان الأحمد", text: "اشتريت نظارة شمسية، التشكيلة عندهم رائعة." }
+            ],
+            en: [
+                { name: "Mohammad Ali", text: "Excellent service, very accurate eye test." },
+                { name: "Suad M.", text: "Great shop, professional staff and good prices." },
+                { name: "Khaled Z.", text: "Best optical shop in Al Muqablain, highly recommended." },
+                { name: "Layan A.", text: "Bought sunglasses, amazing collection." }
+            ]
+        };
 
-        if (isOpen) {
-            statusText.innerText = "مفتوح الآن"; statusDiv.querySelector('.dot').className = 'dot open-dot';
-            statusDiv.style.color = 'var(--success)';
-        } else {
-            statusText.innerText = "مغلق الآن"; statusDiv.querySelector('.dot').className = 'dot closed-dot';
-            statusDiv.style.color = 'var(--error)';
+        let curLang = 'ar';
+
+        function toggleLang() {
+            curLang = curLang === 'ar' ? 'en' : 'ar';
+            const html = document.documentElement;
+            const btn = document.querySelector('.lang-btn');
+            const t = i18n[curLang];
+
+            html.lang = curLang;
+            html.dir = curLang === 'ar' ? 'rtl' : 'ltr';
+            btn.innerText = curLang === 'ar' ? 'EN' : 'عربي';
+
+            // تحديث النصوص
+            document.getElementById('txt-hero').innerText = t.hero;
+            document.getElementById('txt-sub').innerHTML = t.sub;
+            document.getElementById('txt-test').innerText = t.test;
+            document.getElementById('txt-coll').innerText = t.coll;
+            document.getElementById('txt-loc').innerText = t.loc;
+            document.getElementById('txt-follow').innerText = t.follow;
+            document.getElementById('txt-rev-title').innerText = t.revTitle;
+
+            // تحديث الحالة والتعليقات
+            checkStatus();
+            loadRandomReviews();
         }
 
-        // 2. منطق التعليقات المتغيرة (Random Reviews)
-        const reviewsData = [
-            { name: "محمد العلي", text: "خدمة ممتازة، الدكتور شاطر والفحص دقيق جداً." },
-            { name: "سعاد محمد", text: "المحل مرتب والتعامل راقي، الأسعار مناسبة." },
-            { name: "خالد الزعبي", text: "أفضل محل بصريات في المقابلين، أنصح به بشدة." },
-            { name: "ليان الأحمد", text: "اشتريت نظارة شمسية، التشكيلة عندهم رائعة." },
-            { name: "عمر الطراونة", text: "دقة في المواعيد واحترافية في التعامل." },
-            { name: "رنا سليم", text: "فحص النظر كان دقيق جداً وارتحت بالنظارة." },
-            { name: "يوسف القاضي", text: "تعامل محترم وأسعار منافسة للسوق." }
-        ];
+        // --- 2. منطق الدوام ---
+        function checkStatus() {
+            const now = new Date();
+            const day = now.getDay(); const hour = now.getHours();
+            const statusDiv = document.getElementById('status-badge');
+            const statusText = document.getElementById('status-text');
+            
+            let isOpen = false;
+            if (day === 5) { if (hour >= 16) isOpen = true; } else { if (hour >= 10) isOpen = true; }
 
+            const txt = i18n[curLang];
+            if (isOpen) {
+                statusText.innerText = txt.statusOpen;
+                statusDiv.querySelector('.dot').className = 'dot open-dot';
+                statusDiv.style.color = 'var(--success)';
+            } else {
+                statusText.innerText = txt.statusClosed;
+                statusDiv.querySelector('.dot').className = 'dot closed-dot';
+                statusDiv.style.color = 'var(--error)';
+            }
+        }
+
+        // --- 3. تحميل تعليقات عشوائية ---
         function loadRandomReviews() {
             const container = document.getElementById('reviews-container');
-            // خلط المصفوفة عشوائياً
-            const shuffled = reviewsData.sort(() => 0.5 - Math.random());
-            // اختيار أول تعليقين
-            const selected = shuffled.slice(0, 2);
+            // نختار المصفوفة حسب اللغة
+            const list = reviewsData[curLang];
+            // خلط بسيط واختيار 2
+            const shuffled = [...list].sort(() => 0.5 - Math.random()).slice(0, 2);
 
             let html = '';
-            selected.forEach(rev => {
+            shuffled.forEach(rev => {
                 html += `
                 <div class="review">
                     <div class="rev-top">
@@ -328,10 +392,10 @@
             container.innerHTML = html;
         }
 
-        // تشغيل دالة التعليقات عند تحميل الصفحة
+        // تشغيل عند البدء
+        checkStatus();
         loadRandomReviews();
 
     </script>
-
 </body>
 </html>

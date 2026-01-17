@@ -11,15 +11,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- الألوان (بترولي + ذهبي + أبيض) --- */
+        /* --- لوحة الألوان المتناسقة (كحلي وذهبي) --- */
         :root { 
-            --primary: #115e59;       /* بترولي غامق */
-            --primary-light: #14b8a6; 
-            --accent-gold: #d97706;   /* ذهبي */
-            --bg-body: #f8fafc;       
-            --white: #ffffff;
-            --text-dark: #0f172a;     
-            --text-gray: #64748b;
+            --primary: #0F2C59;       /* كحلي عميق فخم */
+            --accent: #D4AF37;        /* ذهبي أنيق */
+            --bg-body: #F9FAFB;       /* خلفية فاتحة ونظيفة */
+            --white: #FFFFFF;
+            --text-dark: #1F2937;
+            --text-light: #6B7280;
+            --success: #10B981;       /* أخضر للحالة */
+            --danger: #EF4444;        /* أحمر للحالة */
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -30,20 +31,20 @@
             min-height: 100vh; 
             display: flex; flex-direction: column;
             overflow-x: hidden;
-            padding-bottom: 90px;
+            padding-bottom: 90px; /* مساحة للأزرار العائمة */
         }
 
         /* --- الهيدر --- */
         header { 
-            background: var(--white); padding: 10px 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            background: var(--white); padding: 12px 20px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.03);
             display: flex; align-items: center; justify-content: center; gap: 10px;
             position: sticky; top: 0; z-index: 100;
         }
-        .header-logo { width: 40px; height: 40px; object-fit: contain; }
+        .header-logo { width: 40px; height: 40px; object-fit: contain; border-radius: 50%; }
         .brand-text { font-size: 1.1rem; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; }
 
-        /* --- المحتوى --- */
+        /* --- المحتوى الرئيسي --- */
         main { 
             flex: 1; display: flex; flex-direction: column; align-items: center; 
             padding: 40px 20px; text-align: center; width: 100%; max-width: 480px; margin: 0 auto;
@@ -54,100 +55,115 @@
             width: 140px; height: 140px; background: var(--white);
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
             margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(17, 94, 89, 0.1);
-            border: 4px solid var(--white); position: relative;
+            box-shadow: 0 8px 25px rgba(15, 44, 89, 0.08);
+            border: 3px solid var(--white);
         }
         .logo-box img { width: 90%; height: 90%; object-fit: contain; }
 
         h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; color: var(--primary); }
-        .subtitle { color: var(--text-gray); font-size: 0.95rem; margin-bottom: 25px; line-height: 1.6; }
+        .subtitle { color: var(--text-light); font-size: 0.95rem; margin-bottom: 30px; line-height: 1.6; }
 
-        /* شارات المعلومات */
+        /* شارات المعلومات (الحالة والتقييم) */
         .info-row { display: flex; gap: 10px; justify-content: center; margin-bottom: 35px; }
         .badge {
-            background: var(--white); padding: 6px 16px; border-radius: 50px;
+            background: var(--white); padding: 8px 18px; border-radius: 50px;
             font-size: 0.85rem; font-weight: 700;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            display: flex; align-items: center; gap: 6px;
-            border: 1px solid #e2e8f0; color: var(--text-dark);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            display: flex; align-items: center; gap: 8px;
+            border: 1px solid #E5E7EB; color: var(--text-dark);
         }
         .dot { width: 8px; height: 8px; border-radius: 50%; }
-        .open-dot { background: #10b981; box-shadow: 0 0 0 2px #d1fae5; }
-        .closed-dot { background: #ef4444; box-shadow: 0 0 0 2px #fee2e2; }
-        .star-icon { color: var(--accent-gold); }
+        .open-dot { background: var(--success); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
+        .closed-dot { background: var(--danger); box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2); }
+        .star-icon { color: var(--accent); }
 
-        /* الكروت الرئيسية */
+        /* --- الكروت الرئيسية (شبكة متناسقة) --- */
         .cards-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
             width: 100%; margin-bottom: 25px;
         }
 
         .main-card {
-            background: var(--white); padding: 20px 15px; border-radius: 20px;
-            display: flex; flex-direction: column; align-items: center; gap: 12px;
-            text-decoration: none; transition: transform 0.2s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #f1f5f9;
+            background: var(--white); padding: 25px 15px; border-radius: 20px;
+            display: flex; flex-direction: column; align-items: center; gap: 15px;
+            text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid #F3F4F6;
+            height: 140px; /* ارتفاع موحد */
+            justify-content: center;
         }
-        .main-card:active { transform: scale(0.97); }
+        .main-card:active { transform: scale(0.97); background: #F9FAFB; }
         
-        .card-icon-box {
-            width: 50px; height: 50px; border-radius: 15px;
-            background: #f0fdfa; display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; color: var(--primary);
-        }
-        .card-title { font-size: 1rem; font-weight: 700; color: var(--text-dark); }
+        .card-icon { font-size: 2.2rem; color: var(--primary); transition: color 0.3s; }
+        .card-title { font-size: 1rem; font-weight: 700; color: var(--primary); }
 
-        .card-highlight .card-icon-box { background: var(--primary); color: var(--white); }
-        .card-highlight .card-title { color: var(--primary); }
+        /* تمييز كرت الفحص عند اللمس */
+        .main-card.highlight:hover .card-icon { color: var(--accent); }
 
-        /* الأزرار الثانوية */
-        .btn-row { width: 100%; display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px; }
-        
-        .btn {
-            width: 100%; padding: 15px; border-radius: 15px;
-            font-size: 0.95rem; font-weight: 700; text-decoration: none;
+        /* زر الموقع العريض */
+        .wide-btn {
+            width: 100%; padding: 16px; border-radius: 16px;
+            font-size: 1rem; font-weight: 700; text-decoration: none;
             display: flex; align-items: center; justify-content: center; gap: 10px;
-            background: var(--white); color: var(--text-dark);
-            border: 1px solid #e2e8f0;
+            background: var(--white); color: var(--primary);
+            border: 1px solid #E5E7EB; margin-bottom: 30px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: 0.2s;
         }
-        .btn:active { background: #f1f5f9; }
-        .icon-loc { color: var(--primary); }
+        .wide-btn:active { background: #F9FAFB; }
+        .icon-loc { color: var(--accent); font-size: 1.2rem; }
 
-        /* التقييمات */
+        /* --- التقييمات (تصميم نظيف) --- */
         .reviews-box { width: 100%; text-align: right; margin-bottom: 20px; }
-        .section-header { font-size: 1rem; font-weight: 700; color: var(--text-gray); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .section-header { font-size: 1rem; font-weight: 700; color: var(--text-light); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .section-header i { color: var(--accent); }
         
         .review {
             background: var(--white); padding: 15px; border-radius: 16px;
-            margin-bottom: 10px; border: 1px solid #f1f5f9;
+            margin-bottom: 10px; border: 1px solid #F3F4F6;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.01);
         }
         .rev-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
         .rev-user { font-weight: 700; font-size: 0.9rem; color: var(--primary); }
-        .rev-stars { font-size: 0.8rem; color: var(--accent-gold); }
-        .rev-msg { font-size: 0.85rem; color: var(--text-gray); line-height: 1.4; }
+        .rev-stars { font-size: 0.8rem; color: var(--accent); }
+        .rev-msg { font-size: 0.85rem; color: var(--text-light); line-height: 1.5; }
 
         /* السوشيال ميديا */
-        .socials { display: flex; gap: 15px; justify-content: center; margin-bottom: 20px; }
+        .socials { display: flex; gap: 15px; justify-content: center; margin-bottom: 10px; }
         .soc-btn {
             width: 45px; height: 45px; border-radius: 50%;
-            background: var(--white); border: 1px solid #e2e8f0;
+            background: var(--white); border: 1px solid #E5E7EB;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem; color: var(--text-gray); text-decoration: none;
-            transition: 0.2s;
+            font-size: 1.2rem; color: var(--text-light); text-decoration: none;
+            transition: 0.3s;
         }
-        .soc-btn:hover { color: var(--primary); border-color: var(--primary); transform: translateY(-3px); }
+        .soc-btn:hover { color: var(--primary); border-color: var(--accent); transform: translateY(-3px); }
 
-        /* شريط الماركات */
+        /* --- شريط الماركات المحسن (حركة مستمرة + جمالية) --- */
         .marquee-wrap {
-            background: var(--white); padding: 15px 0;
-            border-top: 1px solid #e2e8f0; margin-top: auto; overflow: hidden;
+            background: var(--white); padding: 20px 0;
+            border-top: 1px solid #E5E7EB; margin-top: auto;
+            overflow: hidden; position: relative;
         }
-        .marquee-move { display: flex; gap: 40px; animation: scroll 25s linear infinite; width: max-content; }
-        .brand-name { font-weight: 800; color: #94a3b8; font-size: 1rem; letter-spacing: 1px; }
-        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(50%); } }
+        /* إضافة تأثير التلاشي على الجوانب */
+        .marquee-wrap::before, .marquee-wrap::after {
+            content: ""; position: absolute; top: 0; width: 50px; height: 100%; z-index: 2;
+        }
+        .marquee-wrap::before { left: 0; background: linear-gradient(to right, var(--white), transparent); }
+        .marquee-wrap::after { right: 0; background: linear-gradient(to left, var(--white), transparent); }
 
-        /* الأزرار الطائرة */
+        .marquee-track {
+            display: flex; gap: 40px; width: max-content;
+            /* الحركة المستمرة بدون توقف */
+            animation: scrollText 30s linear infinite;
+        }
+        /* نقوم بتكرار العناصر مرتين لضمان الاستمرارية */
+        .brand-name { font-weight: 800; color: #9CA3AF; font-size: 1rem; letter-spacing: 1.5px; text-transform: uppercase; }
+        
+        @keyframes scrollText {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); } /* يتحرك لنصف المسافة (المجموعة الأولى) ويعيد */
+        }
+
+        /* --- الأزرار العائمة --- */
         .fab-area {
             position: fixed; bottom: 25px; right: 25px;
             display: flex; flex-direction: column; gap: 15px; z-index: 200;
@@ -156,7 +172,7 @@
             width: 55px; height: 55px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             color: white; font-size: 1.6rem; text-decoration: none;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.15); transition: transform 0.2s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: transform 0.2s;
         }
         .fab-wa { background: #25D366; }
         .fab-call { background: var(--primary); }
@@ -177,44 +193,41 @@
         </div>
 
         <h1>دلتا للبصريات</h1>
-        <p class="subtitle">الفرع الرئيسي - المقابلين<br>نجمع بين دقة الفحص وأناقة المظهر</p>
+        <p class="subtitle">الفرع الرئيسي - المقابلين<br>دقة في الفحص وأناقة في المظهر</p>
 
         <div class="info-row">
             <div id="status-badge" class="badge">
                 <div class="dot closed-dot"></div> <span id="status-text">...</span>
             </div>
             <div class="badge">
-                <i class="fas fa-star star-icon"></i> 4.9 (Google)
+                <i class="fas fa-star star-icon"></i> 4.9
             </div>
         </div>
 
         <div class="cards-grid">
-            <a href="test.html" class="main-card card-highlight">
-                <div class="card-icon-box"><i class="fas fa-eye"></i></div>
-                <span class="card-title">ابدأ الفحص الذكي</span>
+            <a href="test.html" class="main-card highlight">
+                <i class="fas fa-eye card-icon"></i>
+                <span class="card-title">الفحص الذكي</span>
             </a>
             <a href="collection.html" class="main-card">
-                <div class="card-icon-box"><i class="fas fa-glasses"></i></div>
+                <i class="fas fa-glasses card-icon"></i>
                 <span class="card-title">التشكيلات</span>
             </a>
         </div>
 
-        <div class="btn-row">
-            <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Al-Muqabalain" target="_blank" class="btn">
-                <i class="fas fa-location-dot icon-loc"></i> موقع الفرع
-            </a>
-        </div>
+        <a href="https://www.google.com/maps/search/?api=1&query=دلتا+للبصريات+المقابلين" target="_blank" class="wide-btn">
+            <i class="fas fa-location-dot icon-loc"></i> موقع الفرع
+        </a>
 
         <div class="reviews-box">
-            <div class="section-header"><i class="fas fa-comment-dots"></i> آراء عملائنا</div>
-            
+            <div class="section-header"><i class="fas fa-comments"></i> آراء العملاء</div>
             <div class="review">
                 <div class="rev-top"><span class="rev-user">أحمد العبادي</span><span class="rev-stars">★★★★★</span></div>
                 <p class="rev-msg">خدمة ممتازة، الدكتور شاطر والفحص دقيق جداً.</p>
             </div>
             <div class="review">
                 <div class="rev-top"><span class="rev-user">سعاد محمد</span><span class="rev-stars">★★★★★</span></div>
-                <p class="rev-msg">المحل مرتب والتعامل راقي، الأسعار مناسبة.</p>
+                <p class="rev-msg">المحل مرتب والتعامل راقي.</p>
             </div>
         </div>
 
@@ -225,15 +238,19 @@
     </main>
 
     <div class="marquee-wrap">
-        <div class="marquee-move">
+        <div class="marquee-track">
             <span class="brand-name">RAY-BAN</span>
             <span class="brand-name">GUCCI</span>
             <span class="brand-name">POLICE</span>
             <span class="brand-name">PRADA</span>
-            <span class="brand-name">CARRERA</span>
             <span class="brand-name">DIOR</span>
             <span class="brand-name">TOM FORD</span>
-            <span class="brand-name">VERSACE</span>
+            <span class="brand-name">RAY-BAN</span>
+            <span class="brand-name">GUCCI</span>
+            <span class="brand-name">POLICE</span>
+            <span class="brand-name">PRADA</span>
+            <span class="brand-name">DIOR</span>
+            <span class="brand-name">TOM FORD</span>
         </div>
     </div>
 
@@ -243,17 +260,20 @@
     </div>
 
     <script>
-        const now = new Date(); const day = now.getDay(); const hour = now.getHours();
+        // منطق الدوام
+        const now = new Date();
+        const day = now.getDay(); const hour = now.getHours();
         const statusDiv = document.getElementById('status-badge'); const statusText = document.getElementById('status-text');
         let isOpen = false;
         if (day === 5) { if (hour >= 16) isOpen = true; } else { if (hour >= 10) isOpen = true; }
         if (isOpen) {
             statusText.innerText = "مفتوح الآن"; statusDiv.querySelector('.dot').className = 'dot open-dot';
-            statusDiv.style.color = '#059669';
+            statusDiv.style.color = 'var(--success)';
         } else {
             statusText.innerText = "مغلق الآن"; statusDiv.querySelector('.dot').className = 'dot closed-dot';
-            statusDiv.style.color = '#dc2626';
+            statusDiv.style.color = 'var(--danger)';
         }
     </script>
+
 </body>
 </html>

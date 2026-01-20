@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta http-equiv="Cache-Control" content="max-age=31536000">
     <title>Collections | Delta Optics</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,13 +12,11 @@
     
     <style>
         :root { 
-            --primary: #0e7490;       /* تركواز غامق */
-            --accent: #0ea5e9;        /* سماوي */
+            --primary: #0e7490;       
             --dark: #0f172a;          
-            --bg: #F3F4F6;            /* رمادي فاتح مريح */
+            --bg: #F3F4F6;            
             --card-bg: #FFFFFF;
             --text-gray: #64748b;
-            --price-color: #059669;   /* أخضر للسعر */
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -31,56 +28,45 @@
             overflow-x: hidden;
         }
 
-        /* --- الهيدر الزجاجي (Blur) --- */
+        /* الهيدر */
         header { 
-            background: rgba(255, 255, 255, 0.85); /* شفافية */
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            padding: 12px 20px;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);
+            padding: 12px 20px; border-bottom: 1px solid rgba(0,0,0,0.05);
             display: flex; align-items: center; justify-content: space-between;
             position: sticky; top: 0; z-index: 100;
-            transition: 0.3s;
         }
         
         .header-title { font-weight: 800; font-size: 1.1rem; color: var(--primary); margin: 0; }
         
         .nav-btn {
             width: 38px; height: 38px; border-radius: 50%; 
-            background: rgba(14, 116, 144, 0.05); color: var(--dark);
+            background: #F1F5F9; color: var(--dark);
             display: flex; align-items: center; justify-content: center;
             text-decoration: none; border: none; font-size: 1.1rem;
-            cursor: pointer; transition: 0.2s;
         }
-        .nav-btn:active { background: var(--primary); color: white; transform: scale(0.9); }
 
-        /* --- الفلاتر العائمة --- */
+        /* الفلاتر */
         .filters-wrapper {
             position: sticky; top: 63px; z-index: 90;
             background: var(--bg); padding: 10px 0;
-            /* تدرج شفاف ليختفي المحتوى تحته بنعومة */
-            mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
         }
         
         .filters-scroll {
             display: flex; gap: 8px; overflow-x: auto; 
-            padding: 0 20px 10px; scrollbar-width: none;
+            padding: 0 20px 10px; scrollbar-width: none; justify-content: center;
         }
-        .filters-scroll::-webkit-scrollbar { display: none; }
 
         .filter-chip {
             background: var(--card-bg); border: 1px solid #E5E7EB;
-            padding: 8px 18px; border-radius: 30px; 
-            font-weight: 700; color: var(--text-gray); font-size: 0.85rem;
-            cursor: pointer; transition: all 0.2s ease;
-            white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            padding: 10px 25px; border-radius: 30px; 
+            font-weight: 700; color: var(--text-gray); font-size: 0.9rem;
+            cursor: pointer; transition: 0.2s; white-space: nowrap;
         }
         .filter-chip.active { 
-            background: var(--primary); color: white; 
-            border-color: var(--primary); box-shadow: 0 4px 12px rgba(14, 116, 144, 0.3);
-            transform: translateY(-1px);
+            background: var(--primary); color: white; border-color: var(--primary);
         }
 
-        /* --- شبكة المنتجات (سريعة التحميل) --- */
+        /* الشبكة */
         .products-grid {
             padding: 10px 20px 40px;
             display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
@@ -90,77 +76,42 @@
         .product-card {
             background: var(--card-bg); border-radius: 16px;
             border: 1px solid rgba(0,0,0,0.04);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
             overflow: hidden; display: flex; flex-direction: column;
-            transition: transform 0.2s, box-shadow 0.2s;
-            /* حركة ظهور ناعمة */
-            animation: popIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+            animation: popIn 0.4s ease both;
         }
-        
-        /* تأخير بسيط للكروت عشان تظهر ورا بعض */
-        .product-card:nth-child(1) { animation-delay: 0.05s; }
-        .product-card:nth-child(2) { animation-delay: 0.1s; }
-        .product-card:nth-child(3) { animation-delay: 0.15s; }
-        .product-card:nth-child(4) { animation-delay: 0.2s; }
-
-        @keyframes popIn {
-            from { opacity: 0; transform: scale(0.95) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        .product-card:active { transform: scale(0.98); }
+        @keyframes popIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* منطقة الصورة */
         .img-container {
-            width: 100%; aspect-ratio: 1/0.8; /* نسبة ثابتة لمنع اهتزاز الصفحة */
+            width: 100%; aspect-ratio: 1/0.9; 
             background: #F8FAFC; position: relative;
-            display: flex; align-items: center; justify-content: center;
-            padding: 15px;
+            display: flex; align-items: center; justify-content: center; padding: 10px;
         }
         
         .prod-img { 
             width: 100%; height: 100%; object-fit: contain; 
-            mix-blend-mode: multiply; filter: contrast(1.05);
-            transition: transform 0.3s;
+            mix-blend-mode: multiply; transition: transform 0.3s;
         }
-        
-        .tag {
-            position: absolute; top: 10px; right: 10px;
-            font-size: 0.65rem; font-weight: 800; padding: 3px 8px;
-            border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;
-        }
-        .tag-new { background: var(--dark); color: white; }
-        .tag-offer { background: #F59E0B; color: white; }
 
-        /* تفاصيل المنتج */
-        .info-container { padding: 12px; display: flex; flex-direction: column; flex: 1; }
+        /* التفاصيل */
+        .info-container { padding: 12px; display: flex; flex-direction: column; flex: 1; text-align: start; }
         
-        .brand-name { font-size: 0.7rem; color: var(--text-gray); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
-        .model-name { font-size: 0.9rem; font-weight: 800; color: var(--dark); line-height: 1.3; margin-bottom: 8px; }
+        .cat-name { font-size: 0.7rem; color: var(--text-gray); font-weight: 700; margin-bottom: 4px; }
+        .model-name { font-size: 0.95rem; font-weight: 800; color: var(--dark); line-height: 1.3; margin-bottom: 15px; }
         
-        .price-tag { 
-            font-size: 1rem; color: var(--price-color); font-weight: 800; 
-            margin-top: auto; display: flex; align-items: center; gap: 4px;
-        }
-        .price-tag span { font-size: 0.75rem; color: var(--text-gray); font-weight: 500; }
-
-        /* زر الواتساب السريع */
+        /* زر الاستفسار (بدل السعر) */
         .wa-btn {
-            margin-top: 12px; width: 100%; padding: 10px;
-            background: #ECFDF5; border: 1px solid #D1FAE5;
-            border-radius: 10px; color: #059669;
+            margin-top: auto; width: 100%; padding: 10px;
+            background: #f0fdfa; border: 1px solid #ccfbf1;
+            border-radius: 10px; color: #0f766e;
             font-weight: 700; font-size: 0.85rem; text-decoration: none;
             display: flex; align-items: center; justify-content: center; gap: 6px;
-            transition: 0.2s;
         }
-        .wa-btn:active { background: #059669; color: white; border-color: #059669; }
 
-        /* رسالة فارغة */
         .empty-state {
             grid-column: 1 / -1; text-align: center; padding: 40px 20px;
             color: var(--text-gray); display: none;
         }
-        .empty-icon { font-size: 2rem; margin-bottom: 10px; opacity: 0.5; }
 
     </style>
 </head>
@@ -168,98 +119,85 @@
 
     <header>
         <a href="index.html" class="nav-btn"><i class="fas fa-arrow-right"></i></a>
-        <h2 class="header-title" id="txt-header">أحدث التشكيلات</h2>
+        <h2 class="header-title" id="txt-header">المعرض</h2>
         <button class="nav-btn" onclick="toggleLang()" style="font-size:0.8rem; font-weight:800;">EN</button>
     </header>
 
     <div class="filters-wrapper">
         <div class="filters-scroll">
             <button class="filter-chip active" onclick="filter('all', this)" id="btn-all">الكل</button>
-            <button class="filter-chip" onclick="filter('men', this)" id="btn-men">رجالي</button>
-            <button class="filter-chip" onclick="filter('women', this)" id="btn-women">نسائي</button>
-            <button class="filter-chip" onclick="filter('kids', this)" id="btn-kids">أطفال</button>
+            <button class="filter-chip" onclick="filter('sun', this)" id="btn-sun">نظارات شمسية</button>
+            <button class="filter-chip" onclick="filter('med', this)" id="btn-med">نظارات طبية</button>
         </div>
     </div>
 
     <div class="products-grid">
         
-        <div class="product-card" data-cat="men">
+        <div class="product-card" data-cat="sun">
             <div class="img-container">
-                <span class="tag tag-new">NEW</span>
-                <img src="https://i.ibb.co/3pdm01z/glass1.png" class="prod-img" loading="lazy" alt="RayBan">
+                <img src="sun1.jpg" class="prod-img" loading="lazy" onerror="this.src='https://via.placeholder.com/200?text=Sunglasses+1'">
             </div>
             <div class="info-container">
-                <span class="brand-name">RAY-BAN</span>
-                <span class="model-name">Aviator Classic Gold</span>
-                <div class="price-tag">85.00 <span>JD</span></div>
-                <a href="#" onclick="order('Ray-Ban Aviator')" class="wa-btn">
-                    <i class="fab fa-whatsapp"></i> <span class="txt-order">طلب</span>
+                <span class="cat-name" id="txt-cat-sun">نظارة شمسية</span>
+                <span class="model-name">موديل حديث 2024</span>
+                <a href="#" onclick="ask('نظارة شمسية رقم 1')" class="wa-btn">
+                    <i class="fab fa-whatsapp"></i> <span class="txt-ask">استفسار</span>
                 </a>
             </div>
         </div>
 
-        <div class="product-card" data-cat="women">
+        <div class="product-card" data-cat="med">
             <div class="img-container">
-                <img src="https://i.ibb.co/bzs5B8M/glass2.png" class="prod-img" loading="lazy" alt="Gucci">
+                <img src="med1.jpg" class="prod-img" loading="lazy" onerror="this.src='https://via.placeholder.com/200?text=Medical+1'">
             </div>
             <div class="info-container">
-                <span class="brand-name">GUCCI</span>
-                <span class="model-name">Luxury Cat Eye</span>
-                <div class="price-tag">120.00 <span>JD</span></div>
-                <a href="#" onclick="order('Gucci Cat Eye')" class="wa-btn">
-                    <i class="fab fa-whatsapp"></i> <span class="txt-order">طلب</span>
+                <span class="cat-name" id="txt-cat-med">نظارة طبية</span>
+                <span class="model-name">إطار طبي أنيق</span>
+                <a href="#" onclick="ask('نظارة طبية رقم 1')" class="wa-btn">
+                    <i class="fab fa-whatsapp"></i> <span class="txt-ask">استفسار</span>
                 </a>
             </div>
         </div>
 
-        <div class="product-card" data-cat="men">
+        <div class="product-card" data-cat="sun">
             <div class="img-container">
-                <span class="tag tag-offer">-15%</span>
-                <img src="https://i.ibb.co/RDh0XqX/glass3.png" class="prod-img" loading="lazy" alt="TomFord">
+                <img src="sun2.jpg" class="prod-img" loading="lazy" onerror="this.src='https://via.placeholder.com/200?text=Sunglasses+2'">
             </div>
             <div class="info-container">
-                <span class="brand-name">TOM FORD</span>
-                <span class="model-name">Blue Block Square</span>
-                <div class="price-tag">95.00 <span>JD</span></div>
-                <a href="#" onclick="order('Tom Ford Square')" class="wa-btn">
-                    <i class="fab fa-whatsapp"></i> <span class="txt-order">طلب</span>
+                <span class="cat-name">نظارة شمسية</span>
+                <span class="model-name">تصميم كلاسيك</span>
+                <a href="#" onclick="ask('نظارة شمسية رقم 2')" class="wa-btn">
+                    <i class="fab fa-whatsapp"></i> <span class="txt-ask">استفسار</span>
                 </a>
             </div>
         </div>
 
-        <div class="product-card" data-cat="kids">
+        <div class="product-card" data-cat="med">
             <div class="img-container">
-                <img src="https://via.placeholder.com/150?text=Kids" class="prod-img" loading="lazy" alt="Kids">
+                <img src="med2.jpg" class="prod-img" loading="lazy" onerror="this.src='https://via.placeholder.com/200?text=Medical+2'">
             </div>
             <div class="info-container">
-                <span class="brand-name">MIRAFLEX</span>
-                <span class="model-name">Flexible Kids Safe</span>
-                <div class="price-tag">45.00 <span>JD</span></div>
-                <a href="#" onclick="order('Miraflex Kids')" class="wa-btn">
-                    <i class="fab fa-whatsapp"></i> <span class="txt-order">طلب</span>
+                <span class="cat-name">نظارة طبية</span>
+                <span class="model-name">إطار مريح للقراءة</span>
+                <a href="#" onclick="ask('نظارة طبية رقم 2')" class="wa-btn">
+                    <i class="fab fa-whatsapp"></i> <span class="txt-ask">استفسار</span>
                 </a>
             </div>
         </div>
 
-        <div class="empty-state" id="emptyMsg">
-            <div class="empty-icon"><i class="fas fa-search"></i></div>
-            <span id="txt-empty">لا توجد منتجات في هذا القسم</span>
-        </div>
+        <div class="empty-state" id="emptyMsg">لا توجد منتجات</div>
 
     </div>
 
     <script>
-        // --- اللغة ---
         const i18n = {
             ar: {
-                header: "أحدث التشكيلات", all: "الكل", men: "رجالي", women: "نسائي", kids: "أطفال",
-                order: "طلب سريع", empty: "لا توجد منتجات حالياً",
-                waMsg: "مرحبا دلتا، أرغب بطلب نظارة:"
+                header: "المعرض", all: "الكل", sun: "نظارات شمسية", med: "نظارات طبية",
+                ask: "استفسار", waMsg: "مرحبا، حابب أستفسر عن:"
             },
             en: {
-                header: "Latest Collection", all: "All", men: "Men", women: "Women", kids: "Kids",
-                order: "Order", empty: "No items found",
-                waMsg: "Hi Delta, I want to order:"
+                header: "Gallery", all: "All", sun: "Sunglasses", med: "Medical Frames",
+                ask: "Enquire", waMsg: "Hi, I want to ask about:"
             }
         };
         let lang = 'ar';
@@ -271,24 +209,17 @@
             
             html.dir = lang === 'ar' ? 'rtl' : 'ltr';
             
-            // تحديث النصوص
             document.getElementById('txt-header').innerText = t.header;
             document.getElementById('btn-all').innerText = t.all;
-            document.getElementById('btn-men').innerText = t.men;
-            document.getElementById('btn-women').innerText = t.women;
-            document.getElementById('btn-kids').innerText = t.kids;
-            document.getElementById('txt-empty').innerText = t.empty;
+            document.getElementById('btn-sun').innerText = t.sun;
+            document.getElementById('btn-med').innerText = t.med;
             
-            document.querySelectorAll('.txt-order').forEach(el => el.innerText = t.order);
-            document.querySelector('.lang-btn').innerText = lang === 'ar' ? 'EN' : 'عربي';
-            
-            // عكس السهم
+            document.querySelectorAll('.txt-ask').forEach(el => el.innerText = t.ask);
             document.querySelector('.nav-btn i').className = lang === 'ar' ? 'fas fa-arrow-right' : 'fas fa-arrow-left';
+            document.querySelector('.lang-btn').innerText = lang === 'ar' ? 'EN' : 'AR'; // تصحيح: الزر هنا هو nav-btn الثاني
         }
 
-        // --- الفلترة السريعة ---
         function filter(cat, btn) {
-            // تفعيل الزر
             document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
@@ -296,13 +227,8 @@
             let visibleCount = 0;
 
             cards.forEach(card => {
-                const shouldShow = cat === 'all' || card.dataset.cat === cat;
-                if (shouldShow) {
+                if (cat === 'all' || card.dataset.cat === cat) {
                     card.style.display = 'flex';
-                    // إعادة تشغيل الأنيميشن لجمالية الحركة
-                    card.style.animation = 'none';
-                    card.offsetHeight; /* trigger reflow */
-                    card.style.animation = 'popIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both';
                     visibleCount++;
                 } else {
                     card.style.display = 'none';
@@ -312,8 +238,7 @@
             document.getElementById('emptyMsg').style.display = visibleCount > 0 ? 'none' : 'block';
         }
 
-        // --- الطلب ---
-        function order(item) {
+        function ask(item) {
             const msg = `${i18n[lang].waMsg} ${item}`;
             location.href = `https://wa.me/962775549700?text=${encodeURIComponent(msg)}`;
         }

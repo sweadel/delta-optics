@@ -9,14 +9,20 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:ital,wght@1,900&family=Playfair+Display:wght@700&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- الألوان (Medical Tech) --- */
+        /* --- الألوان (Medical Tech Theme) --- */
         :root { 
-            --primary: #0e7490; --secondary: #0ea5e9; --dark: #0f172a;          
-            --light: #f8fafc; --white: #ffffff; --gray: #64748b;
-            --success: #10b981; --error: #ef4444;
+            --primary: #0e7490;       /* تركواز غامق */
+            --secondary: #0ea5e9;     /* سماوي */
+            --dark: #0f172a;          
+            --light: #f8fafc;         
+            --white: #ffffff;
+            --gray: #64748b;
+            --success: #10b981;
+            --error: #ef4444;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -27,7 +33,7 @@
             padding-bottom: 90px; transition: 0.3s;
         }
 
-        /* الهيدر */
+        /* --- الهيدر (مع زر اللغة) --- */
         header { 
             background: var(--white); padding: 12px 20px;
             box-shadow: 0 4px 20px rgba(14, 116, 144, 0.05);
@@ -37,12 +43,27 @@
         .header-brand { display: flex; align-items: center; gap: 10px; }
         .header-logo { width: 35px; height: 35px; object-fit: contain; }
         .header-title { font-size: 1.1rem; font-weight: 800; color: var(--primary); margin: 0; }
-        .lang-btn { background: #f1f5f9; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 8px; font-weight: 700; color: var(--primary); cursor: pointer; }
+        
+        .lang-btn {
+            background: #f1f5f9; border: 1px solid #e2e8f0;
+            padding: 6px 12px; border-radius: 8px; font-weight: 700;
+            color: var(--primary); cursor: pointer; font-size: 0.9rem;
+            transition: 0.2s; font-family: sans-serif;
+        }
+        .lang-btn:hover { background: var(--primary); color: white; }
 
-        /* المحتوى */
-        main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 30px 20px; text-align: center; width: 100%; max-width: 500px; margin: 0 auto; }
+        /* --- المحتوى --- */
+        main { 
+            flex: 1; display: flex; flex-direction: column; align-items: center; 
+            padding: 30px 20px; text-align: center; width: 100%; max-width: 500px; margin: 0 auto;
+        }
 
-        .logo-box { width: 140px; height: 140px; object-fit: contain; margin-bottom: 20px; animation: breathe 4s infinite ease-in-out; filter: drop-shadow(0 10px 20px rgba(14, 116, 144, 0.15)); }
+        .logo-box {
+            width: 140px; height: 140px; 
+            object-fit: contain; margin-bottom: 20px;
+            animation: breathe 4s infinite ease-in-out;
+            filter: drop-shadow(0 10px 20px rgba(14, 116, 144, 0.15));
+        }
         @keyframes breathe { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
 
         h1 { font-size: 1.8rem; font-weight: 900; margin-bottom: 8px; color: var(--primary); }
@@ -50,76 +71,99 @@
 
         /* الشارات */
         .info-row { display: flex; gap: 10px; justify-content: center; margin-bottom: 30px; }
-        .badge { background: var(--white); padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 8px; border: 1px solid #e2e8f0; }
+        .badge {
+            background: var(--white); padding: 8px 16px; border-radius: 50px;
+            font-size: 0.85rem; font-weight: 700;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            display: flex; align-items: center; gap: 8px;
+            border: 1px solid #e2e8f0; color: var(--dark);
+        }
         .dot { width: 8px; height: 8px; border-radius: 50%; }
         .open-dot { background: var(--success); box-shadow: 0 0 0 2px #d1fae5; }
         .closed-dot { background: var(--error); box-shadow: 0 0 0 2px #fee2e2; }
 
-        /* الكروت */
-        .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; margin-bottom: 15px; }
-        .main-card { background: var(--white); padding: 25px 15px; border-radius: 18px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-decoration: none; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid #f1f5f9; height: 140px; justify-content: center; }
+        /* الشبكة */
+        .cards-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
+            width: 100%; margin-bottom: 15px;
+        }
+        .main-card {
+            background: var(--white); padding: 25px 15px; border-radius: 18px;
+            display: flex; flex-direction: column; align-items: center; gap: 12px;
+            text-decoration: none; transition: transform 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid #f1f5f9;
+            height: 140px; justify-content: center;
+        }
         .main-card:active { transform: scale(0.98); }
         .card-icon { font-size: 2rem; color: var(--primary); margin-bottom: 5px; }
         .card-title { font-size: 1rem; font-weight: 800; color: var(--dark); }
+
         .highlight-card { background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%); border-color: var(--secondary); }
         .highlight-card .card-icon { color: var(--secondary); }
         .highlight-card .card-title { color: var(--primary); }
 
-        .wide-btn { width: 100%; padding: 18px; border-radius: 16px; font-size: 1rem; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--white); color: var(--primary); border: 1px solid #e2e8f0; margin-bottom: 30px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .wide-btn {
+            width: 100%; padding: 18px; border-radius: 16px;
+            font-size: 1rem; font-weight: 700; text-decoration: none;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: var(--white); color: var(--primary);
+            border: 1px solid #e2e8f0; margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
 
-        /* السوشيال والتقييمات */
+        /* السوشيال */
         .social-section { width: 100%; margin-bottom: 20px; }
         .sec-title { font-size: 0.85rem; font-weight: 700; color: var(--gray); margin-bottom: 12px; display: block; }
         .social-row { display: flex; gap: 12px; justify-content: center; }
-        .soc-btn { flex: 1; padding: 12px; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; color: white; font-weight: 700; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .fb-btn { background: #1877F2; } .insta-btn { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
-        .reviews-box { width: 100%; margin-bottom: 10px; }
+        .soc-btn {
+            flex: 1; padding: 12px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            text-decoration: none; color: white; font-weight: 700; font-size: 0.9rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .fb-btn { background: #1877F2; } 
+        .insta-btn { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+
+        /* التقييمات */
+        .reviews-box { width: 100%; text-align: right; margin-bottom: 10px; }
         .rev-head-title { font-size: 0.95rem; font-weight: 700; color: var(--gray); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
-        .review { background: var(--white); padding: 15px; border-radius: 16px; margin-bottom: 10px; border: 1px solid #f1f5f9; text-align: start; }
+        .review {
+            background: var(--white); padding: 15px; border-radius: 16px;
+            margin-bottom: 10px; border: 1px solid #f1f5f9; animation: slideUp 0.5s ease;
+            text-align: start;
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .rev-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
         .rev-user { font-weight: 700; font-size: 0.9rem; color: var(--dark); }
         .rev-stars { font-size: 0.8rem; color: #f59e0b; }
         .rev-msg { font-size: 0.85rem; color: var(--gray); line-height: 1.4; }
 
-        /* --- شريط الماركات المتصل (Infinite Scroll) --- */
+        /* --- شريط الماركات الاحترافي (Seamless & Colorful) --- */
         .marquee-wrap {
-            background: var(--white); 
-            padding: 25px 0; /* مساحة جيدة */
-            border-top: 1px solid #e2e8f0; 
-            margin-top: auto; 
-            overflow: hidden;
-            position: relative; 
-            white-space: nowrap;
+            background: var(--white); padding: 22px 0;
+            border-top: 1px solid #e2e8f0; margin-top: auto; overflow: hidden;
+            position: relative; white-space: nowrap;
         }
-        
-        /* تظليل الجوانب لجمالية الاختفاء */
         .marquee-wrap::before, .marquee-wrap::after {
-            content: ""; position: absolute; top: 0; width: 80px; height: 100%; z-index: 2;
+            content: ""; position: absolute; top: 0; width: 60px; height: 100%; z-index: 2;
             pointer-events: none;
         }
         .marquee-wrap::before { left: 0; background: linear-gradient(to right, var(--white), transparent); }
         .marquee-wrap::after { right: 0; background: linear-gradient(to left, var(--white), transparent); }
 
-        .marquee-track {
-            display: inline-flex;
-            gap: 0; /* المسافة بنتحكم فيها بالـ margin للعناصر */
-            /* الحركة: نحرك الشريط لليسار بمقدار نصف طوله تماماً */
-            animation: scroll 40s linear infinite;
-        }
+        .marquee-content { display: inline-flex; animation: scroll 50s linear infinite; align-items: center; }
         
         .brand-item {
-            margin: 0 40px; /* مسافة بين كل ماركة */
-            font-size: 1.5rem; /* حجم كبير وواضح */
-            opacity: 0.9;
-            flex-shrink: 0; /* ممنوع يتقلص */
+            margin: 0 35px; font-size: 1.4rem; opacity: 0.9;
+            transition: 0.3s; display: inline-block;
         }
-
-        /* ستايلات الماركات الملونة */
+        
+        /* ألوان الماركات الحقيقية */
         .rayban { font-family: 'Montserrat', sans-serif; font-weight: 900; font-style: italic; color: #E01E26; }
-        .gucci { font-family: 'Playfair Display', serif; font-weight: 700; color: #000; letter-spacing: 2px; font-size: 1.3rem; }
+        .gucci { font-family: 'Playfair Display', serif; font-weight: 700; color: #000; letter-spacing: 2px; font-size: 1.2rem; }
         .lacoste { font-family: 'Montserrat', sans-serif; font-weight: 800; color: #004526; }
-        .tomford { font-family: 'Montserrat', sans-serif; font-weight: 700; letter-spacing: 1px; color: #333; border: 2px solid #333; padding: 0 5px; font-size: 1.1rem; }
-        .prada { font-family: 'Playfair Display', serif; font-weight: 700; color: #000; letter-spacing: 3px; font-size: 1.2rem; }
+        .tomford { font-family: 'Montserrat', sans-serif; font-weight: 700; letter-spacing: 1px; color: #333; border: 2px solid #333; padding: 0 5px; font-size: 1rem; }
+        .prada { font-family: 'Playfair Display', serif; font-weight: 700; color: #000; letter-spacing: 3px; font-size: 1.1rem; }
         .versace { font-family: 'Cinzel', serif; font-weight: 700; color: #EAB308; }
         .police { font-family: 'Impact', sans-serif; color: #000; letter-spacing: 1px; font-style: italic; }
         .carrera { font-family: 'Roboto Condensed', sans-serif; font-weight: 700; color: #C51D24; font-style: italic; }
@@ -127,24 +171,28 @@
         .cartier { font-family: 'Playfair Display', serif; font-style: italic; color: #000; font-weight: 700; }
         .armani { font-family: 'Montserrat', sans-serif; font-weight: 400; letter-spacing: 2px; color: #000; }
         .burberry { font-family: 'Montserrat', sans-serif; font-weight: 800; color: #000; letter-spacing: 1px; font-size: 1.2rem; }
-        .oakley { font-family: 'Montserrat', sans-serif; font-weight: 900; font-style: italic; color: #000; font-size: 1.6rem; letter-spacing: -1px; }
+        .oakley { font-family: 'Montserrat', sans-serif; font-weight: 900; font-style: italic; color: #000; font-size: 1.5rem; letter-spacing: -1px; }
         .persol { font-family: 'Playfair Display', serif; font-weight: 700; color: #000; font-style: italic; letter-spacing: 1px; }
         .fendi { font-family: 'Montserrat', sans-serif; font-weight: 900; color: #000; letter-spacing: 1px; }
 
-        /* حركة الشريط: من 0 إلى -50% (نص المسافة لأننا كررنا القائمة مرتين) */
-        @keyframes scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
         /* FABs */
         .fab-area {
             position: fixed; bottom: 25px; right: 25px;
             display: flex; flex-direction: column; gap: 15px; z-index: 200;
         }
-        .fab { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.6rem; text-decoration: none; box-shadow: 0 5px 15px rgba(0,0,0,0.15); transition: transform 0.2s; }
-        .fab-wa { background: #25D366; } .fab-call { background: var(--primary); }
+        .fab {
+            width: 55px; height: 55px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1.6rem; text-decoration: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15); transition: transform 0.2s;
+        }
+        .fab-wa { background: #25D366; }
+        .fab-call { background: var(--primary); }
         .fab:active { transform: scale(0.9); }
+        
+        /* عكس مكان الـ FABs عند اللغة الإنجليزية */
         html[dir="ltr"] .fab-area { right: auto; left: 25px; }
 
     </style>
@@ -192,8 +240,12 @@
         <div class="social-section">
             <span class="sec-title" id="txt-follow">تابعونا على منصات التواصل</span>
             <div class="social-row">
-                <a href="https://www.facebook.com/" target="_blank" class="soc-btn fb-btn"><i class="fab fa-facebook-f"></i> Facebook</a>
-                <a href="https://www.instagram.com/" target="_blank" class="soc-btn insta-btn"><i class="fab fa-instagram"></i> Instagram</a>
+                <a href="https://www.facebook.com/delta.optics1/" target="_blank" class="soc-btn fb-btn">
+                    <i class="fab fa-facebook-f"></i> Facebook
+                </a>
+                <a href="https://www.instagram.com/delta.optics1/" target="_blank" class="soc-btn insta-btn">
+                    <i class="fab fa-instagram"></i> Instagram
+                </a>
             </div>
         </div>
 
@@ -204,7 +256,7 @@
     </main>
 
     <div class="marquee-wrap">
-        <div class="marquee-track">
+        <div class="marquee-content">
             <span class="brand-item rayban">Ray-Ban</span>
             <span class="brand-item gucci">GUCCI</span>
             <span class="brand-item lacoste">LACOSTE</span>
@@ -220,7 +272,7 @@
             <span class="brand-item burberry">BURBERRY</span>
             <span class="brand-item persol">Persol</span>
             <span class="brand-item fendi">FENDI</span>
-
+            
             <span class="brand-item rayban">Ray-Ban</span>
             <span class="brand-item gucci">GUCCI</span>
             <span class="brand-item lacoste">LACOSTE</span>
@@ -245,6 +297,7 @@
     </div>
 
     <script>
+        // إعدادات اللغة
         const i18n = {
             ar: {
                 hero: "دلتا للبصريات",
@@ -262,6 +315,7 @@
             }
         };
         
+        // بيانات التعليقات
         const reviewsData = {
             ar: [
                 { name: "محمد العلي", text: "خدمة ممتازة، الدكتور شاطر والفحص دقيق جداً." },
@@ -289,6 +343,8 @@
             html.dir = curLang === 'ar' ? 'rtl' : 'ltr';
             btn.innerText = curLang === 'ar' ? 'EN' : 'عربي';
 
+            // تحديث النصوص
+            document.getElementById('txt-header').innerText = curLang === 'ar' ? 'DELTA OPTICS' : 'DELTA OPTICS';
             document.getElementById('txt-hero').innerText = t.hero;
             document.getElementById('txt-sub').innerHTML = t.sub;
             document.getElementById('txt-test').innerText = t.test;
@@ -301,6 +357,7 @@
             loadRandomReviews();
         }
 
+        // منطق الدوام
         function checkStatus() {
             const now = new Date();
             const day = now.getDay(); const hour = now.getHours();
@@ -322,6 +379,7 @@
             }
         }
 
+        // تعليقات عشوائية
         function loadRandomReviews() {
             const container = document.getElementById('reviews-container');
             const list = reviewsData[curLang];

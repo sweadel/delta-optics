@@ -346,12 +346,22 @@
 
         let currentPatient = ""; let currentResults = {}; let activeTest = ""; let currentEye = "right"; let modalCallback = null;
 
-        // --- 2. المساعد الصوتي (Google Cloud TTS API المخفية) ---
+        // --- 2. المساعد الصوتي (Google Cloud TTS المفتوحة القوية + Fallback) ---
         function playGoogleVoice(text) {
-            // نستخدم سيرفرات جوجل للترجمة الصوتية (Google Translate TTS) عشان يعطينا صوت فخم وواضح
-            let url = "https://translate.google.com/translate_tts?ie=UTF-8&tl=ar&client=tw-ob&q=" + encodeURIComponent(text);
+            // نستخدم رابط gtx السحري من جوجل (يتجاوز حظر المتصفحات العادية ويعطي صوت فخم)
+            let url = "https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=ar&q=" + encodeURIComponent(text);
             let audio = new Audio(url);
-            audio.play().catch(e => console.log("تحذير: مشكلة في تشغيل الصوت من جوجل: " + e));
+            
+            audio.play().catch(e => {
+                console.log("تم حظر الصوت من المتصفح للحماية، جاري استخدام الصوت البديل (النظام)...");
+                // إذا المتصفح عمل بلوك للصوت الخارجي (زي سفاري مرات)، بنستخدم صوت التلفون كبديل
+                if('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                    let u = new SpeechSynthesisUtterance(text);
+                    u.lang = 'ar-SA'; u.rate = 0.85;
+                    window.speechSynthesis.speak(u);
+                }
+            });
         }
 
         function showModal(title, text, spokenText, callback) {
@@ -360,13 +370,14 @@
             modalCallback = callback; 
             document.getElementById('instructionModal').classList.add('active');
             
-            // تشغيل صوت جوجل السحابي
+            // تشغيل الصوت فور ظهور النافذة
             if(spokenText) {
                 playGoogleVoice(spokenText);
             }
         }
         
         function closeModal() {
+            if('speechSynthesis' in window) window.speechSynthesis.cancel();
             document.getElementById('instructionModal').classList.remove('active');
             if(modalCallback) modalCallback();
         }

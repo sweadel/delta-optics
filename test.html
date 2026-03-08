@@ -12,46 +12,36 @@
         :root { 
             --brand-color: #0E7490; --gold: #D4AF37; --bg-body: #F8FAFC; 
             --white: #FFFFFF; --text-main: #1E293B; --text-light: #64748B;
-            --success: #10B981; --error: #EF4444;
+            --success: #10B981; --error: #EF4444; --accent: #0EA5E9;
         }
 
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
         
         body { background: var(--bg-body); color: var(--text-main); margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 
-        /* --- الهيدر الجديد (توزيع العناصر) --- */
+        /* --- الهيدر --- */
         header { 
-            background: var(--white); 
-            height: 60px; padding: 0 20px;
+            background: var(--white); height: 60px; padding: 0 20px;
             box-shadow: 0 2px 15px rgba(14, 116, 144, 0.08); 
             display: flex; align-items: center; justify-content: space-between;
             position: sticky; top: 0; z-index: 100;
         }
-        
-        /* زر اللغة (يسار) */
         .lang-btn {
             background: #F1F5F9; border: 1px solid #E2E8F0; border-radius: 8px;
             padding: 6px 12px; font-weight: 700; color: var(--brand-color);
             cursor: pointer; font-size: 0.9rem; transition: 0.2s; z-index: 2;
         }
-        
-        /* الحاوية الوسطية (اللوجو والعنوان) - موسطة بدقة */
         .header-center {
             position: absolute; left: 50%; transform: translateX(-50%);
-            display: flex; align-items: center; gap: 8px;
-            white-space: nowrap;
+            display: flex; align-items: center; gap: 8px; white-space: nowrap;
         }
         .header-logo { width: 35px; height: 35px; object-fit: contain; }
         .header-title { font-weight: 800; font-size: 1.1rem; color: var(--brand-color); margin: 0; }
-
-        /* زر الخروج (يمين) */
         .back-btn { 
             width: 38px; height: 38px; border-radius: 50%; background: #F1F5F9; 
             color: var(--text-main); display: flex; align-items: center; justify-content: center;
-            text-decoration: none; font-size: 1.1rem; z-index: 2;
-            transition: 0.2s;
+            text-decoration: none; font-size: 1.1rem; z-index: 2; transition: 0.2s;
         }
-        .back-btn:active { background: var(--error); color: white; }
 
         /* --- الحاوية والشاشات --- */
         .container { flex: 1; padding: 20px; max-width: 500px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; align-items: center; }
@@ -59,84 +49,89 @@
         .screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- القائمة الرئيسية واللوجو الكبير --- */
-        .welcome-box { text-align: center; margin-bottom: 30px; padding: 20px; }
-        
-        /* تعديل اللوجو الكبير والحركة */
-        .welcome-logo { 
-            width: 120px; height: 120px; /* تكبير الحجم */
-            object-fit: contain; margin-bottom: 20px; 
-            animation: pulseLogo 3s infinite ease-in-out; /* حركة النبض */
-            filter: drop-shadow(0 5px 15px rgba(14, 116, 144, 0.15));
-        }
+        /* --- القائمة --- */
+        .welcome-box { text-align: center; margin-bottom: 25px; padding: 10px; }
+        .welcome-logo { width: 100px; height: 100px; object-fit: contain; margin-bottom: 15px; animation: pulseLogo 3s infinite ease-in-out; filter: drop-shadow(0 5px 15px rgba(14, 116, 144, 0.15)); }
+        @keyframes pulseLogo { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
-        @keyframes pulseLogo {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); } /* يكبر شوي */
-            100% { transform: scale(1); }
-        }
-
-        /* باقي الستايلات (نفس السابقة) */
-        .menu-grid { display: grid; gap: 15px; }
+        .menu-grid { display: grid; gap: 12px; }
         .test-card { 
-            background: var(--white); padding: 20px; border-radius: 16px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03); cursor: pointer; 
+            background: var(--white); padding: 18px; border-radius: 16px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02); cursor: pointer; 
             display: flex; align-items: center; gap: 15px; border: 1px solid #E2E8F0;
         }
         .test-card:active { transform: scale(0.98); background: #F8FAFC; }
-        .icon-wrap { width: 50px; height: 50px; background: #ECFEFF; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: var(--brand-color); font-size: 1.5rem; }
-        
-        /* تدوير السهم حسب اللغة */
+        .icon-wrap { width: 45px; height: 45px; background: #ECFEFF; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--brand-color); font-size: 1.3rem; }
+        .card-info h3 { margin: 0 0 4px; font-size: 1rem; color: var(--text-main); font-weight: 800; }
+        .card-info p { margin: 0; font-size: 0.8rem; color: var(--text-light); }
         html[dir="rtl"] .arrow-icon { transform: rotate(0deg); }
         html[dir="ltr"] .arrow-icon { transform: rotate(180deg); }
 
-        /* مناطق الفحص */
+        /* --- مناطق الفحص --- */
         .test-area {
             background: var(--white); border-radius: 20px; padding: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center;
-            margin-bottom: 20px; min-height: 300px; 
+            margin-bottom: 20px; min-height: 280px; 
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            border: 1px solid #E2E8F0;
+            border: 1px solid #E2E8F0; position: relative;
         }
         .instruction { 
             background: #FFFBEB; color: #B45309; padding: 8px 15px; 
             border-radius: 20px; font-size: 0.85rem; display: inline-block; margin-bottom: 20px;
-            border: 1px solid #FEF3C7;
+            border: 1px solid #FEF3C7; font-weight: 700;
         }
+        
+        /* أدوات الفحص */
+        .e-char { font-weight: 900; line-height: 1; transition: 0.1s; }
         .controls-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 240px; margin: 0 auto; }
-        .ctrl-btn { height: 60px; background: var(--white); border: 1px solid #CBD5E1; border-radius: 12px; font-size: 1.3rem; cursor: pointer; color: var(--brand-color); box-shadow: 0 4px 0 #CBD5E1; }
+        .ctrl-btn { height: 60px; background: var(--white); border: 1px solid #CBD5E1; border-radius: 12px; font-size: 1.3rem; cursor: pointer; color: var(--brand-color); box-shadow: 0 4px 0 #CBD5E1; transition: 0.1s; }
         .ctrl-btn:active { transform: translateY(4px); box-shadow: none; }
         
-        .e-char { font-weight: 900; line-height: 1; transition: 0.2s; }
-        .color-canvas { background: #fff; border-radius: 50%; width: 260px; height: 260px; margin-bottom: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
-        .amsler-grid { width: 280px; height: 280px; background: #fff; background-image: linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px); background-size: 20px 20px; border: 2px solid #000; position: relative; display: flex; justify-content: center; align-items: center; }
+        .color-canvas { background: #fff; border-radius: 50%; width: 240px; height: 240px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
+        .amsler-grid { width: 250px; height: 250px; background: #fff; background-image: linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px); background-size: 20px 20px; border: 2px solid #000; position: relative; display: flex; justify-content: center; align-items: center; }
         .center-dot { width: 8px; height: 8px; background: #000; border-radius: 50%; }
 
         .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 280px; margin: 0 auto; }
-        .num-key { padding: 15px; border: none; background: #F1F5F9; border-radius: 10px; font-size: 1.2rem; font-weight: 700; color: var(--text-main); cursor: pointer; }
+        .num-key { padding: 12px; border: none; background: #F1F5F9; border-radius: 10px; font-size: 1.2rem; font-weight: 700; color: var(--text-main); cursor: pointer; }
 
-        /* التقرير */
-        .report-card { background: var(--white); border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(14, 116, 144, 0.15); border: 1px solid #E2E8F0; text-align: center; }
-        .report-header { background: var(--brand-color); color: white; padding: 20px; }
-        .report-body { padding: 30px 20px; }
-        .score-display { font-size: 2.5rem; font-weight: 800; color: var(--brand-color); margin-bottom: 5px; display: block; }
+        .action-btn { width: 100%; padding: 14px; border-radius: 12px; border: none; font-weight: 700; font-size: 1rem; cursor: pointer; margin-bottom: 10px; display: flex; justify-content: center; gap: 8px; align-items: center; text-decoration: none; }
+        .btn-primary { background: var(--brand-color); color: white; }
+        .btn-outline { background: transparent; border: 2px solid #E2E8F0; color: var(--text-main); }
+
+        /* --- التقرير الطبي المفصل (الجديد) --- */
+        .report-card { background: var(--white); border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(14, 116, 144, 0.15); border: 1px solid #E2E8F0; }
+        .report-header { background: var(--brand-color); color: white; padding: 20px; text-align: center; }
+        .report-header h2 { margin: 0 0 5px; font-size: 1.4rem; }
+        .report-header p { margin: 0; font-size: 0.85rem; opacity: 0.9; }
         
-        .action-btn { width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 700; font-size: 1rem; cursor: pointer; margin-bottom: 10px; display: flex; justify-content: center; gap: 8px; align-items: center; text-decoration: none; }
-        .btn-primary { background: var(--gold); color: #000; }
-        .btn-outline { background: transparent; border: 2px solid #E2E8F0; color: var(--text-light); }
+        .report-body { padding: 20px; }
+        .result-list { margin-bottom: 20px; }
+        .res-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #F1F5F9; }
+        .res-item:last-child { border-bottom: none; }
+        .res-title { font-weight: 800; color: var(--dark); font-size: 0.95rem; }
+        .res-val { display: flex; flex-direction: column; align-items: flex-end; }
+        .res-score { font-weight: 900; color: var(--brand-color); font-size: 1.1rem; }
+        .res-note { font-size: 0.7rem; color: var(--text-light); }
+        
+        /* التوصية الطبية والخصم */
+        .recom-box { background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 12px; padding: 15px; margin-bottom: 15px; }
+        .recom-title { color: #166534; font-weight: 800; font-size: 0.85rem; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
+        .recom-text { color: #15803D; font-size: 0.85rem; line-height: 1.5; margin: 0; }
+
+        .coupon-box { background: #FFFBEB; border: 1px dashed #F59E0B; border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 20px; }
+        .coupon-box p { margin: 0 0 5px; font-size: 0.8rem; color: #B45309; font-weight: 700; }
+        .coupon-code { display: inline-block; background: #FEF3C7; color: #D97706; font-weight: 900; font-size: 1.2rem; padding: 5px 15px; border-radius: 8px; letter-spacing: 2px; }
 
     </style>
 </head>
 <body>
 
     <header>
-        <a href="index.html" class="back-btn"><i class="fas fa-times"></i></a>
-
+        <a href="index.html" class="back-btn" id="btn-exit"><i class="fas fa-times"></i></a>
         <div class="header-center">
             <img src="logo.jpg" class="header-logo" alt="Delta" onerror="this.style.display='none'">
             <h1 class="header-title" id="txt-app-title">العيادة الذكية</h1>
         </div>
-
         <button class="lang-btn" onclick="toggleLang()">EN</button>
     </header>
 
@@ -145,8 +140,8 @@
         <div id="menu" class="screen active">
             <div class="welcome-box">
                 <img src="logo.jpg" class="welcome-logo" alt="Logo" onerror="this.src='https://via.placeholder.com/100?text=Delta'">
-                <h2 id="txt-welcome">أهلاً بك في فحص دلتا</h2>
-                <p id="txt-subtitle">تقنية طبية متطورة لفحص دقيق</p>
+                <h2 id="txt-welcome" style="margin:0 0 5px;">أهلاً بك في فحص دلتا</h2>
+                <p id="txt-subtitle" style="margin:0; color:var(--text-light); font-size:0.9rem;">أدق تقنيات الفحص المبدئي</p>
             </div>
 
             <div class="menu-grid">
@@ -154,7 +149,16 @@
                     <div class="icon-wrap"><i class="fas fa-eye"></i></div>
                     <div class="card-info" style="flex:1">
                         <h3 id="txt-t1-title">حدة النظر (Snellen)</h3>
-                        <p id="txt-t1-desc">قياس دقة الإبصار عن بعد</p>
+                        <p id="txt-t1-desc">قياس دقة الإبصار وسرعة الاستجابة</p>
+                    </div>
+                    <i class="fas fa-chevron-left arrow-icon" style="color:#CBD5E1;"></i>
+                </div>
+
+                <div class="test-card" onclick="startAstigmatism()">
+                    <div class="icon-wrap"><i class="fas fa-certificate"></i></div>
+                    <div class="card-info" style="flex:1">
+                        <h3 id="txt-t4-title">انحراف النظر (Astigmatism)</h3>
+                        <p id="txt-t4-desc">كشف تشوه الرؤية واللابؤرية</p>
                     </div>
                     <i class="fas fa-chevron-left arrow-icon" style="color:#CBD5E1;"></i>
                 </div>
@@ -177,6 +181,10 @@
                     <i class="fas fa-chevron-left arrow-icon" style="color:#CBD5E1;"></i>
                 </div>
             </div>
+            
+            <button id="btn-show-report" class="action-btn btn-primary" style="margin-top:20px; display:none;" onclick="showReportScreen()">
+                <i class="fas fa-file-medical"></i> <span id="txt-view-rep">عرض التقرير الشامل</span>
+            </button>
         </div>
 
         <div id="test-vision" class="screen">
@@ -192,12 +200,33 @@
             </div>
         </div>
 
+        <div id="test-astigmatism" class="screen">
+            <div class="instruction" id="txt-ast-instr"><i class="fas fa-eye"></i> انظر إلى المركز بتركيز</div>
+            <div class="test-area" style="min-height:auto; padding:40px 0;">
+                <svg width="220" height="220" viewBox="0 0 100 100" style="background:#fff; border-radius:50%; box-shadow:0 5px 15px rgba(0,0,0,0.05); padding:10px;">
+                    <circle cx="50" cy="50" r="48" fill="none" stroke="#E2E8F0" stroke-width="1"/>
+                    <line x1="50" y1="5" x2="50" y2="95" stroke="#1E293B" stroke-width="1.5"/>
+                    <line x1="5" y1="50" x2="95" y2="50" stroke="#1E293B" stroke-width="1.5"/>
+                    <line x1="18.18" y1="18.18" x2="81.82" y2="81.82" stroke="#1E293B" stroke-width="1.5"/>
+                    <line x1="18.18" y1="81.82" x2="81.82" y2="18.18" stroke="#1E293B" stroke-width="1.5"/>
+                    <line x1="32.8" y1="8.4" x2="67.2" y2="91.6" stroke="#1E293B" stroke-width="1.5"/>
+                    <line x1="8.4" y1="32.8" x2="91.6" y2="67.2" stroke="#1E293B" stroke-width="1.5"/>
+                    <line x1="8.4" y1="67.2" x2="91.6" y2="32.8" stroke="#1E293B" stroke-width="1.5"/>
+                    <line x1="32.8" y1="91.6" x2="67.2" y2="8.4" stroke="#1E293B" stroke-width="1.5"/>
+                    <circle cx="50" cy="50" r="4" fill="#1E293B"/>
+                </svg>
+            </div>
+            <h4 id="txt-ast-q" style="text-align:center; margin:0 0 15px; color:var(--dark);">هل ترى بعض الخطوط أغمق أو أوضح من غيرها؟</h4>
+            <button id="btn-ast-yes" class="action-btn" style="background:#FEF2F2; border:1px solid #FECACA; color:var(--error);" onclick="finishAstigmatism(true)">نعم، بعضها أغمق (يوجد انحراف)</button>
+            <button id="btn-ast-no" class="action-btn" style="background:var(--bg-body); border:1px solid #CBD5E1; color:var(--text-main);" onclick="finishAstigmatism(false)">لا، جميعها متساوية الوضوح</button>
+        </div>
+
         <div id="test-color" class="screen">
             <div class="instruction" id="txt-c-instr"><i class="fas fa-sun"></i> ارفع سطوع الشاشة</div>
             <div style="display:flex; justify-content:center; margin-bottom:10px;">
-                <canvas id="ishiharaCanvas" width="260" height="260" class="color-canvas"></canvas>
+                <canvas id="ishiharaCanvas" width="240" height="240" class="color-canvas"></canvas>
             </div>
-            <div id="color-display" style="text-align:center; height:30px; font-size:1.5rem; font-weight:bold; color:var(--brand-color); margin-bottom:15px;"></div>
+            <div id="color-display" style="text-align:center; height:30px; font-size:1.5rem; font-weight:bold; color:var(--brand-color); margin-bottom:10px;"></div>
             <div class="numpad">
                 <script>for(let i=1;i<=9;i++)document.write(`<button class="num-key" onclick="typeColor(${i})">${i}</button>`)</script>
                 <button class="num-key" style="color:var(--error)" onclick="clearColor()"><i class="fas fa-backspace"></i></button>
@@ -212,27 +241,35 @@
                 <div class="amsler-grid"><div class="center-dot"></div></div>
             </div>
             <h4 id="txt-a-q" style="text-align:center; margin:0 0 15px;">هل الخطوط مستقيمة تماماً؟</h4>
-            <button id="btn-a-yes" class="action-btn" style="background:var(--bg-body); border:1px solid #ccc; color:var(--text-main);" onclick="finishAmsler(true)">نعم، سليمة</button>
-            <button id="btn-a-no" class="action-btn" style="background:#FEF2F2; border:1px solid #FECACA; color:var(--error);" onclick="finishAmsler(false)">لا، يوجد تعرج</button>
+            <button id="btn-a-yes" class="action-btn" style="background:var(--bg-body); border:1px solid #CBD5E1; color:var(--text-main);" onclick="finishAmsler(true)">نعم، مستقيمة</button>
+            <button id="btn-a-no" class="action-btn" style="background:#FEF2F2; border:1px solid #FECACA; color:var(--error);" onclick="finishAmsler(false)">لا، يوجد تعرج أو ضبابية</button>
         </div>
 
-        <div id="result" class="screen">
+        <div id="report" class="screen">
             <div class="report-card">
                 <div class="report-header">
-                    <h2 id="txt-rep-title">التقرير الطبي</h2>
-                    <p id="txt-rep-sub">نتائج الفحص الأولي</p>
+                    <h2 id="txt-rep-title">التقرير الطبي الشامل</h2>
+                    <p id="txt-rep-sub">نتائج الفحوصات المبدئية</p>
                 </div>
+                
                 <div class="report-body">
-                    <span id="res-score" class="score-display">--</span>
-                    <span id="res-desc" class="score-label">--</span>
-                    <div style="background:#F0F9FF; padding:15px; border-radius:10px; font-size:0.85rem; color:#0369A1; margin-bottom:25px; line-height:1.5;">
-                        <i class="fas fa-info-circle"></i> <span id="txt-disclaimer">هذه النتيجة تقريبية ولا تغني عن الفحص السريري. نتشرف بزيارتك في فرع المقابلين.</span>
+                    <div class="result-list" id="result-list-container"></div>
+                    
+                    <div class="recom-box" id="recom-box">
+                        <div class="recom-title"><i class="fas fa-user-md"></i> <span id="txt-recom-lbl">التوصية الطبية:</span></div>
+                        <p class="recom-text" id="recom-text">...</p>
                     </div>
-                    <a id="wa-btn" href="#" class="action-btn btn-primary">
-                        <i class="fab fa-whatsapp"></i> <span id="txt-book">حجز موعد</span>
+
+                    <div class="coupon-box">
+                        <p id="txt-coupon">هدية إتمام الفحص (خصم 10% بالفرع):</p>
+                        <div class="coupon-code">DELTA10</div>
+                    </div>
+
+                    <a id="wa-btn" href="#" class="action-btn btn-primary" style="margin-bottom:8px;">
+                        <i class="fab fa-whatsapp"></i> <span id="txt-book">حجز موعد بالنتيجة</span>
                     </a>
-                    <button onclick="location.reload()" class="action-btn btn-outline" id="txt-retry">
-                        إعادة الفحص
+                    <button onclick="show('menu')" class="action-btn btn-outline" id="txt-add-test">
+                        إضافة فحص آخر
                     </button>
                 </div>
             </div>
@@ -241,154 +278,232 @@
     </div>
 
     <script>
-        // --- القاموس ---
+        // --- 1. القاموس اللغوي ---
         const i18n = {
             ar: {
-                appTitle: "العيادة الذكية",
-                welcome: "أهلاً بك في فحص دلتا",
-                subtitle: "تقنية طبية متطورة لفحص دقيق",
-                t1Title: "حدة النظر (Snellen)", t1Desc: "قياس دقة الإبصار عن بعد",
+                appTitle: "العيادة الذكية", welcome: "أهلاً بك في فحص دلتا", subtitle: "أدق تقنيات الفحص المبدئي",
+                t1Title: "حدة النظر (Snellen)", t1Desc: "قياس دقة الإبصار وسرعة الاستجابة",
                 t2Title: "عمى الألوان (Ishihara)", t2Desc: "اختبار التمييز اللوني الدقيق",
                 t3Title: "فحص الشبكية (Amsler)", t3Desc: "للكشف عن البقع العمياء",
+                t4Title: "انحراف النظر (Astigmatism)", t4Desc: "كشف تشوه الرؤية واللابؤرية",
                 vInstr: "المسافة المطلوبة: 40 سم", cInstr: "ارفع سطوع الشاشة", aInstr: "غطِ عين واحدة وانظر للمركز",
-                aQ: "هل الخطوط مستقيمة تماماً؟", btnYes: "نعم، سليمة", btnNo: "لا، يوجد تعرج",
-                repTitle: "التقرير الطبي", repSub: "نتائج الفحص الأولي",
-                disclaimer: "هذه النتيجة تقريبية ولا تغني عن الفحص السريري. نتشرف بزيارتك في فرع المقابلين.",
-                book: "حجز موعد بالنتيجة", retry: "إعادة الفحص",
-                resVision: "حدة النظر", resColor: "رؤية الألوان", resAmsler: "فحص الشبكية",
-                perfect: "ممتاز", good: "طبيعي", bad: "يحتاج فحص", waMsg: "مرحبا دلتا، قمت بالفحص وكانت النتيجة:"
+                astInstr: "انظر إلى المركز بتركيز", astQ: "هل ترى بعض الخطوط أغمق أو أوضح من غيرها؟",
+                btnAstYes: "نعم، بعضها أغمق (يوجد انحراف)", btnAstNo: "لا، جميعها متساوية الوضوح",
+                aQ: "هل الخطوط مستقيمة تماماً؟", btnYes: "نعم، مستقيمة", btnNo: "لا، يوجد تعرج أو ضبابية",
+                repTitle: "التقرير الطبي الشامل", repSub: "نتائج الفحوصات المبدئية",
+                recomLbl: "التوصية الطبية:", coupon: "هدية إتمام الفحص (خصم 10% بالفرع):",
+                book: "حجز موعد بالنتيجة", addTest: "إضافة فحص آخر", viewRep: "عرض التقرير الشامل",
+                
+                // حالات الفحص
+                resVision: "حدة النظر", resColor: "رؤية الألوان", resAmsler: "فحص الشبكية", resAst: "انحراف النظر",
+                perfect: "ممتاز", normal: "طبيعي", bad: "يحتاج فحص عيادة",
+                fast: "استجابة سريعة ودقيقة", slow: "يوجد تردد أو بطء بالرؤية",
+                astFound: "احتمالية وجود انحراف", astClear: "لا يوجد انحراف ظاهر",
+                
+                // التوصيات
+                recGood: "نتائجك ممتازة! ننصح باستخدام عدسات (Blue-Cut) لحماية عينيك من إجهاد الشاشات.",
+                recBad: "يوجد بعض الملاحظات في الفحص. نوصي بحجز موعد للفحص السريري الدقيق بأقرب وقت.",
+                
+                waMsg: "مرحبا دلتا، قمت بالفحص وكانت النتيجة:"
             },
             en: {
-                appTitle: "Smart Clinic",
-                welcome: "Welcome to Delta Check",
-                subtitle: "Advanced medical tech for accurate screening",
-                t1Title: "Visual Acuity (Snellen)", t1Desc: "Measure distance vision",
-                t2Title: "Color Blindness (Ishihara)", t2Desc: "Precise color perception test",
-                t3Title: "Amsler Grid (Retina)", t3Desc: "Detect blind spots & distortion",
+                appTitle: "Smart Clinic", welcome: "Welcome to Delta Check", subtitle: "Most accurate screening tech",
+                t1Title: "Visual Acuity (Snellen)", t1Desc: "Measure vision & response time",
+                t2Title: "Color Blindness (Ishihara)", t2Desc: "Precise color perception",
+                t3Title: "Retina Test (Amsler)", t3Desc: "Detect blind spots",
+                t4Title: "Astigmatism Test", t4Desc: "Check for blurred vision & distortion",
                 vInstr: "Required Distance: 40 cm", cInstr: "Increase Screen Brightness", aInstr: "Cover one eye & focus on center",
-                aQ: "Are all lines perfectly straight?", btnYes: "Yes, Straight", btnNo: "No, Distorted",
-                repTitle: "Medical Report", repSub: "Preliminary Screening Results",
-                disclaimer: "This is a screening test and does not replace a clinical exam. Please visit our branch.",
-                book: "Book Appointment", retry: "Retry Test",
-                resVision: "Visual Acuity", resColor: "Color Vision", resAmsler: "Amsler Grid",
-                perfect: "Excellent", good: "Normal", bad: "Check Required", waMsg: "Hi Delta, I did the test and the result was:"
+                astInstr: "Focus on the center dot", astQ: "Do some lines appear darker or sharper?",
+                btnAstYes: "Yes, some are darker (Astigmatism)", btnAstNo: "No, all are equal",
+                aQ: "Are all lines perfectly straight?", btnYes: "Yes, straight", btnNo: "No, distorted or blurry",
+                repTitle: "Comprehensive Report", repSub: "Preliminary Screening Results",
+                recomLbl: "Medical Recommendation:", coupon: "Completion Gift (10% Branch Discount):",
+                book: "Book Appointment", addTest: "Add Another Test", viewRep: "View Full Report",
+                
+                resVision: "Visual Acuity", resColor: "Color Vision", resAmsler: "Retina Test", resAst: "Astigmatism",
+                perfect: "Excellent", normal: "Normal", bad: "Clinic Check Needed",
+                fast: "Fast & Accurate Response", slow: "Hesitation or slow response noted",
+                astFound: "Possible Astigmatism", astClear: "No obvious astigmatism",
+                
+                recGood: "Excellent results! We recommend Blue-Cut lenses to protect your eyes from digital strain.",
+                recBad: "Some issues detected. We highly recommend booking a comprehensive clinical exam soon.",
+                
+                waMsg: "Hi Delta, I did the test and my results are:"
             }
         };
 
         let curLang = 'ar';
+        let patientResults = {}; // لتخزين نتائج كل الفحوصات
 
         function toggleLang() {
             curLang = curLang === 'ar' ? 'en' : 'ar';
-            const langBtn = document.querySelector('.lang-btn');
-            const html = document.documentElement;
-            const t = i18n[curLang];
-
+            const html = document.documentElement; const btn = document.querySelector('.lang-btn'); const t = i18n[curLang];
+            
             html.lang = curLang; html.dir = curLang === 'ar' ? 'rtl' : 'ltr';
-            langBtn.innerText = curLang === 'ar' ? 'EN' : 'عربي';
+            btn.innerText = curLang === 'ar' ? 'EN' : 'عربي';
 
-            // تحديث النصوص
+            // تحديث الواجهة
             document.getElementById('txt-app-title').innerText = t.appTitle;
             document.getElementById('txt-welcome').innerText = t.welcome;
             document.getElementById('txt-subtitle').innerText = t.subtitle;
-            document.getElementById('txt-t1-title').innerText = t.t1Title;
-            document.getElementById('txt-t1-desc').innerText = t.t1Desc;
-            document.getElementById('txt-t2-title').innerText = t.t2Title;
-            document.getElementById('txt-t2-desc').innerText = t.t2Desc;
-            document.getElementById('txt-t3-title').innerText = t.t3Title;
-            document.getElementById('txt-t3-desc').innerText = t.t3Desc;
+            document.getElementById('txt-t1-title').innerText = t.t1Title; document.getElementById('txt-t1-desc').innerText = t.t1Desc;
+            document.getElementById('txt-t2-title').innerText = t.t2Title; document.getElementById('txt-t2-desc').innerText = t.t2Desc;
+            document.getElementById('txt-t3-title').innerText = t.t3Title; document.getElementById('txt-t3-desc').innerText = t.t3Desc;
+            document.getElementById('txt-t4-title').innerText = t.t4Title; document.getElementById('txt-t4-desc').innerText = t.t4Desc;
+            
             document.getElementById('txt-v-instr').innerHTML = `<i class="fas fa-ruler-horizontal"></i> ${t.vInstr}`;
             document.getElementById('txt-c-instr').innerHTML = `<i class="fas fa-sun"></i> ${t.cInstr}`;
             document.getElementById('txt-a-instr').innerHTML = `<i class="fas fa-eye-slash"></i> ${t.aInstr}`;
+            document.getElementById('txt-ast-instr').innerHTML = `<i class="fas fa-eye"></i> ${t.astInstr}`;
+            
+            document.getElementById('txt-ast-q').innerText = t.astQ;
+            document.getElementById('btn-ast-yes').innerText = t.btnAstYes; document.getElementById('btn-ast-no').innerText = t.btnAstNo;
             document.getElementById('txt-a-q').innerText = t.aQ;
-            document.getElementById('btn-a-yes').innerText = t.btnYes;
-            document.getElementById('btn-a-no').innerText = t.btnNo;
-            document.getElementById('txt-rep-title').innerText = t.repTitle;
-            document.getElementById('txt-rep-sub').innerText = t.repSub;
-            document.getElementById('txt-disclaimer').innerText = t.disclaimer;
-            document.getElementById('txt-book').innerText = t.book;
-            document.getElementById('txt-retry').innerText = t.retry;
+            document.getElementById('btn-a-yes').innerText = t.btnYes; document.getElementById('btn-a-no').innerText = t.btnNo;
+            
+            document.getElementById('txt-rep-title').innerText = t.repTitle; document.getElementById('txt-rep-sub').innerText = t.repSub;
+            document.getElementById('txt-recom-lbl').innerText = t.recomLbl; document.getElementById('txt-coupon').innerText = t.coupon;
+            document.getElementById('txt-book').innerText = t.book; document.getElementById('txt-add-test').innerText = t.addTest;
+            document.getElementById('txt-view-rep').innerText = t.viewRep;
+            
+            // عكس اتجاه زر الخروج
+            document.getElementById('btn-exit').style.transform = curLang === 'ar' ? 'none' : 'scaleX(-1)';
+
+            if(Object.keys(patientResults).length > 0) buildReportUI();
         }
 
         function show(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
+            if(id === 'menu' && Object.keys(patientResults).length > 0) {
+                document.getElementById('btn-show-report').style.display = 'flex';
+            }
         }
 
-        // --- Logic ---
+        // --- 2. منطق الفحوصات (مطور) ---
+        
+        // أ. حدة النظر (مع حساب سرعة الاستجابة)
         const vSizes = [130, 100, 70, 50, 35, 25]; 
         const vLabels = ["6/60", "6/36", "6/24", "6/18", "6/12", "6/6"];
-        let vStep = 0, vRot = 0, vErrors = 0;
+        let vStep = 0, vRot = 0, vErrors = 0, vStartTime = 0, vHesitations = 0;
 
-        function startVision() { vStep=0; vErrors=0; updateE(); show('test-vision'); }
+        function startVision() { vStep=0; vErrors=0; vHesitations=0; updateE(); show('test-vision'); }
         function updateE() {
             if(vStep >= vSizes.length) { endVision(true); return; }
             const e = document.getElementById('e-char');
             vRot = [0, 90, 180, 270][Math.floor(Math.random()*4)];
-            e.style.fontSize = vSizes[vStep] + "px";
-            e.style.transform = `rotate(${vRot}deg)`;
+            e.style.fontSize = vSizes[vStep] + "px"; e.style.transform = `rotate(${vRot}deg)`;
+            vStartTime = Date.now(); // بدأ العداد
         }
         function checkVision(dir) {
+            let reactionTime = Date.now() - vStartTime;
+            if(reactionTime > 2500) vHesitations++; // تردد إذا أخذ أكثر من 2.5 ثانية
+
             if(dir === vRot) { vStep++; updateE(); } 
             else { vErrors++; if(vErrors > 1) endVision(false); else updateE(); }
         }
         function endVision(perfect) {
-            let score = vStep > 0 ? vLabels[vStep-1] : "< 6/60";
-            if(perfect) score = "6/6";
-            showResult(i18n[curLang].resVision, score, perfect ? i18n[curLang].perfect : i18n[curLang].bad);
+            let score = vStep > 0 ? vLabels[vStep-1] : "< 6/60"; if(perfect) score = "6/6";
+            let note = (vHesitations > 1) ? i18n[curLang].slow : i18n[curLang].fast;
+            saveResult('vision', i18n[curLang].resVision, score, perfect, note);
         }
 
-        let cRound = 0, cScore = 0, cInput = "";
-        const cTests = [12, 5, 29, 74, 6]; 
+        // ب. فحص الانحراف (الجديد)
+        function startAstigmatism() { show('test-astigmatism'); }
+        function finishAstigmatism(hasDefect) {
+            let score = hasDefect ? i18n[curLang].astFound : i18n[curLang].astClear;
+            saveResult('astigmatism', i18n[curLang].resAst, score, !hasDefect, hasDefect ? i18n[curLang].bad : i18n[curLang].perfect);
+        }
+
+        // ج. فحص الألوان
+        let cRound = 0, cScore = 0, cInput = ""; const cTests = [12, 5, 29]; 
         function startColor() { cRound=0; cScore=0; nextColorPlate(); show('test-color'); }
         function nextColorPlate() {
             if(cRound >= cTests.length) {
-                let res = cScore >= 4 ? i18n[curLang].good : i18n[curLang].bad;
-                showResult(i18n[curLang].resColor, res, `${cScore}/${cTests.length}`);
+                let isGood = cScore >= 2;
+                saveResult('color', i18n[curLang].resColor, `${cScore}/${cTests.length}`, isGood, isGood ? i18n[curLang].normal : i18n[curLang].bad);
                 return;
             }
             cInput = ""; document.getElementById('color-display').innerText = "";
             generateIshiharaPlate(cTests[cRound]);
         }
         function generateIshiharaPlate(number) {
-            const canvas = document.getElementById('ishiharaCanvas');
-            const ctx = canvas.getContext('2d');
-            const size = 260; ctx.clearRect(0, 0, size, size);
-            const maskCanvas = document.createElement('canvas');
-            maskCanvas.width = size; maskCanvas.height = size;
-            const maskCtx = maskCanvas.getContext('2d');
-            maskCtx.font = "bold 150px Arial"; maskCtx.textAlign = "center"; maskCtx.textBaseline = "middle";
-            maskCtx.fillText(number, size/2, size/2);
-            const maskData = maskCtx.getImageData(0,0,size,size);
-            const dots = [];
-            for(let i=0; i<2000; i++) {
-                let r = Math.random() * 5 + 2; let x = Math.random() * size; let y = Math.random() * size;
-                if(Math.sqrt((x - size/2)**2 + (y - size/2)**2) > 125) continue; 
-                let overlap = false;
-                for(let d of dots) { if(Math.sqrt((d.x - x)**2 + (d.y - y)**2) < d.r + r + 1) { overlap = true; break; } }
-                if(overlap) continue;
-                let pIndex = (Math.floor(y) * size + Math.floor(x)) * 4;
-                let isNum = maskData.data[pIndex + 3] > 100;
-                let color = isNum ? `rgb(${220+Math.random()*35}, ${50+Math.random()*100}, 40)` : `rgb(${80+Math.random()*50}, ${160+Math.random()*60}, ${140+Math.random()*60})`;
-                dots.push({x, y, r, color});
+            const ctx = document.getElementById('ishiharaCanvas').getContext('2d');
+            ctx.clearRect(0,0,240,240); ctx.font="bold 140px Arial"; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText(number, 120, 120);
+            const mData = ctx.getImageData(0,0,240,240); const dots = [];
+            for(let i=0; i<1500; i++) {
+                let r=Math.random()*4+2, x=Math.random()*240, y=Math.random()*240;
+                if(Math.sqrt((x-120)**2 + (y-120)**2) > 115) continue;
+                if(!dots.some(d => Math.sqrt((d.x-x)**2 + (d.y-y)**2) < d.r+r+1)) {
+                    let isNum = mData.data[(Math.floor(y)*240 + Math.floor(x))*4 +3] > 100;
+                    dots.push({x, y, r, c: isNum ? `rgb(${220+Math.random()*35}, ${50+Math.random()*100}, 40)` : `rgb(${80+Math.random()*50}, ${160+Math.random()*60}, ${140+Math.random()*60})`});
+                }
             }
-            for(let d of dots) { ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI*2); ctx.fillStyle = d.color; ctx.fill(); }
+            for(let d of dots) { ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI*2); ctx.fillStyle = d.c; ctx.fill(); }
         }
         function typeColor(n) { if(cInput.length < 2) cInput += n; document.getElementById('color-display').innerText = cInput; }
         function clearColor() { cInput = ""; document.getElementById('color-display').innerText = ""; }
         function checkColor() { if(parseInt(cInput) === cTests[cRound]) cScore++; cRound++; nextColorPlate(); }
 
+        // د. فحص الشبكية
         function startAmsler() { show('test-amsler'); }
         function finishAmsler(isGood) {
-            showResult(i18n[curLang].resAmsler, isGood ? i18n[curLang].good : i18n[curLang].bad, isGood ? i18n[curLang].perfect : "Distortion");
+            saveResult('amsler', i18n[curLang].resAmsler, isGood ? i18n[curLang].normal : i18n[curLang].bad, isGood, "");
         }
 
-        function showResult(title, score, desc) {
-            show('result');
-            document.getElementById('res-score').innerText = score;
-            document.getElementById('res-desc').innerText = `${title}: ${desc}`;
-            let waMsg = `${i18n[curLang].waMsg} (${title} -> ${score})`;
+        // --- 3. بناء التقرير المجمع ---
+        function saveResult(key, title, score, isGood, note) {
+            patientResults[key] = { title, score, isGood, note };
+            showReportScreen();
+        }
+
+        function showReportScreen() {
+            buildReportUI();
+            show('report');
+        }
+
+        function buildReportUI() {
+            const container = document.getElementById('result-list-container');
+            container.innerHTML = "";
+            let allGood = true;
+            let waDetails = "";
+
+            // رسم كل نتيجة مخزنة
+            Object.values(patientResults).length > 0 && Object.values(patientResults).forEach(res => {
+                if(!res.isGood) allGood = false;
+                
+                let badgeClass = res.isGood ? "badge-good" : "badge-bad";
+                let badgeText = res.isGood ? "✓" : "!";
+                
+                container.innerHTML += `
+                    <div class="res-item">
+                        <div>
+                            <div class="res-title">${res.title} <span class="ri-badge ${badgeClass}">${badgeText}</span></div>
+                            <div class="res-note">${res.note}</div>
+                        </div>
+                        <div class="res-val"><span class="res-score">${res.score}</span></div>
+                    </div>
+                `;
+                waDetails += `\n- ${res.title}: ${res.score} (${res.note})`;
+            });
+
+            // تحديث التوصية الطبية
+            const recomBox = document.getElementById('recom-box');
+            const recomText = document.getElementById('recom-text');
+            if (allGood) {
+                recomBox.style.background = "#F0FDF4"; recomBox.style.borderColor = "#BBF7D0";
+                recomText.style.color = "#15803D"; recomText.innerText = i18n[curLang].recGood;
+            } else {
+                recomBox.style.background = "#FEF2F2"; recomBox.style.borderColor = "#FECACA";
+                recomText.style.color = "#B45309"; recomText.innerText = i18n[curLang].recBad;
+                document.querySelector('.recom-title').style.color = "#991B1B";
+            }
+
+            // تحديث زر الواتساب
+            let waMsg = `${i18n[curLang].waMsg}${waDetails}\n\n*Code: DELTA10*`;
             document.getElementById('wa-btn').href = `https://wa.me/962775549700?text=${encodeURIComponent(waMsg)}`;
         }
+
     </script>
 </body>
 </html>

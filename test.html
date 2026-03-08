@@ -75,16 +75,38 @@
         .btn-outline { background: transparent; border: 2px solid #E2E8F0; color: var(--text-main); }
         .btn-success { background: var(--success); color: white; }
 
-        /* سجلات المرضى */
+        /* السجلات والتقرير */
         .record-item { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         .record-name { font-weight: 800; color: var(--brand-color); font-size: 1rem; }
         .record-date { font-size: 0.75rem; color: var(--text-light); }
         
-        .res-item { background: #F8FAFC; padding: 10px; border-radius: 8px; margin-bottom: 10px; text-align: start; border: 1px solid #E2E8F0; }
-        .res-title { font-weight: 800; color: var(--brand-color); font-size: 0.9rem; margin-bottom: 5px; border-bottom: 1px solid #E2E8F0; padding-bottom: 5px; }
-        .eye-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 3px; }
-        .eye-lbl { font-weight: 700; color: var(--text-main); }
-        .eye-val { color: var(--text-light); }
+        .res-item { background: #F8FAFC; padding: 12px; border-radius: 12px; margin-bottom: 12px; text-align: start; border: 1px solid #E2E8F0; }
+        .res-title { font-weight: 800; color: var(--brand-color); font-size: 0.95rem; margin-bottom: 8px; border-bottom: 1px solid #E2E8F0; padding-bottom: 8px; display: flex; align-items: center; gap: 6px;}
+        .res-desc { font-size: 0.75rem; color: var(--text-light); font-weight: normal; margin-top: 2px; display: block;}
+        .eye-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 5px; padding: 4px 8px; background: white; border-radius: 6px;}
+        .eye-lbl { font-weight: 800; color: var(--text-main); }
+        .eye-val { font-weight: 700; color: var(--brand-color); }
+
+        /* --- النافذة المنبثقة للتعليمات (Modal) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(5px);
+            display: none; align-items: center; justify-content: center; z-index: 1000;
+        }
+        .modal-overlay.active { display: flex; }
+        
+        .modal-box {
+            background: var(--white); padding: 30px 25px; border-radius: 24px;
+            width: 90%; max-width: 400px; text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            animation: popModal 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popModal { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        
+        .modal-icon { font-size: 3.5rem; color: var(--brand-color); margin-bottom: 15px; }
+        .modal-title { font-size: 1.3rem; font-weight: 900; color: var(--text-main); margin-bottom: 10px; }
+        .modal-text { font-size: 0.95rem; color: var(--text-light); line-height: 1.6; margin-bottom: 25px; }
+        .modal-text strong { color: var(--brand-color); font-weight: 800; }
 
     </style>
 </head>
@@ -117,7 +139,7 @@
 
         <div id="menu" class="screen">
             <div class="welcome-box">
-                <div class="patient-badge"><i class="fas fa-user"></i> المراجع: <span id="display-patient-name"></span></div>
+                <div class="patient-badge"><i class="fas fa-user"></i> <span id="txt-pat-lbl">المراجع:</span> <span id="display-patient-name"></span></div>
                 <h2 id="txt-welcome" style="margin:0 0 5px;">اختر الفحص المطلوب</h2>
             </div>
 
@@ -162,7 +184,6 @@
 
         <div id="test-vision" class="screen">
             <div class="eye-indicator" id="eye-ind-vision">الآن: فحص العين اليمنى</div>
-            <div class="instruction" id="txt-v-instr">غطي العين اليسرى بيدك</div>
             <div class="test-area">
                 <div id="e-char" class="e-char">E</div>
             </div>
@@ -176,7 +197,6 @@
 
         <div id="test-astigmatism" class="screen">
             <div class="eye-indicator" id="eye-ind-ast">الآن: فحص العين اليمنى</div>
-            <div class="instruction" id="txt-ast-instr">غطي العين اليسرى بيدك</div>
             <div class="test-area" style="min-height:auto; padding:20px 0;">
                 <svg width="200" height="200" viewBox="0 0 100 100">
                     <circle cx="50" cy="50" r="48" fill="none" stroke="#E2E8F0" stroke-width="1"/>
@@ -196,7 +216,6 @@
 
         <div id="test-amsler" class="screen">
             <div class="eye-indicator" id="eye-ind-ams">الآن: فحص العين اليمنى</div>
-            <div class="instruction" id="txt-ams-instr">غطي العين اليسرى وانظر للمركز</div>
             <div class="test-area" style="min-height:auto; padding:30px 0;">
                 <div class="amsler-grid"><div class="center-dot"></div></div>
             </div>
@@ -206,7 +225,6 @@
         </div>
 
         <div id="test-color" class="screen">
-            <div class="instruction" id="txt-c-instr">انظر للشاشة بالعينين معاً</div>
             <div style="display:flex; justify-content:center; margin-bottom:10px;">
                 <canvas id="ishiharaCanvas" width="220" height="220" class="color-canvas"></canvas>
             </div>
@@ -236,98 +254,129 @@
                 <i class="fab fa-whatsapp"></i> <span id="txt-wa-book">حجز موعد للمراجع</span>
             </a>
             <button class="action-btn btn-outline" onclick="show('screen-records')">
-                <i class="fas fa-arrow-right"></i> رجوع للسجلات
+                <i class="fas fa-arrow-right"></i> <span id="txt-back-rec">رجوع للسجلات</span>
             </button>
         </div>
 
     </div>
 
+    <div id="instructionModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-icon" id="modalIcon"><i class="fas fa-eye"></i></div>
+            <h2 class="modal-title" id="modalTitle">تنبيه</h2>
+            <p class="modal-text" id="modalText">تفاصيل...</p>
+            <button class="action-btn btn-primary" id="modalBtn" onclick="closeModal()">موافق، ابدأ الفحص</button>
+        </div>
+    </div>
+
     <script>
-        // --- 1. القاموس ---
         const i18n = {
             ar: {
                 rightEyeMode: "الآن: فحص العين اليمنى", leftEyeMode: "الآن: فحص العين اليسرى",
-                coverLeft: "غطي العين اليسرى بيدك", coverRight: "غطي العين اليمنى بيدك",
-                right: "اليمنى", left: "اليسرى", both: "العينين معاً",
-                alertLeft: "انتهى فحص العين اليمنى. الآن غطي العين اليمنى لنفحص اليسرى.",
-                saved: "تم حفظ الفحص!",
+                right: "العين اليمنى", left: "العين اليسرى", both: "العينين معاً",
+                saved: "تم حفظ تقرير الفحص بنجاح!", errorName: "الرجاء إدخال اسم المراجع", errorNoTest: "لم يتم إجراء أي فحص!",
                 resVision: "حدة النظر", resAst: "انحراف النظر", resAmsler: "فحص الشبكية", resColor: "عمى الألوان",
                 perfect: "ممتاز", bad: "يحتاج فحص عيادة", normal: "طبيعي",
-                waMsg: "مرحبا دلتا، أود حجز موعد للمراجع:"
+                introMsg: "مرحبا عيادة دلتا للبصريات 👓\nأود حجز موعد بناءً على هذا التقرير:",
+                
+                // نصوص التعليمات (Modal)
+                dist40: "المسافة المطلوبة: 40 سم",
+                distReading: "المسافة: مسافة القراءة المريحة",
+                coverLeftModal: "غطي <strong>العين اليسرى</strong> بيدك بالكامل (بدون الضغط عليها) لنبدأ بفحص العين اليمنى.",
+                coverRightModal: "غطي <strong>العين اليمنى</strong> بيدك بالكامل (بدون الضغط عليها) لنبدأ بفحص العين اليسرى.",
+                switchEyeTitle: "ممتاز! انتهت العين اليمنى",
+                colorModalText: "هذا الفحص للعينين معاً.<br>يرجى رفع سطوع الشاشة لأعلى درجة والنظر للمركز.",
+                modalBtnStart: "فهمت، ابدأ الفحص", modalBtnNext: "ابدأ فحص العين اليسرى", modalBtnOk: "حسناً",
+                alertTitle: "تنبيه"
             },
             en: {
                 rightEyeMode: "Now: Right Eye Test", leftEyeMode: "Now: Left Eye Test",
-                coverLeft: "Cover your Left Eye", coverRight: "Cover your Right Eye",
-                right: "Right", left: "Left", both: "Both Eyes",
-                alertLeft: "Right eye done. Now cover your Right eye to test the Left.",
-                saved: "Test Saved!",
+                right: "Right Eye", left: "Left Eye", both: "Both Eyes",
+                saved: "Test Report Saved!", errorName: "Please enter patient name", errorNoTest: "No tests completed!",
                 resVision: "Visual Acuity", resAst: "Astigmatism", resAmsler: "Retina Test", resColor: "Color Vision",
                 perfect: "Excellent", bad: "Clinic Check Needed", normal: "Normal",
-                waMsg: "Hi Delta, I want to book an appointment for:"
+                introMsg: "Hi Delta Optics 👓\nI would like to book an appointment based on this report:",
+                
+                dist40: "Required Distance: 40 cm",
+                distReading: "Distance: Comfortable reading distance",
+                coverLeftModal: "Cover your <strong>Left Eye</strong> completely with your hand (without pressing) to test the Right Eye.",
+                coverRightModal: "Cover your <strong>Right Eye</strong> completely with your hand (without pressing) to test the Left Eye.",
+                switchEyeTitle: "Great! Right eye done.",
+                colorModalText: "This test is for both eyes.<br>Please maximize screen brightness and look at the center.",
+                modalBtnStart: "Got it, Start Test", modalBtnNext: "Start Left Eye Test", modalBtnOk: "OK",
+                alertTitle: "Alert"
             }
+        };
+
+        const testDetailsMap = {
+            'vision': { icon: '👁️', arDesc: '(يقيس دقة الإبصار عن بعد)', enDesc: '(Measures distance vision acuity)' },
+            'astigmatism': { icon: '🌀', arDesc: '(يكشف تشوه الرؤية واللابؤرية)', enDesc: '(Detects blurred vision & astigmatism)' },
+            'amsler': { icon: '🔲', arDesc: '(للكشف عن البقع العمياء وتعرج الخطوط)', enDesc: '(Detects blind spots and distorted lines)' },
+            'color': { icon: '🎨', arDesc: '(اختبار التمييز اللوني الدقيق)', enDesc: '(Precise color perception test)' }
         };
 
         let curLang = 'ar';
         let currentPatient = "";
         let currentResults = {};
         
-        // متغيرات للتحكم بالعين الحالية
         let activeTest = "";
-        let currentEye = "right"; // 'right' or 'left'
-        let tempRightScore = "";
+        let currentEye = "right";
+        let modalCallback = null;
 
-        // --- 2. إدارة المراجعين ---
+        // --- نظام النوافذ المنبثقة الذكية (Modal) ---
+        function showModal(iconHTML, title, text, btnText, callback) {
+            document.getElementById('modalIcon').innerHTML = iconHTML;
+            document.getElementById('modalTitle').innerHTML = title;
+            document.getElementById('modalText').innerHTML = text;
+            document.getElementById('modalBtn').innerText = btnText;
+            modalCallback = callback;
+            document.getElementById('instructionModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('instructionModal').classList.remove('active');
+            if(modalCallback) modalCallback();
+        }
+
+        function customAlert(text) {
+            showModal('<i class="fas fa-exclamation-triangle" style="color:var(--error)"></i>', i18n[curLang].alertTitle, text, i18n[curLang].modalBtnOk, null);
+        }
+
+        // --- إدارة المراجعين ---
         function startSession() {
             const name = document.getElementById('patientNameInput').value.trim();
-            if(!name) { alert(curLang==='ar'?'الرجاء إدخال اسم المراجع':'Please enter name'); return; }
+            if(!name) { customAlert(i18n[curLang].errorName); return; }
             currentPatient = name;
-            currentResults = {}; // تصفير النتائج
+            currentResults = {}; 
             document.getElementById('display-patient-name').innerText = currentPatient;
             show('menu');
         }
 
         function finishPatientSession() {
-            if(Object.keys(currentResults).length === 0) {
-                alert(curLang==='ar'?'لم يتم إجراء أي فحص!':'No tests completed!'); return;
-            }
-            
-            // حفظ في LocalStorage
+            if(Object.keys(currentResults).length === 0) { customAlert(i18n[curLang].errorNoTest); return; }
             let records = JSON.parse(localStorage.getItem('delta_patients')) || [];
-            // تحديث إذا موجود، أو إضافة جديد
             let existingIdx = records.findIndex(r => r.name === currentPatient);
             if(existingIdx >= 0) records[existingIdx].results = currentResults;
             else records.push({ name: currentPatient, results: currentResults, date: new Date().toLocaleDateString() });
             
             localStorage.setItem('delta_patients', JSON.stringify(records));
-            alert(i18n[curLang].saved);
             
-            // تصفير والرجوع للبداية
-            document.getElementById('patientNameInput').value = "";
-            show('screen-login');
+            showModal('<i class="fas fa-check-circle" style="color:var(--success)"></i>', i18n[curLang].saved, "", i18n[curLang].modalBtnOk, () => {
+                document.getElementById('patientNameInput').value = "";
+                show('screen-login');
+            });
         }
 
         function loadRecords() {
             const records = JSON.parse(localStorage.getItem('delta_patients')) || [];
             const list = document.getElementById('records-list');
             list.innerHTML = "";
-            
             if(records.length === 0) {
                 list.innerHTML = `<p style="text-align:center; color:#64748B;">${curLang==='ar'?'لا يوجد سجلات':'No records found'}</p>`;
                 return;
             }
-
             records.reverse().forEach((r, idx) => {
-                list.innerHTML += `
-                    <div class="record-item">
-                        <div>
-                            <div class="record-name">${r.name}</div>
-                            <div class="record-date">${r.date}</div>
-                        </div>
-                        <button class="action-btn btn-primary" style="width:auto; padding:8px 15px; margin:0;" onclick="viewReport(${idx})">
-                            ${curLang==='ar'?'عرض':'View'}
-                        </button>
-                    </div>
-                `;
+                list.innerHTML += `<div class="record-item"><div><div class="record-name">${r.name}</div><div class="record-date">${r.date}</div></div><button class="action-btn btn-primary" style="width:auto; padding:8px 15px; margin:0;" onclick="viewReport(${idx})">${curLang==='ar'?'عرض التقرير':'View Report'}</button></div>`;
             });
         }
 
@@ -337,59 +386,54 @@
             document.getElementById('report-patient-name').innerText = r.name;
             
             let html = "";
-            let waDetails = `\n👤 الاسم: ${r.name}\n`;
+            let waDetails = `\n👤 *${curLang==='ar'?'اسم المراجع':'Patient Name'}:* ${r.name}\n\n📊 *${curLang==='ar'?'نتائج الفحص المبدئي':'Preliminary Test Results'}:*\n`;
 
             for (const [testKey, eyeData] of Object.entries(r.results)) {
-                let testName = i18n[curLang][testKey];
-                html += `<div class="res-item"><div class="res-title">${testName}</div>`;
-                waDetails += `\n*${testName}:*`;
+                let titleName = i18n[curLang][testKey === 'vision' ? 'resVision' : testKey === 'astigmatism' ? 'resAst' : testKey === 'amsler' ? 'resAmsler' : 'resColor'];
+                let tData = testDetailsMap[testKey];
+                let desc = curLang === 'ar' ? tData.arDesc : tData.enDesc;
+
+                html += `<div class="res-item"><div class="res-title"><span>${tData.icon} ${titleName}</span></div><span class="res-desc">${desc}</span><div style="margin-top:10px;">`;
+                waDetails += `\n${tData.icon} *${titleName}*\n_${desc}_\n`;
                 
                 for (const [eye, score] of Object.entries(eyeData)) {
                     let eyeName = i18n[curLang][eye];
-                    html += `<div class="eye-row"><span class="eye-lbl">${eyeName}:</span><span class="eye-val">${score}</span></div>`;
-                    waDetails += `\n- ${eyeName}: ${score}`;
+                    html += `<div class="eye-row"><span class="eye-lbl">• ${eyeName}</span><span class="eye-val">${score}</span></div>`;
+                    waDetails += `• ${eyeName}: ${score}\n`;
                 }
-                html += `</div>`;
+                html += `</div></div>`;
             }
             
             document.getElementById('report-details').innerHTML = html;
-            
-            // رابط الواتساب
-            let waMsg = `${i18n[curLang].waMsg}${waDetails}`;
+            let waMsg = `${i18n[curLang].introMsg}${waDetails}`;
             document.getElementById('wa-btn').href = `https://wa.me/962775549700?text=${encodeURIComponent(waMsg)}`;
-            
             show('screen-single-report');
         }
 
-        // --- 3. إدارة الفحوصات (العين اليمنى ثم اليسرى) ---
+        // --- إدارة الفحوصات ---
         function startTest(testName) {
             activeTest = testName;
             
             if(testName === 'color') {
-                // الألوان للعينين معاً
                 currentEye = "both";
-                startColor();
+                let tTitle = document.getElementById('txt-t2-title').innerText;
+                showModal('<i class="fas fa-palette"></i>', tTitle, i18n[curLang].colorModalText, i18n[curLang].modalBtnStart, () => {
+                    startColor();
+                });
             } else {
-                // باقي الفحوصات: يمين ثم يسار
                 currentEye = "right";
-                tempRightScore = "";
-                updateEyeInstructions(testName);
-                if(testName === 'vision') startVisionProcess();
-                if(testName === 'astigmatism') show('test-astigmatism');
-                if(testName === 'amsler') show('test-amsler');
-            }
-        }
-
-        function updateEyeInstructions(testName) {
-            let indId = testName === 'vision' ? 'eye-ind-vision' : (testName === 'astigmatism' ? 'eye-ind-ast' : 'eye-ind-ams');
-            let instrId = testName === 'vision' ? 'txt-v-instr' : (testName === 'astigmatism' ? 'txt-ast-instr' : 'txt-ams-instr');
-            
-            if(currentEye === 'right') {
-                document.getElementById(indId).innerText = i18n[curLang].rightEyeMode;
-                document.getElementById(instrId).innerText = i18n[curLang].coverLeft;
-            } else {
-                document.getElementById(indId).innerText = i18n[curLang].leftEyeMode;
-                document.getElementById(instrId).innerText = i18n[curLang].coverRight;
+                document.getElementById('eye-ind-'+(testName==='vision'?'vision':testName==='astigmatism'?'ast':'ams')).innerText = i18n[curLang].rightEyeMode;
+                
+                let tTitle = document.getElementById(testName==='vision'?'txt-t1-title':testName==='astigmatism'?'txt-t4-title':'txt-t3-title').innerText;
+                let dist = testName === 'vision' ? i18n[curLang].dist40 : i18n[curLang].distReading;
+                let tText = `<strong>${dist}</strong><br><br>${i18n[curLang].coverLeftModal}`;
+                let icon = testName==='vision'?'<i class="fas fa-eye"></i>':testName==='astigmatism'?'<i class="fas fa-certificate"></i>':'<i class="fas fa-border-all"></i>';
+                
+                showModal(icon, tTitle, tText, i18n[curLang].modalBtnStart, () => {
+                    if(testName === 'vision') startVisionProcess();
+                    if(testName === 'astigmatism') show('test-astigmatism');
+                    if(testName === 'amsler') show('test-amsler');
+                });
             }
         }
 
@@ -397,72 +441,53 @@
             if(!currentResults[activeTest]) currentResults[activeTest] = {};
             
             if(currentEye === 'right') {
-                tempRightScore = score;
                 currentResults[activeTest]['right'] = score;
-                
-                // الانتقال للعين اليسرى
-                alert(i18n[curLang].alertLeft);
                 currentEye = 'left';
-                updateEyeInstructions(activeTest);
+                document.getElementById('eye-ind-'+(activeTest==='vision'?'vision':activeTest==='astigmatism'?'ast':'ams')).innerText = i18n[curLang].leftEyeMode;
                 
-                // إعادة تشغيل الفحص
-                if(activeTest === 'vision') startVisionProcess();
+                showModal('<i class="fas fa-check-circle" style="color:var(--success)"></i>', i18n[curLang].switchEyeTitle, i18n[curLang].coverRightModal, i18n[curLang].modalBtnNext, () => {
+                    if(activeTest === 'vision') startVisionProcess();
+                });
             } else {
-                // حفظ اليسرى والعودة للقائمة
                 currentResults[activeTest]['left'] = score;
                 show('menu');
             }
         }
 
-        // أ. حدة النظر
+        // حدة النظر
         const vSizes = [130, 100, 70, 50, 35, 25]; 
         const vLabels = ["6/60", "6/36", "6/24", "6/18", "6/12", "6/6"];
         let vStep = 0, vRot = 0, vErrors = 0;
-
         function startVisionProcess() { vStep=0; vErrors=0; updateE(); show('test-vision'); }
         function updateE() {
             if(vStep >= vSizes.length) { endVision(true); return; }
-            const e = document.getElementById('e-char');
-            vRot = [0, 90, 180, 270][Math.floor(Math.random()*4)];
+            const e = document.getElementById('e-char'); vRot = [0, 90, 180, 270][Math.floor(Math.random()*4)];
             e.style.fontSize = vSizes[vStep] + "px"; e.style.transform = `rotate(${vRot}deg)`;
         }
         function checkVision(dir) {
-            if(dir === vRot) { vStep++; updateE(); } 
-            else { vErrors++; if(vErrors > 1) endVision(false); else updateE(); }
+            if(dir === vRot) { vStep++; updateE(); } else { vErrors++; if(vErrors > 1) endVision(false); else updateE(); }
         }
         function endVision(perfect) {
-            let score = vStep > 0 ? vLabels[vStep-1] : "< 6/60"; if(perfect) score = "6/6";
-            saveEyeResult(score);
+            saveEyeResult(perfect ? "6/6" : (vStep > 0 ? vLabels[vStep-1] : "< 6/60"));
         }
 
-        // ب. الانحراف
-        function finishAstigmatism(hasDefect) {
-            let score = hasDefect ? i18n[curLang].bad : i18n[curLang].perfect;
-            saveEyeResult(score);
-        }
+        // الانحراف والشبكية
+        function finishAstigmatism(hasDefect) { saveEyeResult(hasDefect ? i18n[curLang].bad : i18n[curLang].normal); }
+        function finishAmsler(isGood) { saveEyeResult(isGood ? i18n[curLang].normal : i18n[curLang].bad); }
 
-        // ج. الشبكية
-        function finishAmsler(isGood) {
-            let score = isGood ? i18n[curLang].normal : i18n[curLang].bad;
-            saveEyeResult(score);
-        }
-
-        // د. الألوان (للعينين معاً - مرة واحدة)
+        // الألوان
         let cRound = 0, cScore = 0, cInput = ""; const cTests = [12, 5, 29]; 
         function startColor() { cRound=0; cScore=0; nextColorPlate(); show('test-color'); }
         function nextColorPlate() {
             if(cRound >= cTests.length) {
-                if(!currentResults['resColor']) currentResults['resColor'] = {};
-                currentResults['resColor']['both'] = `${cScore}/${cTests.length}`;
-                show('menu');
-                return;
+                if(!currentResults['color']) currentResults['color'] = {};
+                currentResults['color']['both'] = `${cScore}/${cTests.length}`;
+                show('menu'); return;
             }
-            cInput = ""; document.getElementById('color-display').innerText = "";
-            generateIshiharaPlate(cTests[cRound]);
+            cInput = ""; document.getElementById('color-display').innerText = ""; generateIshiharaPlate(cTests[cRound]);
         }
         function generateIshiharaPlate(num) {
-            const ctx = document.getElementById('ishiharaCanvas').getContext('2d');
-            ctx.clearRect(0,0,220,220); ctx.font="bold 130px Arial"; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText(num, 110, 110);
+            const ctx = document.getElementById('ishiharaCanvas').getContext('2d'); ctx.clearRect(0,0,220,220); ctx.font="bold 130px Arial"; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText(num, 110, 110);
             const mData = ctx.getImageData(0,0,220,220); const dots = [];
             for(let i=0; i<1200; i++) {
                 let r=Math.random()*4+2, x=Math.random()*220, y=Math.random()*220;
@@ -478,25 +503,29 @@
         function clearColor() { cInput = ""; document.getElementById('color-display').innerText = ""; }
         function checkColor() { if(parseInt(cInput) === cTests[cRound]) cScore++; cRound++; nextColorPlate(); }
 
-        // التبديل بين الشاشات
         function show(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             if(id === 'screen-records') loadRecords();
         }
 
-        // دعم تغيير اللغة
         function toggleLang() {
             curLang = curLang === 'ar' ? 'en' : 'ar';
             document.documentElement.dir = curLang === 'ar' ? 'rtl' : 'ltr';
             document.querySelector('.lang-btn').innerText = curLang === 'ar' ? 'EN' : 'عربي';
             document.getElementById('arrow-icon').style.transform = curLang === 'ar' ? 'none' : 'scaleX(-1)';
             
-            // تحديث نصوص واجهة تسجيل الدخول كعينة
             document.getElementById('txt-login-title').innerText = curLang === 'ar' ? 'تسجيل المراجع' : 'Patient Login';
             document.getElementById('patientNameInput').placeholder = curLang === 'ar' ? 'اكتب اسم المراجع هنا' : 'Enter patient name here';
             document.getElementById('txt-start-session').innerText = curLang === 'ar' ? 'بدء الفحص' : 'Start Test';
             document.getElementById('txt-view-records').innerText = curLang === 'ar' ? 'سجلات المراجعين السابقة' : 'Previous Patient Records';
+            document.getElementById('txt-welcome').innerText = curLang === 'ar' ? 'اختر الفحص المطلوب' : 'Select a Test';
+            document.getElementById('txt-save-rep').innerText = curLang === 'ar' ? 'حفظ التقرير وإنهاء' : 'Save Report & Exit';
+            document.getElementById('txt-rec-title').innerText = curLang === 'ar' ? 'سجلات المراجعين' : 'Patient Records';
+            document.getElementById('txt-back-login').innerText = curLang === 'ar' ? 'رجوع' : 'Back';
+            document.getElementById('txt-wa-book').innerText = curLang === 'ar' ? 'حجز موعد للمراجع' : 'Book Appointment';
+            document.getElementById('txt-back-rec').innerText = curLang === 'ar' ? 'رجوع للسجلات' : 'Back to Records';
+            document.getElementById('txt-pat-lbl').innerText = curLang === 'ar' ? 'المراجع:' : 'Patient:';
         }
 
     </script>

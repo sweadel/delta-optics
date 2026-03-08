@@ -28,7 +28,6 @@
         }
         .lang-btn { background: #F1F5F9; border: 1px solid #E2E8F0; border-radius: 8px; padding: 6px 12px; font-weight: 700; color: var(--brand-color); cursor: pointer; font-size: 0.9rem; z-index: 2; }
         .header-center { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 8px; }
-        .header-logo { width: 35px; height: 35px; object-fit: contain; }
         .header-title { font-weight: 800; font-size: 1.1rem; color: var(--brand-color); margin: 0; }
         .back-btn { width: 38px; height: 38px; border-radius: 50%; background: #F1F5F9; color: var(--text-main); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1.1rem; z-index: 2; }
 
@@ -39,7 +38,7 @@
 
         /* شاشة البداية */
         .login-box { background: var(--white); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; width: 100%; border: 1px solid #E2E8F0; margin-top: 20px;}
-        .login-box img { width: 80px; margin-bottom: 15px; }
+        .login-box img { width: 80px; margin-bottom: 15px; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
         .login-input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #E2E8F0; font-size: 1.1rem; margin-bottom: 20px; text-align: center; outline: none; transition: 0.2s;}
         .login-input:focus { border-color: var(--brand-color); }
 
@@ -61,6 +60,7 @@
 
         .test-area { background: var(--white); border-radius: 20px; padding: 20px; text-align: center; margin-bottom: 20px; min-height: 240px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid #E2E8F0; position: relative; overflow: hidden; }
         .test-area.dark-mode { background: #0F172A; border-color: #0F172A; }
+        .swipe-hint { position: absolute; bottom: 10px; font-size: 0.75rem; color: #CBD5E1; font-weight: bold; opacity: 0.7; }
         
         .e-char { font-weight: 900; line-height: 1; transition: transform 0.2s, font-size 0.2s; }
         
@@ -135,7 +135,7 @@
 
         <div id="screen-login" class="screen active">
             <div class="login-box">
-                <img src="logo.jpg" style="border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.1);" onerror="this.src='https://via.placeholder.com/80?text=Delta'">
+                <img src="logo.jpg" onerror="this.src='https://via.placeholder.com/80?text=Delta'">
                 <h2 style="color:var(--brand-color); margin-bottom:10px;">تسجيل المراجع</h2>
                 <p style="color:var(--text-light); font-size:0.85rem; margin-bottom:20px;">أدخل اسم المراجع لبدء أو استكمال الفحوصات</p>
                 
@@ -197,6 +197,7 @@
             <div class="eye-indicator" id="eye-ind-vision">العين اليمنى</div>
             <div class="test-area" id="swipe-area-vision">
                 <div id="e-char" class="e-char">E</div>
+                <div class="swipe-hint">أو اسحب بإصبعك على الشاشة 👆</div>
             </div>
             <div class="d-pad-container">
                 <button class="pad-btn btn-up" onclick="checkVision(270)"><i class="fas fa-chevron-up"></i></button>
@@ -209,7 +210,7 @@
         <div id="test-duochrome" class="screen">
             <div class="eye-indicator" id="eye-ind-duo">العين اليمنى</div>
             <div class="test-area" style="padding:15px;">
-                <h4 style="margin:0 0 15px;">أين ترى الدائرة أوضح؟</h4>
+                <h4 style="margin:0 0 15px;">أين ترى الدائرة أوضح وأغمق؟</h4>
                 <div class="duo-split">
                     <div class="duo-green"><div class="duo-circle"></div></div>
                     <div class="duo-red"><div class="duo-circle"></div></div>
@@ -223,7 +224,7 @@
         <div id="test-dryeye" class="screen">
             <div class="eye-indicator" id="eye-ind-dry">العينين معاً</div>
             <div class="test-area" style="padding:30px 10px;">
-                <h4 style="margin:0 0 10px;">افتح عينيك وركز جيداً</h4>
+                <h4 style="margin:0 0 10px;">افتح عينيك وركز جيداً بالمركز</h4>
                 <p style="font-size:0.8rem; color:var(--text-light); margin:0;">اضغط "بدء"، وإذا شعرت بحرقة أو رمشت اضغط "رمشت!" فوراً.</p>
                 <div class="timer-circle" id="dry-timer">0.0</div>
             </div>
@@ -236,6 +237,7 @@
             <div class="eye-indicator" id="eye-ind-contrast">العين اليمنى</div>
             <div class="test-area dark-mode" id="swipe-area-contrast">
                 <div id="c-char" class="e-char" style="color:#ffffff;">E</div>
+                <div class="swipe-hint" style="color:#475569;">أو اسحب بإصبعك 👆</div>
             </div>
             <div class="d-pad-container">
                 <button class="pad-btn btn-up" onclick="checkContrast(270)"><i class="fas fa-chevron-up"></i></button>
@@ -260,7 +262,7 @@
                 </svg>
             </div>
             <button class="action-btn" style="background:#FEF2F2; color:var(--error);" onclick="finishAstigmatism(true)">نعم، أرى خطوطاً أغمق</button>
-            <button class="action-btn" style="background:var(--white); border:2px solid #E2E8F0;" onclick="finishAstigmatism(false)">لا، جميعها متساوية</button>
+            <button class="action-btn" style="background:var(--white); border:2px solid #E2E8F0;" onclick="finishAstigmatism(false)">لا، جميعها متساوية بالوضوح</button>
         </div>
 
         <div id="test-color" class="screen">
@@ -288,8 +290,7 @@
 
         <div id="screen-records" class="screen">
             <h2 style="color:var(--brand-color); text-align:center; margin-bottom:20px;">المراجعين السابقين</h2>
-            <div class="history-list" id="records-list">
-                </div>
+            <div class="history-list" id="records-list"></div>
             <button class="action-btn btn-outline" onclick="show('screen-login')">
                 <i class="fas fa-arrow-right"></i> العودة للرئيسية
             </button>
@@ -316,12 +317,12 @@
             <div class="modal-icon" id="modalIcon"><i class="fas fa-volume-up"></i></div>
             <h2 class="modal-title" id="modalTitle">تعليمات الفحص</h2>
             <p class="modal-text" id="modalText">تفاصيل...</p>
-            <button class="action-btn btn-primary" id="modalBtn" onclick="closeModal()">حسناً، ابدأ</button>
+            <button class="action-btn btn-primary" id="modalBtn" onclick="closeModal()">حسناً، ابدأ الفحص</button>
         </div>
     </div>
 
     <script>
-        // --- 1. القاموس والتفاصيل ---
+        // --- 1. القاموس والكلمات (نصوص عامية مبسطة مع فواصل لنطق طبيعي) ---
         const i18n = {
             ar: {
                 rightEye: "العين اليمنى", leftEye: "العين اليسرى", bothEyes: "العينين معاً",
@@ -331,9 +332,10 @@
                 myopia: "اشتباه قصر نظر", hyperopia: "اشتباه طول نظر",
                 dryYes: "احتمالية جفاف العين", dryNo: "الترطيب طبيعي",
                 introMsg: "مرحبا عيادة دلتا للبصريات 👓\nأود حجز موعد بناءً على هذا التقرير:\n",
-                voiceCoverLeft: "الرجاء تغطية العين اليسرى لكي نفحص العين اليمنى",
-                voiceCoverRight: "ممتاز. الآن غطي العين اليمنى لكي نفحص العين اليسرى",
-                voiceBoth: "يرجى النظر للشاشة بالعينين معاً."
+                
+                voiceCoverLeft: "لو سمحت، غطي عينك الشمال، عشان نفحص عينك اليمين.",
+                voiceCoverRight: "ممتاز جداً، هسا غطي عينك اليمين، عشان نفحص الشمال.",
+                voiceBoth: "ركز معي، وتطلع على الشاشة، بعينيك الثنتين."
             }
         };
 
@@ -349,13 +351,29 @@
         let currentPatient = ""; let currentResults = {}; let activeTest = ""; let currentEye = "right"; let modalCallback = null;
 
         // --- 2. المساعد الصوتي والنافذة ---
+        let systemVoices = [];
+        if ('speechSynthesis' in window) {
+            systemVoices = window.speechSynthesis.getVoices();
+            window.speechSynthesis.onvoiceschanged = () => { systemVoices = window.speechSynthesis.getVoices(); };
+        }
+
         function speakText(text) {
             if('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
-                let u = new SpeechSynthesisUtterance(text); u.lang = 'ar-SA'; u.rate = 0.9;
+                let u = new SpeechSynthesisUtterance(text);
+                
+                let arVoices = systemVoices.filter(v => v.lang.startsWith('ar'));
+                if(arVoices.length > 0) {
+                    let bestVoice = arVoices.find(v => v.name.includes('Laila') || v.name.includes('Maged') || v.name.includes('Tariq') || v.name.includes('Premium') || v.name.includes('Online'));
+                    u.voice = bestVoice || arVoices[0];
+                }
+                u.lang = 'ar-SA';
+                u.rate = 0.85; // إبطاء السرعة لنطق طبيعي
+                u.pitch = 1.0;
                 window.speechSynthesis.speak(u);
             }
         }
+
         function showModal(title, text, spokenText, callback) {
             document.getElementById('modalTitle').innerText = title; document.getElementById('modalText').innerHTML = text;
             modalCallback = callback; document.getElementById('instructionModal').classList.add('active'); speakText(spokenText);
@@ -378,7 +396,6 @@
         function showFinalReport() {
             if(Object.keys(currentResults).length === 0) { alert("لم تقم بإجراء أي فحص!"); return; }
             
-            // حفظ السجل
             let records = JSON.parse(localStorage.getItem('delta_patients')) || [];
             let existingIdx = records.findIndex(r => r.name === currentPatient);
             if(existingIdx >= 0) records[existingIdx].results = currentResults;
@@ -400,10 +417,7 @@
                     <div class="history-item">
                         <div class="history-info">
                             <div class="avatar">${firstLetter}</div>
-                            <div>
-                                <div class="hist-name">${r.name}</div>
-                                <div class="hist-date"><i class="far fa-calendar-alt"></i> ${r.date}</div>
-                            </div>
+                            <div><div class="hist-name">${r.name}</div><div class="hist-date"><i class="far fa-calendar-alt"></i> ${r.date}</div></div>
                         </div>
                         <button class="view-btn" onclick="viewHistoryReport(${idx})"><i class="fas fa-file-medical"></i></button>
                     </div>`;
@@ -442,20 +456,37 @@
         function resetSystem() { currentPatient = ""; currentResults = {}; document.getElementById('patientNameInput').value = ""; show('screen-login'); }
         function show(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); if(id === 'screen-records') loadRecords(); }
 
-        // --- 4. إدارة الفحوصات والتنقل ---
+        // --- 4. السحب بالإصبع (Swipe) ---
+        let touchStartX = 0; let touchStartY = 0;
+        function handleSwipe(startX, startY, endX, endY, testType) {
+            let diffX = endX - startX; let diffY = endY - startY;
+            if(Math.abs(diffX) > Math.abs(diffY)) {
+                if(Math.abs(diffX) > 40) { if(diffX > 0) testType === 'vision' ? checkVision(0) : checkContrast(0); else testType === 'vision' ? checkVision(180) : checkContrast(180); }
+            } else {
+                if(Math.abs(diffY) > 40) { if(diffY > 0) testType === 'vision' ? checkVision(90) : checkContrast(90); else testType === 'vision' ? checkVision(270) : checkContrast(270); }
+            }
+        }
+        document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; }, {passive: true});
+        document.addEventListener('touchend', e => {
+            let endX = e.changedTouches[0].clientX; let endY = e.changedTouches[0].clientY;
+            if(document.getElementById('test-vision').classList.contains('active')) handleSwipe(touchStartX, touchStartY, endX, endY, 'vision');
+            if(document.getElementById('test-contrast').classList.contains('active')) handleSwipe(touchStartX, touchStartY, endX, endY, 'contrast');
+        }, {passive: true});
+
+        // --- 5. إدارة الفحوصات ---
         function setProgress(id, percent) { document.getElementById(id).style.width = percent + '%'; }
 
         function startTest(testName) {
             activeTest = testName;
             if(testName === 'color' || testName === 'dryeye') {
                 currentEye = "bothEyes";
-                showModal(i18n.ar[testName==='color'?'resColor':'resDry'], `<strong>المسافة: 40 سم</strong><br>${i18n.ar.voiceBoth}`, i18n.ar.voiceBoth, () => { 
+                showModal(i18n.ar[testName==='color'?'resColor':'resDry'], `<strong>المسافة: 40 سم</strong><br><br>${i18n.ar.voiceBoth}`, i18n.ar.voiceBoth, () => { 
                     if(testName === 'color') startColor(); else { document.getElementById('btn-dry-start').style.display='flex'; document.getElementById('btn-dry-stop').style.display='none'; document.getElementById('dry-timer').innerText="0.0"; show('test-dryeye'); }
                 });
             } else {
                 currentEye = "rightEye";
                 document.getElementById('eye-ind-'+(testName==='vision'?'vision':testName==='contrast'?'contrast':testName==='duochrome'?'duo':'ast')).innerText = i18n.ar.rightEye;
-                showModal("تنبيه الفحص", `<strong>المسافة: 40 سم</strong><br><br>${i18n.ar.voiceCoverLeft}`, i18n.ar.voiceCoverLeft, () => {
+                showModal("تنبيه الفحص", `<strong>المسافة: 40 سم</strong><br><br>لو سمحت، غطي عينك الشمال بيدك بدون ما تضغط عليها.`, i18n.ar.voiceCoverLeft, () => {
                     if(testName === 'vision') startVisionProcess(); if(testName === 'contrast') startContrastProcess();
                     if(testName === 'duochrome') show('test-duochrome'); if(testName === 'astigmatism') show('test-astigmatism');
                 });
@@ -467,13 +498,12 @@
             if(currentEye === "rightEye") {
                 currentResults[activeTest]['rightEye'] = score; currentEye = 'leftEye';
                 document.getElementById('eye-ind-'+(activeTest==='vision'?'vision':activeTest==='contrast'?'contrast':activeTest==='duochrome'?'duo':'ast')).innerText = i18n.ar.leftEye;
-                showModal("تبديل العين", i18n.ar.voiceCoverRight, i18n.ar.voiceCoverRight, () => {
+                showModal("تبديل العين", "ممتاز جداً.<br>الآن غطي عينك اليمنى لكي نفحص اليسرى.", i18n.ar.voiceCoverRight, () => {
                     if(activeTest === 'vision') startVisionProcess(); if(activeTest === 'contrast') startContrastProcess();
                 });
             } else { currentResults[activeTest]['leftEye'] = score; show('menu'); }
         }
 
-        // --- 5. الفحوصات الفردية ---
         // حدة النظر
         const vSizes = [130, 100, 70, 50, 35, 25]; const vLabels = ["6/60", "6/36", "6/24", "6/18", "6/12", "6/6"];
         let vStep = 0, vRot = 0, vErrors = 0;
@@ -486,11 +516,8 @@
         }
         function checkVision(dir) { if(dir === vRot) { vStep++; updateE(); } else { vErrors++; if(vErrors > 1) saveEyeResult(vStep > 0 ? vLabels[vStep-1] : "< 6/60"); else updateE(); } }
 
-        // الأحمر والأخضر (Duochrome)
-        function saveDuochrome(res) {
-            let score = res === 'red' ? i18n.ar.myopia : (res === 'green' ? i18n.ar.hyperopia : i18n.ar.normal);
-            saveEyeResult(score);
-        }
+        // الأحمر والأخضر
+        function saveDuochrome(res) { saveEyeResult(res === 'red' ? i18n.ar.myopia : (res === 'green' ? i18n.ar.hyperopia : i18n.ar.normal)); }
 
         // الرؤية الليلية
         const cOpacities = [0.8, 0.5, 0.3, 0.15, 0.08, 0.03]; let cStep = 0, cRot = 0, cErrors = 0;
@@ -503,7 +530,7 @@
         }
         function checkContrast(dir) { if(dir === cRot) { cStep++; updateContrastE(); } else { cErrors++; if(cErrors > 1) saveEyeResult(cStep > 3 ? i18n.ar.normal : i18n.ar.bad); else updateContrastE(); } }
 
-        // جفاف العين (Dry Eye Timer)
+        // جفاف العين
         let dryInterval; let dryTime = 0.0;
         function startDryTimer() {
             dryTime = 0.0; document.getElementById('dry-timer').innerText = "0.0";
@@ -521,7 +548,7 @@
         // الانحراف
         function finishAstigmatism(hasDefect) { saveEyeResult(hasDefect ? i18n.ar.bad : i18n.ar.normal); }
 
-        // الألوان (Numpad)
+        // الألوان
         let colRound = 0, colScore = 0, colInput = ""; const colTests = [12, 5, 29]; 
         function startColor() { colRound=0; colScore=0; nextColorPlate(); show('test-color'); }
         function nextColorPlate() {
@@ -547,6 +574,9 @@
         function typeColor(n) { if(colInput.length < 2) colInput += n; document.getElementById('color-display').innerText = colInput; }
         function clearColor() { colInput = ""; document.getElementById('color-display').innerText = ""; }
         function checkColor() { if(parseInt(colInput) === colTests[colRound]) colScore++; colRound++; nextColorPlate(); }
+
+        // اللغة (جاهز لدعم الإنجليزي لاحقاً إن طلبته)
+        function toggleLang() { alert("تم تفعيل النسخة العربية كنسخة افتراضية بالكامل حسب طلبك."); }
 
     </script>
 </body>

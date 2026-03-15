@@ -208,13 +208,13 @@
             <h2 class="header-title" id="txt-header">DELTA OPTICS</h2>
         </div>
         <div class="header-actions">
-            <button class="icon-btn" onclick="toggleTheme()" id="theme-btn"><i class="fas fa-moon"></i></button>
-            <button class="icon-btn" onclick="toggleLang()" id="lang-btn">EN</button>
+            <button class="icon-btn" onclick="toggleTheme()" id="theme-btn" aria-label="تغيير المظهر"><i class="fas fa-moon"></i></button>
+            <button class="icon-btn" onclick="toggleLang()" id="lang-btn" aria-label="تغيير اللغة">EN</button>
         </div>
     </header>
 
     <main>
-        <img src="logo.jpg" class="logo-box" alt="Delta Logo" onerror="this.src='https://via.placeholder.com/150?text=LOGO'">
+        <img src="logo.jpg" class="logo-box" alt="Delta Logo" loading="lazy" onerror="this.src='https://via.placeholder.com/150?text=LOGO'">
 
         <h1 id="txt-hero">دلتا للبصريات</h1>
         <p class="subtitle" id="txt-sub">الفرع الرئيسي - المقابلين<br>خبراء العناية بالعين وأحدث الماركات</p>
@@ -254,17 +254,17 @@
             </div>
         </div>
 
-        <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Al-Muqabalain" target="_blank" class="wide-btn">
+        <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Al-Muqabalain" target="_blank" rel="noopener noreferrer" class="wide-btn">
             <i class="fas fa-location-dot" style="color:var(--secondary)"></i> <span id="txt-loc">موقع الفرع على الخريطة</span>
         </a>
 
         <div class="social-section">
             <span class="sec-title" id="txt-follow">تابعونا على منصات التواصل</span>
             <div class="social-row">
-                <a href="https://www.facebook.com/delta.optics1/" target="_blank" class="soc-btn fb-btn">
+                <a href="https://www.facebook.com/delta.optics1/" target="_blank" rel="noopener noreferrer" class="soc-btn fb-btn">
                     <i class="fab fa-facebook-f"></i> Facebook
                 </a>
-                <a href="https://www.instagram.com/delta.optics1/" target="_blank" class="soc-btn insta-btn">
+                <a href="https://www.instagram.com/delta.optics1/" target="_blank" rel="noopener noreferrer" class="soc-btn insta-btn">
                     <i class="fab fa-instagram"></i> Instagram
                 </a>
             </div>
@@ -302,7 +302,7 @@
     </div>
 
     <div class="fab-area">
-        <a href="https://wa.me/962775549700" class="fab fab-wa"><i class="fab fa-whatsapp"></i></a>
+        <a href="https://wa.me/962775549700" target="_blank" rel="noopener noreferrer" class="fab fab-wa"><i class="fab fa-whatsapp"></i></a>
         <a href="tel:+962775549700" class="fab fab-call"><i class="fas fa-phone-alt"></i></a>
     </div>
 
@@ -393,12 +393,18 @@
 
         function checkStatus() {
             const now = new Date();
-            const day = now.getDay(); const hour = now.getHours();
+            const day = now.getDay(); 
+            const hour = now.getHours();
             const statusDiv = document.getElementById('status-badge');
             const statusText = document.getElementById('status-text');
             
             let isOpen = false;
-            if (day === 5) { if (hour >= 16) isOpen = true; } else { if (hour >= 10) isOpen = true; }
+            // تم إضافة شرط الإغلاق (الساعة 22 تعني 10 مساءً)
+            if (day === 5) { 
+                if (hour >= 16 && hour < 22) isOpen = true; 
+            } else { 
+                if (hour >= 10 && hour < 22) isOpen = true; 
+            }
 
             if (isOpen) {
                 statusText.innerText = i18n[curLang].statusOpen;
@@ -411,22 +417,38 @@
 
         function loadRandomReviews() {
             const container = document.getElementById('reviews-container');
+            container.innerHTML = ''; // تنظيف الحاوية بشكل آمن
+            
             const list = reviewsData[curLang];
             const shuffled = [...list].sort(() => 0.5 - Math.random()).slice(0, 2);
 
-            let html = '';
             shuffled.forEach(rev => {
-                html += `
-                <div class="review">
-                    <div class="rev-top">
-                        <span class="rev-user">${rev.name}</span>
-                        <span class="rev-stars">★★★★★</span>
-                    </div>
-                    <p class="rev-msg">${rev.text}</p>
-                </div>
-                `;
+                const reviewDiv = document.createElement('div');
+                reviewDiv.className = 'review';
+
+                const revTopDiv = document.createElement('div');
+                revTopDiv.className = 'rev-top';
+
+                const spanUser = document.createElement('span');
+                spanUser.className = 'rev-user';
+                spanUser.textContent = rev.name;
+
+                const spanStars = document.createElement('span');
+                spanStars.className = 'rev-stars';
+                spanStars.textContent = '★★★★★';
+
+                revTopDiv.appendChild(spanUser);
+                revTopDiv.appendChild(spanStars);
+
+                const pMsg = document.createElement('p');
+                pMsg.className = 'rev-msg';
+                pMsg.textContent = rev.text;
+
+                reviewDiv.appendChild(revTopDiv);
+                reviewDiv.appendChild(pMsg);
+
+                container.appendChild(reviewDiv);
             });
-            container.innerHTML = html;
         }
 
         checkStatus();

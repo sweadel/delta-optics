@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تشكيلات دلتا الاحترافية | Delta Optics</title>
+    <title>تشكيلات دلتا | Delta Optics</title>
     
     <link rel="icon" href="logo.jpg" type="image/jpeg">
     
@@ -18,73 +18,102 @@
             --text-dark: #1E293B;
             --text-gray: #64748B;
             --white: #FFFFFF;
-            --success: #25D366;
-            --heart: #EF4444;
-            --glass-bg: rgba(255, 255, 255, 0.25);
-            --glass-border: rgba(255, 255, 255, 0.18);
-            --glass-blur: 15px;
-            --shadow: 0 8px 32px 0 rgba(14, 116, 144, 0.1);
-            --transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            --shadow: 0 4px 20px rgba(0,0,0,0.05);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); margin: 0; padding-bottom: 50px; color: var(--text-dark); transition: var(--transition); overflow-x: hidden; }
+        body { background: var(--bg); margin: 0; padding-bottom: 50px; color: var(--text-dark); transition: var(--transition); }
 
+        /* --- الهيدر --- */
         header { 
-            background: var(--glass-bg); backdrop-filter: blur(var(--glass-blur)); 
-            border-bottom: 1px solid var(--glass-border);
-            padding: 15px 20px; box-shadow: 0 4px 30px rgba(14, 116, 144, 0.05); 
-            position: sticky; top: 0; z-index: 100; display: flex; flex-direction: column; gap: 12px;
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            box-shadow: 0 2px 15px rgba(14, 116, 144, 0.08); 
+            position: sticky; top: 0; z-index: 100; 
+            display: flex; flex-direction: column; gap: 12px;
         }
         
         .header-top { display: flex; justify-content: space-between; align-items: center; width: 100%; }
         .header-right { display: flex; align-items: center; gap: 12px; }
-        .back-btn { width: 40px; height: 40px; border-radius: 50%; background: rgba(241, 245, 249, 0.5); color: var(--text-dark); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1.2rem; transition: var(--transition); }
-        .header-logo { width: 42px; height: 42px; object-fit: contain; border-radius: 8px; }
-        .lang-btn { background: rgba(241, 245, 249, 0.5); border: 1px solid rgba(226, 232, 240, 0.7); border-radius: 8px; padding: 6px 12px; font-weight: 700; color: var(--brand); cursor: pointer; font-size: 0.9rem; }
-        .header-title { font-size: 1.2rem; font-weight: 800; color: var(--brand); margin: 0; text-align: center; width: 100%; }
-
-        .tabs-container { background: var(--white); padding: 15px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-        .tabs { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-        .tab-btn { padding: 8px 20px; border-radius: 20px; border: 2px solid var(--brand-light); background: var(--white); color: var(--text-gray); font-weight: 700; cursor: pointer; transition: var(--transition); font-size: 0.9rem; display: flex; align-items: center; gap: 6px; }
-        .tab-btn.active { background: var(--brand); color: var(--white); border-color: var(--brand); box-shadow: 0 4px 10px rgba(14, 116, 144, 0.2); }
         
-        .face-filter-container { background: var(--brand-light); padding: 10px 0; text-align: center; }
-        .face-title { font-size: 0.8rem; font-weight: 700; color: var(--brand); margin-bottom: 8px; display: block;}
-        .face-tabs { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
-        .face-btn { background: rgba(255, 255, 255, 0.6); border: 1px solid var(--brand-light); color: var(--brand); padding: 6px 14px; border-radius: 15px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
-        .face-btn.active { background: var(--brand); color: var(--white); border-color: var(--brand); }
+        .back-btn { 
+            width: 40px; height: 40px; border-radius: 50%; background: #F1F5F9; 
+            color: var(--text-dark); display: flex; align-items: center; justify-content: center; 
+            text-decoration: none; font-size: 1.2rem; transition: var(--transition);
+        }
+        .back-btn:active { background: #E2E8F0; transform: scale(0.9); }
+        
+        .header-logo { width: 42px; height: 42px; object-fit: contain; border-radius: 8px; }
+        
+        .header-title { 
+            font-size: 1.2rem; font-weight: 800; color: var(--brand); 
+            margin: 0; text-align: center; width: 100%;
+        }
 
+        /* --- شريط التصفية --- */
+        .tabs-container { background: var(--white); padding: 15px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .tabs { display: flex; justify-content: center; gap: 10px; }
+        .tab-btn { 
+            padding: 8px 24px; border-radius: 20px; border: 2px solid var(--brand-light); 
+            background: var(--white); color: var(--text-gray); font-weight: 700; 
+            cursor: pointer; transition: var(--transition); font-size: 0.95rem;
+        }
+        .tab-btn.active { background: var(--brand); color: var(--white); border-color: var(--brand); box-shadow: 0 4px 10px rgba(14, 116, 144, 0.2); }
+
+        /* --- شبكة المعرض --- */
         .gallery-container { padding: 20px; max-width: 1200px; margin: 0 auto; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 18px; perspective: 1000px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
 
-        .card { background: var(--glass-bg); backdrop-filter: blur(var(--glass-blur)); border: 1px solid var(--glass-border); border-radius: 18px; overflow: hidden; box-shadow: var(--shadow); transition: var(--transition); position: relative; cursor: pointer; opacity: 0; transform: translateY(30px); animation: fadeInUp 0.5s forwards; transform-style: preserve-3d; }
-        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        /* --- كرت النظارة --- */
+        .card { 
+            background: var(--white); border-radius: 16px; overflow: hidden; 
+            box-shadow: var(--shadow); border: 1px solid #E2E8F0; 
+            transition: var(--transition); position: relative; cursor: pointer;
+            animation: fadeInUp 0.4s forwards;
+        }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(14, 116, 144, 0.15); border-color: var(--brand-light); }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .img-wrap { width: 100%; height: 170px; background: #E2E8F0; position: relative; overflow: hidden; }
-        .img-wrap.loading::after { content: ""; position: absolute; top: 0; left: -100%; width: 60%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent); animation: skeletonLoading 1.3s infinite; }
-        @keyframes skeletonLoading { 100% { left: 100%; } }
-
-        .card img { width: 100%; height: 100%; object-fit: cover; display: block; position: absolute; top: 0; left: 0; z-index: 1; opacity: 0; transition: opacity 0.4s; }
+        .img-wrap { width: 100%; height: 160px; background: #E2E8F0; position: relative; overflow: hidden; }
+        .card img { 
+            width: 100%; height: 100%; object-fit: cover; display: block; 
+            opacity: 0; transition: opacity 0.3s;
+        }
         .card img.loaded { opacity: 1; }
 
-        .card-info { padding: 14px; text-align: center; z-index: 2; }
-        .card-info h3 { margin: 0 0 5px; font-size: 1rem; font-weight: 800; color: var(--text-dark); }
-        .card-info p { margin: 0; font-size: 0.8rem; color: var(--text-gray); }
+        .card-info { padding: 12px; text-align: center; background: var(--white); }
+        .card-info h3 { margin: 0 0 4px; font-size: 0.95rem; font-weight: 800; color: var(--text-dark); }
+        .card-info p { margin: 0; font-size: 0.75rem; color: var(--text-gray); }
 
-        .badge { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.9); padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 800; color: var(--brand); z-index: 3; }
-        .fav-btn { position: absolute; top: 12px; left: 12px; background: rgba(255,255,255,0.9); color: var(--text-gray); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; z-index: 3; cursor: pointer; border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .fav-btn.active { color: var(--heart); transform: scale(1.1); }
+        .badge { 
+            position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.95); 
+            padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; 
+            color: var(--brand); z-index: 3; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
 
-        .lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(10px); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: var(--transition); }
-        .lightbox.active { opacity: 1; pointer-events: all; }
-        .lightbox-img-container { position: relative; max-width: 90%; max-height: 65vh; }
-        .lightbox img { width: 100%; height: auto; max-height: 65vh; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); transform: scale(0.9); transition: var(--transition); }
-        .lightbox.active img { transform: scale(1); }
-        .lightbox-close { position: absolute; top: 30px; right: 30px; background: rgba(255,255,255,0.2); color: var(--white); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; cursor: pointer; border: 1px solid rgba(255,255,255,0.3); }
-        .lightbox-info { text-align: center; margin-top: 30px; width: 90%; }
-        .lightbox-title { color: var(--white); font-size: 1.5rem; font-weight: 800; margin-bottom: 18px; }
-        .wa-order-btn { background: var(--success); color: var(--white); padding: 15px 35px; border-radius: 35px; font-weight: 800; font-size: 1.1rem; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 12px 30px rgba(37, 211, 102, 0.4); }
+        /* --- عارض الصور (Lightbox) --- */
+        .lightbox { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(8px); 
+            display: none; flex-direction: column; align-items: center; justify-content: center; 
+            z-index: 1000; transition: var(--transition);
+        }
+        .lightbox.active { display: flex; }
+        
+        .lightbox img { max-width: 90%; max-height: 60vh; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.4); object-fit: contain;}
+        
+        .lightbox-close { 
+            position: absolute; top: 25px; right: 25px; color: var(--white); font-size: 2rem; cursor: pointer;
+        }
+        
+        .wa-order-btn {
+            background: #25D366; color: white;
+            padding: 14px 30px; border-radius: 30px; font-weight: 800; font-size: 1.1rem;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 10px;
+            margin-top: 20px; box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
+        }
+
     </style>
 </head>
 <body>
@@ -92,133 +121,104 @@
 <header>
     <div class="header-top">
         <div class="header-right">
-            <a href="index.html" class="back-btn" aria-label="عودة"><i class="fas fa-arrow-right" id="arrow-icon"></i></a>
+            <a href="index.html" class="back-btn" aria-label="عودة"><i class="fas fa-arrow-right"></i></a>
             <img src="logo.jpg" alt="Delta Logo" class="header-logo" onerror="this.src='https://via.placeholder.com/42?text=Delta'">
         </div>
-        <button class="lang-btn" id="lang-toggle" onclick="toggleLang()">EN</button>
+        <button class="tab-btn" style="padding: 5px 15px; font-size: 0.8rem;">EN</button>
     </div>
-    <h1 class="header-title" id="txt-main-title">تشكيلات دلتا للبصريات المميزة</h1>
+    <h1 class="header-title">تشكيلات دلتا للبصريات المميزة</h1>
 </header>
 
 <div class="tabs-container">
-    <div class="tabs" id="filter-tabs">
-        <button class="tab-btn active" data-filter="all" id="tab-all"><i class="fas fa-border-all"></i>الكل</button>
-        <button class="tab-btn" data-filter="medical" id="tab-med"><i class="fas fa-glasses"></i>طبّي</button>
-        <button class="tab-btn" data-filter="sun" id="tab-sun"><i class="fas fa-sun"></i>شمسي</button>
-        <button class="tab-btn" data-filter="fav" id="tab-fav"><i class="fas fa-heart"></i>المفضلة</button>
-    </div>
-</div>
-
-<div class="face-filter-container">
-    <span class="face-title" id="txt-face-title">مساعد اختيار النظارة: ما هو شكل وجهك؟</span>
-    <div class="face-tabs" id="face-tabs">
-        <button class="face-btn active" data-face="all" id="face-all">الكل</button>
-        <button class="face-btn" data-face="round" id="face-round">دائري</button>
-        <button class="face-btn" data-face="square" id="face-square">مربع</button>
-        <button class="face-btn" data-face="oval" id="face-oval">بيضوي</button>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="filterItems('all', this)">الكل</button>
+        <button class="tab-btn" onclick="filterItems('medical', this)">طبّي</button>
+        <button class="tab-btn" onclick="filterItems('sun', this)">شمسي</button>
     </div>
 </div>
 
 <div class="gallery-container">
-    <div class="grid" id="gallery"></div>
+    <div class="grid" id="gallery">
+        </div>
 </div>
 
 <div class="lightbox" id="lightbox">
-    <button class="lightbox-close" onclick="closeLightbox()"><i class="fas fa-times"></i></button>
-    <div class="lightbox-img-container">
-        <img id="lb-img" src="" alt="View">
-    </div>
-    <div class="lightbox-info">
-        <div class="lightbox-title" id="lb-title"></div>
+    <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+    <img id="lb-img" src="" alt="View">
+    <div style="text-align: center; width: 90%;">
+        <h3 id="lb-title" style="color: white; margin-top: 15px;"></h3>
         <a id="lb-wa" href="#" class="wa-order-btn" target="_blank" rel="noopener noreferrer">
-            <i class="fab fa-whatsapp"></i> <span id="txt-wa-btn">استفسار عن هذا الموديل</span>
+            <i class="fab fa-whatsapp"></i> استفسار عن هذا الموديل
         </a>
     </div>
 </div>
 
 <script>
-    const i18n = {
-        ar: { title: "تشكيلات دلتا للبصريات المميزة", tabAll: "الكل", tabMed: "طبّي", tabSun: "شمسي", tabFav: "المفضلة", badgeMed: "طبي", badgeSun: "شمسي", cardDesc: "اضغط للمعاينة", waBtn: "استفسار عن هذا الموديل", modelMedPrefix: "موديل طبي #", modelSunPrefix: "موديل شمسي #", waMsgPrefix: "مرحباً دلتا، أود الاستفسار عن ", faceTitle: "مساعد اختيار النظارة: ما هو شكل وجهك؟", faceAll: "الكل", faceRound: "دائري", faceSquare: "مربع", faceOval: "بيضوي" },
-        en: { title: "Delta Optics Premium Collections", tabAll: "All", tabMed: "Medical", tabSun: "Sunglasses", tabFav: "Favorites", badgeMed: "Medical", badgeSun: "Sun", cardDesc: "Tap to view", waBtn: "Inquire about this model", modelMedPrefix: "Medical Model #", modelSunPrefix: "Sun Model #", waMsgPrefix: "Hi Delta, I would like to inquire about ", faceTitle: "Glasses Assistant: What is your face shape?", faceAll: "All", faceRound: "Round", faceSquare: "Square", faceOval: "Oval" }
+    // --- الإعدادات ---
+    const config = {
+        medical: 58,        // الطبي الجديد (m1.jpg)
+        medicalOld: 10,     // الطبي القديم (m1.jpg.jpg)
+        sun: 6,             // الشمسي الجديد (s1.jpg)
+        sunOld: 10          // الشمسي القديم (s1.jpg.jpg)
     };
-
-    let curLang = 'ar';
-    const config = { medicalImages: 58, oldMedicalImages: 10, sunImages: 6, oldSunImages: 10, faceShapes: ['round', 'square', 'oval'] };
-
-    let favorites = JSON.parse(localStorage.getItem('deltaFavs')) || [];
-
-    function toggleLang() {
-        curLang = curLang === 'ar' ? 'en' : 'ar';
-        document.documentElement.dir = curLang === 'ar' ? 'rtl' : 'ltr';
-        document.getElementById('lang-toggle').innerText = curLang === 'ar' ? 'EN' : 'عربي';
-        document.getElementById('txt-main-title').innerText = i18n[curLang].title;
-        document.getElementById('gallery').innerHTML = "";
-        buildGallery();
-        applyCurrentFilter();
-    }
 
     function buildGallery() {
         const gallery = document.getElementById('gallery');
-        const fragment = document.createDocumentFragment();
-        let delayCount = 0;
-        const activeFilter = document.querySelector('.tab-btn.active').getAttribute('data-filter');
+        let html = '';
 
-        if (activeFilter === 'fav') {
-            favorites.forEach(fav => {
-                delayCount++;
-                const type = fav.filename.includes('m') ? 'medical' : 'sun';
-                fragment.appendChild(createCardHTML(type, fav.filename, fav.title, type==='medical'?i18n[curLang].badgeMed:i18n[curLang].badgeSun, delayCount*0.02, fav.id, config.faceShapes[0]));
-            });
-        } else {
-            // إضافة كل الأنواع (القديم والجديد)
-            addItemsToFragment(fragment, config.oldMedicalImages, 'medical', '.jpg.jpg', i18n[curLang].modelMedPrefix, ' (كلاسيك)', 'old_m');
-            addItemsToFragment(fragment, config.medicalImages, 'medical', '.jpg', i18n[curLang].modelMedPrefix, '', 'm');
-            addItemsToFragment(fragment, config.oldSunImages, 'sun', '.jpg.jpg', i18n[curLang].modelSunPrefix, ' (كلاسيك)', 'old_s');
-            addItemsToFragment(fragment, config.sunImages, 'sun', '.jpg', i18n[curLang].modelSunPrefix, '', 's');
+        // 1. بناء الطبي القديم (.jpg.jpg)
+        for (let i = 1; i <= config.medicalOld; i++) {
+            html += createCardHTML('medical', `m${i}.jpg.jpg`, `موديل طبي #${i} (كلاسيك)`);
         }
-        gallery.appendChild(fragment);
-        init3DTilt();
+
+        // 2. بناء الطبي الجديد (.jpg)
+        for (let i = 1; i <= config.medical; i++) {
+            html += createCardHTML('medical', `m${i}.jpg`, `موديل طبي #${i}`);
+        }
+
+        // 3. بناء الشمسي القديم (.jpg.jpg)
+        for (let i = 1; i <= config.sunOld; i++) {
+            html += createCardHTML('sun', `s${i}.jpg.jpg`, `موديل شمسي #${i} (كلاسيك)`);
+        }
+
+        // 4. بناء الشمسي الجديد (.jpg)
+        for (let i = 1; i <= config.sun; i++) {
+            html += createCardHTML('sun', `s${i}.jpg`, `موديل شمسي #${i}`);
+        }
+
+        gallery.innerHTML = html;
     }
 
-    function addItemsToFragment(frag, count, type, ext, prefix, suffix, idPrefix) {
-        for (let i = 1; i <= count; i++) {
-            const id = idPrefix + i;
-            const filename = (idPrefix.includes('m') ? 'm' : 's') + i + ext;
-            const title = prefix + i + suffix;
-            frag.appendChild(createCardHTML(type, filename, title, type==='medical'?i18n[curLang].badgeMed:i18n[curLang].badgeSun, 0.02, id, config.faceShapes[i%3]));
-        }
-    }
-
-    function createCardHTML(type, filename, title, badgeTxt, delay, id, faceShape) {
-        const card = document.createElement('div');
-        card.className = `card item-${type} face-${faceShape}`;
-        card.style.animationDelay = `${delay}s`;
-        card.setAttribute('data-id', id);
-        const isFav = favorites.some(fav => fav.id === id);
-        card.innerHTML = `
-            <button class="fav-btn ${isFav?'active':''}" onclick="event.stopPropagation(); toggleFavorite('${id}', '${filename}', '${title}')"><i class="fas fa-heart"></i></button>
-            <div class="badge">${badgeTxt}</div>
-            <div class="img-wrap loading"><img src="${filename}" loading="lazy" onload="this.classList.add('loaded'); this.parentElement.classList.remove('loading')" onerror="this.closest('.card').style.display='none'"></div>
-            <div class="card-info" onclick="openLightbox('${filename}', '${title}')"><h3>${title}</h3><p>${i18n[curLang].cardDesc}</p></div>
+    function createCardHTML(type, filename, title) {
+        const badge = type === 'medical' ? 'طبي' : 'شمسي';
+        return `
+            <div class="card item-${type}" onclick="openLightbox('${filename}', '${title}')">
+                <div class="badge">${badge}</div>
+                <div class="img-wrap">
+                    <img src="${filename}" alt="${title}" loading="lazy" 
+                         onload="this.classList.add('loaded')" 
+                         onerror="this.closest('.card').style.display='none'">
+                </div>
+                <div class="card-info">
+                    <h3>${title}</h3>
+                    <p>اضغط للمعاينة</p>
+                </div>
+            </div>
         `;
-        return card;
     }
 
-    function toggleFavorite(id, filename, title) {
-        const idx = favorites.findIndex(f => f.id === id);
-        if (idx === -1) favorites.push({id, filename, title});
-        else favorites.splice(idx, 1);
-        localStorage.setItem('deltaFavs', JSON.stringify(favorites));
-        document.getElementById('gallery').innerHTML = ""; buildGallery(); applyCurrentFilter();
-    }
+    function filterItems(type, btn) {
+        // تغيير حالة الأزرار
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
 
-    function applyCurrentFilter() {
-        const activeType = document.querySelector('.tab-btn.active').getAttribute('data-filter');
-        const activeFace = document.querySelector('.face-btn.active').getAttribute('data-face');
+        // فلترة الكروت
         document.querySelectorAll('.card').forEach(card => {
-            const typeMatch = activeType === 'all' || activeType === 'fav' || card.classList.contains(`item-${activeType}`);
-            const faceMatch = activeFace === 'all' || card.classList.contains(`face-${activeFace}`);
-            card.style.display = (typeMatch && faceMatch) ? 'block' : 'none';
+            if (type === 'all' || card.classList.contains(`item-${type}`)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
         });
     }
 
@@ -226,33 +226,31 @@
         const lb = document.getElementById('lightbox');
         document.getElementById('lb-img').src = src;
         document.getElementById('lb-title').innerText = title;
-        document.getElementById('lb-wa').href = `https://wa.me/962775549700?text=${encodeURIComponent(i18n[curLang].waMsgPrefix + title)}`;
-        lb.classList.add('active');
+        
+        // رابط واتساب
+        const msg = encodeURIComponent(`مرحباً دلتا، أود الاستفسار عن موديل: ${title}`);
+        document.getElementById('lb-wa').href = `https://wa.me/962775549700?text=${msg}`;
+        
+        lb.style.display = 'flex';
+        setTimeout(() => lb.classList.add('active'), 10);
     }
 
-    function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); }
-
-    function init3DTilt() {
-        if (window.innerWidth < 768) return;
-        document.querySelectorAll('.card').forEach(card => {
-            card.onmousemove = (e) => {
-                const r = card.getBoundingClientRect();
-                card.style.transform = `perspective(1000px) rotateX(${(e.clientY-r.top-r.height/2)/r.height*-10}deg) rotateY(${(e.clientX-r.left-r.width/2)/r.width*10}deg) scale(1.05)`;
-            };
-            card.onmouseleave = () => card.style.transform = "";
-        });
+    function closeLightbox() {
+        const lb = document.getElementById('lightbox');
+        lb.classList.remove('active');
+        setTimeout(() => {
+            lb.style.display = 'none';
+            document.getElementById('lb-img').src = '';
+        }, 300);
     }
 
-    document.querySelectorAll('.tab-btn, .face-btn').forEach(btn => {
-        btn.onclick = (e) => {
-            btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            if(btn.classList.contains('tab-btn')) { document.getElementById('gallery').innerHTML = ""; buildGallery(); }
-            applyCurrentFilter();
-        };
-    });
+    // إغلاق عند الضغط خارج الصورة
+    document.getElementById('lightbox').onclick = function(e) {
+        if (e.target.id === 'lightbox') closeLightbox();
+    };
 
-    document.addEventListener('DOMContentLoaded', buildGallery);
+    // تشغيل البناء فور التحميل
+    window.onload = buildGallery;
 </script>
 </body>
 </html>

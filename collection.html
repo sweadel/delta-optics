@@ -146,10 +146,10 @@
 <header>
     <div class="header-top">
         <div class="header-right">
-            <a href="index.html" class="back-btn"><i class="fas fa-arrow-right" id="arrow-icon"></i></a>
+            <a href="index.html" class="back-btn" aria-label="عودة للصفحة الرئيسية"><i class="fas fa-arrow-right" id="arrow-icon"></i></a>
             <img src="logo.jpg" alt="Delta Logo" class="header-logo" onerror="this.src='https://via.placeholder.com/42?text=Delta'">
         </div>
-        <button class="lang-btn" id="lang-toggle" onclick="toggleLang()">EN</button>
+        <button class="lang-btn" id="lang-toggle" onclick="toggleLang()" aria-label="تغيير اللغة">EN</button>
     </div>
     <h1 class="header-title" id="txt-main-title">تشكيلات دلتا للبصريات المميزة</h1>
 </header>
@@ -168,7 +168,7 @@
 </div>
 
 <div class="lightbox" id="lightbox">
-    <button class="lightbox-close" onclick="closeLightbox()"><i class="fas fa-times"></i></button>
+    <button class="lightbox-close" onclick="closeLightbox()" aria-label="إغلاق العارض"><i class="fas fa-times"></i></button>
     
     <div class="lightbox-img-container">
         <img id="lb-img" src="" alt="View">
@@ -176,7 +176,7 @@
     
     <div class="lightbox-info">
         <div class="lightbox-title" id="lb-title"></div>
-        <a id="lb-wa" href="#" class="wa-order-btn" target="_blank">
+        <a id="lb-wa" href="#" class="wa-order-btn" target="_blank" rel="noopener noreferrer">
             <i class="fab fa-whatsapp"></i> <span id="txt-wa-btn">استفسار عن هذا الموديل</span>
         </a>
     </div>
@@ -221,9 +221,10 @@
 
         document.getElementById('gallery').innerHTML = "";
         buildGallery();
+        applyCurrentFilter(); // إصلاح: إعادة تطبيق الفلتر بعد بناء المعرض الجديد
     }
 
-    // --- 2. إعدادات الصور (تشمل القديم والجديد) ---
+    // --- 2. إعدادات الصور ---
     const config = {
         medicalImages: 60,      // الطبي الجديد (m1.jpg)
         oldMedicalImages: 40,   // الطبي القديم (m1.jpg.jpg)
@@ -236,35 +237,30 @@
     // --- 3. بناء المعرض ---
     function buildGallery() {
         const fragment = document.createDocumentFragment();
-        let delayCount = 0; // لضبط الأنيميشن بشكل متتالي
+        let delayCount = 0;
 
-        // 1. إضافة الطبي القديم (.jpg.jpg)
         for (let i = 1; i <= config.oldMedicalImages; i++) {
             delayCount++;
             let tName = `${i18n[curLang].modelMedPrefix}${i} (كلاسيك)`;
-            // لاحظ امتداد الصورة القديمة
-            fragment.appendChild(createCardHTML('medical', `m${i}.jpg.jpg`, tName, i18n[curLang].badgeMed, delayCount * 0.02));
+            fragment.appendChild(createCardHTML('medical', `m${i}.jpg.jpg`, tName, i18n[curLang].badgeMed, Math.min(delayCount * 0.02, 0.5))); // الحد الأقصى للتأخير 0.5s
         }
 
-        // 2. إضافة الطبي الجديد (.jpg)
         for (let i = 1; i <= config.medicalImages; i++) {
             delayCount++;
             let tName = `${i18n[curLang].modelMedPrefix}${i}`;
-            fragment.appendChild(createCardHTML('medical', `m${i}.jpg`, tName, i18n[curLang].badgeMed, delayCount * 0.02));
+            fragment.appendChild(createCardHTML('medical', `m${i}.jpg`, tName, i18n[curLang].badgeMed, Math.min(delayCount * 0.02, 0.5)));
         }
 
-        // 3. إضافة الشمسي القديم (.jpg.jpg)
         for (let i = 1; i <= config.oldSunImages; i++) {
             delayCount++;
             let tName = `${i18n[curLang].modelSunPrefix}${i} (كلاسيك)`;
-            fragment.appendChild(createCardHTML('sun', `s${i}.jpg.jpg`, tName, i18n[curLang].badgeSun, delayCount * 0.02));
+            fragment.appendChild(createCardHTML('sun', `s${i}.jpg.jpg`, tName, i18n[curLang].badgeSun, Math.min(delayCount * 0.02, 0.5)));
         }
 
-        // 4. إضافة الشمسي الجديد (.jpg)
         for (let i = 1; i <= config.sunImages; i++) {
             delayCount++;
             let tName = `${i18n[curLang].modelSunPrefix}${i}`;
-            fragment.appendChild(createCardHTML('sun', `s${i}.jpg`, tName, i18n[curLang].badgeSun, delayCount * 0.02));
+            fragment.appendChild(createCardHTML('sun', `s${i}.jpg`, tName, i18n[curLang].badgeSun, Math.min(delayCount * 0.02, 0.5)));
         }
 
         gallery.appendChild(fragment);
@@ -275,12 +271,13 @@
         card.className = `card item-${type}`;
         card.style.animationDelay = `${delay}s`;
         
+        // تم استبدال parentElement.parentElement بـ closest لزيادة الموثوقية والأمان
         card.innerHTML = `
             <div class="badge">${badgeTxt}</div>
             <div class="img-wrap">
                 <img src="${filename}" alt="${title}" loading="lazy" 
                      onload="this.classList.add('loaded')" 
-                     onerror="this.parentElement.parentElement.remove()">
+                     onerror="this.closest('.card').remove()"> 
             </div>
             <div class="card-info">
                 <h3>${title}</h3>
@@ -294,21 +291,26 @@
 
     // --- 4. نظام التصفية ---
     const filterBtns = document.querySelectorAll('.tab-btn');
+    
+    function applyCurrentFilter() {
+        const activeBtn = document.querySelector('.tab-btn.active');
+        const filterValue = activeBtn ? activeBtn.getAttribute('data-filter') : 'all';
+        const allCards = document.querySelectorAll('.card');
+
+        allCards.forEach(card => {
+            if (filterValue === 'all') {
+                card.style.display = 'block';
+            } else {
+                card.style.display = card.classList.contains(`item-${filterValue}`) ? 'block' : 'none';
+            }
+        });
+    }
+
     filterBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
             filterBtns.forEach(b => b.classList.remove('active'));
             e.target.classList.add('active');
-
-            const filterValue = e.target.getAttribute('data-filter');
-            const allCards = document.querySelectorAll('.card');
-
-            allCards.forEach(card => {
-                if (filterValue === 'all') {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = card.classList.contains(`item-${filterValue}`) ? 'block' : 'none';
-                }
-            });
+            applyCurrentFilter();
         });
     });
 
@@ -322,9 +324,8 @@
         lbImg.src = src;
         lbTitle.innerText = title;
         
-        let pageUrl = window.location.href.split('?')[0].split('#')[0];
-        let baseUrl = pageUrl.substring(0, pageUrl.lastIndexOf('/'));
-        let fullImageUrl = `${baseUrl}/${src}`;
+        // استخدام الكائن URL لضمان جلب الرابط الصحيح بغض النظر عن مسار الموقع
+        const fullImageUrl = new URL(src, window.location.href).href;
         
         let waMsg = `${i18n[curLang].waMsgPrefix}${title} (الرمز: ${src}).\nرابط الصورة: ${fullImageUrl}`;
         lbWa.href = `https://wa.me/962775549700?text=${encodeURIComponent(waMsg)}`;
@@ -339,6 +340,13 @@
 
     lightbox.addEventListener('click', (e) => {
         if (e.target === lightbox) closeLightbox();
+    });
+    
+    // إضافة ميزة إغلاق العارض عند الضغط على زر Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+            closeLightbox();
+        }
     });
 
     // تشغيل البناء فور تحميل الصفحة

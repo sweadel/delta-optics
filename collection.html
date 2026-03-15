@@ -19,36 +19,39 @@
         }
 
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); margin: 0; padding-bottom: 50px; color: var(--text-dark); }
+        body { background: var(--bg); margin: 0; padding-bottom: 50px; color: var(--text-dark); transition: var(--transition); }
 
-        /* --- الهيدر الجديد (تصميم احترافي) --- */
+        /* --- الهيدر --- */
         header { 
             background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
-            height: 70px; padding: 0 20px;
+            padding: 15px 20px;
             box-shadow: 0 2px 15px rgba(14, 116, 144, 0.08); 
             position: sticky; top: 0; z-index: 100; 
-            display: flex; align-items: center; justify-content: space-between;
+            display: flex; flex-direction: column; gap: 12px;
         }
         
-        /* القسم الأيمن: السهم واللوجو */
+        .header-top { display: flex; justify-content: space-between; align-items: center; width: 100%; }
         .header-right { display: flex; align-items: center; gap: 12px; }
+        
         .back-btn { 
             width: 40px; height: 40px; border-radius: 50%; background: #F1F5F9; 
             color: var(--text-dark); display: flex; align-items: center; justify-content: center; 
             text-decoration: none; font-size: 1.2rem; transition: var(--transition);
         }
         .back-btn:active { background: #E2E8F0; transform: scale(0.9); }
+        
         .header-logo { width: 42px; height: 42px; object-fit: contain; border-radius: 8px; }
-
-        /* القسم الأوسط: العنوان */
-        .header-center {
-            position: absolute; left: 50%; transform: translateX(-50%);
-            font-size: 1.15rem; font-weight: 800; color: var(--brand); margin: 0;
-            white-space: nowrap;
+        
+        .lang-btn { 
+            background: #F1F5F9; border: 1px solid #E2E8F0; border-radius: 8px; 
+            padding: 6px 12px; font-weight: 700; color: var(--brand); 
+            cursor: pointer; font-size: 0.9rem; transition: 0.2s;
         }
 
-        /* حجز مساحة وهمية على اليسار لضمان توسيط العنوان بدقة */
-        .header-left { width: 94px; } 
+        .header-title { 
+            font-size: 1.2rem; font-weight: 800; color: var(--brand); 
+            margin: 0; text-align: center; width: 100%;
+        }
 
         /* --- شريط التصفية --- */
         .tabs-container { background: var(--white); padding: 15px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
@@ -69,7 +72,7 @@
             background: var(--white); border-radius: 16px; overflow: hidden; 
             box-shadow: var(--shadow); border: 1px solid #E2E8F0; 
             transition: var(--transition); position: relative; cursor: pointer;
-            opacity: 0; transform: translateY(20px); animation: fadeInUp 0.5s forwards;
+            opacity: 0; transform: translateY(20px); animation: fadeInUp 0.4s forwards;
         }
         .card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(14, 116, 144, 0.15); border-color: var(--brand-light); }
         @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
@@ -98,7 +101,10 @@
             color: var(--brand); z-index: 3; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        /* --- عارض الصور (Lightbox) للمعاينة عن قرب --- */
+        html[dir="ltr"] .badge { right: auto; left: 10px; }
+        html[dir="ltr"] #arrow-icon { transform: rotate(180deg); }
+
+        /* --- عارض الصور (Lightbox) --- */
         .lightbox { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(8px); 
@@ -135,20 +141,21 @@
 <body>
 
 <header>
-    <div class="header-right">
-        <a href="index.html" class="back-btn"><i class="fas fa-arrow-right"></i></a>
-        <img src="logo.jpg" alt="لوجو دلتا" class="header-logo" onerror="this.src='https://via.placeholder.com/42?text=Delta'">
+    <div class="header-top">
+        <div class="header-right">
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-right" id="arrow-icon"></i></a>
+            <img src="logo.jpg" alt="Delta Logo" class="header-logo" onerror="this.src='https://via.placeholder.com/42?text=Delta'">
+        </div>
+        <button class="lang-btn" id="lang-toggle" onclick="toggleLang()">EN</button>
     </div>
-    
-    <h1 class="header-center">تشكيلات دلتا للبصريات المميزة</h1>
-    
-    <div class="header-left"></div> </header>
+    <h1 class="header-title" id="txt-main-title">تشكيلات دلتا للبصريات المميزة</h1>
+</header>
 
 <div class="tabs-container">
     <div class="tabs" id="filter-tabs">
-        <button class="tab-btn active" data-filter="all">الكل</button>
-        <button class="tab-btn" data-filter="medical">طبّي</button>
-        <button class="tab-btn" data-filter="sun">شمسي</button>
+        <button class="tab-btn active" data-filter="all" id="tab-all">الكل</button>
+        <button class="tab-btn" data-filter="medical" id="tab-med">طبّي</button>
+        <button class="tab-btn" data-filter="sun" id="tab-sun">شمسي</button>
     </div>
 </div>
 
@@ -161,49 +168,112 @@
     <button class="lightbox-close" onclick="closeLightbox()"><i class="fas fa-times"></i></button>
     
     <div class="lightbox-img-container">
-        <img id="lb-img" src="" alt="تكبير النظارة">
+        <img id="lb-img" src="" alt="View">
     </div>
     
     <div class="lightbox-info">
         <div class="lightbox-title" id="lb-title"></div>
         <a id="lb-wa" href="#" class="wa-order-btn" target="_blank">
-            <i class="fab fa-whatsapp"></i> استفسار عن هذا الموديل
+            <i class="fab fa-whatsapp"></i> <span id="txt-wa-btn">استفسار عن هذا الموديل</span>
         </a>
     </div>
 </div>
 
 <script>
-    // 1. إعدادات الصور
+    // --- 1. القاموس والترجمة ---
+    const i18n = {
+        ar: {
+            title: "تشكيلات دلتا للبصريات المميزة",
+            tabAll: "الكل", tabMed: "طبّي", tabSun: "شمسي",
+            badgeMed: "طبي", badgeSun: "شمسي",
+            cardDesc: "اضغط للمعاينة",
+            waBtn: "استفسار عن هذا الموديل",
+            modelMedPrefix: "موديل طبي #", modelSunPrefix: "موديل شمسي #",
+            waMsgPrefix: "مرحباً دلتا، أود الاستفسار عن "
+        },
+        en: {
+            title: "Delta Optics Premium Collections",
+            tabAll: "All", tabMed: "Medical", tabSun: "Sunglasses",
+            badgeMed: "Medical", badgeSun: "Sun",
+            cardDesc: "Tap to view",
+            waBtn: "Inquire about this model",
+            modelMedPrefix: "Medical Model #", modelSunPrefix: "Sun Model #",
+            waMsgPrefix: "Hi Delta, I would like to inquire about "
+        }
+    };
+
+    let curLang = 'ar';
+
+    function toggleLang() {
+        curLang = curLang === 'ar' ? 'en' : 'ar';
+        document.documentElement.dir = curLang === 'ar' ? 'rtl' : 'ltr';
+        document.documentElement.lang = curLang;
+        document.getElementById('lang-toggle').innerText = curLang === 'ar' ? 'EN' : 'عربي';
+        
+        document.getElementById('txt-main-title').innerText = i18n[curLang].title;
+        document.getElementById('tab-all').innerText = i18n[curLang].tabAll;
+        document.getElementById('tab-med').innerText = i18n[curLang].tabMed;
+        document.getElementById('tab-sun').innerText = i18n[curLang].tabSun;
+        document.getElementById('txt-wa-btn').innerText = i18n[curLang].waBtn;
+
+        document.getElementById('gallery').innerHTML = "";
+        buildGallery();
+    }
+
+    // --- 2. إعدادات الصور (تشمل القديم والجديد) ---
     const config = {
-        medicalImages: 60, // عدد صور الطبي (m1.jpg -> m60.jpg)
-        sunImages: 20      // عدد صور الشمسي (s1.jpg -> s20.jpg)
+        medicalImages: 60,      // الطبي الجديد (m1.jpg)
+        oldMedicalImages: 40,   // الطبي القديم (m1.jpg.jpg)
+        sunImages: 20,          // الشمسي الجديد (s1.jpg)
+        oldSunImages: 30        // الشمسي القديم (s1.jpg.jpg)
     };
 
     const gallery = document.getElementById('gallery');
     
-    // 2. بناء المعرض السريع
+    // --- 3. بناء المعرض ---
     function buildGallery() {
         const fragment = document.createDocumentFragment();
-        
-        for (let i = 1; i <= config.medicalImages; i++) {
-            fragment.appendChild(createCardHTML('medical', `m${i}.jpg`, `موديل طبي #${i}`, i * 0.05));
+        let delayCount = 0; // لضبط الأنيميشن بشكل متتالي
+
+        // 1. إضافة الطبي القديم (.jpg.jpg)
+        for (let i = 1; i <= config.oldMedicalImages; i++) {
+            delayCount++;
+            let tName = `${i18n[curLang].modelMedPrefix}${i} (كلاسيك)`;
+            // لاحظ امتداد الصورة القديمة
+            fragment.appendChild(createCardHTML('medical', `m${i}.jpg.jpg`, tName, i18n[curLang].badgeMed, delayCount * 0.02));
         }
 
+        // 2. إضافة الطبي الجديد (.jpg)
+        for (let i = 1; i <= config.medicalImages; i++) {
+            delayCount++;
+            let tName = `${i18n[curLang].modelMedPrefix}${i}`;
+            fragment.appendChild(createCardHTML('medical', `m${i}.jpg`, tName, i18n[curLang].badgeMed, delayCount * 0.02));
+        }
+
+        // 3. إضافة الشمسي القديم (.jpg.jpg)
+        for (let i = 1; i <= config.oldSunImages; i++) {
+            delayCount++;
+            let tName = `${i18n[curLang].modelSunPrefix}${i} (كلاسيك)`;
+            fragment.appendChild(createCardHTML('sun', `s${i}.jpg.jpg`, tName, i18n[curLang].badgeSun, delayCount * 0.02));
+        }
+
+        // 4. إضافة الشمسي الجديد (.jpg)
         for (let i = 1; i <= config.sunImages; i++) {
-            fragment.appendChild(createCardHTML('sun', `s${i}.jpg`, `موديل شمسي #${i}`, i * 0.05));
+            delayCount++;
+            let tName = `${i18n[curLang].modelSunPrefix}${i}`;
+            fragment.appendChild(createCardHTML('sun', `s${i}.jpg`, tName, i18n[curLang].badgeSun, delayCount * 0.02));
         }
 
         gallery.appendChild(fragment);
     }
 
-    // 3. بناء الكرت
-    function createCardHTML(type, filename, title, delay) {
+    function createCardHTML(type, filename, title, badgeTxt, delay) {
         const card = document.createElement('div');
         card.className = `card item-${type}`;
         card.style.animationDelay = `${delay}s`;
         
         card.innerHTML = `
-            <div class="badge">${type === 'medical' ? 'طبي' : 'شمسي'}</div>
+            <div class="badge">${badgeTxt}</div>
             <div class="img-wrap">
                 <img src="${filename}" alt="${title}" loading="lazy" 
                      onload="this.classList.add('loaded')" 
@@ -211,16 +281,15 @@
             </div>
             <div class="card-info">
                 <h3>${title}</h3>
-                <p>اضغط للمعاينة</p>
+                <p>${i18n[curLang].cardDesc}</p>
             </div>
         `;
 
-        // تفعيل ميزة التكبير عند الضغط
         card.addEventListener('click', () => openLightbox(filename, title));
         return card;
     }
 
-    // 4. نظام التصفية
+    // --- 4. نظام التصفية ---
     const filterBtns = document.querySelectorAll('.tab-btn');
     filterBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -240,7 +309,7 @@
         });
     });
 
-    // 5. نظام التكبير (Lightbox) والاستفسار
+    // --- 5. نظام التكبير (Lightbox) والواتساب الذكي ---
     const lightbox = document.getElementById('lightbox');
     const lbImg = document.getElementById('lb-img');
     const lbTitle = document.getElementById('lb-title');
@@ -250,8 +319,11 @@
         lbImg.src = src;
         lbTitle.innerText = title;
         
-        // رسالة الواتساب الجاهزة
-        let waMsg = `مرحباً، أود الاستفسار عن ${title} (صورة: ${src}). هل هو متوفر؟`;
+        let pageUrl = window.location.href.split('?')[0].split('#')[0];
+        let baseUrl = pageUrl.substring(0, pageUrl.lastIndexOf('/'));
+        let fullImageUrl = `${baseUrl}/${src}`;
+        
+        let waMsg = `${i18n[curLang].waMsgPrefix}${title} (الرمز: ${src}).\nرابط الصورة: ${fullImageUrl}`;
         lbWa.href = `https://wa.me/962775549700?text=${encodeURIComponent(waMsg)}`;
         
         lightbox.classList.add('active');
@@ -266,6 +338,7 @@
         if (e.target === lightbox) closeLightbox();
     });
 
+    // تشغيل البناء فور تحميل الصفحة
     document.addEventListener('DOMContentLoaded', buildGallery);
 
 </script>

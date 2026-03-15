@@ -15,13 +15,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- المتغيرات الذكية (تدعم الوضع الليلي والنهاري) --- */
         :root { 
             --primary: #0e7490;       
             --secondary: #0ea5e9;     
             --bg-color: #f8fafc;
-            --surface: rgba(255, 255, 255, 0.6); /* زجاج شفاف */
-            --surface-border: rgba(255, 255, 255, 0.4);
+            --surface: rgba(255, 255, 255, 0.7); 
+            --surface-border: rgba(255, 255, 255, 0.5);
             --text-main: #0f172a;
             --text-muted: #64748b;
             --success: #10b981;
@@ -33,7 +32,7 @@
             --primary: #22d3ee;       
             --secondary: #38bdf8;     
             --bg-color: #0f172a;
-            --surface: rgba(30, 41, 59, 0.6);
+            --surface: rgba(30, 41, 59, 0.7);
             --surface-border: rgba(255, 255, 255, 0.05);
             --text-main: #f8fafc;
             --text-muted: #cbd5e1;
@@ -42,30 +41,28 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
         
         body { 
-            background-color: var(--bg-color); color: var(--text-main); 
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.04) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(14, 116, 144, 0.04) 0px, transparent 50%);
+            color: var(--text-main); 
             min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden;
             padding-bottom: 90px; transition: background-color 0.4s, color 0.4s;
             position: relative;
         }
 
-        /* --- الخلفية الحية (Animated Blobs) --- */
-        .blob { position: absolute; filter: blur(60px); z-index: -1; opacity: 0.5; animation: floatBlob 10s infinite alternate ease-in-out; }
-        .blob-1 { width: 300px; height: 300px; background: var(--secondary); top: -50px; right: -100px; border-radius: 40% 60% 70% 30%; }
-        .blob-2 { width: 250px; height: 250px; background: var(--primary); top: 40%; left: -80px; border-radius: 60% 40% 30% 70%; animation-delay: -5s; }
-        
-        @keyframes floatBlob {
-            0% { transform: translateY(0) scale(1); }
-            100% { transform: translateY(30px) scale(1.1) rotate(10deg); }
+        [data-theme="dark"] body {
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(34, 211, 238, 0.03) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(56, 189, 248, 0.03) 0px, transparent 50%);
         }
 
-        /* --- الشريط الإعلاني العلوي --- */
         .top-bar {
             background: linear-gradient(90deg, var(--primary), var(--secondary));
             color: white; text-align: center; padding: 6px 10px;
             font-size: 0.8rem; font-weight: 700; letter-spacing: 0.5px;
         }
 
-        /* --- الهيدر الزجاجي --- */
         header { 
             background: var(--surface); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
             padding: 12px 20px; border-bottom: 1px solid var(--surface-border);
@@ -85,7 +82,6 @@
         }
         .icon-btn:active { transform: scale(0.9); background: var(--primary); color: white; }
 
-        /* --- المحتوى الرئيسي --- */
         main { 
             flex: 1; display: flex; flex-direction: column; align-items: center; 
             padding: 30px 20px; text-align: center; width: 100%; max-width: 500px; margin: 0 auto;
@@ -113,42 +109,23 @@
         .open-dot { background: var(--success); box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2); }
         .closed-dot { background: var(--error); box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2); }
 
-        /* --- كرت العرض الخاص (Special Offer) --- */
-        .offer-card {
-            width: 100%; background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(239, 68, 68, 0.05));
-            border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 20px; padding: 15px;
-            margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between;
-            position: relative; overflow: hidden; text-align: right;
-        }
-        .offer-card::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 50%; height: 200%;
-            background: rgba(255,255,255,0.2); transform: rotate(45deg); animation: shine 3s infinite;
-        }
-        @keyframes shine { 100% { left: 150%; } }
-        .offer-text h4 { margin: 0 0 5px; color: var(--gold); font-size: 1.1rem; font-weight: 900; }
-        .offer-text p { margin: 0; font-size: 0.8rem; color: var(--text-main); }
-        .offer-icon { font-size: 2.5rem; color: var(--gold); opacity: 0.8; }
-
-        /* --- كروت الـ 3D (Tilt Cards) --- */
         .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; margin-bottom: 25px; perspective: 1000px; }
         .main-card {
             background: var(--surface); backdrop-filter: blur(10px); border: 1px solid var(--surface-border);
             padding: 25px 15px; border-radius: 20px; display: flex; flex-direction: column; align-items: center; gap: 12px;
-            text-decoration: none; box-shadow: 0 10px 30px rgba(0,0,0,0.05); height: 145px; justify-content: center;
-            transform-style: preserve-3d; transition: transform 0.1s; /* لسرعة استجابة الـ 3D */
+            text-decoration: none; box-shadow: 0 10px 30px rgba(0,0,0,0.03); height: 145px; justify-content: center;
+            transform-style: preserve-3d; transition: transform 0.1s; 
         }
         .card-icon { font-size: 2.2rem; color: var(--primary); margin-bottom: 5px; transform: translateZ(30px); }
         .card-title { font-size: 1.05rem; font-weight: 900; color: var(--text-main); transform: translateZ(20px); }
         .highlight-card { background: linear-gradient(135deg, rgba(14, 116, 144, 0.05), rgba(14, 165, 233, 0.1)); border-color: rgba(14, 165, 233, 0.2); }
         .highlight-card .card-icon { color: var(--secondary); }
 
-        /* --- شريط الخدمات السريعة --- */
-        .quick-services { display: flex; justify-content: space-around; width: 100%; margin-bottom: 30px; background: var(--surface); padding: 15px; border-radius: 20px; border: 1px solid var(--surface-border); backdrop-filter: blur(10px); }
+        .quick-services { display: flex; justify-content: space-around; width: 100%; margin-bottom: 30px; background: var(--surface); padding: 15px; border-radius: 20px; border: 1px solid var(--surface-border); backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.02);}
         .service-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
         .srv-icon { width: 40px; height: 40px; border-radius: 50%; background: rgba(14, 116, 144, 0.1); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
         .srv-text { font-size: 0.75rem; font-weight: 700; color: var(--text-main); }
 
-        /* الأزرار العريضة والسوشيال */
         .wide-btn {
             width: 100%; padding: 18px; border-radius: 16px; font-size: 1rem; font-weight: 800; text-decoration: none;
             display: flex; align-items: center; justify-content: center; gap: 10px;
@@ -166,7 +143,6 @@
         .fb-btn { background: #1877F2; } 
         .insta-btn { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
 
-        /* التقييمات الزجاجية */
         .reviews-box { width: 100%; text-align: right; margin-bottom: 10px; }
         .rev-head-title { font-size: 1rem; font-weight: 800; color: var(--text-muted); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
         .review {
@@ -179,7 +155,6 @@
         .rev-stars { font-size: 0.85rem; color: var(--gold); }
         .rev-msg { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
 
-        /* --- شريط الماركات اللانهائي --- */
         .marquee-wrap {
             background: var(--surface); padding: 22px 0; backdrop-filter: blur(10px);
             border-top: 1px solid var(--surface-border); margin-top: auto; 
@@ -196,7 +171,6 @@
 
         .brand-item { margin: 0 35px; font-size: 1.4rem; opacity: 0.8; display: inline-block; color: var(--text-main); }
         
-        /* خطوط الماركات */
         .rayban { font-family: 'Montserrat', sans-serif; font-weight: 900; font-style: italic; color: #E01E26; }
         .gucci { font-family: 'Playfair Display', serif; font-weight: 700; letter-spacing: 2px; font-size: 1.2rem; }
         .lacoste { font-family: 'Montserrat', sans-serif; font-weight: 800; color: #004526; }
@@ -215,7 +189,6 @@
         .celine { font-family: 'Montserrat', sans-serif; font-weight: 800; letter-spacing: 2px; }
         .boss { font-family: 'Montserrat', sans-serif; font-weight: 900; letter-spacing: -1px; }
 
-        /* FABs */
         .fab-area { position: fixed; bottom: 25px; right: 25px; display: flex; flex-direction: column; gap: 15px; z-index: 200; }
         .fab { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.6rem; text-decoration: none; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transition: transform 0.2s; }
         .fab-wa { background: #25D366; }
@@ -226,9 +199,6 @@
     </style>
 </head>
 <body>
-
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
 
     <div class="top-bar" id="txt-topbar">👓 أحدث تشكيلات 2026 متوفرة الآن في فرع المقابلين!</div>
 
@@ -258,14 +228,6 @@
             </div>
         </div>
 
-        <div class="offer-card">
-            <div class="offer-text">
-                <h4 id="txt-offer-title">خصم 20% لطلاب الجامعات</h4>
-                <p id="txt-offer-sub">على جميع النظارات الطبية والفحص</p>
-            </div>
-            <i class="fas fa-percent offer-icon"></i>
-        </div>
-
         <div class="cards-grid">
             <a href="test.html" class="main-card highlight-card tilt-card">
                 <i class="fas fa-microscope card-icon"></i>
@@ -288,7 +250,7 @@
             </div>
             <div class="service-item">
                 <div class="srv-icon"><i class="fas fa-eye"></i></div>
-                <span class="srv-text" id="txt-srv-3">تفصيل دقيق</span>
+                <span class="srv-text" id="txt-srv-3">تجهيز عدسات</span>
             </div>
         </div>
 
@@ -345,7 +307,6 @@
     </div>
 
     <script>
-        // --- إدارة الـ 3D Tilt Effect ---
         const tiltCards = document.querySelectorAll('.tilt-card');
         tiltCards.forEach(card => {
             card.addEventListener('mousemove', e => {
@@ -361,7 +322,6 @@
             });
         });
 
-        // --- إدارة الوضع الليلي ---
         let isDark = false;
         function toggleTheme() {
             isDark = !isDark;
@@ -369,16 +329,14 @@
             document.getElementById('theme-btn').innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
         }
 
-        // --- إعدادات اللغة ---
         const i18n = {
             ar: {
                 topbar: "👓 أحدث تشكيلات 2026 متوفرة الآن في فرع المقابلين!",
                 hero: "دلتا للبصريات",
                 sub: "الفرع الرئيسي - المقابلين<br>خبراء العناية بالعين وأحدث الماركات",
                 statusOpen: "مفتوح الآن", statusClosed: "مغلق الآن",
-                offerTitle: "خصم 20% لطلاب الجامعات", offerSub: "على جميع النظارات الطبية والفحص",
                 test: "الفحص الذكي", coll: "التشكيلات", loc: "موقع الفرع على الخريطة",
-                srv1: "صيانة فورية", srv2: "توصيل متاح", srv3: "تفصيل دقيق",
+                srv1: "صيانة فورية", srv2: "توصيل متاح", srv3: "تجهيز عدسات",
                 follow: "تابعونا على منصات التواصل", revTitle: "آراء عملائنا"
             },
             en: {
@@ -386,9 +344,8 @@
                 hero: "DELTA OPTICS",
                 sub: "Main Branch - Al Muqablain<br>Eye Care Experts & Premium Brands",
                 statusOpen: "Open Now", statusClosed: "Closed Now",
-                offerTitle: "20% Off for Students", offerSub: "On all medical glasses & tests",
                 test: "Smart Test", coll: "Collections", loc: "Location Map",
-                srv1: "Quick Repair", srv2: "Delivery", srv3: "Precision Craft",
+                srv1: "Quick Repair", srv2: "Delivery", srv3: "Lens Fitting",
                 follow: "Follow Us", revTitle: "Customer Reviews"
             }
         };
@@ -421,8 +378,6 @@
             document.getElementById('txt-header').innerText = curLang === 'ar' ? 'DELTA OPTICS' : 'DELTA OPTICS';
             document.getElementById('txt-hero').innerText = t.hero;
             document.getElementById('txt-sub').innerHTML = t.sub;
-            document.getElementById('txt-offer-title').innerText = t.offerTitle;
-            document.getElementById('txt-offer-sub').innerText = t.offerSub;
             document.getElementById('txt-test').innerText = t.test;
             document.getElementById('txt-coll').innerText = t.coll;
             document.getElementById('txt-srv-1').innerText = t.srv1;

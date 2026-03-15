@@ -42,14 +42,8 @@
             color: var(--text-dark); display: flex; align-items: center; justify-content: center; 
             text-decoration: none; font-size: 1.2rem; transition: var(--transition);
         }
-        .back-btn:active { background: #E2E8F0; transform: scale(0.9); }
-        
         .header-logo { width: 42px; height: 42px; object-fit: contain; border-radius: 8px; }
-        
-        .header-title { 
-            font-size: 1.2rem; font-weight: 800; color: var(--brand); 
-            margin: 0; text-align: center; width: 100%;
-        }
+        .header-title { font-size: 1.2rem; font-weight: 800; color: var(--brand); margin: 0; text-align: center; width: 100%; }
 
         /* --- شريط التصفية --- */
         .tabs-container { background: var(--white); padding: 15px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
@@ -79,6 +73,9 @@
         .card img { 
             width: 100%; height: 100%; object-fit: cover; display: block; 
             opacity: 0; transition: opacity 0.3s;
+            /* تحسين الجودة */
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
         }
         .card img.loaded { opacity: 1; }
 
@@ -101,7 +98,11 @@
         }
         .lightbox.active { display: flex; }
         
-        .lightbox img { max-width: 90%; max-height: 60vh; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.4); object-fit: contain;}
+        .lightbox img { 
+            max-width: 90%; max-height: 60vh; border-radius: 20px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4); object-fit: contain;
+            image-rendering: -webkit-optimize-contrast;
+        }
         
         .lightbox-close { 
             position: absolute; top: 25px; right: 25px; color: var(--white); font-size: 2rem; cursor: pointer;
@@ -138,8 +139,7 @@
 </div>
 
 <div class="gallery-container">
-    <div class="grid" id="gallery">
-        </div>
+    <div class="grid" id="gallery"></div>
 </div>
 
 <div class="lightbox" id="lightbox">
@@ -156,32 +156,25 @@
 <script>
     // --- الإعدادات ---
     const config = {
-        medical: 58,        // الطبي الجديد (m1.jpg)
-        medicalOld: 10,     // الطبي القديم (m1.jpg.jpg)
-        sun: 0,             // الشمسي الجديد (s1.jpg)
-        sunOld: 6          // الشمسي القديم (s1.jpg.jpg)
+        medical: 58, 
+        medicalOld: 10,
+        sun: 0,
+        sunOld: 6
     };
 
     function buildGallery() {
         const gallery = document.getElementById('gallery');
         let html = '';
 
-        // 1. بناء الطبي القديم (.jpg.jpg)
         for (let i = 1; i <= config.medicalOld; i++) {
             html += createCardHTML('medical', `m${i}.jpg.jpg`, `موديل طبي #${i} (كلاسيك)`);
         }
-
-        // 2. بناء الطبي الجديد (.jpg)
         for (let i = 1; i <= config.medical; i++) {
             html += createCardHTML('medical', `m${i}.jpg`, `موديل طبي #${i}`);
         }
-
-        // 3. بناء الشمسي القديم (.jpg.jpg)
         for (let i = 1; i <= config.sunOld; i++) {
             html += createCardHTML('sun', `s${i}.jpg.jpg`, `موديل شمسي #${i} (كلاسيك)`);
         }
-
-        // 4. بناء الشمسي الجديد (.jpg)
         for (let i = 1; i <= config.sun; i++) {
             html += createCardHTML('sun', `s${i}.jpg`, `موديل شمسي #${i}`);
         }
@@ -195,10 +188,9 @@
             <div class="card item-${type}" onclick="openLightbox('${filename}', '${title}')">
                 <div class="badge">${badge}</div>
                 <div class="img-wrap">
-                    <img src="${filename}" alt="${title}" loading="lazy" 
+                    <img src="${filename}" alt="${title}" 
                          onload="this.classList.add('loaded')" 
-                         onerror="this.closest('.card').style.display='none'">
-                </div>
+                         onerror="this.closest('.card').remove()"> </div>
                 <div class="card-info">
                     <h3>${title}</h3>
                     <p>اضغط للمعاينة</p>
@@ -208,17 +200,10 @@
     }
 
     function filterItems(type, btn) {
-        // تغيير حالة الأزرار
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-
-        // فلترة الكروت
         document.querySelectorAll('.card').forEach(card => {
-            if (type === 'all' || card.classList.contains(`item-${type}`)) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
-            }
+            card.style.display = (type === 'all' || card.classList.contains(`item-${type}`)) ? 'block' : 'none';
         });
     }
 
@@ -227,8 +212,10 @@
         document.getElementById('lb-img').src = src;
         document.getElementById('lb-title').innerText = title;
         
-        // رابط واتساب
-        const msg = encodeURIComponent(`مرحباً دلتا، أود الاستفسار عن موديل: ${title}`);
+        // جلب الرابط الكامل للصورة بدقة
+        const fullImageUrl = new URL(src, window.location.href).href;
+        
+        const msg = encodeURIComponent(`مرحباً دلتا، أود الاستفسار عن موديل: ${title}\nرابط الصورة: ${fullImageUrl}`);
         document.getElementById('lb-wa').href = `https://wa.me/962775549700?text=${msg}`;
         
         lb.style.display = 'flex';
@@ -244,12 +231,10 @@
         }, 300);
     }
 
-    // إغلاق عند الضغط خارج الصورة
     document.getElementById('lightbox').onclick = function(e) {
         if (e.target.id === 'lightbox') closeLightbox();
     };
 
-    // تشغيل البناء فور التحميل
     window.onload = buildGallery;
 </script>
 </body>

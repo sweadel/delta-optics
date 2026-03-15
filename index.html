@@ -15,10 +15,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- الألوان (Medical Tech Theme) --- */
+        /* --- الألوان --- */
         :root { 
-            --primary: #0e7490;       /* تركواز غامق */
-            --secondary: #0ea5e9;     /* سماوي */
+            --primary: #0e7490;       
+            --secondary: #0ea5e9;     
             --dark: #0f172a;          
             --light: #f8fafc;         
             --white: #ffffff;
@@ -35,7 +35,7 @@
             padding-bottom: 90px; transition: 0.3s;
         }
 
-        /* --- الهيدر (مع زر اللغة) --- */
+        /* --- الهيدر --- */
         header { 
             background: var(--white); padding: 12px 20px;
             box-shadow: 0 4px 20px rgba(14, 116, 144, 0.05);
@@ -50,7 +50,7 @@
             background: #f1f5f9; border: 1px solid #e2e8f0;
             padding: 6px 12px; border-radius: 8px; font-weight: 700;
             color: var(--primary); cursor: pointer; font-size: 0.9rem;
-            transition: 0.2s; font-family: sans-serif;
+            transition: 0.2s;
         }
         .lang-btn:hover { background: var(--primary); color: white; }
 
@@ -71,7 +71,6 @@
         h1 { font-size: 1.8rem; font-weight: 900; margin-bottom: 8px; color: var(--primary); }
         .subtitle { color: var(--gray); font-size: 0.9rem; margin-bottom: 25px; line-height: 1.6; }
 
-        /* الشارات */
         .info-row { display: flex; gap: 10px; justify-content: center; margin-bottom: 30px; }
         .badge {
             background: var(--white); padding: 8px 16px; border-radius: 50px;
@@ -84,7 +83,6 @@
         .open-dot { background: var(--success); box-shadow: 0 0 0 2px #d1fae5; }
         .closed-dot { background: var(--error); box-shadow: 0 0 0 2px #fee2e2; }
 
-        /* الشبكة */
         .cards-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
             width: 100%; margin-bottom: 15px;
@@ -113,7 +111,6 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
 
-        /* السوشيال */
         .social-section { width: 100%; margin-bottom: 20px; }
         .sec-title { font-size: 0.85rem; font-weight: 700; color: var(--gray); margin-bottom: 12px; display: block; }
         .social-row { display: flex; gap: 12px; justify-content: center; }
@@ -126,7 +123,6 @@
         .fb-btn { background: #1877F2; } 
         .insta-btn { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
 
-        /* التقييمات */
         .reviews-box { width: 100%; text-align: right; margin-bottom: 10px; }
         .rev-head-title { font-size: 0.95rem; font-weight: 700; color: var(--gray); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
         .review {
@@ -140,12 +136,16 @@
         .rev-stars { font-size: 0.8rem; color: #f59e0b; }
         .rev-msg { font-size: 0.85rem; color: var(--gray); line-height: 1.4; }
 
-        /* --- شريط الماركات الاحترافي (Seamless & Colorful) --- */
+        /* --- شريط الماركات اللانهائي الاحترافي (Seamless Infinite Marquee) --- */
         .marquee-wrap {
             background: var(--white); padding: 22px 0;
-            border-top: 1px solid #e2e8f0; margin-top: auto; overflow: hidden;
-            position: relative; white-space: nowrap;
+            border-top: 1px solid #e2e8f0; margin-top: auto; 
+            overflow: hidden; position: relative; 
+            direction: ltr; /* إجبار الاتجاه لتسهيل حركة الشريط */
+            display: flex;
         }
+        
+        /* تدرج لوني على الأطراف عشان يبين الشريط كأنه بيطلع من العدم */
         .marquee-wrap::before, .marquee-wrap::after {
             content: ""; position: absolute; top: 0; width: 60px; height: 100%; z-index: 2;
             pointer-events: none;
@@ -153,14 +153,23 @@
         .marquee-wrap::before { left: 0; background: linear-gradient(to right, var(--white), transparent); }
         .marquee-wrap::after { right: 0; background: linear-gradient(to left, var(--white), transparent); }
 
-        .marquee-content { display: inline-flex; animation: scroll 50s linear infinite; align-items: center; }
-        
-        .brand-item {
-            margin: 0 35px; font-size: 1.4rem; opacity: 0.9;
-            transition: 0.3s; display: inline-block;
+        /* الحاوية اللي بتتحرك */
+        .marquee-content { 
+            display: flex; flex-shrink: 0; align-items: center; 
+            animation: scroll 35s linear infinite; 
         }
         
-        /* ألوان الماركات الحقيقية */
+        /* حركة اللف اللانهائية */
+        @keyframes scroll { 
+            0% { transform: translateX(0); } 
+            100% { transform: translateX(-100%); } 
+        }
+
+        .brand-item {
+            margin: 0 35px; font-size: 1.4rem; opacity: 0.9; display: inline-block;
+        }
+        
+        /* ألوان وخطوط الماركات الحقيقية */
         .rayban { font-family: 'Montserrat', sans-serif; font-weight: 900; font-style: italic; color: #E01E26; }
         .gucci { font-family: 'Playfair Display', serif; font-weight: 700; color: #000; letter-spacing: 2px; font-size: 1.2rem; }
         .lacoste { font-family: 'Montserrat', sans-serif; font-weight: 800; color: #004526; }
@@ -176,8 +185,8 @@
         .oakley { font-family: 'Montserrat', sans-serif; font-weight: 900; font-style: italic; color: #000; font-size: 1.5rem; letter-spacing: -1px; }
         .persol { font-family: 'Playfair Display', serif; font-weight: 700; color: #000; font-style: italic; letter-spacing: 1px; }
         .fendi { font-family: 'Montserrat', sans-serif; font-weight: 900; color: #000; letter-spacing: 1px; }
-
-        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .celine { font-family: 'Montserrat', sans-serif; font-weight: 800; color: #000; letter-spacing: 2px; }
+        .boss { font-family: 'Montserrat', sans-serif; font-weight: 900; color: #000; letter-spacing: -1px; }
 
         /* FABs */
         .fab-area {
@@ -194,7 +203,6 @@
         .fab-call { background: var(--primary); }
         .fab:active { transform: scale(0.9); }
         
-        /* عكس مكان الـ FABs عند اللغة الإنجليزية */
         html[dir="ltr"] .fab-area { right: auto; left: 25px; }
 
     </style>
@@ -260,33 +268,38 @@
     <div class="marquee-wrap">
         <div class="marquee-content">
             <span class="brand-item rayban">Ray-Ban</span>
+            <span class="brand-item oakley">OAKLEY</span>
             <span class="brand-item gucci">GUCCI</span>
             <span class="brand-item lacoste">LACOSTE</span>
             <span class="brand-item prada">PRADA</span>
+            <span class="brand-item celine">CELINE</span>
             <span class="brand-item versace">VERSACE</span>
             <span class="brand-item tomford">TOM FORD</span>
             <span class="brand-item dior">DIOR</span>
             <span class="brand-item police">POLICE</span>
             <span class="brand-item carrera">CARRERA</span>
+            <span class="brand-item boss">HUGO BOSS</span>
             <span class="brand-item cartier">Cartier</span>
             <span class="brand-item armani">GIORGIO ARMANI</span>
-            <span class="brand-item oakley">OAKLEY</span>
             <span class="brand-item burberry">BURBERRY</span>
             <span class="brand-item persol">Persol</span>
             <span class="brand-item fendi">FENDI</span>
-            
+        </div>
+        <div class="marquee-content">
             <span class="brand-item rayban">Ray-Ban</span>
+            <span class="brand-item oakley">OAKLEY</span>
             <span class="brand-item gucci">GUCCI</span>
             <span class="brand-item lacoste">LACOSTE</span>
             <span class="brand-item prada">PRADA</span>
+            <span class="brand-item celine">CELINE</span>
             <span class="brand-item versace">VERSACE</span>
             <span class="brand-item tomford">TOM FORD</span>
             <span class="brand-item dior">DIOR</span>
             <span class="brand-item police">POLICE</span>
             <span class="brand-item carrera">CARRERA</span>
+            <span class="brand-item boss">HUGO BOSS</span>
             <span class="brand-item cartier">Cartier</span>
             <span class="brand-item armani">GIORGIO ARMANI</span>
-            <span class="brand-item oakley">OAKLEY</span>
             <span class="brand-item burberry">BURBERRY</span>
             <span class="brand-item persol">Persol</span>
             <span class="brand-item fendi">FENDI</span>
@@ -299,7 +312,6 @@
     </div>
 
     <script>
-        // إعدادات اللغة
         const i18n = {
             ar: {
                 hero: "دلتا للبصريات",
@@ -317,7 +329,6 @@
             }
         };
         
-        // بيانات التعليقات
         const reviewsData = {
             ar: [
                 { name: "محمد العلي", text: "خدمة ممتازة، الدكتور شاطر والفحص دقيق جداً." },
@@ -345,7 +356,6 @@
             html.dir = curLang === 'ar' ? 'rtl' : 'ltr';
             btn.innerText = curLang === 'ar' ? 'EN' : 'عربي';
 
-            // تحديث النصوص
             document.getElementById('txt-header').innerText = curLang === 'ar' ? 'DELTA OPTICS' : 'DELTA OPTICS';
             document.getElementById('txt-hero').innerText = t.hero;
             document.getElementById('txt-sub').innerHTML = t.sub;
@@ -359,7 +369,6 @@
             loadRandomReviews();
         }
 
-        // منطق الدوام
         function checkStatus() {
             const now = new Date();
             const day = now.getDay(); const hour = now.getHours();
@@ -381,7 +390,6 @@
             }
         }
 
-        // تعليقات عشوائية
         function loadRandomReviews() {
             const container = document.getElementById('reviews-container');
             const list = reviewsData[curLang];

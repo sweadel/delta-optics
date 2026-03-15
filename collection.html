@@ -132,10 +132,10 @@
         .lightbox-title { color: var(--white); font-size: 1.4rem; font-weight: 800; margin-bottom: 15px; }
         
         .wa-order-btn {
-            background: var(--success); color: var(--white);
+            background: #25D366; color: var(--white);
             padding: 14px 30px; border-radius: 30px; font-weight: 800; font-size: 1.1rem;
             text-decoration: none; display: inline-flex; align-items: center; gap: 10px;
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4); transition: 0.2s;
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3); transition: 0.2s;
         }
         .wa-order-btn:active { transform: scale(0.95); }
 
@@ -163,17 +163,14 @@
 </div>
 
 <div class="gallery-container">
-    <div class="grid" id="gallery">
-        </div>
+    <div class="grid" id="gallery"></div>
 </div>
 
 <div class="lightbox" id="lightbox">
     <button class="lightbox-close" onclick="closeLightbox()" aria-label="إغلاق العارض"><i class="fas fa-times"></i></button>
-    
     <div class="lightbox-img-container">
         <img id="lb-img" src="" alt="View">
     </div>
-    
     <div class="lightbox-info">
         <div class="lightbox-title" id="lb-title"></div>
         <a id="lb-wa" href="#" class="wa-order-btn" target="_blank" rel="noopener noreferrer">
@@ -207,6 +204,12 @@
 
     let curLang = 'ar';
 
+    // --- 2. إعدادات الصور الفعلية ---
+    const config = {
+        medicalImages: 58, 
+        sunImages: 6
+    };
+
     function toggleLang() {
         curLang = curLang === 'ar' ? 'en' : 'ar';
         document.documentElement.dir = curLang === 'ar' ? 'rtl' : 'ltr';
@@ -221,42 +224,23 @@
 
         document.getElementById('gallery').innerHTML = "";
         buildGallery();
-        applyCurrentFilter(); // إصلاح: إعادة تطبيق الفلتر بعد بناء المعرض الجديد
+        applyCurrentFilter();
     }
 
-    // --- 2. إعدادات الصور ---
-    const config = {
-        medicalImages: 60,      // الطبي الجديد (m1.jpg)
-        oldMedicalImages: 40,   // الطبي القديم (m1.jpg.jpg)
-        sunImages: 20,          // الشمسي الجديد (s1.jpg)
-        oldSunImages: 30        // الشمسي القديم (s1.jpg.jpg)
-    };
-
-    const gallery = document.getElementById('gallery');
-    
     // --- 3. بناء المعرض ---
     function buildGallery() {
+        const gallery = document.getElementById('gallery');
         const fragment = document.createDocumentFragment();
         let delayCount = 0;
 
-        for (let i = 1; i <= config.oldMedicalImages; i++) {
-            delayCount++;
-            let tName = `${i18n[curLang].modelMedPrefix}${i} (كلاسيك)`;
-            fragment.appendChild(createCardHTML('medical', `m${i}.jpg.jpg`, tName, i18n[curLang].badgeMed, Math.min(delayCount * 0.02, 0.5))); // الحد الأقصى للتأخير 0.5s
-        }
-
+        // بناء الطبي m1.jpg إلى m58.jpg
         for (let i = 1; i <= config.medicalImages; i++) {
             delayCount++;
             let tName = `${i18n[curLang].modelMedPrefix}${i}`;
             fragment.appendChild(createCardHTML('medical', `m${i}.jpg`, tName, i18n[curLang].badgeMed, Math.min(delayCount * 0.02, 0.5)));
         }
 
-        for (let i = 1; i <= config.oldSunImages; i++) {
-            delayCount++;
-            let tName = `${i18n[curLang].modelSunPrefix}${i} (كلاسيك)`;
-            fragment.appendChild(createCardHTML('sun', `s${i}.jpg.jpg`, tName, i18n[curLang].badgeSun, Math.min(delayCount * 0.02, 0.5)));
-        }
-
+        // بناء الشمسي s1.jpg إلى s6.jpg
         for (let i = 1; i <= config.sunImages; i++) {
             delayCount++;
             let tName = `${i18n[curLang].modelSunPrefix}${i}`;
@@ -271,13 +255,12 @@
         card.className = `card item-${type}`;
         card.style.animationDelay = `${delay}s`;
         
-        // تم استبدال parentElement.parentElement بـ closest لزيادة الموثوقية والأمان
         card.innerHTML = `
             <div class="badge">${badgeTxt}</div>
             <div class="img-wrap">
                 <img src="${filename}" alt="${title}" loading="lazy" 
                      onload="this.classList.add('loaded')" 
-                     onerror="this.closest('.card').remove()"> 
+                     onerror="this.closest('.card').style.display='none'"> 
             </div>
             <div class="card-info">
                 <h3>${title}</h3>
@@ -290,8 +273,6 @@
     }
 
     // --- 4. نظام التصفية ---
-    const filterBtns = document.querySelectorAll('.tab-btn');
-    
     function applyCurrentFilter() {
         const activeBtn = document.querySelector('.tab-btn.active');
         const filterValue = activeBtn ? activeBtn.getAttribute('data-filter') : 'all';
@@ -306,52 +287,46 @@
         });
     }
 
-    filterBtns.forEach(btn => {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            filterBtns.forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             e.target.classList.add('active');
             applyCurrentFilter();
         });
     });
 
-    // --- 5. نظام التكبير (Lightbox) والواتساب الذكي ---
-    const lightbox = document.getElementById('lightbox');
-    const lbImg = document.getElementById('lb-img');
-    const lbTitle = document.getElementById('lb-title');
-    const lbWa = document.getElementById('lb-wa');
-
+    // --- 5. Lightbox & WhatsApp ---
     function openLightbox(src, title) {
+        const lightbox = document.getElementById('lightbox');
+        const lbImg = document.getElementById('lb-img');
+        const lbTitle = document.getElementById('lb-title');
+        const lbWa = document.getElementById('lb-wa');
+
         lbImg.src = src;
         lbTitle.innerText = title;
         
-        // استخدام الكائن URL لضمان جلب الرابط الصحيح بغض النظر عن مسار الموقع
         const fullImageUrl = new URL(src, window.location.href).href;
-        
-        let waMsg = `${i18n[curLang].waMsgPrefix}${title} (الرمز: ${src}).\nرابط الصورة: ${fullImageUrl}`;
+        let waMsg = `${i18n[curLang].waMsgPrefix}${title}.\nرابط الصورة: ${fullImageUrl}`;
         lbWa.href = `https://wa.me/962775549700?text=${encodeURIComponent(waMsg)}`;
         
         lightbox.classList.add('active');
     }
 
     function closeLightbox() {
+        const lightbox = document.getElementById('lightbox');
         lightbox.classList.remove('active');
-        setTimeout(() => lbImg.src = "", 300);
+        setTimeout(() => document.getElementById('lb-img').src = "", 300);
     }
 
-    lightbox.addEventListener('click', (e) => {
-        if (e.target === lightbox) closeLightbox();
+    document.getElementById('lightbox').addEventListener('click', (e) => {
+        if (e.target.id === 'lightbox') closeLightbox();
     });
     
-    // إضافة ميزة إغلاق العارض عند الضغط على زر Escape
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && lightbox.classList.contains('active')) {
-            closeLightbox();
-        }
+        if (e.key === 'Escape') closeLightbox();
     });
 
-    // تشغيل البناء فور تحميل الصفحة
     document.addEventListener('DOMContentLoaded', buildGallery);
-
 </script>
 </body>
 </html>

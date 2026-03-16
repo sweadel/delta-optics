@@ -10,7 +10,7 @@
         :root { --primary: #0E7490; --secondary: #164E63; --bg: #F8FAFC; --text: #1E293B; --danger: #EF4444; --success: #10B981; --warning: #F59E0B; }
         body { font-family: 'Tajawal', sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text); display: flex; height: 100vh; overflow: hidden; }
         
-        /* شاشة الدخول */
+        /* شاشة تسجيل الدخول */
         #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100%; background: var(--bg); position: absolute; z-index: 1000; padding: 20px; box-sizing: border-box;}
         .login-box { background: white; padding: 40px 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 350px; text-align: center; }
         .input-field { width: 100%; padding: 12px 15px; margin-bottom: 15px; border-radius: 10px; border: 2px solid #E2E8F0; font-size: 1rem; outline: none; box-sizing: border-box; font-family: sans-serif; transition: 0.3s; }
@@ -21,16 +21,15 @@
         .btn-success { background: var(--success); }
         .btn-warning { background: var(--warning); }
 
-        /* القائمة */
+        /* القائمة الجانبية (للابتوب) والسفلية (للتلفون) */
         #sidebar { width: 260px; background: var(--secondary); color: white; display: none; flex-direction: column; padding: 20px 0; transition: 0.3s; z-index: 500; }
         #sidebar.show { display: flex; }
         .logo-area { text-align: center; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
         .nav-item { padding: 15px 25px; cursor: pointer; display: flex; align-items: center; gap: 15px; font-weight: bold; transition: 0.2s; color: #CBD5E1; border-right: 4px solid transparent; }
         .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.1); color: white; border-right-color: var(--primary); }
-        .nav-item i { font-size: 1.2rem; width: 25px; text-align: center; }
         .admin-nav { display: none; } 
 
-        /* المحتوى */
+        /* المحتوى الرئيسي */
         #main-content { flex: 1; padding: 30px; overflow-y: auto; display: none; background: var(--bg); box-sizing: border-box; }
         #main-content.show { display: block; }
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; background: white; padding: 15px 25px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); flex-wrap: wrap; gap: 15px;}
@@ -39,45 +38,36 @@
         .section-card.active { display: block !important; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* الجداول */
         .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 600px; }
         th, td { padding: 15px; text-align: right; border-bottom: 1px solid #E2E8F0; vertical-align: middle; }
         th { background: #F8FAFC; color: var(--primary); }
-        .report-box { background: #F8FAFC; padding: 15px; border-radius: 10px; font-size: 0.9rem; line-height: 1.8; white-space: pre-wrap; border: 1px solid #E2E8F0; min-width: 250px;}
-        .log-badge { background: #FEF2F2; color: var(--danger); padding: 5px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; display: inline-block; white-space: nowrap;}
+        .report-box { background: #F8FAFC; padding: 15px; border-radius: 10px; font-size: 0.9rem; line-height: 1.8; white-space: pre-wrap; border: 1px solid #E2E8F0; }
         
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .form-box { border: 2px solid #F1F5F9; padding: 20px; border-radius: 15px; margin-bottom: 20px;}
         .divider { height: 1px; background: #E2E8F0; margin: 30px 0; }
-        .form-box { border: 2px solid #F1F5F9; padding: 20px; border-radius: 15px; }
-        
-        /* 🌟 شبكة الصور والمنتجات 🌟 */
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; margin-top: 20px; }
-        .product-card { background: white; border: 1px solid #E2E8F0; border-radius: 15px; padding: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02); transition: 0.3s; }
-        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        .product-card img { width: 100%; height: 160px; object-fit: contain; border-radius: 10px; margin-bottom: 15px; background: #F8FAFC; padding: 10px; box-sizing: border-box;}
-        .product-card h4 { margin: 0 0 15px 0; color: var(--primary); font-size: 1.1rem; }
-        .card-actions { display: flex; gap: 10px; }
-        .card-actions .btn { padding: 8px; font-size: 0.9rem; flex: 1; }
 
-        /* نافذة التعديل المنبثقة (Modal) */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; box-sizing: border-box;}
+        /* معرض النظارات */
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
+        .product-card { background: white; border: 1px solid #E2E8F0; border-radius: 15px; padding: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        .product-card img { width: 100%; height: 140px; object-fit: contain; border-radius: 10px; background: #F8FAFC; margin-bottom: 10px; }
+        .badge-type { font-size: 0.7rem; padding: 3px 8px; border-radius: 5px; background: #ECFEFF; color: var(--primary); font-weight: bold; margin-bottom: 5px; display: inline-block; }
+
+        /* Modal التعديل */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.8); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
         .modal-overlay.active { display: flex; }
-        .modal-box { background: white; padding: 30px; border-radius: 20px; width: 100%; max-width: 400px; animation: popIn 0.3s; }
-        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-box { background: white; padding: 30px; border-radius: 20px; width: 100%; max-width: 400px; }
 
         @media (max-width: 768px) {
             body { flex-direction: column; }
             #sidebar.show { flex-direction: row; justify-content: space-around; width: 100%; height: auto; padding: 10px 0; position: fixed; bottom: 0; left: 0; border-top: 1px solid rgba(255,255,255,0.1); }
             .logo-area { display: none; }
-            .nav-item { padding: 5px; flex-direction: column; gap: 5px; font-size: 0.75rem; border: none; flex: 1; text-align: center;}
-            .nav-item:hover, .nav-item.active { border-bottom-color: #38BDF8; background: transparent; color: #38BDF8; }
+            .nav-item { padding: 5px; flex-direction: column; gap: 5px; font-size: 0.7rem; border: none; flex: 1; text-align: center;}
+            .nav-item i { width: auto; font-size: 1.1rem; }
             #main-content { padding: 15px; padding-bottom: 80px; }
-            .section-card { padding: 15px; }
             .grid-2, .grid-3 { grid-template-columns: 1fr; }
-            header { flex-direction: column; text-align: center; }
-            header .btn { width: 100%; }
         }
     </style>
 </head>
@@ -85,19 +75,17 @@
 
     <div id="login-screen">
         <div class="login-box">
-            <i class="fas fa-fingerprint" style="font-size: 3.5rem; color: var(--primary); margin-bottom: 20px;"></i>
+            <i class="fas fa-user-shield" style="font-size: 3.5rem; color: var(--primary); margin-bottom: 20px;"></i>
             <h2 style="margin-bottom: 25px;">بوابة الإدارة المركزية</h2>
             <input type="text" id="username" class="input-field" placeholder="اسم المستخدم" dir="ltr">
             <input type="password" id="password" class="input-field" placeholder="كلمة المرور" dir="ltr">
             <button class="btn" id="login-btn" onclick="attemptLogin()">دخول آمن</button>
-            <p id="error-msg" style="color: var(--danger); display: none; font-size: 0.9rem; margin-top: 15px; font-weight: bold;">بيانات الدخول غير صحيحة!</p>
+            <p id="error-msg" style="color: var(--danger); display: none; font-size: 0.9rem; margin-top: 15px; font-weight: bold;">بيانات الدخول خاطئة!</p>
         </div>
     </div>
 
     <div id="sidebar">
-        <div class="logo-area">
-            <h2 style="margin:0; color:white;"><i class="fas fa-chart-line"></i> نظام دلتا</h2>
-        </div>
+        <div class="logo-area"><h2 style="margin:0; color:white;"><i class="fas fa-chart-line"></i> دلتا</h2></div>
         <div class="nav-item active" onclick="switchTab(event, 'reports')"><i class="fas fa-notes-medical"></i> <span>التقارير</span></div>
         <div class="nav-item" onclick="switchTab(event, 'brands')"><i class="fas fa-glasses"></i> <span>الماركات</span></div>
         <div class="nav-item admin-nav" onclick="switchTab(event, 'users')"><i class="fas fa-users-cog"></i> <span>الحسابات</span></div>
@@ -108,105 +96,81 @@
         <header>
             <div style="display:flex; align-items:center; gap:10px;">
                 <i class="fas fa-user-circle" style="font-size:2rem; color:var(--primary);"></i>
-                <div style="text-align: right;">
-                    <div id="welcome-text" style="font-weight:900; color:var(--text);"></div>
-                    <div id="role-text" style="font-size:0.8rem; color:#64748B;"></div>
-                </div>
+                <div><div id="welcome-text" style="font-weight:900;"></div><div id="role-text" style="font-size:0.8rem; color:#64748B;"></div></div>
             </div>
             <button class="btn btn-danger" style="width:auto; padding:8px 20px;" onclick="logout()"><i class="fas fa-power-off"></i> خروج</button>
         </header>
 
         <div id="sec-reports" class="section-card active">
-            <h2 style="margin-top:0; color:var(--primary);"><i class="fas fa-list-alt"></i> سجل فحوصات المراجعين</h2>
+            <h2 style="color:var(--primary);"><i class="fas fa-list-alt"></i> تقارير المراجعين</h2>
             <div class="table-responsive">
-                <table>
-                    <thead><tr><th style="width:20%;">المراجع</th><th style="width:60%;">التقرير المفصل</th><th style="width:20%;">التوقيت</th></tr></thead>
-                    <tbody id="reports-body"><tr><td colspan="3" style="text-align:center;">جاري تحميل التقارير...</td></tr></tbody>
-                </table>
+                <table><thead><tr><th style="width:20%;">المراجع</th><th style="width:60%;">التفاصيل</th><th style="width:20%;">الوقت</th></tr></thead>
+                <tbody id="reports-body"></tbody></table>
             </div>
         </div>
 
         <div id="sec-brands" class="section-card">
-            <h2 style="margin-top:0; color:var(--primary);"><i class="fas fa-image"></i> إدارة الماركات والنظارات</h2>
-            
-            <div class="form-box" style="background: #F8FAFC;">
-                <h3 style="margin-top:0;"><i class="fas fa-plus-circle"></i> إضافة نظارة/ماركة جديدة</h3>
+            <div class="form-box" style="background:#F8FAFC;">
+                <h3>إضافة نظارة جديدة</h3>
                 <div class="grid-2">
-                    <div>
-                        <label style="font-weight:bold; font-size:0.9rem;">اسم النظارة أو الماركة:</label>
-                        <input type="text" id="brand-name" class="input-field" placeholder="مثال: Ray-Ban Classic">
-                    </div>
-                    <div>
-                        <label style="font-weight:bold; font-size:0.9rem;">اختر الصورة من جهازك:</label>
-                        <input type="file" id="brand-image" class="input-field" accept="image/*" style="background:white; padding: 9px;">
-                    </div>
+                    <input type="text" id="brand-name" class="input-field" placeholder="اسم الماركة">
+                    <select id="brand-type" class="input-field">
+                        <option value="medical">طبي (Medical)</option>
+                        <option value="sun">شمسي (Sun)</option>
+                    </select>
                 </div>
-                <button class="btn btn-success" id="btn-upload" onclick="uploadBrand()"><i class="fas fa-cloud-upload-alt"></i> رفع وحفظ في التشكيلة</button>
+                <input type="file" id="brand-image" class="input-field" accept="image/*" style="background:white; padding:9px;">
+                <button class="btn btn-success" id="btn-upload" onclick="uploadBrand()">رفع الصورة وحفظ</button>
             </div>
-
-            <div class="divider"></div>
-
-            <h3 style="color:var(--primary);"><i class="fas fa-th-large"></i> التشكيلة الحالية (المعرض)</h3>
-            <p style="font-size:0.9rem; color:#64748B; margin-top:-10px;">يمكنك تعديل اسم النظارة أو حذفها بالكامل من هنا.</p>
-            
-            <div id="brands-gallery" class="products-grid">
-                <div style="grid-column: 1 / -1; text-align: center; padding: 20px; color: gray;">جاري تحميل التشكيلة...</div>
-            </div>
+            <div class="products-grid" id="brands-gallery"></div>
         </div>
 
         <div id="sec-users" class="section-card">
             <div class="form-box">
-                <h3 style="margin-top:0;"><i class="fas fa-user-plus"></i> إنشاء حساب جديد</h3>
+                <h3>إنشاء حساب جديد</h3>
                 <div class="grid-2">
                     <input type="text" id="new-name" class="input-field" placeholder="الاسم المعروض">
-                    <input type="text" id="new-username" class="input-field" placeholder="Username" dir="ltr">
-                    <input type="text" id="new-password" class="input-field" placeholder="كلمة المرور" dir="ltr">
-                    <select id="new-role" class="input-field"><option value="manager">إدارة العيادة</option><option value="superadmin">إدارة عليا</option></select>
+                    <input type="text" id="new-username" class="input-field" placeholder="اليوزر نيم" dir="ltr">
+                    <input type="text" id="new-password" class="input-field" placeholder="الباسورد" dir="ltr">
+                    <select id="new-role" class="input-field"><option value="manager">مدير عيادة</option><option value="superadmin">إدارة عليا</option></select>
                 </div>
                 <button class="btn btn-success" onclick="addNewUser()">إضافة الحساب</button>
             </div>
             <div class="divider"></div>
             <div class="form-box">
-                <h3 style="margin-top:0;"><i class="fas fa-edit"></i> تعديل/حذف حساب</h3>
+                <h3>تعديل / حذف حساب</h3>
                 <select id="user-select" class="input-field" onchange="fillUserData()"></select>
                 <div class="grid-3">
-                    <input type="text" id="edit-name" class="input-field" placeholder="الاسم">
-                    <input type="text" id="edit-username" class="input-field" placeholder="اليوزر الجديد" dir="ltr">
-                    <input type="text" id="edit-password" class="input-field" placeholder="الباسورد" dir="ltr">
+                    <input type="text" id="edit-name" class="input-field" placeholder="تعديل الاسم">
+                    <input type="text" id="edit-username" class="input-field" placeholder="تعديل اليوزر" dir="ltr">
+                    <input type="text" id="edit-password" class="input-field" placeholder="باسورد جديد" dir="ltr">
                 </div>
-                <div style="display:flex; gap:10px;"><button class="btn" style="background:var(--secondary); flex:1;" onclick="saveUserChanges()">حفظ التعديلات</button><button class="btn btn-danger" style="flex:1;" onclick="deleteUser()">حذف الحساب</button></div>
+                <div style="display:flex; gap:10px;"><button class="btn" onclick="saveUserChanges()" style="flex:1;">حفظ</button><button class="btn btn-danger" onclick="deleteUser()" style="flex:1;">حذف</button></div>
             </div>
         </div>
 
         <div id="sec-audit" class="section-card">
-            <h2 style="margin-top:0; color:var(--danger);"><i class="fas fa-eye"></i> الصندوق الأسود (سجل الأحداث)</h2>
+            <h2>سجل المراقبة</h2>
             <div class="table-responsive">
-                <table>
-                    <thead><tr><th>المستخدم</th><th>الحدث / التفاصيل</th><th>التوقيت</th></tr></thead>
-                    <tbody id="logs-body"><tr><td colspan="3" style="text-align:center;">جاري تحميل السجلات...</td></tr></tbody>
-                </table>
+                <table><thead><tr><th>المستخدم</th><th>الحدث</th><th>التوقيت</th></tr></thead>
+                <tbody id="logs-body"></tbody></table>
             </div>
         </div>
     </div>
 
     <div id="edit-brand-modal" class="modal-overlay">
         <div class="modal-box">
-            <h3 style="margin-top:0; color:var(--primary);"><i class="fas fa-edit"></i> تعديل بيانات النظارة</h3>
-            <label style="font-weight:bold; font-size:0.9rem;">تعديل الاسم:</label>
-            <input type="text" id="edit-brand-name-input" class="input-field" style="margin-top:5px;">
+            <h3>تعديل اسم النظارة</h3>
+            <input type="text" id="edit-brand-name-input" class="input-field">
             <input type="hidden" id="edit-brand-id">
-            
-            <div style="display:flex; gap:10px; margin-top:15px;">
-                <button class="btn btn-success" style="flex:1;" onclick="saveBrandEdit()"><i class="fas fa-save"></i> حفظ</button>
-                <button class="btn btn-danger" style="flex:1;" onclick="closeBrandModal()">إلغاء</button>
-            </div>
+            <div style="display:flex; gap:10px;"><button class="btn btn-success" style="flex:1;" onclick="saveBrandEdit()">حفظ</button><button class="btn btn-danger" style="flex:1;" onclick="closeBrandModal()">إلغاء</button></div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDocs, where, doc, getDoc, setDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        import { getStorage, ref as sRef, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB11C4GGgAyqeThs8a9cvDNN7frvAA1nqQ",
@@ -224,14 +188,16 @@
         let currentUser = null;
         let systemUsersList = {};
 
+        // تسجيل الدخول
         window.attemptLogin = async function() {
             const u = document.getElementById('username').value.trim();
             const p = document.getElementById('password').value.trim();
-            const btn = document.getElementById('login-btn');
             if(!u || !p) return;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
+            const btn = document.getElementById('login-btn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> التحقق...';
 
             try {
+                // التأكد من حساب عادل
                 const adminRef = doc(db, "system_users", "adel");
                 const adminSnap = await getDoc(adminRef);
                 if(!adminSnap.exists()) await setDoc(adminRef, { username: "adel", pass: "123123", role: "superadmin", name: "المهندس عادل" });
@@ -242,168 +208,147 @@
                 if(!snap.empty) {
                     currentUser = snap.docs[0].data();
                     currentUser.docId = snap.docs[0].id;
-                    
                     document.getElementById('login-screen').style.display = 'none';
                     document.getElementById('sidebar').classList.add('show');
                     document.getElementById('main-content').classList.add('show');
                     document.getElementById('welcome-text').innerText = currentUser.name;
-                    document.getElementById('role-text').innerText = currentUser.role === 'superadmin' ? 'الإدارة العليا' : 'إدارة العيادة';
-
-                    await logSystemAction(`تسجيل الدخول للنظام`);
-                    
+                    document.getElementById('role-text').innerText = currentUser.role === 'superadmin' ? 'الإدارة العليا' : 'مدير العيادة';
+                    await logAction("تسجيل دخول");
                     if(currentUser.role === 'superadmin') {
                         document.querySelectorAll('.admin-nav').forEach(el => el.style.display = 'flex');
                         loadLogs(); loadUsersForEdit();
                     }
-                    loadReports();
-                    loadBrands(); 
+                    loadReports(); loadBrands();
                 } else { document.getElementById('error-msg').style.display = 'block'; }
-            } catch (e) { console.error(e); }
+            } catch(e) { console.error(e); }
             btn.innerHTML = 'دخول آمن';
         }
 
-        window.switchTab = function(event, tabName) {
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            document.querySelectorAll('.section-card').forEach(el => el.classList.remove('active'));
-            document.getElementById('sec-' + tabName).classList.add('active');
+        window.switchTab = (e, tab) => {
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+            document.querySelectorAll('.section-card').forEach(s => s.classList.remove('active'));
+            document.getElementById('sec-'+tab).classList.add('active');
         }
 
-        /* 📸 --- نظام إدارة التشكيلة (CRUD كامل للماركات) --- 📸 */
-        
-        // 1. إضافة نظارة جديدة
+        /* إدارة الماركات */
         window.uploadBrand = async function() {
-            const nameInput = document.getElementById('brand-name').value.trim();
-            const fileInput = document.getElementById('brand-image').files[0];
+            const name = document.getElementById('brand-name').value.trim();
+            const type = document.getElementById('brand-type').value;
+            const file = document.getElementById('brand-image').files[0];
+            if(!name || !file) return alert("أكمل البيانات");
             const btn = document.getElementById('btn-upload');
-
-            if(!nameInput || !fileInput) return alert("يرجى كتابة اسم النظارة واختيار صورة!");
-
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الرفع...';
-            btn.disabled = true;
-
+            btn.disabled = true; btn.innerText = "جاري الرفع...";
             try {
-                const fileName = Date.now() + "_" + fileInput.name;
-                const storageReference = sRef(storage, 'brands/' + fileName);
-                
-                await uploadBytes(storageReference, fileInput);
-                const imageUrl = await getDownloadURL(storageReference);
-
-                await addDoc(collection(db, "brands"), {
-                    name: nameInput,
-                    imageUrl: imageUrl,
-                    imagePath: 'brands/' + fileName,
-                    timestamp: serverTimestamp()
-                });
-
-                await logSystemAction(`أضاف نظارة/ماركة جديدة: ${nameInput}`);
-                
+                const path = `brands/${Date.now()}_${file.name}`;
+                const sRef = ref(storage, path);
+                await uploadBytes(sRef, file);
+                const url = await getDownloadURL(sRef);
+                await addDoc(collection(db, "brands"), { name, type, imageUrl: url, imagePath: path, timestamp: serverTimestamp() });
+                await logAction(`إضافة نظارة: ${name}`);
+                alert("تم الرفع");
                 document.getElementById('brand-name').value = '';
-                document.getElementById('brand-image').value = '';
-                alert("تم إضافة النظارة للتشكيلة بنجاح!");
-            } catch (e) {
-                console.error(e); alert("فشل الرفع! تأكد من إعدادات Storage.");
-            }
-            btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> رفع وحفظ في التشكيلة';
-            btn.disabled = false;
+            } catch(e) { console.error(e); }
+            btn.disabled = false; btn.innerText = "رفع الصورة وحفظ";
         }
 
-        // 2. جلب وعرض التشكيلة
         function loadBrands() {
-            onSnapshot(query(collection(db, "brands"), orderBy("timestamp", "desc")), (snapshot) => {
-                const gallery = document.getElementById('brands-gallery');
-                gallery.innerHTML = "";
-                
-                if(snapshot.empty) {
-                    gallery.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 20px; color: gray;">لا يوجد نظارات في التشكيلة حالياً.</div>';
-                    return;
-                }
-
-                snapshot.forEach(doc => {
-                    const b = doc.data();
-                    // نمرر البيانات كـ String لنظام التعديل
-                    const safeName = b.name.replace(/'/g, "\\'"); 
-                    
-                    gallery.innerHTML += `
-                        <div class="product-card">
-                            <img src="${b.imageUrl}" alt="${b.name}">
-                            <h4>${b.name}</h4>
-                            <div class="card-actions">
-                                <button class="btn btn-warning" onclick="openEditBrandModal('${doc.id}', '${safeName}')"><i class="fas fa-edit"></i> تعديل</button>
-                                <button class="btn btn-danger" onclick="deleteBrand('${doc.id}', '${b.imagePath}', '${safeName}')"><i class="fas fa-trash"></i> حذف</button>
-                            </div>
+            onSnapshot(query(collection(db, "brands"), orderBy("timestamp", "desc")), (snap) => {
+                const gal = document.getElementById('brands-gallery'); gal.innerHTML = "";
+                snap.forEach(d => {
+                    const b = d.data();
+                    gal.innerHTML += `
+                    <div class="product-card">
+                        <span class="badge-type">${b.type === 'sun' ? 'شمسي' : 'طبي'}</span>
+                        <img src="${b.imageUrl}">
+                        <h4>${b.name}</h4>
+                        <div style="display:flex; gap:5px;">
+                            <button class="btn btn-warning" style="padding:5px; font-size:0.8rem;" onclick="openEditBrandModal('${d.id}', '${b.name.replace(/'/g, "\\'")}')">تعديل</button>
+                            <button class="btn btn-danger" style="padding:5px; font-size:0.8rem;" onclick="deleteBrand('${d.id}', '${b.imagePath}')">حذف</button>
                         </div>
-                    `;
+                    </div>`;
                 });
             });
         }
 
-        // 3. تعديل اسم النظارة
-        window.openEditBrandModal = function(id, currentName) {
+        window.openEditBrandModal = (id, name) => {
             document.getElementById('edit-brand-id').value = id;
-            document.getElementById('edit-brand-name-input').value = currentName;
+            document.getElementById('edit-brand-name-input').value = name;
             document.getElementById('edit-brand-modal').classList.add('active');
         }
-
-        window.closeBrandModal = function() {
-            document.getElementById('edit-brand-modal').classList.remove('active');
-        }
-
-        window.saveBrandEdit = async function() {
+        window.closeBrandModal = () => document.getElementById('edit-brand-modal').classList.remove('active');
+        window.saveBrandEdit = async () => {
             const id = document.getElementById('edit-brand-id').value;
-            const newName = document.getElementById('edit-brand-name-input').value.trim();
-            
-            if(!newName) return alert("يجب كتابة اسم للنظارة!");
-
-            try {
-                await updateDoc(doc(db, "brands", id), { name: newName });
-                await logSystemAction(`عدّل اسم نظارة في التشكيلة إلى: ${newName}`);
-                closeBrandModal();
-            } catch (error) { console.error(error); alert("حدث خطأ أثناء التعديل"); }
+            const name = document.getElementById('edit-brand-name-input').value;
+            await updateDoc(doc(db, "brands", id), { name });
+            closeBrandModal();
+        }
+        window.deleteBrand = async (id, path) => {
+            if(!confirm("حذف؟")) return;
+            try { await deleteObject(ref(storage, path)); await deleteDoc(doc(db, "brands", id)); } catch(e) { await deleteDoc(doc(db, "brands", id)); }
         }
 
-        // 4. حذف النظارة بالكامل (صورة + بيانات)
-        window.deleteBrand = async function(docId, imgPath, bName) {
-            if(!confirm(`هل أنت متأكد من حذف (${bName}) وصورتها من التشكيلة بشكل نهائي؟`)) return;
-            try {
-                await deleteObject(sRef(storage, imgPath));
-                await deleteDoc(doc(db, "brands", docId));
-                await logSystemAction(`حذف نظارة من التشكيلة: ${bName}`);
-            } catch (e) { 
-                console.error(e); 
-                // أحياناً الصورة تكون محذوفة يدوياً، فبنحذف الدوكيومنت على كل حال
-                await deleteDoc(doc(db, "brands", docId));
-            }
-        }
-
-        /* --- باقي الأكواد --- */
-        window.addNewUser = async function() { /* نفس الكود السابق */ 
-            const n = document.getElementById('new-name').value.trim(); const u = document.getElementById('new-username').value.trim(); const p = document.getElementById('new-password').value.trim(); const r = document.getElementById('new-role').value;
-            if(!n || !u || !p) return alert("الرجاء تعبئة الحقول!");
-            try { const docRef = doc(db, "system_users", u); const docSnap = await getDoc(docRef); if(docSnap.exists()) return alert("اسم الدخول محجوز."); await setDoc(docRef, { name: n, username: u, pass: p, role: r }); await logSystemAction(`أنشأ حساب جديد: ${n}`); alert("تم!"); document.getElementById('new-name').value=''; document.getElementById('new-username').value=''; document.getElementById('new-password').value=''; loadUsersForEdit(); } catch(e) { console.error(e); }
+        /* إدارة الحسابات */
+        window.addNewUser = async () => {
+            const n = document.getElementById('new-name').value;
+            const u = document.getElementById('new-username').value;
+            const p = document.getElementById('new-password').value;
+            const r = document.getElementById('new-role').value;
+            if(!n || !u || !p) return;
+            await setDoc(doc(db, "system_users", u), { name: n, username: u, pass: p, role: r });
+            alert("تم"); loadUsersForEdit();
         }
         async function loadUsersForEdit() {
-            const select = document.getElementById('user-select'); select.innerHTML = '<option value="">-- اختر الحساب المطلوب --</option>'; systemUsersList = {};
-            const snap = await getDocs(collection(db, "system_users")); snap.forEach(doc => { const d = doc.data(); systemUsersList[doc.id] = d; select.innerHTML += `<option value="${doc.id}">${d.name} (${d.username})</option>`; });
+            const sel = document.getElementById('user-select'); sel.innerHTML = '<option value="">-- اختر حساب --</option>';
+            const snap = await getDocs(collection(db, "system_users"));
+            snap.forEach(d => { systemUsersList[d.id] = d.data(); sel.innerHTML += `<option value="${d.id}">${d.data().name}</option>`; });
         }
-        window.fillUserData = function() {
-            const id = document.getElementById('user-select').value; if(!id) { document.getElementById('edit-name').value = ''; document.getElementById('edit-username').value = ''; document.getElementById('edit-password').value = ''; return; }
-            document.getElementById('edit-name').value = systemUsersList[id].name; document.getElementById('edit-username').value = systemUsersList[id].username; document.getElementById('edit-password').value = systemUsersList[id].pass;
+        window.fillUserData = () => {
+            const id = document.getElementById('user-select').value;
+            if(!id) return;
+            document.getElementById('edit-name').value = systemUsersList[id].name;
+            document.getElementById('edit-username').value = systemUsersList[id].username;
+            document.getElementById('edit-password').value = systemUsersList[id].pass;
         }
-        window.saveUserChanges = async function() {
-            const oldId = document.getElementById('user-select').value; const newName = document.getElementById('edit-name').value.trim(); const newUsername = document.getElementById('edit-username').value.trim(); const newPass = document.getElementById('edit-password').value.trim();
-            if(!oldId || !newName || !newUsername || !newPass) return alert("تأكد من تعبئة الخانات!");
-            try { if(newUsername !== oldId) { const checkSnap = await getDoc(doc(db, "system_users", newUsername)); if(checkSnap.exists()) return alert("اليوزر مستخدم!"); const oldRole = systemUsersList[oldId].role; await setDoc(doc(db, "system_users", newUsername), { name: newName, username: newUsername, pass: newPass, role: oldRole }); await deleteDoc(doc(db, "system_users", oldId)); await logSystemAction(`غيّر يوزر ${oldId} إلى ${newUsername}`); } else { await updateDoc(doc(db, "system_users", oldId), { name: newName, pass: newPass }); await logSystemAction(`عدّل حساب: ${newName}`); } alert("تم التحديث!"); document.getElementById('edit-name').value=''; document.getElementById('edit-username').value=''; document.getElementById('edit-password').value=''; loadUsersForEdit(); if(oldId === currentUser.docId && newUsername !== oldId) { alert("تم تغيير يوزرك، سجل دخولك مرة ثانية."); logout(); } } catch (error) { console.error(error); }
+        window.saveUserChanges = async () => {
+            const oldId = document.getElementById('user-select').value;
+            const n = document.getElementById('edit-name').value;
+            const u = document.getElementById('edit-username').value;
+            const p = document.getElementById('edit-password').value;
+            if(u !== oldId) {
+                const role = systemUsersList[oldId].role;
+                await setDoc(doc(db, "system_users", u), { name: n, username: u, pass: p, role });
+                await deleteDoc(doc(db, "system_users", oldId));
+            } else { await updateDoc(doc(db, "system_users", oldId), { name: n, pass: p }); }
+            alert("تم التحديث"); loadUsersForEdit();
         }
-        window.deleteUser = async function() {
-            const id = document.getElementById('user-select').value; if(!id) return alert("اختر الحساب!"); if(id === "adel" || id === currentUser.docId) return alert("لا يمكنك حذف حساب الإدارة العليا الخاص بك!");
-            const deletedName = systemUsersList[id].name; if(!confirm(`هل أنت متأكد من حذف حساب: ${deletedName} نهائياً؟`)) return;
-            try { await deleteDoc(doc(db, "system_users", id)); await logSystemAction(`حذف حساب الموظف: ${deletedName}`); alert("تم الحذف!"); document.getElementById('edit-name').value=''; document.getElementById('edit-username').value=''; document.getElementById('edit-password').value=''; loadUsersForEdit(); } catch (error) { console.error(error); }
+        window.deleteUser = async () => {
+            const id = document.getElementById('user-select').value;
+            if(id === "adel") return alert("ممنوع!");
+            if(confirm("حذف نهائي؟")) { await deleteDoc(doc(db, "system_users", id)); loadUsersForEdit(); }
         }
-        window.logout = async function() { await logSystemAction(`تسجيل خروج`); location.reload(); }
-        async function logSystemAction(txt) { if(currentUser) try { await addDoc(collection(db, "system_logs"), { user: currentUser.name, action: txt, timestamp: serverTimestamp() }); } catch (e) {} }
-        function loadReports() { onSnapshot(query(collection(db, "tests"), orderBy("timestamp", "desc")), (snapshot) => { const tbody = document.getElementById('reports-body'); tbody.innerHTML = ""; snapshot.forEach(doc => { const d = doc.data(); tbody.innerHTML += `<tr><td><strong>${d.name}</strong></td><td><div class="report-box">${d.details}</div></td><td>${d.timestamp ? d.timestamp.toDate().toLocaleString('ar-EG') : ''}</td></tr>`; }); }); }
-        function loadLogs() { onSnapshot(query(collection(db, "system_logs"), orderBy("timestamp", "desc")), (snapshot) => { const tbody = document.getElementById('logs-body'); tbody.innerHTML = ""; snapshot.forEach(doc => { const l = doc.data(); tbody.innerHTML += `<tr><td><strong><i class="fas fa-user-circle"></i> ${l.user}</strong></td><td><span class="log-badge">${l.action}</span></td><td dir="ltr" style="text-align:right;">${l.timestamp ? l.timestamp.toDate().toLocaleString('ar-EG') : ''}</td></tr>`; }); }); }
+
+        /* التقارير والمراقبة */
+        window.logout = () => { logAction("خروج"); location.reload(); }
+        async function logAction(a) { if(currentUser) await addDoc(collection(db, "system_logs"), { user: currentUser.name, action: a, timestamp: serverTimestamp() }); }
+        function loadReports() {
+            onSnapshot(query(collection(db, "tests"), orderBy("timestamp", "desc")), (snap) => {
+                const b = document.getElementById('reports-body'); b.innerHTML = "";
+                snap.forEach(d => {
+                    const data = d.data();
+                    b.innerHTML += `<tr><td><strong>${data.name}</strong></td><td><div class="report-box">${data.details}</div></td><td>${data.timestamp?.toDate().toLocaleString('ar-EG')}</td></tr>`;
+                });
+            });
+        }
+        function loadLogs() {
+            onSnapshot(query(collection(db, "system_logs"), orderBy("timestamp", "desc")), (snap) => {
+                const b = document.getElementById('logs-body'); b.innerHTML = "";
+                snap.forEach(d => {
+                    const data = d.data();
+                    b.innerHTML += `<tr><td><strong>${data.user}</strong></td><td><span class="log-badge">${data.action}</span></td><td>${data.timestamp?.toDate().toLocaleString('ar-EG')}</td></tr>`;
+                });
+            });
+        }
     </script>
 </body>
 </html>

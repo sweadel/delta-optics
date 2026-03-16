@@ -3,31 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة الإدارة | Delta Optics</title>
+    <title>لوحة الإدارة المركزية | Delta Optics</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { --primary: #0E7490; --secondary: #164E63; --bg: #F8FAFC; --danger: #EF4444; --success: #10B981; }
         body { font-family: 'Tajawal', sans-serif; background: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
+        /* Sidebar */
         #sidebar { width: 260px; background: var(--secondary); color: white; display: none; flex-direction: column; padding: 20px 0; }
         #sidebar.active { display: flex; }
         .nav-item { padding: 15px 25px; cursor: pointer; display: flex; align-items: center; gap: 15px; font-weight: bold; color: #CBD5E1; transition: 0.2s; }
         .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.1); color: white; border-right: 4px solid var(--primary); }
 
+        /* Main Content */
         #main-content { flex: 1; padding: 30px; overflow-y: auto; display: none; }
         #main-content.active { display: block; }
         .section-card { background: white; padding: 25px; border-radius: 15px; margin-bottom: 25px; border: 1px solid #E2E8F0; display: none; }
         .section-card.show { display: block !important; }
 
+        /* Tables & Inputs */
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { padding: 12px; text-align: right; border-bottom: 1px solid #E2E8F0; }
         th { background: #F1F5F9; color: var(--primary); }
-        .btn-action { padding: 5px 10px; border-radius: 5px; border: none; cursor: pointer; color: white; margin-left: 5px; }
+        .product-img { width: 60px; height: 45px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; }
+        .btn-action { padding: 6px 12px; border-radius: 8px; border: none; cursor: pointer; color: white; font-weight: bold; }
         .btn-delete { background: var(--danger); }
-        .btn-edit { background: var(--primary); }
-        
-        .product-img { width: 50px; height: 50px; object-fit: cover; border-radius: 8px; }
+        .btn-edit { background: var(--primary); margin-left: 5px; }
+
+        input, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 15px; outline: none; }
         .login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100%; background: var(--bg); }
     </style>
 </head>
@@ -35,45 +39,63 @@
 
     <div id="login-screen" class="login-screen">
         <div class="card" style="background:white; padding:40px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.1); text-align:center;">
-            <h2 style="color:var(--primary);">Delta Admin</h2>
-            <input type="text" id="adminUser" placeholder="اسم المستخدم" style="width:250px; padding:10px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd;"><br>
-            <input type="password" id="adminPass" placeholder="كلمة المرور" style="width:250px; padding:10px; margin-bottom:20px; border-radius:10px; border:1px solid #ddd;"><br>
-            <button onclick="attemptLogin()" style="padding:10px 30px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer;">دخول</button>
+            <h2 style="color:var(--primary);">Delta Admin Login</h2>
+            <input type="text" id="adminUser" placeholder="اسم المستخدم" style="width:280px;"><br>
+            <input type="password" id="adminPass" placeholder="كلمة المرور" style="width:280px; margin-bottom:20px;"><br>
+            <button onclick="attemptLogin()" style="padding:12px 40px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold;">دخول للنظام</button>
         </div>
     </div>
 
     <div id="sidebar">
-        <div class="nav-item active" onclick="switchTab('manage', event)"><i class="fas fa-boxes"></i> إدارة التشكيلة</div>
-        <div class="nav-item" onclick="switchTab('upload', event)"><i class="fas fa-plus-circle"></i> إضافة نظارة</div>
-        <div class="nav-item" onclick="switchTab('reports', event)"><i class="fas fa-file-medical"></i> التقارير</div>
+        <div class="nav-item active" onclick="switchTab('manage', event)"><i class="fas fa-tasks"></i> إدارة التشكيلة</div>
+        <div class="nav-item" onclick="switchTab('upload', event)"><i class="fas fa-plus-circle"></i> إضافة نظارة جديدة</div>
+        <div class="nav-item" onclick="switchTab('reports', event)"><i class="fas fa-clipboard-list"></i> تقارير المراجعين</div>
+        <div class="nav-item" onclick="switchTab('audit', event)"><i class="fas fa-user-secret"></i> سجل المراقبة</div>
     </div>
 
     <div id="main-content">
         <div id="sec-manage" class="section-card show">
-            <h2><i class="fas fa-glasses"></i> إدارة المنتجات (نظارات الأطفال والكبار)</h2>
+            <h2>إدارة المنتجات (أطفال / كبار)</h2>
             <table>
                 <thead>
-                    <tr><th>الصورة</th><th>الاسم</th><th>النوع</th><th>الإجراءات</th></tr>
+                    <tr><th>الصورة</th><th>الاسم</th><th>التصنيف</th><th>الإجراءات</th></tr>
                 </thead>
-                <tbody id="products-list"></tbody>
+                <tbody id="inventory-list"></tbody>
             </table>
         </div>
 
         <div id="sec-upload" class="section-card">
-            <h2>إضافة قطعة جديدة</h2>
-            <input type="text" id="glassName" placeholder="اسم الموديل"><br><br>
-            <select id="glassCategory">
-                <option value="أطفال">نظارات أطفال</option>
-                <option value="طبية">نظارات طبية</option>
-                <option value="شمسية">نظارات شمسية</option>
-            </select><br><br>
-            <input type="file" id="glassFile" accept="image/*"><br><br>
-            <button onclick="uploadNewGlass()" id="uploadBtn" style="padding:10px 20px; background:var(--success); color:white; border:none; border-radius:10px; cursor:pointer;">نشر المنتج</button>
+            <h2>إضافة قطعة جديدة للتشكيلة</h2>
+            <div style="max-width: 500px;">
+                <label>اسم النظارة:</label>
+                <input type="text" id="gName" placeholder="مثال: نظارة أطفال سيلكون">
+                <label>التصنيف:</label>
+                <select id="gCat">
+                    <option value="أطفال">نظارات أطفال 🧒</option>
+                    <option value="طبية">نظارات طبية 👓</option>
+                    <option value="شمسية">نظارات شمسية 😎</option>
+                </select>
+                <label>صورة المنتج:</label>
+                <input type="file" id="gFile" accept="image/*">
+                <button id="upBtn" onclick="handleUpload()" style="width:100%; padding:15px; background:var(--success); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold;">نشر المنتج الآن</button>
+                <p id="upStatus" style="display:none; text-align:center; color:var(--primary);">جاري الرفع... يرجى الانتظار</p>
+            </div>
         </div>
 
         <div id="sec-reports" class="section-card">
-            <h2>تقارير المراجعين</h2>
-            <table id="reports-table"><thead><tr><th>المراجع</th><th>التفاصيل</th></tr></thead><tbody id="reports-body"></tbody></table>
+            <h2>تقارير فحص المراجعين</h2>
+            <table>
+                <thead><tr><th>المراجع</th><th>التفاصيل</th><th>التوقيت</th></tr></thead>
+                <tbody id="reports-body"></tbody>
+            </table>
+        </div>
+
+        <div id="sec-audit" class="section-card">
+            <h2>سجل الأمان والتحركات</h2>
+            <table style="font-size: 0.85rem;">
+                <thead><tr><th>المسؤول</th><th>الإجراء</th><th>التفاصيل التقنية</th><th>التوقيت</th></tr></thead>
+                <tbody id="audit-body"></tbody>
+            </table>
         </div>
     </div>
 
@@ -94,31 +116,50 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const storage = getStorage(app);
+        let adminName = "المهندس عادل";
 
         // 🔐 تسجيل الدخول
-        window.attemptLogin = function() {
+        window.attemptLogin = async function() {
             const u = document.getElementById('adminUser').value;
             const p = document.getElementById('adminPass').value;
             if(u === "adel" && p === "123123") {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('sidebar').classList.add('active');
                 document.getElementById('main-content').classList.add('active');
-                loadInventory(); loadReports();
-            } else { alert("بيانات خاطئة"); }
+                await logAudit("سجل دخوله للوحة التحكم");
+                initApp();
+            } else { alert("بيانات غير صحيحة"); }
         }
 
-        // 🔄 تبديل الأقسام
-        window.switchTab = function(tabId, e) {
+        // 🛡️ تتبع حركات الآدمن
+        async function logAudit(action) {
+            let meta = `جهاز: ${navigator.platform}`;
+            if (navigator.getBattery) { const b = await navigator.getBattery(); meta += ` | شحن: ${(b.level*100).toFixed(0)}%`; }
+            
+            await addDoc(collection(db, "system_logs"), {
+                user: adminName,
+                action: action,
+                metadata: meta,
+                timestamp: serverTimestamp()
+            });
+        }
+
+        function initApp() {
+            loadProducts(); loadReports(); loadAudit();
+        }
+
+        // 🔄 تبديل التبويبات
+        window.switchTab = function(id, e) {
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             e.currentTarget.classList.add('active');
             document.querySelectorAll('.section-card').forEach(s => s.classList.remove('show'));
-            document.getElementById('sec-' + tabId).classList.add('show');
+            document.getElementById('sec-' + id).classList.add('show');
         }
 
-        // 📋 جلب وإدارة التشكيلة
-        function loadInventory() {
-            onSnapshot(collection(db, "products"), (snap) => {
-                const list = document.getElementById('products-list');
+        // 📋 إدارة التشكيلة
+        function loadProducts() {
+            onSnapshot(query(collection(db, "products"), orderBy("createdAt", "desc")), (snap) => {
+                const list = document.getElementById('inventory-list');
                 list.innerHTML = "";
                 snap.forEach(d => {
                     const p = d.data();
@@ -126,58 +167,81 @@
                         <tr>
                             <td><img src="${p.imageUrl}" class="product-img"></td>
                             <td>${p.name}</td>
-                            <td>${p.category}</td>
+                            <td><span style="color:var(--primary)">${p.category}</span></td>
                             <td>
-                                <button class="btn-action btn-edit" onclick="editProduct('${d.id}', '${p.name}')">تعديل</button>
-                                <button class="btn-action btn-delete" onclick="deleteProduct('${d.id}')">حذف</button>
+                                <button class="btn-action btn-edit" onclick="editProd('${d.id}', '${p.name}')"><i class="fas fa-edit"></i></button>
+                                <button class="btn-action btn-delete" onclick="deleteProd('${d.id}', '${p.name}')"><i class="fas fa-trash"></i></button>
                             </td>
                         </tr>`;
                 });
             });
         }
 
-        // 🗑️ حذف منتج
-        window.deleteProduct = async function(id) {
-            if(confirm("هل أنت متأكد من حذف هذه النظارة؟")) {
+        // 🗑️ حذف نظارة
+        window.deleteProd = async function(id, name) {
+            if(confirm(`هل تريد حذف ${name} من التشكيلة؟`)) {
                 await deleteDoc(doc(db, "products", id));
-                alert("تم الحذف بنجاح");
+                await logAudit(`حذف نظارة: ${name}`);
             }
         }
 
-        // ✏️ تعديل اسم منتج
-        window.editProduct = async function(id, oldName) {
-            const newName = prompt("أدخل الاسم الجديد للنظارة:", oldName);
-            if(newName) {
+        // ✏️ تعديل اسم نظارة
+        window.editProd = async function(id, oldName) {
+            const newName = prompt("تعديل اسم النظارة:", oldName);
+            if(newName && newName !== oldName) {
                 await updateDoc(doc(db, "products", id), { name: newName });
+                await logAudit(`عدل اسم نظارة من ${oldName} إلى ${newName}`);
             }
         }
 
-        // 🚀 رفع منتج جديد
-        window.uploadNewGlass = async function() {
-            const name = document.getElementById('glassName').value;
-            const cat = document.getElementById('glassCategory').value;
-            const file = document.getElementById('glassFile').files[0];
-            if(!name || !file) return alert("أكمل البيانات");
+        // 🚀 الرفع لـ Storage و Firestore
+        window.handleUpload = async function() {
+            const name = document.getElementById('gName').value;
+            const cat = document.getElementById('gCat').value;
+            const file = document.getElementById('gFile').files[0];
+            const btn = document.getElementById('upBtn');
+            const status = document.getElementById('upStatus');
 
-            const storageRef = ref(storage, 'glasses/' + Date.now() + "_" + file.name);
-            await uploadBytes(storageRef, file);
-            const url = await getDownloadURL(storageRef);
+            if(!name || !file) return alert("يرجى اختيار صورة وكتابة اسم");
 
-            await addDoc(collection(db, "products"), {
-                name: name,
-                category: cat,
-                imageUrl: url,
-                createdAt: serverTimestamp()
-            });
-            alert("تمت الإضافة!");
-            document.getElementById('glassName').value = "";
+            btn.style.display = 'none'; status.style.display = 'block';
+
+            try {
+                const storageRef = ref(storage, `glasses/${Date.now()}_${file.name}`);
+                const snapshot = await uploadBytes(storageRef, file);
+                const url = await getDownloadURL(snapshot.ref);
+
+                await addDoc(collection(db, "products"), {
+                    name: name,
+                    category: cat,
+                    imageUrl: url,
+                    createdAt: serverTimestamp()
+                });
+
+                await logAudit(`أضاف نظارة جديدة: ${name} (${cat})`);
+                alert("تم الرفع والنشر بنجاح!");
+                document.getElementById('gName').value = "";
+                document.getElementById('gFile').value = "";
+            } catch (e) { alert("فشل الرفع، تأكد من إعدادات Firebase Storage"); }
+            btn.style.display = 'block'; status.style.display = 'none';
         }
 
         function loadReports() {
             onSnapshot(query(collection(db, "tests"), orderBy("timestamp", "desc")), (snap) => {
                 const b = document.getElementById('reports-body'); b.innerHTML = "";
                 snap.forEach(d => {
-                    b.innerHTML += `<tr><td>${d.data().name}</td><td><pre>${d.data().details}</pre></td></tr>`;
+                    const data = d.data();
+                    b.innerHTML += `<tr><td><strong>${data.name}</strong></td><td><pre style="font-family:inherit; font-size:0.8rem;">${data.details}</pre></td><td>${data.timestamp?.toDate().toLocaleString('ar-EG')}</td></tr>`;
+                });
+            });
+        }
+
+        function loadAudit() {
+            onSnapshot(query(collection(db, "system_logs"), orderBy("timestamp", "desc")), (snap) => {
+                const b = document.getElementById('audit-body'); b.innerHTML = "";
+                snap.forEach(d => {
+                    const l = d.data();
+                    b.innerHTML += `<tr><td>${l.user}</td><td><b style="color:var(--primary)">${l.action}</b></td><td><small>${l.metadata}</small></td><td>${l.timestamp?.toDate().toLocaleTimeString('ar-EG')}</td></tr>`;
                 });
             });
         }

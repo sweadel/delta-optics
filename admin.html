@@ -3,60 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة الإدارة | Delta Optics</title>
+    <title>نظام الإدارة المتقدم | Delta</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --primary: #0E7490; --bg: #F8FAFC; --text: #1E293B; }
+        :root { --primary: #0E7490; --bg: #F8FAFC; --text: #1E293B; --danger: #EF4444; }
         body { font-family: 'Tajawal', sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--text); }
-        .container { max-width: 1000px; margin: 0 auto; }
-        header { background: white; padding: 20px 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border: 1px solid #E2E8F0; }
-        h1 { color: var(--primary); margin: 0; font-size: 1.6rem; display: flex; align-items: center; gap: 10px; }
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #E2E8F0; }
+        
+        /* شاشة تسجيل الدخول */
+        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh; }
+        .login-box { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 350px; text-align: center; }
+        .input-field { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px; border: 2px solid #E2E8F0; font-size: 1rem; text-align: center; outline: none; box-sizing: border-box; }
+        .btn { width: 100%; padding: 15px; border-radius: 10px; border: none; background: var(--primary); color: white; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: 0.2s; }
+        .btn:active { transform: scale(0.95); }
+        .btn-danger { background: var(--danger); width: auto; padding: 10px 20px; }
+
+        /* لوحة التحكم */
+        #dashboard-screen { display: none; max-width: 1000px; margin: 0 auto; }
+        header { background: white; padding: 20px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
         
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { padding: 15px; text-align: right; border-bottom: 1px solid #E2E8F0; vertical-align: top; }
-        th { color: var(--primary); font-weight: 900; background: #F1F5F9; font-size: 1.1rem; }
+        th { background: #F1F5F9; color: var(--primary); }
         
-        /* هذا الجزء السحري لترتيب التقرير الطبي */
-        .report-box { 
-            background: #F8FAFC; 
-            padding: 15px; 
-            border-radius: 10px; 
-            font-size: 0.9rem; 
-            line-height: 1.8; 
-            white-space: pre-wrap; /* أهم سطر عشان يحافظ على التقسيم والأسطر */
-            border: 1px solid #E2E8F0;
-            color: #334155;
-            font-weight: 500;
-        }
+        .report-box { background: #F8FAFC; padding: 15px; border-radius: 10px; font-size: 0.9rem; line-height: 1.8; white-space: pre-wrap; border: 1px solid #E2E8F0; }
         
-        .patient-name { font-size: 1.2rem; font-weight: 800; color: var(--primary); }
-        .time-badge { background: #ECFEFF; color: #0891B2; padding: 5px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; display: inline-block; }
+        /* سجل المراقبة (للمدير فقط) */
+        #audit-section { display: none; border: 2px solid var(--primary); }
+        .log-badge { background: #FEF2F2; color: var(--danger); padding: 4px 8px; border-radius: 5px; font-size: 0.8rem; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div id="login-screen">
+        <div class="login-box">
+            <i class="fas fa-lock" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
+            <h2>بوابة الدخول</h2>
+            <input type="text" id="username" class="input-field" placeholder="اسم المستخدم">
+            <input type="password" id="password" class="input-field" placeholder="كلمة المرور">
+            <button class="btn" onclick="attemptLogin()">دخول النظام</button>
+            <p id="error-msg" style="color: red; display: none; font-size: 0.9rem; margin-top: 10px;">بيانات الدخول خاطئة!</p>
+        </div>
+    </div>
+
+    <div id="dashboard-screen">
         <header>
-            <h1><i class="fas fa-user-shield"></i> غرفة عمليات دلتا</h1>
-            <div>
-                <span style="font-weight: bold; color: #64748B;">مرحباً، د. عادل</span>
+            <h1 style="margin:0; font-size:1.5rem; color:var(--primary);"><i class="fas fa-chart-line"></i> نظام دلتا</h1>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <span id="welcome-text" style="font-weight:bold; font-size:1.1rem;"></span>
+                <button class="btn btn-danger" onclick="logout()"><i class="fas fa-sign-out-alt"></i> خروج</button>
             </div>
         </header>
 
-        <div class="card">
-            <h2 style="margin-top:0; color:var(--text);"><i class="fas fa-clipboard-list"></i> أحدث التقارير الطبية</h2>
+        <div class="card" id="audit-section">
+            <h2 style="margin-top:0; color:var(--danger);"><i class="fas fa-user-secret"></i> سجل المراقبة السري (Black Box)</h2>
             <table>
                 <thead>
                     <tr>
-                        <th style="width: 25%;">اسم المراجع</th>
-                        <th style="width: 55%;">التقرير الطبي المفصل</th>
-                        <th style="width: 20%;">وقت الفحص</th>
+                        <th>المستخدم</th>
+                        <th>الحدث / الإجراء</th>
+                        <th>التوقيت</th>
                     </tr>
                 </thead>
-                <tbody id="table-body">
-                    <tr><td colspan="3" style="text-align:center; padding: 30px;">جاري جلب البيانات...</td></tr>
+                <tbody id="logs-body">
+                    <tr><td colspan="3" style="text-align:center;">جاري تحميل السجلات...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2 style="margin-top:0;"><i class="fas fa-notes-medical"></i> التقارير الطبية للمراجعين</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:20%;">المراجع</th>
+                        <th style="width:60%;">التقرير</th>
+                        <th style="width:20%;">التوقيت</th>
+                    </tr>
+                </thead>
+                <tbody id="reports-body">
+                    <tr><td colspan="3" style="text-align:center;">جاري تحميل التقارير...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -64,9 +91,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // نفس إعدادات قاعدة بياناتك
         const firebaseConfig = {
             apiKey: "AIzaSyB11C4GGgAyqeThs8a9cvDNN7frvAA1nqQ",
             authDomain: "delta-optics-system.firebaseapp.com",
@@ -79,30 +105,94 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // جلب البيانات لايف وعرضها
-        const q = query(collection(db, "tests"), orderBy("timestamp", "desc"));
-        onSnapshot(q, (snapshot) => {
-            const tbody = document.getElementById('table-body');
-            tbody.innerHTML = "";
-            
-            if(snapshot.empty) {
-                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">لا يوجد فحوصات حتى الآن.</td></tr>';
-                return;
-            }
+        // حسابات النظام (مؤقتة ومبرمجة داخل الكود)
+        const users = {
+            "adel": { pass: "123123", role: "superadmin", name: "المهندس عادل" },
+            "manager": { pass: "admin123", role: "manager", name: "مدير العيادة" }
+        };
 
-            snapshot.forEach(doc => {
-                const d = doc.data();
-                const time = d.timestamp ? d.timestamp.toDate().toLocaleString('ar-EG') : 'الآن';
-                
-                tbody.innerHTML += `
-                    <tr>
-                        <td><div class="patient-name">${d.name}</div></td>
-                        <td><div class="report-box">${d.details}</div></td>
-                        <td><div class="time-badge"><i class="far fa-clock"></i> ${time}</div></td>
-                    </tr>
-                `;
+        let currentUser = null;
+
+        // دالة تسجيل الدخول
+        window.attemptLogin = async function() {
+            const u = document.getElementById('username').value.trim();
+            const p = document.getElementById('password').value;
+
+            if(users[u] && users[u].pass === p) {
+                currentUser = users[u];
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('dashboard-screen').style.display = 'block';
+                document.getElementById('welcome-text').innerText = `أهلاً بك، ${currentUser.name}`;
+
+                // تسجيل حركة الدخول في الصندوق الأسود
+                await logAction(`تم تسجيل الدخول بنجاح`);
+
+                // إذا كان المستخدم عادل، نظهر له قسم المراقبة ونجلب بياناته
+                if(currentUser.role === 'superadmin') {
+                    document.getElementById('audit-section').style.display = 'block';
+                    loadLogs();
+                }
+
+                loadReports();
+            } else {
+                document.getElementById('error-msg').style.display = 'block';
+            }
+        }
+
+        // دالة تسجيل الخروج
+        window.logout = async function() {
+            await logAction(`تسجيل خروج من النظام`);
+            location.reload(); // إعادة تحميل الصفحة للرجوع للقفل
+        }
+
+        // دالة إرسال السجلات لفايربيز
+        async function logAction(actionText) {
+            try {
+                await addDoc(collection(db, "system_logs"), {
+                    user: currentUser.name,
+                    action: actionText,
+                    timestamp: serverTimestamp()
+                });
+            } catch (e) { console.log("Log error", e); }
+        }
+
+        // جلب التقارير الطبية
+        function loadReports() {
+            const q = query(collection(db, "tests"), orderBy("timestamp", "desc"));
+            onSnapshot(q, (snapshot) => {
+                const tbody = document.getElementById('reports-body');
+                tbody.innerHTML = "";
+                snapshot.forEach(doc => {
+                    const d = doc.data();
+                    const time = d.timestamp ? d.timestamp.toDate().toLocaleString('ar-EG') : '...';
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${d.name}</strong></td>
+                            <td><div class="report-box">${d.details}</div></td>
+                            <td>${time}</td>
+                        </tr>`;
+                });
             });
-        });
+        }
+
+        // جلب سجلات المراقبة (لعادل فقط)
+        function loadLogs() {
+            const qLogs = query(collection(db, "system_logs"), orderBy("timestamp", "desc"));
+            onSnapshot(qLogs, (snapshot) => {
+                const tbody = document.getElementById('logs-body');
+                tbody.innerHTML = "";
+                snapshot.forEach(doc => {
+                    const l = doc.data();
+                    const time = l.timestamp ? l.timestamp.toDate().toLocaleString('ar-EG') : '...';
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong><i class="fas fa-user"></i> ${l.user}</strong></td>
+                            <td><span class="log-badge">${l.action}</span></td>
+                            <td>${time}</td>
+                        </tr>`;
+                });
+            });
+        }
     </script>
 </body>
 </html>

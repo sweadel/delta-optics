@@ -11,8 +11,8 @@
         body { font-family: 'Tajawal', sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text); display: flex; height: 100vh; overflow: hidden; }
         
         /* شاشة تسجيل الدخول */
-        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100%; background: var(--bg); position: absolute; z-index: 1000; }
-        .login-box { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 350px; text-align: center; }
+        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100%; background: var(--bg); position: absolute; z-index: 1000; padding: 20px; box-sizing: border-box;}
+        .login-box { background: white; padding: 40px 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 350px; text-align: center; }
         .input-field { width: 100%; padding: 12px 15px; margin-bottom: 15px; border-radius: 10px; border: 2px solid #E2E8F0; font-size: 1rem; outline: none; box-sizing: border-box; font-family: sans-serif; transition: 0.3s; }
         .input-field:focus { border-color: var(--primary); }
         .btn { width: 100%; padding: 12px; border-radius: 10px; border: none; background: var(--primary); color: white; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: 0.2s; }
@@ -20,31 +20,56 @@
         .btn-danger { background: var(--danger); }
         .btn-success { background: var(--success); }
 
-        /* القائمة الجانبية (Sidebar) */
-        #sidebar { width: 260px; background: var(--secondary); color: white; display: flex; flex-direction: column; padding: 20px 0; transition: 0.3s; }
+        /* القائمة الجانبية */
+        #sidebar { width: 260px; background: var(--secondary); color: white; display: none; flex-direction: column; padding: 20px 0; transition: 0.3s; z-index: 500; }
+        #sidebar.show { display: flex; }
         .logo-area { text-align: center; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
         .nav-item { padding: 15px 25px; cursor: pointer; display: flex; align-items: center; gap: 15px; font-weight: bold; transition: 0.2s; color: #CBD5E1; border-right: 4px solid transparent; }
         .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.1); color: white; border-right-color: var(--primary); }
         .nav-item i { font-size: 1.2rem; width: 25px; text-align: center; }
-        .admin-only { display: none; } /* مخفية للمدير العادي */
+        .admin-nav { display: none; } 
 
         /* المحتوى الرئيسي */
-        #main-content { flex: 1; padding: 30px; overflow-y: auto; display: none; background: var(--bg); }
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; background: white; padding: 15px 25px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        #main-content { flex: 1; padding: 30px; overflow-y: auto; display: none; background: var(--bg); box-sizing: border-box; }
+        #main-content.show { display: block; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; background: white; padding: 15px 25px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); flex-wrap: wrap; gap: 15px;}
         
         .section-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); margin-bottom: 25px; display: none; border: 1px solid #E2E8F0; animation: fadeIn 0.4s; }
-        .section-card.active { display: block; }
+        .section-card.active { display: block !important; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 15px; text-align: right; border-bottom: 1px solid #E2E8F0; vertical-align: top; }
+        /* الجداول والتجاوب */
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 600px; }
+        th, td { padding: 15px; text-align: right; border-bottom: 1px solid #E2E8F0; vertical-align: middle; }
         th { background: #F8FAFC; color: var(--primary); }
         
-        .report-box { background: #F8FAFC; padding: 15px; border-radius: 10px; font-size: 0.9rem; line-height: 1.8; white-space: pre-wrap; border: 1px solid #E2E8F0; }
-        .log-badge { background: #FEF2F2; color: var(--danger); padding: 5px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; }
+        .report-box { background: #F8FAFC; padding: 15px; border-radius: 10px; font-size: 0.9rem; line-height: 1.8; white-space: pre-wrap; border: 1px solid #E2E8F0; min-width: 250px;}
+        .log-badge { background: #FEF2F2; color: var(--danger); padding: 5px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; display: inline-block; white-space: nowrap;}
         
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
-        .divider { height: 1px; background: #E2E8F0; margin: 25px 0; }
+        .divider { height: 1px; background: #E2E8F0; margin: 30px 0; }
+        .form-box { border: 2px solid #F1F5F9; padding: 20px; border-radius: 15px; }
+        .form-box h3 { margin-top: 0; color: var(--primary); margin-bottom: 15px; }
+
+        /* --- إعدادات الموبايل (شاشات التلفون) --- */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            #sidebar.show { 
+                flex-direction: row; justify-content: space-around; width: 100%; height: auto; 
+                padding: 10px 0; position: fixed; bottom: 0; left: 0; 
+                border-top: 1px solid rgba(255,255,255,0.1); 
+            }
+            .logo-area { display: none; }
+            .nav-item { padding: 5px; flex-direction: column; gap: 5px; font-size: 0.75rem; border-right: none; border-bottom: 3px solid transparent; flex: 1; text-align: center;}
+            .nav-item:hover, .nav-item.active { border-bottom-color: #38BDF8; border-right-color: transparent; background: transparent; color: #38BDF8; }
+            
+            #main-content { padding: 15px; padding-bottom: 80px; }
+            .section-card { padding: 15px; }
+            .grid-2 { grid-template-columns: 1fr; }
+            header { flex-direction: column; text-align: center; }
+            header .btn { width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -60,21 +85,22 @@
         </div>
     </div>
 
-    <div id="sidebar" style="display: none;">
+    <div id="sidebar">
         <div class="logo-area">
             <h2 style="margin:0; color:white;"><i class="fas fa-chart-line"></i> نظام دلتا</h2>
             <p style="margin:5px 0 0; font-size:0.8rem; color:#94A3B8;">لوحة التحكم الشاملة</p>
         </div>
         
-        <div class="nav-item active" onclick="switchTab('reports')">
-            <i class="fas fa-notes-medical"></i> التقارير الطبية
+        <div class="nav-item active" onclick="switchTab(event, 'reports')">
+            <i class="fas fa-notes-medical"></i> <span>التقارير</span>
         </div>
         
-        <div class="nav-item admin-only" onclick="switchTab('users')">
-            <i class="fas fa-users-cog"></i> إدارة الحسابات
+        <div class="nav-item admin-nav" onclick="switchTab(event, 'users')">
+            <i class="fas fa-users-cog"></i> <span>الحسابات</span>
         </div>
-        <div class="nav-item admin-only" onclick="switchTab('audit')">
-            <i class="fas fa-user-secret"></i> المراقبة السريّة
+        
+        <div class="nav-item admin-nav" onclick="switchTab(event, 'audit')">
+            <i class="fas fa-user-secret"></i> <span>المراقبة</span>
         </div>
     </div>
 
@@ -82,7 +108,7 @@
         <header>
             <div style="display:flex; align-items:center; gap:10px;">
                 <i class="fas fa-user-circle" style="font-size:2rem; color:var(--primary);"></i>
-                <div>
+                <div style="text-align: right;">
                     <div id="welcome-text" style="font-weight:900; color:var(--text);"></div>
                     <div id="role-text" style="font-size:0.8rem; color:#64748B;"></div>
                 </div>
@@ -92,62 +118,78 @@
 
         <div id="sec-reports" class="section-card active">
             <h2 style="margin-top:0; color:var(--primary);"><i class="fas fa-list-alt"></i> سجل فحوصات المراجعين</h2>
-            <table>
-                <thead>
-                    <tr><th style="width:20%;">المراجع</th><th style="width:60%;">التقرير المفصل</th><th style="width:20%;">التوقيت</th></tr>
-                </thead>
-                <tbody id="reports-body">
-                    <tr><td colspan="3" style="text-align:center;">جاري تحميل التقارير...</td></tr>
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr><th style="width:20%;">المراجع</th><th style="width:60%;">التقرير المفصل</th><th style="width:20%;">التوقيت</th></tr>
+                    </thead>
+                    <tbody id="reports-body">
+                        <tr><td colspan="3" style="text-align:center;">جاري تحميل التقارير...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div id="sec-users" class="section-card admin-only">
-            <h2 style="margin-top:0; color:var(--primary);"><i class="fas fa-user-plus"></i> إنشاء حساب جديد</h2>
-            <div class="grid-2">
-                <div>
-                    <label style="font-weight:bold; font-size:0.9rem;">اسم الموظف (المعروض):</label>
-                    <input type="text" id="new-name" class="input-field" placeholder="مثال: د. محمود">
+        <div id="sec-users" class="section-card">
+            <div class="form-box" style="background: #F8FAFC; border-color: #E2E8F0;">
+                <h3><i class="fas fa-user-plus"></i> إنشاء حساب جديد للموظفين</h3>
+                <div class="grid-2">
+                    <div>
+                        <label style="font-weight:bold; font-size:0.9rem;">الاسم المعروض للموظف:</label>
+                        <input type="text" id="new-name" class="input-field" placeholder="مثال: د. محمود">
+                    </div>
+                    <div>
+                        <label style="font-weight:bold; font-size:0.9rem;">اسم الدخول (Username):</label>
+                        <input type="text" id="new-username" class="input-field" placeholder="user123" dir="ltr">
+                    </div>
+                    <div>
+                        <label style="font-weight:bold; font-size:0.9rem;">كلمة المرور:</label>
+                        <input type="text" id="new-password" class="input-field" placeholder="******" dir="ltr">
+                    </div>
+                    <div>
+                        <label style="font-weight:bold; font-size:0.9rem;">الصلاحية:</label>
+                        <select id="new-role" class="input-field">
+                            <option value="manager">إدارة العيادة (رؤية التقارير فقط)</option>
+                            <option value="superadmin">إدارة عليا (تحكم ومراقبة)</option>
+                        </select>
+                    </div>
                 </div>
-                <div>
-                    <label style="font-weight:bold; font-size:0.9rem;">اسم الدخول (Username):</label>
-                    <input type="text" id="new-username" class="input-field" placeholder="user123" dir="ltr">
-                </div>
-                <div>
-                    <label style="font-weight:bold; font-size:0.9rem;">كلمة المرور:</label>
-                    <input type="text" id="new-password" class="input-field" placeholder="******" dir="ltr">
-                </div>
-                <div>
-                    <label style="font-weight:bold; font-size:0.9rem;">الصلاحية:</label>
-                    <select id="new-role" class="input-field">
-                        <option value="manager">مدير / موظف (تقارير فقط)</option>
-                        <option value="superadmin">إدارة عليا (تحكم كامل)</option>
-                    </select>
-                </div>
+                <button class="btn btn-success" onclick="addNewUser()"><i class="fas fa-check-circle"></i> إضافة الحساب واعتماده</button>
             </div>
-            <button class="btn btn-success" onclick="addNewUser()"><i class="fas fa-check-circle"></i> إضافة الحساب للنظام</button>
             
             <div class="divider"></div>
 
-            <h2 style="margin-top:0; color:var(--primary);"><i class="fas fa-edit"></i> تعديل الحسابات الحالية</h2>
-            <select id="user-select" class="input-field" onchange="fillUserData()"></select>
-            <div class="grid-2">
-                <input type="text" id="edit-name" class="input-field" placeholder="الاسم المعروض">
-                <input type="text" id="edit-password" class="input-field" placeholder="كلمة المرور الجديدة" dir="ltr">
+            <div class="form-box">
+                <h3><i class="fas fa-edit"></i> تعديل حساب موجود</h3>
+                <label style="font-weight:bold; font-size:0.9rem;">اختر الحساب المراد تعديله:</label>
+                <select id="user-select" class="input-field" onchange="fillUserData()"></select>
+                
+                <div class="grid-2">
+                    <div>
+                        <label style="font-weight:bold; font-size:0.9rem;">تغيير الاسم:</label>
+                        <input type="text" id="edit-name" class="input-field">
+                    </div>
+                    <div>
+                        <label style="font-weight:bold; font-size:0.9rem;">كلمة مرور جديدة:</label>
+                        <input type="text" id="edit-password" class="input-field" dir="ltr">
+                    </div>
+                </div>
+                <button class="btn" style="background:var(--secondary);" onclick="saveUserChanges()"><i class="fas fa-save"></i> حفظ التعديلات</button>
             </div>
-            <button class="btn" style="background:var(--secondary);" onclick="saveUserChanges()"><i class="fas fa-save"></i> حفظ التعديلات</button>
         </div>
 
-        <div id="sec-audit" class="section-card admin-only">
-            <h2 style="margin-top:0; color:var(--danger);"><i class="fas fa-eye"></i> الصندوق الأسود (سجل المراقبة)</h2>
-            <table>
-                <thead>
-                    <tr><th>المستخدم</th><th>الإجراء / الحدث</th><th>التوقيت</th></tr>
-                </thead>
-                <tbody id="logs-body">
-                    <tr><td colspan="3" style="text-align:center;">جاري تحميل السجلات...</td></tr>
-                </tbody>
-            </table>
+        <div id="sec-audit" class="section-card">
+            <h2 style="margin-top:0; color:var(--danger);"><i class="fas fa-eye"></i> الصندوق الأسود (سجل الأحداث)</h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr><th>المستخدم</th><th>الحدث / التفاصيل</th><th>التوقيت</th></tr>
+                    </thead>
+                    <tbody id="logs-body">
+                        <tr><td colspan="3" style="text-align:center;">جاري تحميل السجلات...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
     </div>
@@ -171,7 +213,6 @@
         let currentUser = null;
         let systemUsersList = {};
 
-        // 1. الدخول
         window.attemptLogin = async function() {
             const u = document.getElementById('username').value.trim();
             const p = document.getElementById('password').value.trim();
@@ -181,7 +222,6 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
 
             try {
-                // التأكد من وجود الحساب الأساسي (عادل) إذا القاعدة فارغة أول مرة
                 const adminRef = doc(db, "system_users", "adel");
                 const adminSnap = await getDoc(adminRef);
                 if(!adminSnap.exists()) {
@@ -196,20 +236,16 @@
                     currentUser.docId = snap.docs[0].id;
                     
                     document.getElementById('login-screen').style.display = 'none';
-                    document.getElementById('sidebar').style.display = 'flex';
-                    document.getElementById('main-content').style.display = 'block';
+                    document.getElementById('sidebar').classList.add('show');
+                    document.getElementById('main-content').classList.add('show');
                     
                     document.getElementById('welcome-text').innerText = currentUser.name;
-                    document.getElementById('role-text').innerText = currentUser.role === 'superadmin' ? 'الإدارة العليا للنظام' : 'إدارة العيادة';
+                    document.getElementById('role-text').innerText = currentUser.role === 'superadmin' ? 'الإدارة العليا (صلاحيات كاملة)' : 'موظف / إدارة العيادة';
 
-                    await logAction(`تسجيل دخول للنظام`);
+                    await logSystemAction(`تم تسجيل الدخول للنظام بنجاح`);
                     
                     if(currentUser.role === 'superadmin') {
-                        document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex'); // للقائمة
-                        document.getElementById('sec-users').classList.add('admin-only'); // للمحتوى
-                        document.getElementById('sec-audit').classList.add('admin-only'); // للمحتوى
-                        document.querySelectorAll('.section-card.admin-only').forEach(el => el.style.display = 'none'); // إخفاء مبدئي
-                        
+                        document.querySelectorAll('.admin-nav').forEach(el => el.style.display = 'flex');
                         loadLogs();
                         loadUsersForEdit();
                     }
@@ -219,55 +255,51 @@
                 }
             } catch (e) {
                 console.error(e);
-                alert("خطأ في الاتصال بقاعدة البيانات");
+                alert("حدث خطأ في الاتصال بالشبكة.");
             }
             btn.innerHTML = 'دخول آمن';
         }
 
-        // 2. التنقل بين الأقسام (Tabs)
-        window.switchTab = function(tabName) {
-            // تحديث القائمة
+        window.switchTab = function(event, tabName) {
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             event.currentTarget.classList.add('active');
             
-            // تحديث المحتوى
             document.querySelectorAll('.section-card').forEach(el => el.classList.remove('active'));
             document.getElementById('sec-' + tabName).classList.add('active');
+
+            let sectionName = tabName === 'reports' ? "التقارير الطبية" : (tabName === 'users' ? "إدارة الحسابات" : "الصندوق الأسود");
+            logSystemAction(`قام بتصفح قسم: ${sectionName}`);
         }
 
-        // 3. إضافة حساب جديد (CRUD - Create)
         window.addNewUser = async function() {
             const n = document.getElementById('new-name').value.trim();
             const u = document.getElementById('new-username').value.trim();
             const p = document.getElementById('new-password').value.trim();
             const r = document.getElementById('new-role').value;
 
-            if(!n || !u || !p) return alert("الرجاء تعبئة كافة الحقول!");
+            if(!n || !u || !p) return alert("الرجاء تعبئة كافة الحقول المطلوبة!");
 
             try {
-                // فحص إذا اليوزر موجود
                 const docRef = doc(db, "system_users", u);
                 const docSnap = await getDoc(docRef);
-                if(docSnap.exists()) return alert("اسم الدخول (Username) موجود مسبقاً، اختر اسماً آخر.");
+                if(docSnap.exists()) return alert("اسم الدخول (Username) محجوز مسبقاً، اختر اسماً آخر.");
 
                 await setDoc(docRef, { name: n, username: u, pass: p, role: r });
-                await logAction(`إنشاء حساب جديد للموظف: ${n}`);
+                await logSystemAction(`أنشأ حساب جديد باسم: ${n} (Username: ${u})`);
                 
                 alert("تم إضافة الحساب بنجاح!");
                 
-                // تفريغ الحقول وتحديث القائمة
                 document.getElementById('new-name').value = '';
                 document.getElementById('new-username').value = '';
                 document.getElementById('new-password').value = '';
                 loadUsersForEdit();
 
-            } catch(e) { console.error(e); alert("حدث خطأ أثناء الإضافة"); }
+            } catch(e) { console.error(e); }
         }
 
-        // 4. جلب وتعديل الحسابات (CRUD - Update)
         async function loadUsersForEdit() {
             const select = document.getElementById('user-select');
-            select.innerHTML = '<option value="">-- اختر حساباً للتعديل --</option>';
+            select.innerHTML = '<option value="">-- اختر الحساب لتعديل بياناته --</option>';
             systemUsersList = {};
 
             const snap = await getDocs(collection(db, "system_users"));
@@ -290,26 +322,30 @@
             const newName = document.getElementById('edit-name').value.trim();
             const newPass = document.getElementById('edit-password').value.trim();
 
-            if(!id || !newName || !newPass) return alert("اختر حساباً وتأكد من تعبئة البيانات!");
+            if(!id || !newName || !newPass) return alert("يرجى اختيار الحساب وتعبئة الخانات!");
 
             try {
                 await updateDoc(doc(db, "system_users", id), { name: newName, pass: newPass });
-                await logAction(`تعديل بيانات الحساب: ${newName}`);
-                alert("تم الحفظ بنجاح!");
-                loadUsersForEdit(); // تحديث اللوحة
+                await logSystemAction(`قام بتعديل بيانات الحساب التابع لـ: ${newName}`);
+                alert("تم تحديث بيانات الحساب!");
+                loadUsersForEdit();
             } catch (error) { console.error(error); }
         }
 
-        // 5. المراقبة وتسجيل الخروج
-        window.logout = async function() { await logAction(`تسجيل خروج`); location.reload(); }
-        async function logAction(txt) { if(currentUser) try { await addDoc(collection(db, "system_logs"), { user: currentUser.name, action: txt, timestamp: serverTimestamp() }); } catch (e) {} }
+        window.logout = async function() { await logSystemAction(`قام بتسجيل الخروج من النظام`); location.reload(); }
+        
+        async function logSystemAction(txt) { 
+            if(currentUser) {
+                try { await addDoc(collection(db, "system_logs"), { user: currentUser.name, action: txt, timestamp: serverTimestamp() }); } catch (e) {} 
+            }
+        }
 
         function loadReports() {
             onSnapshot(query(collection(db, "tests"), orderBy("timestamp", "desc")), (snapshot) => {
                 const tbody = document.getElementById('reports-body'); tbody.innerHTML = "";
                 snapshot.forEach(doc => {
                     const d = doc.data();
-                    tbody.innerHTML += `<tr><td><strong>${d.name}</strong></td><td><div class="report-box">${d.details}</div></td><td>${d.timestamp ? d.timestamp.toDate().toLocaleString('ar-EG') : ''}</td></tr>`;
+                    tbody.innerHTML += `<tr><td><strong>${d.name}</strong></td><td><div class="report-box">${d.details}</div></td><td>${d.timestamp ? d.timestamp.toDate().toLocaleString('ar-EG') : 'الآن'}</td></tr>`;
                 });
             });
         }
@@ -319,7 +355,7 @@
                 const tbody = document.getElementById('logs-body'); tbody.innerHTML = "";
                 snapshot.forEach(doc => {
                     const l = doc.data();
-                    tbody.innerHTML += `<tr><td><strong><i class="fas fa-user-tie"></i> ${l.user}</strong></td><td><span class="log-badge">${l.action}</span></td><td>${l.timestamp ? l.timestamp.toDate().toLocaleString('ar-EG') : ''}</td></tr>`;
+                    tbody.innerHTML += `<tr><td><strong><i class="fas fa-user-circle"></i> ${l.user}</strong></td><td><span class="log-badge">${l.action}</span></td><td dir="ltr" style="text-align:right;">${l.timestamp ? l.timestamp.toDate().toLocaleString('ar-EG') : 'الآن'}</td></tr>`;
                 });
             });
         }

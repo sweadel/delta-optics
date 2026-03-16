@@ -10,6 +10,7 @@
         :root { --primary: #0E7490; --secondary: #164E63; --bg: #F8FAFC; --text: #1E293B; --danger: #EF4444; --success: #10B981; --warning: #F59E0B; }
         body { font-family: 'Tajawal', sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text); display: flex; height: 100vh; overflow: hidden; }
         
+        /* شاشة تسجيل الدخول */
         #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100%; background: var(--bg); position: absolute; z-index: 1000; padding: 20px; box-sizing: border-box;}
         .login-box { background: white; padding: 40px 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 350px; text-align: center; }
         .input-field { width: 100%; padding: 12px 15px; margin-bottom: 15px; border-radius: 10px; border: 2px solid #E2E8F0; font-size: 1rem; outline: none; box-sizing: border-box; transition: 0.3s; }
@@ -38,10 +39,18 @@
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th, td { padding: 15px; text-align: right; border-bottom: 1px solid #E2E8F0; }
         
+        .report-box { background: #F8FAFC; padding: 15px; border-radius: 10px; font-size: 0.9rem; line-height: 1.8; white-space: pre-wrap; border: 1px solid #E2E8F0; }
+
+        /* معرض النظارات */
         .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
         .product-card { background: white; border: 1px solid #E2E8F0; border-radius: 15px; padding: 15px; text-align: center; }
         .product-card img { width: 100%; height: 140px; object-fit: contain; border-radius: 10px; background: #F8FAFC; margin-bottom: 10px; }
         .badge-type { font-size: 0.7rem; padding: 3px 8px; border-radius: 5px; background: #ECFEFF; color: var(--primary); font-weight: bold; margin-bottom: 5px; display: inline-block; }
+
+        /* نافذة التعديل المنبثقة (Modal) */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: white; padding: 30px; border-radius: 20px; width: 100%; max-width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
 
         @media (max-width: 768px) {
             body { flex-direction: column; }
@@ -56,7 +65,7 @@
     <div id="login-screen">
         <div class="login-box">
             <i class="fas fa-user-shield" style="font-size: 3.5rem; color: var(--primary); margin-bottom: 20px;"></i>
-            <h2>بوابة الإدارة المركزية</h2>
+            <h2 style="margin-bottom: 25px;">بوابة الإدارة المركزية</h2>
             <input type="text" id="username" class="input-field" placeholder="اسم المستخدم" dir="ltr">
             <input type="password" id="password" class="input-field" placeholder="كلمة المرور" dir="ltr">
             <button class="btn" id="login-btn" onclick="attemptLogin()">دخول آمن</button>
@@ -65,6 +74,7 @@
     </div>
 
     <div id="sidebar">
+        <div class="logo-area"><h2 style="margin:0; color:white;"><i class="fas fa-chart-line"></i> دلتا</h2></div>
         <div class="nav-item active" onclick="switchTab(event, 'reports')"><i class="fas fa-notes-medical"></i> <span>التقارير</span></div>
         <div class="nav-item" onclick="switchTab(event, 'brands')"><i class="fas fa-glasses"></i> <span>الماركات</span></div>
         <div class="nav-item admin-nav" onclick="switchTab(event, 'users')"><i class="fas fa-users-cog"></i> <span>الحسابات</span></div>
@@ -74,48 +84,73 @@
     <div id="main-content">
         <header>
             <div id="welcome-text" style="font-weight:900;"></div>
-            <button class="btn btn-danger" style="width:auto;" onclick="logout()">خروج</button>
+            <button class="btn btn-danger" style="width:auto; padding:8px 20px;" onclick="logout()">خروج</button>
         </header>
 
         <div id="sec-reports" class="section-card active">
-            <h2>تقارير المراجعين</h2>
+            <h2><i class="fas fa-clipboard-list"></i> تقارير المراجعين</h2>
             <div class="table-responsive"><table><thead><tr><th>المراجع</th><th>التفاصيل</th><th>الوقت</th></tr></thead><tbody id="reports-body"></tbody></table></div>
         </div>
 
         <div id="sec-brands" class="section-card">
-            <button class="btn btn-warning" id="import-btn" onclick="importOldCollection()" style="margin-bottom: 20px;"><i class="fas fa-magic"></i> استيراد التشكيلة القديمة (68 نظارة)</button>
-            <div style="background:#F8FAFC; padding:20px; border-radius:15px; margin-bottom:20px;">
+            <button class="btn btn-warning" id="import-btn" onclick="importOldCollection()" style="margin-bottom: 20px;"><i class="fas fa-magic"></i> استيراد التشكيلة القديمة</button>
+            
+            <div style="background:#F8FAFC; padding:20px; border-radius:15px; margin-bottom:20px; border: 1px solid #E2E8F0;">
                 <h3>إضافة نظارة جديدة</h3>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                     <input type="text" id="brand-name" class="input-field" placeholder="اسم الماركة">
                     <select id="brand-type" class="input-field"><option value="medical">طبي</option><option value="sun">شمسي</option></select>
                 </div>
-                <input type="file" id="brand-image" class="input-field" accept="image/*">
-                <button class="btn btn-success" id="btn-upload" onclick="uploadBrand()">حفظ في التشكيلة</button>
+                <input type="file" id="brand-image" class="input-field" accept="image/*" style="background:white; padding:9px;">
+                <button class="btn btn-success" id="btn-upload" onclick="uploadBrand()">رفع وحفظ</button>
             </div>
+
+            <h3 style="color: var(--primary);"><i class="fas fa-th"></i> معرض التشكيلة الحالية</h3>
             <div class="products-grid" id="brands-gallery"></div>
         </div>
 
         <div id="sec-users" class="section-card">
-            <h3>إدارة الحسابات</h3>
+            <h3>إدارة حسابات الموظفين</h3>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                 <input type="text" id="new-name" class="input-field" placeholder="الاسم">
-                <input type="text" id="new-username" class="input-field" placeholder="اليوزر">
-                <input type="text" id="new-password" class="input-field" placeholder="الباسورد">
+                <input type="text" id="new-username" class="input-field" placeholder="اليوزر" dir="ltr">
+                <input type="text" id="new-password" class="input-field" placeholder="الباسورد" dir="ltr">
                 <select id="new-role" class="input-field"><option value="manager">مدير</option><option value="superadmin">سوبر آدمن</option></select>
             </div>
-            <button class="btn btn-success" onclick="addNewUser()">إضافة</button>
-            <hr style="margin:20px 0;">
+            <button class="btn btn-success" onclick="addNewUser()">إضافة الحساب</button>
+            <hr style="margin:25px 0;">
+            <h3>تعديل / حذف حساب</h3>
             <select id="user-select" class="input-field" onchange="fillUserData()"></select>
             <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
-                <input type="text" id="edit-name" class="input-field"><input type="text" id="edit-username" class="input-field"><input type="text" id="edit-password" class="input-field">
+                <input type="text" id="edit-name" class="input-field" placeholder="الاسم"><input type="text" id="edit-username" class="input-field" placeholder="اليوزر" dir="ltr"><input type="text" id="edit-password" class="input-field" placeholder="الباسورد" dir="ltr">
             </div>
-            <div style="display:flex; gap:10px;"><button class="btn" style="flex:1;" onclick="saveUserChanges()">حفظ</button><button class="btn btn-danger" style="flex:1;" onclick="deleteUser()">حذف</button></div>
+            <div style="display:flex; gap:10px;"><button class="btn" style="flex:1;" onclick="saveUserChanges()">حفظ التغييرات</button><button class="btn btn-danger" style="flex:1;" onclick="deleteUser()">حذف الحساب</button></div>
         </div>
 
         <div id="sec-audit" class="section-card">
-            <h2>سجل المراقبة</h2>
+            <h2>سجل المراقبة السري</h2>
             <div class="table-responsive"><table><thead><tr><th>المستخدم</th><th>الحدث</th><th>التوقيت</th></tr></thead><tbody id="logs-body"></tbody></table></div>
+        </div>
+    </div>
+
+    <div id="edit-brand-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="margin-top:0; color:var(--primary);"><i class="fas fa-edit"></i> تعديل بيانات النظارة</h3>
+            <label style="font-weight:bold; font-size:0.9rem;">الاسم المعروض:</label>
+            <input type="text" id="edit-brand-name-input" class="input-field" style="margin-top:5px;">
+            
+            <label style="font-weight:bold; font-size:0.9rem;">تصنيف النظارة:</label>
+            <select id="edit-brand-type-input" class="input-field" style="margin-top:5px;">
+                <option value="medical">طبي (Medical)</option>
+                <option value="sun">شمسي (Sun)</option>
+            </select>
+            
+            <input type="hidden" id="edit-brand-id">
+            
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button class="btn btn-success" style="flex:1;" onclick="saveBrandEdit()"><i class="fas fa-save"></i> حفظ التعديل</button>
+                <button class="btn btn-danger" style="flex:1;" onclick="closeBrandModal()">إلغاء</button>
+            </div>
         </div>
     </div>
 
@@ -167,7 +202,7 @@
             document.getElementById('sec-'+tab).classList.add('active');
         }
 
-        /* استيراد التشكيلة القديمة */
+        /* إدارة التشكيلة */
         window.importOldCollection = async function() {
             if(!confirm("سيتم استيراد الـ 68 نظارة القديمة. هل أنت متأكد؟")) return;
             const btn = document.getElementById('import-btn');
@@ -195,7 +230,7 @@
                 const url = await getDownloadURL(sRef);
                 await addDoc(collection(db, "brands"), { name, type, imageUrl: url, imagePath: path, timestamp: serverTimestamp() });
                 await logAction(`إضافة نظارة: ${name}`);
-                alert("تم بنجاح");
+                alert("تم الرفع بنجاح"); document.getElementById('brand-name').value = "";
             } catch(e) { console.error(e); }
             btn.disabled = false;
         }
@@ -205,25 +240,54 @@
                 const gal = document.getElementById('brands-gallery'); gal.innerHTML = "";
                 snap.forEach(d => {
                     const b = d.data();
-                    gal.innerHTML += `<div class="product-card">
+                    gal.innerHTML += `
+                    <div class="product-card">
                         <span class="badge-type">${b.type === 'sun' ? 'شمسي' : 'طبي'}</span>
-                        <img src="${b.imageUrl}"><h4>${b.name}</h4>
-                        <button class="btn btn-danger" onclick="deleteBrand('${d.id}', '${b.imagePath}')">حذف</button>
+                        <img src="${b.imageUrl}">
+                        <h4>${b.name}</h4>
+                        <div style="display:flex; gap:5px;">
+                            <button class="btn btn-warning" style="padding:5px; font-size:0.8rem; flex:1;" onclick="openEditBrandModal('${d.id}', '${b.name.replace(/'/g, "\\'")}', '${b.type}')">تعديل</button>
+                            <button class="btn btn-danger" style="padding:5px; font-size:0.8rem; flex:1;" onclick="deleteBrand('${d.id}', '${b.imagePath}')">حذف</button>
+                        </div>
                     </div>`;
                 });
             });
         }
 
-        window.deleteBrand = async (id, path) => {
-            if(!confirm("حذف؟")) return;
-            if(path !== 'local') try { await deleteObject(ref(storage, path)); } catch(e){}
-            await deleteDoc(doc(db, "brands", id));
+        window.openEditBrandModal = (id, name, type) => {
+            document.getElementById('edit-brand-id').value = id;
+            document.getElementById('edit-brand-name-input').value = name;
+            document.getElementById('edit-brand-type-input').value = type;
+            document.getElementById('edit-brand-modal').classList.add('active');
+        }
+        window.closeBrandModal = () => document.getElementById('edit-brand-modal').classList.remove('active');
+        
+        window.saveBrandEdit = async () => {
+            const id = document.getElementById('edit-brand-id').value;
+            const name = document.getElementById('edit-brand-name-input').value.trim();
+            const type = document.getElementById('edit-brand-type-input').value;
+            if(!name) return alert("الرجاء كتابة اسم");
+            try {
+                await updateDoc(doc(db, "brands", id), { name, type });
+                await logAction(`تعديل نظارة إلى: ${name} (${type})`);
+                closeBrandModal();
+            } catch(e) { console.error(e); }
         }
 
-        window.addNewUser = async () => { /* كود الإضافة */ 
+        window.deleteBrand = async (id, path) => {
+            if(!confirm("هل أنت متأكد من الحذف؟")) return;
+            if(path !== 'local') try { await deleteObject(ref(storage, path)); } catch(e){}
+            await deleteDoc(doc(db, "brands", id));
+            await logAction(`حذف نظارة من التشكيلة`);
+        }
+
+        /* إدارة الحسابات */
+        window.addNewUser = async () => {
             const n = document.getElementById('new-name').value; const u = document.getElementById('new-username').value;
             const p = document.getElementById('new-password').value; const r = document.getElementById('new-role').value;
-            await setDoc(doc(db, "system_users", u), { name: n, username: u, pass: p, role: r }); alert("تم"); loadUsersForEdit();
+            if(!n || !u || !p) return alert("أكمل البيانات");
+            await setDoc(doc(db, "system_users", u), { name: n, username: u, pass: p, role: r });
+            alert("تمت إضافة الحساب"); loadUsersForEdit();
         }
         async function loadUsersForEdit() {
             const sel = document.getElementById('user-select'); sel.innerHTML = '<option value="">-- اختر حساب --</option>';
@@ -239,10 +303,16 @@
         window.saveUserChanges = async () => {
             const oldId = document.getElementById('user-select').value;
             const n = document.getElementById('edit-name').value; const u = document.getElementById('edit-username').value; const p = document.getElementById('edit-password').value;
-            if(u !== oldId) { await setDoc(doc(db, "system_users", u), { name: n, username: u, pass: p, role: systemUsersList[oldId].role }); await deleteDoc(doc(db, "system_users", oldId)); }
-            else await updateDoc(doc(db, "system_users", oldId), { name: n, pass: p }); alert("تم"); loadUsersForEdit();
+            if(!oldId) return;
+            if(u !== oldId) {
+                await setDoc(doc(db, "system_users", u), { name: n, username: u, pass: p, role: systemUsersList[oldId].role });
+                await deleteDoc(doc(db, "system_users", oldId));
+            } else { await updateDoc(doc(db, "system_users", oldId), { name: n, pass: p }); }
+            alert("تم التعديل"); loadUsersForEdit();
         }
-        window.deleteUser = async () => { const id = document.getElementById('user-select').value; if(id !== "adel" && confirm("حذف؟")) { await deleteDoc(doc(db, "system_users", id)); loadUsersForEdit(); } }
+        window.deleteUser = async () => { const id = document.getElementById('user-select').value; if(id !== "adel" && confirm("حذف نهائي؟")) { await deleteDoc(doc(db, "system_users", id)); loadUsersForEdit(); } }
+
+        /* التقارير والمراقبة */
         window.logout = () => { location.reload(); }
         async function logAction(a) { if(currentUser) await addDoc(collection(db, "system_logs"), { user: currentUser.name, action: a, timestamp: serverTimestamp() }); }
         function loadReports() { onSnapshot(query(collection(db, "tests"), orderBy("timestamp", "desc")), (snap) => { const b = document.getElementById('reports-body'); b.innerHTML = ""; snap.forEach(d => { b.innerHTML += `<tr><td><strong>${d.data().name}</strong></td><td><div class="report-box">${d.data().details}</div></td><td>${d.data().timestamp?.toDate().toLocaleString('ar-EG')}</td></tr>`; }); }); }

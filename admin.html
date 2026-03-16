@@ -3,46 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم دلتا | Admin Panel</title>
+    <title>لوحة إدارة دلتا | Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --primary: #0E7490; --bg: #F1F5F9; }
-        body { font-family: 'Tajawal', sans-serif; background: var(--bg); margin: 0; padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; }
-        header { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        h1 { color: var(--primary); margin: 0; font-size: 1.5rem; }
-        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 12px; text-align: right; border-bottom: 1px solid #E2E8F0; }
-        th { color: var(--primary); font-weight: 900; }
-        .status-badge { background: #DCFCE7; color: #166534; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
-        .btn-refresh { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        body { font-family: 'Tajawal', sans-serif; background: #f1f5f9; padding: 20px; }
+        .card { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 15px; text-align: right; border-bottom: 1px solid #eee; }
+        th { color: #0E7490; font-weight: 900; }
+        .details-cell { font-size: 0.9rem; color: #475569; background: #f8fafc; padding: 10px; border-radius: 8px; line-height: 1.6; }
     </style>
 </head>
 <body>
-
-    <div class="container">
-        <header>
-            <h1><i class="fas fa-user-shield"></i> لوحة إدارة دلتا</h1>
-            <button class="btn-refresh" onclick="loadTests()"><i class="fas fa-sync"></i> تحديث البيانات</button>
-        </header>
-
-        <div class="card">
-            <h3><i class="fas fa-list-ul"></i> سجل الفحوصات الأخيرة</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>اسم المراجع</th>
-                        <th>النتيجة</th>
-                        <th>التوقيت</th>
-                        <th>الحالة</th>
-                    </tr>
-                </thead>
-                <tbody id="tests-table">
-                    </tbody>
-            </table>
-        </div>
+    <div class="card">
+        <h2><i class="fas fa-microscope"></i> سجل فحوصات العيادة</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>المراجع</th>
+                    <th>التقرير الطبي</th>
+                    <th>التوقيت</th>
+                </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+        </table>
     </div>
 
     <script type="module">
@@ -61,29 +46,21 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // وظيفة جلب البيانات وعرضها لايف
-        function loadTests() {
-            const q = query(collection(db, "tests"), orderBy("timestamp", "desc"));
-            onSnapshot(q, (querySnapshot) => {
-                const tableBody = document.getElementById('tests-table');
-                tableBody.innerHTML = "";
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const date = data.timestamp ? data.timestamp.toDate().toLocaleString('ar-EG') : 'جاري التحميل...';
-                    tableBody.innerHTML += `
-                        <tr>
-                            <td><strong>${data.name}</strong></td>
-                            <td>${data.result}</td>
-                            <td style="font-size: 0.8rem; color: #64748B;">${date}</td>
-                            <td><span class="status-badge">اكتمل</span></td>
-                        </tr>
-                    `;
-                });
+        const q = query(collection(db, "tests"), orderBy("timestamp", "desc"));
+        onSnapshot(q, (snapshot) => {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = "";
+            snapshot.forEach(doc => {
+                const d = doc.data();
+                const time = d.timestamp ? d.timestamp.toDate().toLocaleString('ar-EG') : '...';
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${d.name}</strong></td>
+                        <td><div class="details-cell">${d.details}</div></td>
+                        <td>${time}</td>
+                    </tr>`;
             });
-        }
-
-        window.loadTests = loadTests;
-        loadTests(); // تحميل تلقائي عند الفتح
+        });
     </script>
 </body>
 </html>

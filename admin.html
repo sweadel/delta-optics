@@ -48,11 +48,13 @@
         .log-badge { background: #FEF2F2; color: var(--danger); padding: 5px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; display: inline-block; white-space: nowrap;}
         
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .btn-group { display: flex; gap: 15px; margin-top: 15px; }
         .divider { height: 1px; background: #E2E8F0; margin: 30px 0; }
         .form-box { border: 2px solid #F1F5F9; padding: 20px; border-radius: 15px; }
         .form-box h3 { margin-top: 0; color: var(--primary); margin-bottom: 15px; }
 
-        /* --- إعدادات الموبايل (شاشات التلفون) --- */
+        /* إعدادات الموبايل (شاشات التلفون) */
         @media (max-width: 768px) {
             body { flex-direction: column; }
             #sidebar.show { 
@@ -66,7 +68,8 @@
             
             #main-content { padding: 15px; padding-bottom: 80px; }
             .section-card { padding: 15px; }
-            .grid-2 { grid-template-columns: 1fr; }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .btn-group { flex-direction: column; gap: 10px; }
             header { flex-direction: column; text-align: center; }
             header .btn { width: 100%; }
         }
@@ -160,21 +163,29 @@
             <div class="divider"></div>
 
             <div class="form-box">
-                <h3><i class="fas fa-edit"></i> تعديل حساب موجود</h3>
-                <label style="font-weight:bold; font-size:0.9rem;">اختر الحساب المراد تعديله:</label>
+                <h3><i class="fas fa-edit"></i> تعديل أو حذف حساب موجود</h3>
+                <label style="font-weight:bold; font-size:0.9rem;">اختر الحساب المطلوب:</label>
                 <select id="user-select" class="input-field" onchange="fillUserData()"></select>
                 
-                <div class="grid-2">
+                <div class="grid-3">
                     <div>
                         <label style="font-weight:bold; font-size:0.9rem;">تغيير الاسم:</label>
-                        <input type="text" id="edit-name" class="input-field">
+                        <input type="text" id="edit-name" class="input-field" placeholder="الاسم المعروض">
+                    </div>
+                    <div>
+                        <label style="font-weight:bold; font-size:0.9rem;">تغيير اسم الدخول (اليوزر):</label>
+                        <input type="text" id="edit-username" class="input-field" placeholder="اليوزر الجديد" dir="ltr">
                     </div>
                     <div>
                         <label style="font-weight:bold; font-size:0.9rem;">كلمة مرور جديدة:</label>
-                        <input type="text" id="edit-password" class="input-field" dir="ltr">
+                        <input type="text" id="edit-password" class="input-field" placeholder="الباسورد الجديد" dir="ltr">
                     </div>
                 </div>
-                <button class="btn" style="background:var(--secondary);" onclick="saveUserChanges()"><i class="fas fa-save"></i> حفظ التعديلات</button>
+                
+                <div class="btn-group">
+                    <button class="btn" style="background:var(--secondary); flex:1;" onclick="saveUserChanges()"><i class="fas fa-save"></i> حفظ التعديلات</button>
+                    <button class="btn btn-danger" style="flex:1;" onclick="deleteUser()"><i class="fas fa-trash-alt"></i> حذف الحساب نهائياً</button>
+                </div>
             </div>
         </div>
 
@@ -196,7 +207,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDocs, where, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDocs, where, doc, getDoc, setDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB11C4GGgAyqeThs8a9cvDNN7frvAA1nqQ",
@@ -213,6 +224,7 @@
         let currentUser = null;
         let systemUsersList = {};
 
+        // تسجيل الدخول
         window.attemptLogin = async function() {
             const u = document.getElementById('username').value.trim();
             const p = document.getElementById('password').value.trim();
@@ -260,17 +272,16 @@
             btn.innerHTML = 'دخول آمن';
         }
 
+        // التنقل بين الأقسام
         window.switchTab = function(event, tabName) {
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             event.currentTarget.classList.add('active');
             
             document.querySelectorAll('.section-card').forEach(el => el.classList.remove('active'));
             document.getElementById('sec-' + tabName).classList.add('active');
-
-            let sectionName = tabName === 'reports' ? "التقارير الطبية" : (tabName === 'users' ? "إدارة الحسابات" : "الصندوق الأسود");
-            logSystemAction(`قام بتصفح قسم: ${sectionName}`);
         }
 
+        // إنشاء حساب جديد
         window.addNewUser = async function() {
             const n = document.getElementById('new-name').value.trim();
             const u = document.getElementById('new-username').value.trim();
@@ -297,9 +308,10 @@
             } catch(e) { console.error(e); }
         }
 
+        // تحميل الحسابات للتعديل والحذف
         async function loadUsersForEdit() {
             const select = document.getElementById('user-select');
-            select.innerHTML = '<option value="">-- اختر الحساب لتعديل بياناته --</option>';
+            select.innerHTML = '<option value="">-- اختر الحساب المطلوب --</option>';
             systemUsersList = {};
 
             const snap = await getDocs(collection(db, "system_users"));
@@ -310,28 +322,92 @@
             });
         }
 
+        // تعبئة البيانات في الخانات
         window.fillUserData = function() {
             const id = document.getElementById('user-select').value;
-            if(!id) return;
+            if(!id) {
+                document.getElementById('edit-name').value = '';
+                document.getElementById('edit-username').value = '';
+                document.getElementById('edit-password').value = '';
+                return;
+            }
             document.getElementById('edit-name').value = systemUsersList[id].name;
+            document.getElementById('edit-username').value = systemUsersList[id].username;
             document.getElementById('edit-password').value = systemUsersList[id].pass;
         }
 
+        // حفظ التعديلات
         window.saveUserChanges = async function() {
-            const id = document.getElementById('user-select').value;
+            const oldId = document.getElementById('user-select').value;
             const newName = document.getElementById('edit-name').value.trim();
+            const newUsername = document.getElementById('edit-username').value.trim();
             const newPass = document.getElementById('edit-password').value.trim();
 
-            if(!id || !newName || !newPass) return alert("يرجى اختيار الحساب وتعبئة الخانات!");
+            if(!oldId || !newName || !newUsername || !newPass) return alert("يرجى اختيار الحساب وتعبئة كافة الخانات!");
 
             try {
-                await updateDoc(doc(db, "system_users", id), { name: newName, pass: newPass });
-                await logSystemAction(`قام بتعديل بيانات الحساب التابع لـ: ${newName}`);
-                alert("تم تحديث بيانات الحساب!");
+                if(newUsername !== oldId) {
+                    const checkSnap = await getDoc(doc(db, "system_users", newUsername));
+                    if(checkSnap.exists()) return alert("اسم الدخول (اليوزر) الجديد مستخدم لحساب آخر مسبقاً!");
+                    
+                    const oldRole = systemUsersList[oldId].role;
+                    await setDoc(doc(db, "system_users", newUsername), { name: newName, username: newUsername, pass: newPass, role: oldRole });
+                    await deleteDoc(doc(db, "system_users", oldId));
+                    await logSystemAction(`قام بتغيير اسم الدخول للحساب (${oldId}) ليصبح (${newUsername})`);
+                } else {
+                    await updateDoc(doc(db, "system_users", oldId), { name: newName, pass: newPass });
+                    await logSystemAction(`قام بتعديل بيانات الحساب: ${newName}`);
+                }
+                
+                alert("تم تحديث بيانات الحساب بنجاح!");
+                
+                document.getElementById('edit-name').value = '';
+                document.getElementById('edit-username').value = '';
+                document.getElementById('edit-password').value = '';
+                
                 loadUsersForEdit();
-            } catch (error) { console.error(error); }
+                
+                if(oldId === currentUser.docId && newUsername !== oldId) {
+                    alert("لقد قمت بتغيير اليوزر الخاص بك، سيتم تسجيل خروجك لتدخل بالبيانات الجديدة.");
+                    logout();
+                }
+
+            } catch (error) { console.error(error); alert("حدث خطأ أثناء حفظ التعديلات!"); }
         }
 
+        // حذف الحساب
+        window.deleteUser = async function() {
+            const id = document.getElementById('user-select').value;
+            if(!id) return alert("يرجى اختيار الحساب المراد حذفه!");
+
+            // حماية حساب المهندس عادل من الحذف
+            if(id === "adel" || id === currentUser.docId) {
+                return alert("عذراً، لا يمكنك حذف حساب الإدارة العليا الخاص بك!");
+            }
+
+            const deletedName = systemUsersList[id].name;
+            const confirmDelete = confirm(`هل أنت متأكد من حذف حساب: ${deletedName} نهائياً؟\nلا يمكن التراجع عن هذا الإجراء.`);
+            if(!confirmDelete) return;
+
+            try {
+                await deleteDoc(doc(db, "system_users", id));
+                await logSystemAction(`قام بحذف حساب الموظف: ${deletedName}`);
+                
+                alert("تم حذف الحساب بنجاح!");
+                
+                // تفريغ الخانات وتحديث القائمة
+                document.getElementById('edit-name').value = '';
+                document.getElementById('edit-username').value = '';
+                document.getElementById('edit-password').value = '';
+                
+                loadUsersForEdit();
+            } catch (error) {
+                console.error(error);
+                alert("حدث خطأ أثناء الحذف!");
+            }
+        }
+
+        // تسجيل الخروج والمراقبة
         window.logout = async function() { await logSystemAction(`قام بتسجيل الخروج من النظام`); location.reload(); }
         
         async function logSystemAction(txt) { 

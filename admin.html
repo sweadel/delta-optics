@@ -3,105 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة الإدارة المركزية | Delta Optics</title>
+    <title>لوحة الإدارة | Delta Optics</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --primary: #0E7490; --secondary: #164E63; --bg: #F8FAFC; --text: #1E293B; --success: #10B981; --danger: #EF4444; }
+        :root { --primary: #0E7490; --secondary: #164E63; --bg: #F8FAFC; --danger: #EF4444; --success: #10B981; }
         body { font-family: 'Tajawal', sans-serif; background: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
-        /* Sidebar */
-        #sidebar { width: 260px; background: var(--secondary); color: white; display: none; flex-direction: column; padding: 20px 0; transition: 0.3s; }
+        #sidebar { width: 260px; background: var(--secondary); color: white; display: none; flex-direction: column; padding: 20px 0; }
         #sidebar.active { display: flex; }
         .nav-item { padding: 15px 25px; cursor: pointer; display: flex; align-items: center; gap: 15px; font-weight: bold; color: #CBD5E1; transition: 0.2s; }
         .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.1); color: white; border-right: 4px solid var(--primary); }
 
-        /* Main Content */
         #main-content { flex: 1; padding: 30px; overflow-y: auto; display: none; }
         #main-content.active { display: block; }
         .section-card { background: white; padding: 25px; border-radius: 15px; margin-bottom: 25px; border: 1px solid #E2E8F0; display: none; }
         .section-card.show { display: block !important; }
 
-        /* Forms & Tables */
-        .form-group { margin-bottom: 15px; text-align: right; }
-        input, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; margin-top: 5px; outline: none; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
-        th, td { padding: 15px; text-align: right; border-bottom: 1px solid #E2E8F0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: right; border-bottom: 1px solid #E2E8F0; }
         th { background: #F1F5F9; color: var(--primary); }
-
-        .login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100%; background: var(--bg); }
-        .btn { padding: 12px 25px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-success { background: var(--success); color: white; width: 100%; }
+        .btn-action { padding: 5px 10px; border-radius: 5px; border: none; cursor: pointer; color: white; margin-left: 5px; }
+        .btn-delete { background: var(--danger); }
+        .btn-edit { background: var(--primary); }
         
-        #preview-img { width: 100px; height: 100px; object-fit: cover; border-radius: 10px; margin-top: 10px; display: none; border: 2px solid #ddd; }
+        .product-img { width: 50px; height: 50px; object-fit: cover; border-radius: 8px; }
+        .login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100%; background: var(--bg); }
     </style>
 </head>
 <body>
 
     <div id="login-screen" class="login-screen">
         <div class="card" style="background:white; padding:40px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.1); text-align:center;">
-            <h2 style="color:var(--primary);">Delta Admin Portal</h2>
-            <input type="text" id="adminUser" placeholder="اسم المستخدم" style="width:280px;"><br>
-            <input type="password" id="adminPass" placeholder="كلمة المرور" style="width:280px; margin-bottom:20px;"><br>
-            <button class="btn btn-primary" onclick="attemptLogin()">دخول للنظام</button>
+            <h2 style="color:var(--primary);">Delta Admin</h2>
+            <input type="text" id="adminUser" placeholder="اسم المستخدم" style="width:250px; padding:10px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd;"><br>
+            <input type="password" id="adminPass" placeholder="كلمة المرور" style="width:250px; padding:10px; margin-bottom:20px; border-radius:10px; border:1px solid #ddd;"><br>
+            <button onclick="attemptLogin()" style="padding:10px 30px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer;">دخول</button>
         </div>
     </div>
 
     <div id="sidebar">
-        <div class="nav-item active" onclick="switchTab('reports', event)"><i class="fas fa-file-medical"></i> تقارير المراجعين</div>
-        <div class="nav-item" onclick="switchTab('upload', event)"><i class="fas fa-plus-circle"></i> إضافة نظارة جديدة</div>
-        <div class="nav-item" onclick="switchTab('audit', event)"><i class="fas fa-user-secret"></i> سجل المراقبة</div>
+        <div class="nav-item active" onclick="switchTab('manage', event)"><i class="fas fa-boxes"></i> إدارة التشكيلة</div>
+        <div class="nav-item" onclick="switchTab('upload', event)"><i class="fas fa-plus-circle"></i> إضافة نظارة</div>
+        <div class="nav-item" onclick="switchTab('reports', event)"><i class="fas fa-file-medical"></i> التقارير</div>
     </div>
 
     <div id="main-content">
-        <div id="sec-reports" class="section-card show">
-            <h2><i class="fas fa-list"></i> نتائج الفحوصات الأخيرة</h2>
-            <table id="reports-table">
-                <thead><tr><th>المراجع</th><th>تفاصيل الفحص</th><th>التوقيت</th></tr></thead>
-                <tbody id="reports-body"></tbody>
+        <div id="sec-manage" class="section-card show">
+            <h2><i class="fas fa-glasses"></i> إدارة المنتجات (نظارات الأطفال والكبار)</h2>
+            <table>
+                <thead>
+                    <tr><th>الصورة</th><th>الاسم</th><th>النوع</th><th>الإجراءات</th></tr>
+                </thead>
+                <tbody id="products-list"></tbody>
             </table>
         </div>
 
         <div id="sec-upload" class="section-card">
-            <h2><i class="fas fa-glasses"></i> إضافة قطعة جديدة للتشكيلة</h2>
-            <div style="max-width: 500px; margin: auto;">
-                <div class="form-group">
-                    <label>اسم النظارة / الموديل:</label>
-                    <input type="text" id="glassName" placeholder="مثال: Ray-Ban Aviator Blue">
-                </div>
-                <div class="form-group">
-                    <label>نوع التشكيلة:</label>
-                    <select id="glassCategory">
-                        <option value="طبية">نظارات طبية</option>
-                        <option value="شمسية">نظارات شمسية</option>
-                        <option value="عدسات">عدسات لاصقة</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>صورة المنتج:</label>
-                    <input type="file" id="glassFile" accept="image/*" onchange="previewImage(event)">
-                    <img id="preview-img">
-                </div>
-                <button class="btn btn-success" id="uploadBtn" onclick="uploadNewGlass()">
-                    <i class="fas fa-cloud-upload-alt"></i> حفظ ونشر في الموقع
-                </button>
-                <p id="uploadStatus" style="text-align:center; font-weight:bold; color:var(--primary); display:none;">جاري الرفع...</p>
-            </div>
+            <h2>إضافة قطعة جديدة</h2>
+            <input type="text" id="glassName" placeholder="اسم الموديل"><br><br>
+            <select id="glassCategory">
+                <option value="أطفال">نظارات أطفال</option>
+                <option value="طبية">نظارات طبية</option>
+                <option value="شمسية">نظارات شمسية</option>
+            </select><br><br>
+            <input type="file" id="glassFile" accept="image/*"><br><br>
+            <button onclick="uploadNewGlass()" id="uploadBtn" style="padding:10px 20px; background:var(--success); color:white; border:none; border-radius:10px; cursor:pointer;">نشر المنتج</button>
         </div>
 
-        <div id="sec-audit" class="section-card">
-            <h2><i class="fas fa-shield-alt"></i> سجل تحركات النظام (Audit)</h2>
-            <table>
-                <thead><tr><th>المسؤول</th><th>الحدث</th><th>الجهاز واللوكيشن</th><th>التاريخ</th></tr></thead>
-                <tbody id="logs-body"></tbody>
-            </table>
+        <div id="sec-reports" class="section-card">
+            <h2>تقارير المراجعين</h2>
+            <table id="reports-table"><thead><tr><th>المراجع</th><th>التفاصيل</th></tr></thead><tbody id="reports-body"></tbody></table>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
         const firebaseConfig = {
@@ -116,115 +94,90 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const storage = getStorage(app);
-        let currentUser = null;
-
-        // 🛡️ وظيفة المراقبة (Audit Log)
-        async function logAction(action) {
-            if(!currentUser) return;
-            const ua = navigator.userAgent;
-            let device = ua.includes("Android") ? "Android" : ua.includes("iPhone") ? "iPhone" : "PC";
-            
-            await addDoc(collection(db, "system_logs"), {
-                user: currentUser,
-                action: action,
-                metadata: `${device} | المتصفح: ${navigator.vendor}`,
-                timestamp: serverTimestamp()
-            });
-        }
 
         // 🔐 تسجيل الدخول
-        window.attemptLogin = async function() {
+        window.attemptLogin = function() {
             const u = document.getElementById('adminUser').value;
             const p = document.getElementById('adminPass').value;
             if(u === "adel" && p === "123123") {
-                currentUser = "المهندس عادل";
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('sidebar').classList.add('active');
                 document.getElementById('main-content').classList.add('active');
-                await logAction("سجل دخوله للوحة الإدارة");
-                loadReports(); loadLogs();
-            } else { alert("خطأ في البيانات"); }
+                loadInventory(); loadReports();
+            } else { alert("بيانات خاطئة"); }
         }
 
         // 🔄 تبديل الأقسام
-        window.switchTab = async function(tabId, e) {
+        window.switchTab = function(tabId, e) {
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             e.currentTarget.classList.add('active');
             document.querySelectorAll('.section-card').forEach(s => s.classList.remove('show'));
             document.getElementById('sec-' + tabId).classList.add('show');
-            await logAction(`انتقل إلى قسم: ${tabId}`);
         }
 
-        // 📸 معاينة الصورة قبل الرفع
-        window.previewImage = function(event) {
-            const reader = new FileReader();
-            reader.onload = function() { 
-                const output = document.getElementById('preview-img');
-                output.src = reader.result; output.style.display = 'block';
-            };
-            reader.readAsDataURL(event.target.files[0]);
-        }
-
-        // 🚀 --- الوظيفة الأساسية: رفع نظارة جديدة (تم الإصلاح) ---
-        window.uploadNewGlass = async function() {
-            const name = document.getElementById('glassName').value;
-            const category = document.getElementById('glassCategory').value;
-            const file = document.getElementById('glassFile').files[0];
-            const btn = document.getElementById('uploadBtn');
-            const status = document.getElementById('uploadStatus');
-
-            if(!name || !file) return alert("يرجى تعبئة كافة البيانات واختيار صورة");
-
-            btn.disabled = true; status.style.display = 'block';
-
-            try {
-                // 1. رفع الصورة لـ Firebase Storage
-                const fileName = `products/${Date.now()}_${file.name}`;
-                const storageRef = ref(storage, fileName);
-                const snapshot = await uploadBytes(storageRef, file);
-                
-                // 2. الحصول على رابط الصورة
-                const photoURL = await getDownloadURL(snapshot.ref);
-
-                // 3. تخزين البيانات في Firestore
-                await addDoc(collection(db, "products"), {
-                    name: name,
-                    category: category,
-                    imageUrl: photoURL,
-                    uploadedBy: currentUser,
-                    createdAt: serverTimestamp()
-                });
-
-                await logAction(`أضاف نظارة جديدة: ${name}`);
-                alert("تم إضافة النظارة بنجاح للتشكيلة!");
-                location.reload();
-
-            } catch (error) {
-                console.error(error);
-                alert("حدث خطأ أثناء الرفع، تأكد من تفعيل Storage في Firebase Console");
-            } finally {
-                btn.disabled = false; status.style.display = 'none';
-            }
-        }
-
-        // 📋 جلب التقارير من Firebase
-        function loadReports() {
-            onSnapshot(query(collection(db, "tests"), orderBy("timestamp", "desc")), (snap) => {
-                const b = document.getElementById('reports-body'); b.innerHTML = "";
+        // 📋 جلب وإدارة التشكيلة
+        function loadInventory() {
+            onSnapshot(collection(db, "products"), (snap) => {
+                const list = document.getElementById('products-list');
+                list.innerHTML = "";
                 snap.forEach(d => {
-                    const data = d.data();
-                    b.innerHTML += `<tr><td><strong>${data.name}</strong></td><td><pre style="font-family:inherit;">${data.details}</pre></td><td>${data.timestamp?.toDate().toLocaleString('ar-EG')}</td></tr>`;
+                    const p = d.data();
+                    list.innerHTML += `
+                        <tr>
+                            <td><img src="${p.imageUrl}" class="product-img"></td>
+                            <td>${p.name}</td>
+                            <td>${p.category}</td>
+                            <td>
+                                <button class="btn-action btn-edit" onclick="editProduct('${d.id}', '${p.name}')">تعديل</button>
+                                <button class="btn-action btn-delete" onclick="deleteProduct('${d.id}')">حذف</button>
+                            </td>
+                        </tr>`;
                 });
             });
         }
 
-        // 📋 جلب سجل المراقبة
-        function loadLogs() {
-            onSnapshot(query(collection(db, "system_logs"), orderBy("timestamp", "desc")), (snap) => {
-                const b = document.getElementById('logs-body'); b.innerHTML = "";
+        // 🗑️ حذف منتج
+        window.deleteProduct = async function(id) {
+            if(confirm("هل أنت متأكد من حذف هذه النظارة؟")) {
+                await deleteDoc(doc(db, "products", id));
+                alert("تم الحذف بنجاح");
+            }
+        }
+
+        // ✏️ تعديل اسم منتج
+        window.editProduct = async function(id, oldName) {
+            const newName = prompt("أدخل الاسم الجديد للنظارة:", oldName);
+            if(newName) {
+                await updateDoc(doc(db, "products", id), { name: newName });
+            }
+        }
+
+        // 🚀 رفع منتج جديد
+        window.uploadNewGlass = async function() {
+            const name = document.getElementById('glassName').value;
+            const cat = document.getElementById('glassCategory').value;
+            const file = document.getElementById('glassFile').files[0];
+            if(!name || !file) return alert("أكمل البيانات");
+
+            const storageRef = ref(storage, 'glasses/' + Date.now() + "_" + file.name);
+            await uploadBytes(storageRef, file);
+            const url = await getDownloadURL(storageRef);
+
+            await addDoc(collection(db, "products"), {
+                name: name,
+                category: cat,
+                imageUrl: url,
+                createdAt: serverTimestamp()
+            });
+            alert("تمت الإضافة!");
+            document.getElementById('glassName').value = "";
+        }
+
+        function loadReports() {
+            onSnapshot(query(collection(db, "tests"), orderBy("timestamp", "desc")), (snap) => {
+                const b = document.getElementById('reports-body'); b.innerHTML = "";
                 snap.forEach(d => {
-                    const l = d.data();
-                    b.innerHTML += `<tr><td>${l.user}</td><td><span style="color:var(--primary); font-weight:bold;">${l.action}</span></td><td><small>${l.metadata}</small></td><td>${l.timestamp?.toDate().toLocaleString('ar-EG')}</td></tr>`;
+                    b.innerHTML += `<tr><td>${d.data().name}</td><td><pre>${d.data().details}</pre></td></tr>`;
                 });
             });
         }

@@ -319,6 +319,37 @@
         </div>
     </div>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB11C4GGgAyqeThs8a9cvDNN7frvAA1nqQ",
+            authDomain: "delta-optics-system.firebaseapp.com",
+            projectId: "delta-optics-system",
+            storageBucket: "delta-optics-system.firebasestorage.app",
+            messagingSenderId: "111176219224",
+            appId: "1:111176219224:web:e0d8a5f26b84d57249a82d"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // جعل دالة الإرسال عامة ليتمكن الكود الأساسي من استدعائها
+        window.saveToFirebase = async (patientName, reportText) => {
+            try {
+                await addDoc(collection(db, "tests"), {
+                    name: patientName,
+                    details: reportText,
+                    timestamp: serverTimestamp()
+                });
+                console.log("تم إرسال النتائج للإدارة بنجاح");
+            } catch (e) {
+                console.error("خطأ في الإرسال للإدارة: ", e);
+            }
+        };
+    </script>
+
     <script>
         // --- 1. القاموس والتفاصيل ---
         const i18n = {
@@ -348,15 +379,11 @@
 
         let currentPatient = ""; let currentResults = {}; let activeTest = ""; let currentEye = "right"; let modalCallback = null;
 
-        // --- 2. المساعد الصوتي (Google Cloud TTS المفتوحة القوية + Fallback) ---
+        // --- 2. المساعد الصوتي ---
         function playGoogleVoice(text) {
-            // نستخدم رابط gtx السحري من جوجل (يتجاوز حظر المتصفحات العادية ويعطي صوت فخم)
             let url = "https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=ar&q=" + encodeURIComponent(text);
             let audio = new Audio(url);
-            
             audio.play().catch(e => {
-                console.log("تم حظر الصوت من المتصفح للحماية، جاري استخدام الصوت البديل (النظام)...");
-                // إذا المتصفح عمل بلوك للصوت الخارجي (زي سفاري مرات)، بنستخدم صوت التلفون كبديل
                 if('speechSynthesis' in window) {
                     window.speechSynthesis.cancel();
                     let u = new SpeechSynthesisUtterance(text);
@@ -371,11 +398,7 @@
             document.getElementById('modalText').innerHTML = text;
             modalCallback = callback; 
             document.getElementById('instructionModal').classList.add('active');
-            
-            // تشغيل الصوت فور ظهور النافذة
-            if(spokenText) {
-                playGoogleVoice(spokenText);
-            }
+            if(spokenText) playGoogleVoice(spokenText);
         }
         
         function closeModal() {
@@ -393,14 +416,38 @@
             show('menu');
         }
 
-        function showFinalReport() {
+        // --- التعديل الجوهري لربط النتائج بالإدارة ---
+        async function showFinalReport() {
             if(Object.keys(currentResults).length === 0) { alert("لم تقم بإجراء أي فحص!"); return; }
             
+            // الحفظ المحلي
             let records = JSON.parse(localStorage.getItem('delta_patients')) || [];
             let existingIdx = records.findIndex(r => r.name === currentPatient);
             if(existingIdx >= 0) records[existingIdx].results = currentResults;
             else records.push({ name: currentPatient, results: currentResults, date: new Date().toLocaleDateString() });
             localStorage.setItem('delta_patients', JSON.stringify(records));
+
+            let reportForAdmin = "";
+            let waDetails = `\n👤 *الاسم:* ${currentPatient}\n\n📊 *نتائج الفحص:*\n`;
+
+            for (const [testKey, eyeData] of Object.entries(currentResults)) {
+                let titleName = i18n.ar[testKey === 'vision' ? 'resVision' : testKey === 'contrast' ? 'resContrast' : testKey === 'astigmatism' ? 'resAst' : testKey === 'color' ? 'resColor' : testKey === 'duochrome' ? 'resDuo' : 'resDry'];
+                let tData = testDetailsMap[testKey];
+
+                waDetails += `\n${tData.icon} *${titleName}*\n_${tData.desc}_\n`;
+                reportForAdmin += `\n[ ${titleName} ]\n`;
+                
+                for (const [eye, score] of Object.entries(eyeData)) {
+                    let eyeName = i18n.ar[eye];
+                    waDetails += `• ${eyeName}: ${score}\n`;
+                    reportForAdmin += `- ${eyeName}: ${score}\n`;
+                }
+            }
+
+            // إرسال البيانات فوراً للآدمن
+            if(window.saveToFirebase) {
+                await window.saveToFirebase(currentPatient, reportForAdmin);
+            }
 
             renderReportUI(currentPatient, currentResults);
             show('screen-report');

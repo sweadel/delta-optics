@@ -2,153 +2,138 @@
 <html lang="ar" dir="rtl" data-theme="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Delta Optics | دلتا للبصريات</title>
     
     <link rel="icon" href="logo.jpg" type="image/jpeg">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        :root { 
-            --primary: #0e7490; 
-            --bg-color: #f5f5f7; /* لون خلفية آبل المريح */
-            --surface: #ffffff; 
-            --text-main: #1d1d1f; 
-            --text-muted: #86868b; 
-            --shadow: 0 4px 24px rgba(0,0,0,0.04);
-            --border-rad: 22px;
+        :root {
+            --primary: #0891b2; 
+            --primary-hover: #0e7490;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --radius: 16px;
         }
 
         [data-theme="dark"] {
-            --primary: #22d3ee; 
-            --bg-color: #000000; 
-            --surface: #1c1c1e; 
-            --text-main: #f5f5f7; 
-            --text-muted: #86868b; 
-            --shadow: 0 4px 24px rgba(255,255,255,0.02);
+            --primary: #06b6d4;
+            --primary-hover: #22d3ee;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --text: #f8fafc;
+            --text-light: #94a3b8;
+            --border: #334155;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         
-        body { 
-            background-color: var(--bg-color); color: var(--text-main); 
-            min-height: 100vh; display: flex; flex-direction: column; 
-            padding-bottom: 90px; transition: background-color 0.3s ease;
-        }
-
-        /* حركات الظهور الهادئة */
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-in { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-        .d-1 { animation-delay: 0.1s; } .d-2 { animation-delay: 0.2s; } .d-3 { animation-delay: 0.3s; }
-
-        /* الهيدر النظيف */
-        header { 
-            background: rgba(255,255,255,0.8); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: blur(20px);
-            padding: 16px 24px; position: sticky; top: 0; z-index: 100; 
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        [data-theme="dark"] header { background: rgba(28,28,30,0.8); }
+        body { background: var(--bg); color: var(--text); line-height: 1.6; transition: background-color 0.3s, color 0.3s; }
         
-        .header-brand { display: flex; align-items: center; gap: 12px; }
-        .header-logo { width: 40px; height: 40px; object-fit: cover; border-radius: 10px; }
-        .header-title { font-size: 1.2rem; font-weight: 900; letter-spacing: 0.5px; }
-
-        .theme-btn { 
-            background: none; border: none; font-size: 1.2rem; color: var(--text-main); 
-            cursor: pointer; width: 40px; height: 40px; border-radius: 50%; 
-            background: var(--surface); box-shadow: var(--shadow); transition: 0.2s;
-        }
-        .theme-btn:active { transform: scale(0.9); }
-
-        main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; width: 100%; max-width: 480px; margin: 0 auto; }
+        /* الحاوية الرئيسية تضمن تجاوب الموقع مع الشاشات الكبيرة */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         
-        /* الشعار والنصوص */
-        .main-logo { width: 120px; height: 120px; border-radius: 30px; object-fit: cover; margin-bottom: 24px; box-shadow: var(--shadow); background: var(--surface); padding: 5px; }
-        h1 { font-size: 2.2rem; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.5px; }
-        .subtitle { color: var(--text-muted); font-size: 1.05rem; margin-bottom: 32px; font-weight: 500; }
+        /* الشريط العلوي */
+        header { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; padding: 15px 0; transition: 0.3s; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .brand img { width: 45px; height: 45px; border-radius: 10px; object-fit: cover; border: 1px solid var(--border); }
+        .brand h2 { font-size: 1.5rem; color: var(--primary); font-weight: 900; letter-spacing: 1px; }
+        
+        .controls { display: flex; gap: 10px; }
+        .btn-icon { background: var(--bg); border: 1px solid var(--border); color: var(--text); width: 40px; height: 40px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.2s; }
+        .btn-icon:hover { background: var(--primary); color: white; border-color: var(--primary); }
 
-        /* شبكة الكروت النظيفة */
-        .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; margin-bottom: 32px; }
-        .service-card { 
-            background: var(--surface); border-radius: var(--border-rad); padding: 30px 20px; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
-            text-decoration: none; box-shadow: var(--shadow); transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .service-card:active { transform: scale(0.96); box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .card-icon { font-size: 2.4rem; color: var(--primary); }
-        .card-title { font-size: 1.1rem; font-weight: 800; color: var(--text-main); }
+        /* قسم الترحيب (Hero) */
+        .hero { text-align: center; padding: 80px 20px; background: linear-gradient(to bottom, var(--surface), var(--bg)); border-bottom: 1px solid var(--border); }
+        .hero h1 { font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 900; margin-bottom: 15px; color: var(--text); }
+        .hero p { font-size: clamp(1rem, 2vw, 1.2rem); color: var(--text-light); max-width: 600px; margin: 0 auto 30px; }
+        
+        .status-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--surface); padding: 10px 25px; border-radius: 50px; border: 1px solid var(--border); font-weight: 700; box-shadow: var(--shadow); color: var(--text); }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .dot.open { background: #10b981; box-shadow: 0 0 8px #10b981; }
+        .dot.closed { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
 
-        /* كرت الحجز العريض */
-        .booking-card { 
-            grid-column: 1 / -1; background: var(--text-main); color: var(--bg-color); 
-            flex-direction: row; justify-content: space-between; padding: 24px 28px;
-        }
-        .booking-card .card-title { color: var(--bg-color); font-size: 1.2rem; }
-        .booking-card .card-icon { color: var(--bg-color); background: rgba(255,255,255,0.1); padding: 12px; border-radius: 16px; }
-        .booking-texts { text-align: right; }
-        .booking-sub { font-size: 0.85rem; opacity: 0.8; margin-top: 6px; }
-
-        /* شريط الماركات الهادي */
-        .brands-wrap { width: 100%; overflow: hidden; padding: 30px 0; background: var(--surface); margin-top: auto; }
-        .brands-content { display: flex; animation: scrollBrands 35s linear infinite; }
-        @keyframes scrollBrands { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .brand-name { margin: 0 30px; font-size: 1.2rem; font-weight: 900; color: var(--text-muted); opacity: 0.5; letter-spacing: 1px; }
+        /* شبكة الخدمات المتجاوبة (Responsive Grid) */
+        main { padding: 60px 0; }
+        .section-title { text-align: center; font-size: 2rem; margin-bottom: 40px; font-weight: 900; color: var(--text); }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+        
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 40px 20px; text-align: center; transition: all 0.3s ease; box-shadow: var(--shadow); text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 25px rgba(8, 145, 178, 0.15); }
+        .card-icon { font-size: 3.5rem; color: var(--primary); margin-bottom: 10px; }
+        .card-title { font-size: 1.4rem; font-weight: 800; color: var(--text); }
+        .card-desc { font-size: 1rem; color: var(--text-light); }
 
         /* زر الواتساب العائم */
-        .fab { 
-            position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; 
-            background: #25D366; color: white; border-radius: 20px; 
-            display: flex; align-items: center; justify-content: center; font-size: 1.8rem; 
-            box-shadow: 0 8px 24px rgba(37,211,102,0.3); text-decoration: none; transition: 0.2s; z-index: 100;
+        .fab { position: fixed; bottom: 30px; right: 30px; background: #25D366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); transition: 0.3s; z-index: 1000; text-decoration: none; }
+        .fab:hover { transform: scale(1.1); }
+
+        /* تعديلات الموبايل */
+        @media (max-width: 768px) {
+            .hero { padding: 50px 15px; }
+            .card { padding: 30px 15px; }
+            .fab { bottom: 20px; right: 20px; width: 50px; height: 50px; font-size: 1.5rem; }
         }
-        .fab:active { transform: scale(0.9); }
     </style>
 </head>
 <body>
 
-    <header class="fade-in">
-        <div class="header-brand">
-            <img src="logo.jpg" class="header-logo" alt="Delta">
-            <h2 class="header-title">DELTA OPTICS</h2>
+    <header>
+        <div class="container header-content">
+            <a href="index.html" class="brand">
+                <img src="logo.jpg" alt="Delta">
+                <h2>DELTA</h2>
+            </a>
+            <div class="controls">
+                <button class="btn-icon" onclick="toggleTheme()" id="theme-btn"><i class="fas fa-moon"></i></button>
+                <button class="btn-icon" onclick="toggleLang()" id="lang-btn">EN</button>
+            </div>
         </div>
-        <button class="theme-btn" onclick="toggleTheme()" id="theme-btn"><i class="fas fa-moon"></i></button>
     </header>
 
-    <main>
-        <img src="logo.jpg" class="main-logo fade-in d-1" alt="Delta Logo">
-        <h1 class="fade-in d-1">دلتا للبصريات</h1>
-        <p class="subtitle fade-in d-1">الرؤية الواضحة، بأرقى المعايير.</p>
+    <div class="hero">
+        <div class="container">
+            <h1 id="txt-hero">دلتا للبصريات</h1>
+            <p id="txt-sub">خبراء العناية بالعين وأحدث الماركات العالمية، دقة في الفحص وجودة في الاختيار.</p>
+            <div class="status-badge">
+                <div class="dot" id="status-dot"></div>
+                <span id="status-text">...</span>
+            </div>
+        </div>
+    </div>
 
-        <div class="cards-grid fade-in d-2">
-            <a href="test.html" class="service-card">
+    <main class="container">
+        <h2 class="section-title" id="txt-section">خدماتنا</h2>
+        
+        <div class="grid">
+            <a href="test.html" class="card">
                 <i class="fas fa-microscope card-icon"></i>
-                <span class="card-title">الفحص الذكي</span>
+                <h3 class="card-title" id="txt-test">الفحص الذكي</h3>
+                <p class="card-desc" id="desc-test">أحدث الأجهزة لضمان دقة قياس النظر وصحة العين.</p>
             </a>
             
-            <a href="collection.html" class="service-card">
+            <a href="collection.html" class="card">
                 <i class="fas fa-glasses card-icon"></i>
-                <span class="card-title">التشكيلات</span>
+                <h3 class="card-title" id="txt-coll">التشكيلات</h3>
+                <p class="card-desc" id="desc-coll">استعرض أحدث الإطارات والنظارات الشمسية العالمية.</p>
             </a>
             
-            <a href="https://wa.me/962775549700" target="_blank" class="service-card booking-card">
-                <div class="booking-texts">
-                    <div class="card-title">احجز موعدك</div>
-                    <div class="booking-sub">تواصل معنا مباشرة عبر واتساب</div>
-                </div>
-                <i class="fab fa-whatsapp card-icon"></i>
+            <a href="https://wa.me/962775549700" target="_blank" class="card">
+                <i class="fas fa-calendar-check card-icon"></i>
+                <h3 class="card-title" id="txt-book">حجز موعد</h3>
+                <p class="card-desc" id="desc-book">تواصل معنا لحجز موعد فحص بكل سهولة عبر الواتساب.</p>
             </a>
         </div>
     </main>
-
-    <div class="brands-wrap fade-in d-3">
-        <div class="brands-content">
-            <span class="brand-name">RAY-BAN</span><span class="brand-name">GUCCI</span><span class="brand-name">PRADA</span><span class="brand-name">DIOR</span><span class="brand-name">TOM FORD</span>
-            <span class="brand-name">RAY-BAN</span><span class="brand-name">GUCCI</span><span class="brand-name">PRADA</span><span class="brand-name">DIOR</span><span class="brand-name">TOM FORD</span>
-        </div>
-    </div>
 
     <a href="https://wa.me/962775549700" target="_blank" class="fab"><i class="fab fa-whatsapp"></i></a>
 
@@ -162,6 +147,57 @@
         }
         applyTheme(isDark);
         window.toggleTheme = () => { isDark = !isDark; applyTheme(isDark); }
+
+        // إدارة اللغات
+        let curLang = 'ar';
+        const i18n = {
+            ar: { 
+                hero: "دلتا للبصريات", sub: "خبراء العناية بالعين وأحدث الماركات العالمية، دقة في الفحص وجودة في الاختيار.", 
+                section: "خدماتنا", test: "الفحص الذكي", descTest: "أحدث الأجهزة لضمان دقة قياس النظر وصحة العين.",
+                coll: "التشكيلات", descColl: "استعرض أحدث الإطارات والنظارات الشمسية العالمية.",
+                book: "حجز موعد", descBook: "تواصل معنا لحجز موعد فحص بكل سهولة عبر الواتساب.",
+                open: "مفتوح الآن", closed: "مغلق الآن"
+            },
+            en: { 
+                hero: "DELTA OPTICS", sub: "Eye care experts and premium brands, precision in examination and quality in selection.", 
+                section: "Our Services", test: "Smart Test", descTest: "Latest equipment to ensure accurate vision measurement.",
+                coll: "Collections", descColl: "Browse the latest global frames and sunglasses.",
+                book: "Book Appointment", descBook: "Contact us to easily book an eye test via WhatsApp.",
+                open: "Open Now", closed: "Closed Now"
+            }
+        };
+
+        window.toggleLang = () => {
+            curLang = curLang === 'ar' ? 'en' : 'ar';
+            const t = i18n[curLang];
+            document.documentElement.lang = curLang;
+            document.documentElement.dir = curLang === 'ar' ? 'rtl' : 'ltr';
+            document.getElementById('lang-btn').innerText = curLang === 'ar' ? 'EN' : 'عربي';
+            
+            document.getElementById('txt-hero').innerText = t.hero;
+            document.getElementById('txt-sub').innerText = t.sub;
+            document.getElementById('txt-section').innerText = t.section;
+            document.getElementById('txt-test').innerText = t.test;
+            document.getElementById('desc-test').innerText = t.descTest;
+            document.getElementById('txt-coll').innerText = t.coll;
+            document.getElementById('desc-coll').innerText = t.descColl;
+            document.getElementById('txt-book').innerText = t.book;
+            document.getElementById('desc-book').innerText = t.descBook;
+            checkStatus();
+        }
+
+        // إدارة حالة الدوام
+        function checkStatus() {
+            const now = new Date(); const hour = now.getHours(); const day = now.getDay();
+            let isOpen = (day === 5) ? (hour >= 16 && hour < 22) : (hour >= 10 && hour < 22);
+            
+            const dot = document.getElementById('status-dot');
+            const text = document.getElementById('status-text');
+            
+            dot.className = 'dot ' + (isOpen ? 'open' : 'closed');
+            text.innerText = isOpen ? i18n[curLang].open : i18n[curLang].closed;
+        }
+        checkStatus();
     </script>
 </body>
 </html>

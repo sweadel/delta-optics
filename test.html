@@ -2,383 +2,509 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delta Optics | Enterprise Admin</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Medical Test | Delta Optics</title>
+    
+    <link rel="icon" href="logo.jpg" type="image/jpeg">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
     <style>
         :root { 
-            --brand: #0f172a; --brand-light: #1e293b; --accent: #0ea5e9; --accent-hover: #0284c7;
-            --bg: #f8fafc; --card: #ffffff; --text: #334155; --text-muted: #94a3b8;
-            --danger: #ef4444; --success: #10b981; --warning: #f59e0b;
+            --brand-color: #0E7490; --gold: #D4AF37; --bg-body: #F8FAFC; 
+            --white: #FFFFFF; --text-main: #1E293B; --text-light: #64748B;
+            --success: #10B981; --error: #EF4444; --warning: #F59E0B;
         }
-        * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; color: var(--text); }
+
+        * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
         
-        /* Sidebar (Dark & Sleek) */
-        #sidebar { width: 280px; background: var(--brand); color: white; display: none; flex-direction: column; z-index: 500; box-shadow: 4px 0 20px rgba(0,0,0,0.1); }
-        #sidebar.show { display: flex; }
-        .logo-area { padding: 30px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 10px; }
-        .nav-item { padding: 16px 25px; cursor: pointer; display: flex; align-items: center; gap: 15px; font-weight: 600; color: #cbd5e1; transition: 0.3s; border-right: 4px solid transparent; font-size: 0.95rem; }
-        .nav-item:hover { color: white; background: var(--brand-light); }
-        .nav-item.active { background: var(--brand-light); color: var(--accent); border-right-color: var(--accent); }
-        .admin-only { display: none; }
+        body { background: var(--bg-body); color: var(--text-main); margin: 0; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
 
-        /* Main Content */
-        #main-content { flex: 1; display: none; flex-direction: column; overflow: hidden; }
-        #main-content.show { display: flex; }
+        header { 
+            background: var(--white); height: 60px; padding: 0 20px;
+            box-shadow: 0 2px 15px rgba(14, 116, 144, 0.08); 
+            display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .lang-btn { background: #F1F5F9; border: 1px solid #E2E8F0; border-radius: 8px; padding: 6px 12px; font-weight: 700; color: var(--brand-color); cursor: pointer; font-size: 0.9rem; z-index: 2; }
+        .header-center { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 8px; }
+        .header-title { font-weight: 800; font-size: 1.1rem; color: var(--brand-color); margin: 0; }
+        .back-btn { width: 38px; height: 38px; border-radius: 50%; background: #F1F5F9; color: var(--text-main); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1.1rem; z-index: 2; }
+
+        .container { flex: 1; padding: 20px; max-width: 500px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; align-items: center; }
+        .screen { display: none; width: 100%; animation: fadeIn 0.4s ease-out; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* شاشة البداية */
+        .login-box { background: var(--white); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; width: 100%; border: 1px solid #E2E8F0; margin-top: 20px;}
+        .login-box img { width: 80px; margin-bottom: 15px; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
+        .login-input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #E2E8F0; font-size: 1.1rem; margin-bottom: 20px; text-align: center; outline: none; transition: 0.2s;}
+        .login-input:focus { border-color: var(--brand-color); }
+
+        /* القائمة */
+        .welcome-box { text-align: center; margin-bottom: 15px; }
+        .patient-badge { display: inline-block; background: #ECFEFF; color: var(--brand-color); padding: 6px 16px; border-radius: 20px; font-weight: 800; font-size: 0.9rem; border: 1px solid #CFFAFE;}
         
-        /* Top Navbar */
-        header { display: flex; justify-content: space-between; align-items: center; background: var(--card); padding: 15px 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); z-index: 100; }
-        .search-bar { background: var(--bg); padding: 10px 20px; border-radius: 20px; display: flex; align-items: center; gap: 10px; width: 300px; border: 1px solid #e2e8f0; }
-        .search-bar input { border: none; background: transparent; outline: none; width: 100%; font-family: inherit; }
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .test-card { background: var(--white); padding: 15px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); cursor: pointer; display: flex; flex-direction: column; align-items: center; text-align: center; border: 1px solid #E2E8F0; transition: 0.2s; }
+        .test-card:active { transform: scale(0.96); }
+        .icon-wrap { width: 45px; height: 45px; background: #ECFEFF; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--brand-color); font-size: 1.3rem; margin-bottom: 8px; }
+        .card-info h3 { margin: 0 0 4px; font-size: 0.95rem; color: var(--text-main); font-weight: 800; }
+        .card-info p { margin: 0; font-size: 0.75rem; color: var(--text-light); }
+
+        /* مناطق الفحص */
+        .progress-container { width: 100%; background: #E2E8F0; border-radius: 10px; height: 6px; margin-bottom: 15px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--success); width: 0%; transition: width 0.3s ease; }
+        .eye-indicator { background: var(--brand-color); color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-bottom: 10px; text-align: center; display: inline-block; }
+
+        .test-area { background: var(--white); border-radius: 20px; padding: 20px; text-align: center; margin-bottom: 20px; min-height: 240px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid #E2E8F0; position: relative; overflow: hidden; }
+        .test-area.dark-mode { background: #0F172A; border-color: #0F172A; }
         
-        /* Notification Center */
-        .header-actions { display: flex; align-items: center; gap: 20px; }
-        .notif-wrapper { position: relative; }
-        .notif-btn { cursor: pointer; font-size: 1.4rem; color: var(--text-muted); transition: 0.3s; position: relative; }
-        .notif-btn:hover { color: var(--brand); }
-        .notif-badge { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; font-size: 0.6rem; font-weight: bold; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--card); display: none; }
+        .e-char { font-weight: 900; line-height: 1; transition: transform 0.2s, font-size 0.2s; }
         
-        .notif-dropdown { position: absolute; top: 40px; left: 0; background: var(--card); width: 320px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; display: none; flex-direction: column; overflow: hidden; z-index: 1000; }
-        .notif-dropdown.show { display: flex; animation: dropIn 0.2s ease-out; }
-        @keyframes dropIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        .notif-header { padding: 15px 20px; background: var(--bg); font-weight: bold; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; }
-        .notif-body { max-height: 300px; overflow-y: auto; }
-        .notif-item { padding: 15px 20px; border-bottom: 1px solid #f1f5f9; display: flex; gap: 15px; align-items: flex-start; transition: 0.2s; cursor: pointer; }
-        .notif-item:hover { background: #f8fafc; }
-        .notif-icon { width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
-        .notif-text h4 { margin: 0 0 5px; font-size: 0.9rem; color: var(--brand); }
-        .notif-text p { margin: 0; font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; }
+        /* ذراع التحكم (D-Pad) */
+        .d-pad-container { direction: ltr; display: grid; grid-template-columns: 60px 60px 60px; grid-template-rows: 60px 60px; gap: 15px; justify-content: center; margin: 0 auto; }
+        .pad-btn { width: 60px; height: 60px; border-radius: 50%; border: none; background: var(--white); color: var(--brand-color); font-size: 1.6rem; box-shadow: 0 5px 15px rgba(14, 116, 144, 0.15); cursor: pointer; transition: 0.1s; display: flex; align-items: center; justify-content: center; }
+        .pad-btn:active { transform: scale(0.9) translateY(4px); box-shadow: none; background: #ECFEFF; }
+        .btn-up { grid-column: 2; grid-row: 1; } .btn-left { grid-column: 1; grid-row: 2; } .btn-down { grid-column: 2; grid-row: 2; } .btn-right { grid-column: 3; grid-row: 2; }
 
-        /* Content Area */
-        .content-area { padding: 30px; overflow-y: auto; flex: 1; }
-        .section-card { display: none; animation: fadeIn 0.4s ease; }
-        .section-card.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* لوحة أرقام الألوان */
+        .color-canvas { background: #fff; border-radius: 50%; width: 220px; height: 220px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .numpad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; max-width: 260px; margin: 0 auto; direction: ltr; }
+        .num-key { width: 70px; height: 70px; border-radius: 50%; border: none; background: #F8FAFC; color: var(--text-main); font-size: 1.5rem; font-weight: 800; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: 0.1s; display: flex; align-items: center; justify-content: center; }
+        .num-key:active { background: #E2E8F0; transform: scale(0.95); }
+        .key-action { background: #ECFEFF; color: var(--brand-color); font-size: 1.2rem; }
+        .key-submit { background: var(--brand-color); color: white; }
 
-        /* Modern KPI Cards */
-        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .kpi-card { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: 0.3s; }
-        .kpi-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        .kpi-info h4 { margin: 0; color: var(--text-muted); font-size: 0.9rem; font-weight: 600; }
-        .kpi-info h2 { margin: 5px 0 0; font-size: 2rem; color: var(--brand); }
-        .kpi-icon-large { font-size: 2.5rem; opacity: 0.2; }
+        /* فحص الأحمر والأخضر */
+        .duo-split { display: flex; width: 100%; height: 200px; border-radius: 15px; overflow: hidden; box-shadow: inset 0 0 20px rgba(0,0,0,0.2); }
+        .duo-red { flex: 1; background: #EF4444; display: flex; align-items: center; justify-content: center; }
+        .duo-green { flex: 1; background: #10B981; display: flex; align-items: center; justify-content: center; }
+        .duo-circle { width: 60px; height: 60px; border: 8px solid black; border-radius: 50%; }
 
-        /* Tables - Enterprise Look */
-        .panel { background: var(--card); border-radius: 20px; border: 1px solid #e2e8f0; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .panel-header h3 { margin: 0; font-size: 1.2rem; color: var(--brand); }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #f8fafc; padding: 15px; text-align: right; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; border-bottom: 2px solid #e2e8f0; }
-        td { padding: 15px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; font-size: 0.95rem; }
-        tr:hover td { background: #f8fafc; }
-        .badge { padding: 5px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
-        .badge-danger { background: #fee2e2; color: #ef4444; }
-        .badge-success { background: #dcfce7; color: #10b981; }
-        .badge-warning { background: #fef3c7; color: #f59e0b; }
+        /* فحص الجفاف */
+        .timer-circle { width: 150px; height: 150px; border-radius: 50%; border: 8px solid #E2E8F0; display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: 900; color: var(--brand-color); margin: 20px auto; position: relative; }
+        .timer-circle.active { border-color: var(--success); color: var(--success); animation: pulseTimer 1s infinite alternate; }
+        @keyframes pulseTimer { from { transform: scale(1); } to { transform: scale(1.05); } }
 
-        /* Inputs & Buttons */
-        .input-field { width: 100%; padding: 12px 15px; border-radius: 10px; border: 1px solid #e2e8f0; background: #f8fafc; outline: none; transition: 0.3s; font-family: inherit; }
-        .input-field:focus { border-color: var(--accent); background: white; box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
-        .btn { padding: 10px 20px; border-radius: 10px; border: none; cursor: pointer; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; font-family: inherit; }
-        .btn-primary { background: var(--accent); color: white; }
-        .btn-primary:hover { background: var(--accent-hover); }
-        .btn-danger { background: var(--danger); color: white; }
+        /* الأزرار العامة */
+        .action-btn { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: 800; font-size: 1rem; cursor: pointer; margin-bottom: 10px; display: flex; justify-content: center; gap: 8px; align-items: center; text-decoration: none; transition: 0.2s;}
+        .btn-primary { background: var(--brand-color); color: white; }
+        .btn-outline { background: transparent; border: 2px solid #E2E8F0; color: var(--text-main); }
+        .btn-success { background: var(--success); color: white; }
 
-        /* Login */
-        #login-screen { position: fixed; inset: 0; background: var(--brand); display: flex; align-items: center; justify-content: center; z-index: 2000; }
-        .login-box { background: var(--card); padding: 40px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        /* سجلات المرضى */
+        .history-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .history-item { background: var(--white); border: 1px solid #E2E8F0; border-radius: 16px; padding: 15px; display: flex; align-items: center; justify-content: space-between; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .history-info { display: flex; align-items: center; gap: 12px; }
+        .avatar { width: 45px; height: 45px; border-radius: 50%; background: #ECFEFF; color: var(--brand-color); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 900; }
+        .hist-name { font-weight: 800; font-size: 1rem; color: var(--text-main); margin-bottom: 3px; }
+        .hist-date { font-size: 0.75rem; color: var(--text-light); }
+        .view-btn { background: #F1F5F9; border: none; width: 40px; height: 40px; border-radius: 10px; color: var(--brand-color); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+
+        /* التقرير الشامل */
+        .report-card { background: var(--white); padding: 20px; border-radius: 20px; border: 1px solid #E2E8F0; margin-bottom: 15px; width: 100%; }
+        .res-item { background: #F8FAFC; padding: 12px; border-radius: 12px; margin-bottom: 12px; border: 1px solid #E2E8F0; }
+        .res-title { font-weight: 800; color: var(--brand-color); font-size: 0.95rem; margin-bottom: 8px; border-bottom: 1px solid #E2E8F0; padding-bottom: 8px; display: flex; align-items: center; gap: 6px;}
+        .eye-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 5px; padding: 4px 8px; background: white; border-radius: 6px;}
+
+        /* النافذة المنبثقة الذكية (Modal) */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: var(--white); padding: 30px 25px; border-radius: 24px; width: 90%; max-width: 350px; text-align: center; animation: popModal 0.3s ease-out; }
+        @keyframes popModal { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .modal-icon { font-size: 3rem; color: var(--brand-color); margin-bottom: 15px; }
+        .modal-title { font-size: 1.2rem; font-weight: 900; color: var(--text-main); margin-bottom: 10px; }
+        .modal-text { font-size: 0.95rem; color: var(--text-light); line-height: 1.6; margin-bottom: 25px; }
+
     </style>
 </head>
 <body>
 
-    <div id="login-screen">
-        <div class="login-box">
-            <i class="fas fa-fingerprint" style="font-size: 3.5rem; color: var(--accent); margin-bottom: 20px;"></i>
-            <h2 style="margin: 0 0 25px; color: var(--brand);">بوابة النظام المركزي</h2>
-            <input type="text" id="username" class="input-field" placeholder="اسم المستخدم" dir="ltr" style="margin-bottom:15px;">
-            <input type="password" id="password" class="input-field" placeholder="كلمة المرور" dir="ltr" style="margin-bottom:25px;">
-            <button class="btn btn-primary" style="width:100%; padding: 15px; justify-content: center;" onclick="attemptLogin()">تسجيل الدخول</button>
-            <p id="login-error" style="color:var(--danger); display:none; margin-top:15px; font-weight:bold; font-size:0.9rem;">محاولة دخول فاشلة!</p>
+    <header>
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-right" id="arrow-icon"></i></a>
+        <div class="header-center">
+            <h1 class="header-title">العيادة الذكية</h1>
         </div>
-    </div>
+        <button class="lang-btn" onclick="toggleLang()">EN</button>
+    </header>
 
-    <div id="sidebar">
-        <div class="logo-area">
-            <h2 style="margin:0; font-size:1.8rem;"><span style="color:var(--accent);">Delta</span> System</h2>
+    <div class="container">
+
+        <div id="screen-login" class="screen active">
+            <div class="login-box">
+                <img src="logo.jpg" onerror="this.src='https://via.placeholder.com/80?text=Delta'">
+                <h2 style="color:var(--brand-color); margin-bottom:10px;">تسجيل المراجع</h2>
+                <p style="color:var(--text-light); font-size:0.85rem; margin-bottom:20px;">أدخل اسم المراجع لبدء أو استكمال الفحوصات</p>
+                
+                <input type="text" id="patientNameInput" class="login-input" placeholder="مثال: أحمد عادل">
+                
+                <button class="action-btn btn-primary" onclick="startSession()">
+                    <i class="fas fa-play"></i> بدء الفحوصات
+                </button>
+                <button class="action-btn btn-outline" onclick="show('screen-records')">
+                    <i class="fas fa-history"></i> المراجعين السابقين
+                </button>
+            </div>
         </div>
-        <div class="nav-item active" onclick="switchTab(event, 'dashboard')"><i class="fas fa-chart-line"></i> لوحة القيادة</div>
-        <div class="nav-item" onclick="switchTab(event, 'reports')"><i class="fas fa-file-medical-alt"></i> السجل الطبي</div>
-        <div class="nav-item admin-only" onclick="switchTab(event, 'audit')"><i class="fas fa-shield-alt"></i> المراقبة الأمنية</div>
-        <div class="nav-item admin-only" onclick="switchTab(event, 'users')"><i class="fas fa-users-cog"></i> إدارة الصلاحيات</div>
-    </div>
 
-    <div id="main-content">
-        <header>
-            <div class="search-bar">
-                <i class="fas fa-search" style="color:var(--text-muted)"></i>
-                <input type="text" placeholder="بحث عن مراجع...">
+        <div id="menu" class="screen">
+            <div class="welcome-box">
+                <div class="patient-badge"><i class="fas fa-user"></i> المراجع: <span id="display-patient-name"></span></div>
             </div>
-            
-            <div class="header-actions">
-                <div class="notif-wrapper">
-                    <div class="notif-btn" onclick="toggleNotif()">
-                        <i class="fas fa-bell"></i>
-                        <span class="notif-badge" id="notifBadge">0</span>
-                    </div>
-                    <div class="notif-dropdown" id="notifDropdown">
-                        <div class="notif-header">
-                            <span>التنبيهات</span>
-                            <span style="font-size:0.8rem; color:var(--accent); cursor:pointer;" onclick="clearNotifs()">تحديد كمقروء</span>
-                        </div>
-                        <div class="notif-body" id="notif-list">
-                            <div style="padding:20px; text-align:center; color:var(--text-muted); font-size:0.9rem;">لا توجد تنبيهات جديدة</div>
-                        </div>
-                    </div>
-                </div>
-                <div style="display:flex; align-items:center; gap:10px; border-right:1px solid #e2e8f0; padding-right:20px;">
-                    <div style="text-align:left;">
-                        <div id="welcome-text" style="font-weight:bold; font-size:0.9rem;"></div>
-                        <div id="role-text" style="font-size:0.75rem; color:var(--text-muted);"></div>
-                    </div>
-                    <div style="width:40px; height:40px; background:var(--bg); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--brand); cursor:pointer;" onclick="location.reload()"><i class="fas fa-sign-out-alt"></i></div>
-                </div>
-            </div>
-        </header>
 
-        <div class="content-area">
-            
-            <div id="sec-dashboard" class="section-card active">
-                <div class="kpi-grid">
-                    <div class="kpi-card"><div class="kpi-info"><h4>إجمالي الفحوصات</h4><h2 id="kpi-total">0</h2></div><i class="fas fa-users kpi-icon-large" style="color:var(--accent);"></i></div>
-                    <div class="kpi-card"><div class="kpi-info"><h4>فحوصات اليوم</h4><h2 id="kpi-today">0</h2></div><i class="fas fa-calendar-day kpi-icon-large" style="color:var(--success);"></i></div>
-                    <div class="kpi-card"><div class="kpi-info"><h4>تنبيهات أمنية</h4><h2 id="kpi-alerts">0</h2></div><i class="fas fa-shield-virus kpi-icon-large" style="color:var(--danger);"></i></div>
+            <div class="menu-grid">
+                <div class="test-card" onclick="startTest('vision')">
+                    <div class="icon-wrap"><i class="fas fa-eye"></i></div>
+                    <div class="card-info"><h3>حدة النظر</h3><p>دقة الإبصار عن بعد</p></div>
+                </div>
+
+                <div class="test-card" onclick="startTest('duochrome')">
+                    <div class="icon-wrap" style="background:#FEF2F2; color:#EF4444;"><i class="fas fa-adjust"></i></div>
+                    <div class="card-info"><h3>أحمر وأخضر</h3><p>طول وقصر النظر</p></div>
+                </div>
+
+                <div class="test-card" onclick="startTest('contrast')">
+                    <div class="icon-wrap" style="background:#1E293B; color:white;"><i class="fas fa-moon"></i></div>
+                    <div class="card-info"><h3>الرؤية الليلية</h3><p>قيادة ليلاً وتباين</p></div>
                 </div>
                 
-                <div class="panel">
-                    <div class="panel-header">
-                        <h3>التحليل البياني لنشاط العيادة</h3>
-                    </div>
-                    <div style="height:300px;"><canvas id="mainChart"></canvas></div>
+                <div class="test-card" onclick="startTest('dryeye')">
+                    <div class="icon-wrap" style="background:#FFFBEB; color:#F59E0B;"><i class="fas fa-tint"></i></div>
+                    <div class="card-info"><h3>جفاف العين</h3><p>معدل رمش العين</p></div>
+                </div>
+
+                <div class="test-card" onclick="startTest('astigmatism')">
+                    <div class="icon-wrap"><i class="fas fa-certificate"></i></div>
+                    <div class="card-info"><h3>انحراف النظر</h3><p>الاستجماتيزم</p></div>
+                </div>
+
+                <div class="test-card" onclick="startTest('color')">
+                    <div class="icon-wrap"><i class="fas fa-palette"></i></div>
+                    <div class="card-info"><h3>عمى الألوان</h3><p>التمييز اللوني</p></div>
                 </div>
             </div>
+            
+            <button class="action-btn btn-success" style="margin-top:20px;" onclick="showFinalReport()">
+                <i class="fas fa-file-alt"></i> إنهاء وعرض التقرير
+            </button>
+        </div>
 
-            <div id="sec-reports" class="section-card">
-                <div class="panel">
-                    <div class="panel-header">
-                        <h3>التقارير الطبية للمراجعين</h3>
-                        <button class="btn btn-primary" onclick="forceRefreshReports()"><i class="fas fa-sync"></i> تحديث</button>
-                    </div>
-                    <div class="table-responsive">
-                        <table>
-                            <thead><tr><th>المراجع</th><th>التفاصيل الطبية</th><th>تاريخ الإجراء</th></tr></thead>
-                            <tbody id="reports-body"></tbody>
-                        </table>
-                    </div>
+        <div id="test-vision" class="screen">
+            <div class="progress-container"><div class="progress-bar" id="prog-vision"></div></div>
+            <div class="eye-indicator" id="eye-ind-vision">العين اليمنى</div>
+            <div class="test-area">
+                <div id="e-char" class="e-char">E</div>
+            </div>
+            <div class="d-pad-container">
+                <button class="pad-btn btn-up" onclick="checkVision(270)"><i class="fas fa-chevron-up"></i></button>
+                <button class="pad-btn btn-left" onclick="checkVision(180)"><i class="fas fa-chevron-left"></i></button>
+                <button class="pad-btn btn-down" onclick="checkVision(90)"><i class="fas fa-chevron-down"></i></button>
+                <button class="pad-btn btn-right" onclick="checkVision(0)"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+
+        <div id="test-duochrome" class="screen">
+            <div class="eye-indicator" id="eye-ind-duo">العين اليمنى</div>
+            <div class="test-area" style="padding:15px;">
+                <h4 style="margin:0 0 15px;">أين ترى الدائرة أوضح وأغمق؟</h4>
+                <div class="duo-split">
+                    <div class="duo-green"><div class="duo-circle"></div></div>
+                    <div class="duo-red"><div class="duo-circle"></div></div>
                 </div>
             </div>
+            <button class="action-btn" style="background:#EF4444; color:white;" onclick="saveDuochrome('red')">أوضح على الأحمر</button>
+            <button class="action-btn" style="background:#10B981; color:white;" onclick="saveDuochrome('green')">أوضح على الأخضر</button>
+            <button class="action-btn" style="background:#E2E8F0; color:var(--text-main);" onclick="saveDuochrome('equal')">نفس الوضوح (طبيعي)</button>
+        </div>
 
-            <div id="sec-audit" class="section-card">
-                <div class="panel">
-                    <div class="panel-header">
-                        <h3><i class="fas fa-radar"></i> رادار المراقبة وسجل الأحداث</h3>
-                    </div>
-                    <div class="table-responsive">
-                        <table>
-                            <thead><tr><th>الحساب / الآي بي</th><th>الحدث الأمني</th><th>تفاصيل النظام (OS & Browser)</th><th>التوقيت</th></tr></thead>
-                            <tbody id="logs-body"></tbody>
-                        </table>
-                    </div>
-                </div>
+        <div id="test-dryeye" class="screen">
+            <div class="eye-indicator" id="eye-ind-dry">العينين معاً</div>
+            <div class="test-area" style="padding:30px 10px;">
+                <h4 style="margin:0 0 10px;">افتح عينيك وركز جيداً بالمركز</h4>
+                <p style="font-size:0.8rem; color:var(--text-light); margin:0;">اضغط "بدء"، وإذا شعرت بحرقة أو رمشت اضغط "رمشت!" فوراً.</p>
+                <div class="timer-circle" id="dry-timer">0.0</div>
             </div>
+            <button class="action-btn btn-primary" id="btn-dry-start" onclick="startDryTimer()"><i class="fas fa-play"></i> بدء الفحص</button>
+            <button class="action-btn btn-outline" id="btn-dry-stop" onclick="stopDryTimer()" style="display:none; border-color:var(--error); color:var(--error);"><i class="fas fa-stop"></i> رمشت!</button>
+        </div>
 
-            <div id="sec-users" class="section-card">
-                <div class="panel">
-                    <h3>إضافة موظف جديد</h3>
-                    <div style="display:flex; gap:15px; margin-bottom:15px;">
-                        <input type="text" id="new-name" class="input-field" placeholder="الاسم الكامل">
-                        <input type="text" id="new-username" class="input-field" placeholder="اليوزر" dir="ltr">
-                        <input type="text" id="new-password" class="input-field" placeholder="الباسورد" dir="ltr">
-                        <select id="new-role" class="input-field"><option value="manager">موظف قياسي</option><option value="superadmin">مدير نظام</option></select>
-                        <button class="btn btn-primary" style="white-space:nowrap;" onclick="addNewUser()">إضافة</button>
-                    </div>
-                </div>
+        <div id="test-contrast" class="screen">
+            <div class="progress-container"><div class="progress-bar" id="prog-contrast"></div></div>
+            <div class="eye-indicator" id="eye-ind-contrast">العين اليمنى</div>
+            <div class="test-area dark-mode">
+                <div id="c-char" class="e-char" style="color:#ffffff;">E</div>
             </div>
+            <div class="d-pad-container">
+                <button class="pad-btn btn-up" onclick="checkContrast(270)"><i class="fas fa-chevron-up"></i></button>
+                <button class="pad-btn btn-left" onclick="checkContrast(180)"><i class="fas fa-chevron-left"></i></button>
+                <button class="pad-btn btn-down" onclick="checkContrast(90)"><i class="fas fa-chevron-down"></i></button>
+                <button class="pad-btn btn-right" onclick="checkContrast(0)"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
 
+        <div id="test-astigmatism" class="screen">
+            <div class="eye-indicator" id="eye-ind-ast">العين اليمنى</div>
+            <div class="test-area" style="padding:20px 0;">
+                <svg width="200" height="200" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="48" fill="none" stroke="#E2E8F0" stroke-width="1"/>
+                    <line x1="50" y1="5" x2="50" y2="95" stroke="#1E293B" stroke-width="1.5"/>
+                    <line x1="5" y1="50" x2="95" y2="50" stroke="#1E293B" stroke-width="1.5"/>
+                    <line x1="18.18" y1="18.18" x2="81.82" y2="81.82" stroke="#1E293B" stroke-width="1.5"/>
+                    <line x1="18.18" y1="81.82" x2="81.82" y2="18.18" stroke="#1E293B" stroke-width="1.5"/>
+                    <line x1="32.8" y1="8.4" x2="67.2" y2="91.6" stroke="#1E293B" stroke-width="1.5"/>
+                    <line x1="8.4" y1="32.8" x2="91.6" y2="67.2" stroke="#1E293B" stroke-width="1.5"/>
+                    <circle cx="50" cy="50" r="4" fill="#1E293B"/>
+                </svg>
+            </div>
+            <button class="action-btn" style="background:#FEF2F2; color:var(--error);" onclick="finishAstigmatism(true)">نعم، أرى خطوطاً أغمق</button>
+            <button class="action-btn" style="background:var(--white); border:2px solid #E2E8F0;" onclick="finishAstigmatism(false)">لا، جميعها متساوية بالوضوح</button>
+        </div>
+
+        <div id="test-color" class="screen">
+            <div class="progress-container"><div class="progress-bar" id="prog-color"></div></div>
+            <div style="display:flex; justify-content:center; margin-bottom:15px;">
+                <canvas id="ishiharaCanvas" class="color-canvas"></canvas>
+            </div>
+            <div id="color-display" style="text-align:center; height:35px; font-size:1.8rem; font-weight:900; color:var(--brand-color); letter-spacing:5px;"></div>
+            
+            <div class="numpad-grid">
+                <button class="num-key" onclick="typeColor(1)">1</button>
+                <button class="num-key" onclick="typeColor(2)">2</button>
+                <button class="num-key" onclick="typeColor(3)">3</button>
+                <button class="num-key" onclick="typeColor(4)">4</button>
+                <button class="num-key" onclick="typeColor(5)">5</button>
+                <button class="num-key" onclick="typeColor(6)">6</button>
+                <button class="num-key" onclick="typeColor(7)">7</button>
+                <button class="num-key" onclick="typeColor(8)">8</button>
+                <button class="num-key" onclick="typeColor(9)">9</button>
+                <button class="num-key key-action" onclick="clearColor()"><i class="fas fa-backspace"></i></button>
+                <button class="num-key" onclick="typeColor(0)">0</button>
+                <button class="num-key key-submit" onclick="checkColor()"><i class="fas fa-check"></i></button>
+            </div>
+        </div>
+
+        <div id="screen-records" class="screen">
+            <h2 style="color:var(--brand-color); text-align:center; margin-bottom:20px;">المراجعين السابقين</h2>
+            <div class="history-list" id="records-list"></div>
+            <button class="action-btn btn-outline" onclick="show('screen-login')">
+                <i class="fas fa-arrow-right"></i> العودة للرئيسية
+            </button>
+        </div>
+
+        <div id="screen-report" class="screen">
+            <div class="report-card">
+                <h2 style="color:var(--brand-color); margin-top:0; text-align:center;">التقرير الطبي المبدئي</h2>
+                <h4 style="text-align:center; color:var(--text-light); margin-bottom:20px;" id="report-patient-name">الاسم</h4>
+                <div id="report-details"></div>
+            </div>
+            <a id="wa-btn" href="#" class="action-btn btn-success" target="_blank">
+                <i class="fab fa-whatsapp"></i> حجز موعد للمراجع
+            </a>
+            <button class="action-btn btn-outline" onclick="resetSystem()">
+                <i class="fas fa-user-plus"></i> فحص مراجع جديد
+            </button>
+        </div>
+
+    </div>
+
+    <div id="instructionModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-icon" id="modalIcon"><i class="fas fa-volume-up"></i></div>
+            <h2 class="modal-title" id="modalTitle">تعليمات الفحص</h2>
+            <p class="modal-text" id="modalText">تفاصيل...</p>
+            <button class="action-btn btn-primary" id="modalBtn" onclick="closeModal()">حسناً، ابدأ الفحص</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDocs, where, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyB11C4GGgAyqeThs8a9cvDNN7frvAA1nqQ", authDomain: "delta-optics-system.firebaseapp.com", projectId: "delta-optics-system", storageBucket: "delta-optics-system.firebasestorage.app", messagingSenderId: "111176219224", appId: "1:111176219224:web:e0d8a5f26b84d57249a82d" };
         const app = initializeApp(firebaseConfig); const db = getFirestore(app);
-        
-        let currentUser = null; let myChart = null; 
-        let isInitialLoad = true; let unreadNotifs = 0; let securityAlerts = 0;
 
-        // ==========================================
-        // 1. نظام إرسال الإيميلات (EmailJS Integration)
-        // ==========================================
-        // لاستخدامه فعلياً: افتح حساب في emailjs.com، خذ الـ Public Key، Service ID، والـ Template ID واستبدلهم هون.
-        emailjs.init("YOUR_PUBLIC_KEY_HERE"); 
+        // دالة إرسال النتائج للإدارة
+        window.saveToAdmin = async (name, details) => {
+            try { await addDoc(collection(db, "tests"), { name, details, timestamp: serverTimestamp() }); } catch(e) { console.error("Error connecting to admin:", e); }
+        };
+    </script>
 
-        async function sendEmailNotification(patientName, details) {
-            try {
-                // الكود الجاهز للإرسال (معطل مؤقتاً لتجنب الأخطاء حتى تضع مفاتيحك)
-                /*
-                await emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
-                    to_name: "المهندس عادل",
-                    patient_name: patientName,
-                    message: details
-                });
-                console.log("تم إرسال الإيميل بنجاح");
-                */
-            } catch(error) { console.error("فشل إرسال الإيميل", error); }
-        }
+    <script>
+        // --- 1. القاموس والتفاصيل ---
+        const i18n = {
+            ar: {
+                rightEye: "العين اليمنى", leftEye: "العين اليسرى", bothEyes: "العينين معاً",
+                resVision: "حدة النظر", resContrast: "الرؤية الليلية", resAst: "انحراف النظر", 
+                resColor: "عمى الألوان", resDuo: "فحص الأحمر/أخضر", resDry: "جفاف العين",
+                perfect: "ممتاز", bad: "يحتاج فحص عيادة", normal: "طبيعي",
+                myopia: "اشتباه قصر نظر", hyperopia: "اشتباه طول نظر",
+                dryYes: "احتمالية جفاف العين", dryNo: "الترطيب طبيعي",
+                introMsg: "مرحبا عيادة دلتا للبصريات 👓\nأود حجز موعد بناءً على هذا التقرير:\n",
+                
+                voiceCoverLeft: "لو سمحت، غطي عينك الشمال، عشان نفحص عينك اليمين.",
+                voiceCoverRight: "ممتاز جداً، هسا غطي عينك اليمين، عشان نفحص الشمال.",
+                voiceBoth: "يرجى التركيز، والنظر للشاشة بعينيك الثنتين معاً."
+            }
+        };
 
-        // ==========================================
-        // 2. الرادار الأمني المتقدم (IP & Device Info)
-        // ==========================================
-        async function getAdvancedTechDetails() {
-            let info = { ip: "غير معروف", os: "غير معروف", browser: "غير معروف" };
-            
-            // سحب الآي بي الحقيقي عبر API مجاني
-            try { const res = await fetch('https://api.ipify.org?format=json'); const data = await res.json(); info.ip = data.ip; } catch(e){}
+        const testDetailsMap = {
+            'vision': { icon: '👁️', desc: 'دقة الإبصار عن بعد' },
+            'duochrome': { icon: '🔴', desc: 'توازن الضوء (طول وقصر النظر)' },
+            'contrast': { icon: '🌑', desc: 'جودة الرؤية والقيادة ليلاً' },
+            'dryeye': { icon: '💧', desc: 'معدل رمش وترطيب العين' },
+            'astigmatism': { icon: '🌀', desc: 'تشوه الرؤية واللابؤرية' },
+            'color': { icon: '🎨', desc: 'التمييز اللوني الدقيق' }
+        };
 
-            // تحليل نظام التشغيل والمتصفح
-            const ua = navigator.userAgent;
-            if (ua.indexOf("Win") != -1) info.os = "Windows"; else if (ua.indexOf("Mac") != -1) info.os = "MacOS/iOS"; else if (ua.indexOf("Android") != -1) info.os = "Android";
-            if (ua.indexOf("Chrome") != -1) info.browser = "Chrome"; else if (ua.indexOf("Safari") != -1) info.browser = "Safari"; else if (ua.indexOf("Firefox") != -1) info.browser = "Firefox";
-            
-            return info;
-        }
+        let currentPatient = ""; let currentResults = {}; let activeTest = ""; let currentEye = "right"; let modalCallback = null;
 
-        async function logSecurityEvent(userOrIP, action, type="info") {
-            const tech = await getAdvancedTechDetails();
-            await addDoc(collection(db, "system_logs"), { 
-                user: userOrIP, action: action, type: type,
-                tech_details: `IP: ${tech.ip} | OS: ${tech.os} | Browser: ${tech.browser}`,
-                timestamp: serverTimestamp() 
+        // --- 2. المساعد الصوتي ---
+        function playGoogleVoice(text) {
+            let url = "https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=ar&q=" + encodeURIComponent(text);
+            let audio = new Audio(url);
+            audio.play().catch(e => {
+                if('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                    let u = new SpeechSynthesisUtterance(text);
+                    u.lang = 'ar-SA'; u.rate = 0.85;
+                    window.speechSynthesis.speak(u);
+                }
             });
         }
 
-        // ==========================================
-        // 3. نظام الدخول
-        // ==========================================
-        window.attemptLogin = async function() {
-            const u = document.getElementById('username').value.trim(); const p = document.getElementById('password').value.trim();
-            if(!u || !p) return;
+        function showModal(title, text, spokenText, callback) {
+            document.getElementById('modalTitle').innerText = title; 
+            document.getElementById('modalText').innerHTML = text;
+            modalCallback = callback; 
+            document.getElementById('instructionModal').classList.add('active');
+            if(spokenText) playGoogleVoice(spokenText);
+        }
+        
+        function closeModal() {
+            if('speechSynthesis' in window) window.speechSynthesis.cancel();
+            document.getElementById('instructionModal').classList.remove('active');
+            if(modalCallback) modalCallback();
+        }
 
-            const adminRef = doc(db, "system_users", "adel");
-            if(!(await getDoc(adminRef)).exists()) await setDoc(adminRef, { username: "adel", pass: "123123", role: "superadmin", name: "المهندس عادل" });
+        // --- 3. إدارة الجلسة والسجلات ---
+        function startSession() {
+            const name = document.getElementById('patientNameInput').value.trim();
+            if(!name) { alert('الرجاء كتابة اسم المراجع'); return; }
+            currentPatient = name; currentResults = {}; 
+            document.getElementById('display-patient-name').innerText = currentPatient;
+            show('menu');
+        }
 
-            const q = query(collection(db, "system_users"), where("username", "==", u), where("pass", "==", p));
-            const snap = await getDocs(q);
+        // --- ✅ تعديل الإنهاء ليرسل البيانات للإدارة فوراً ---
+        async function showFinalReport() {
+            if(Object.keys(currentResults).length === 0) { alert("لم تقم بإجراء أي فحص!"); return; }
             
-            if(!snap.empty) {
-                currentUser = snap.docs[0].data();
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('sidebar').classList.add('show');
-                document.getElementById('main-content').classList.add('show');
-                document.getElementById('welcome-text').innerText = currentUser.name;
-                document.getElementById('role-text').innerText = currentUser.role === 'superadmin' ? 'مدير النظام' : 'موظف';
-                
-                if(currentUser.role === 'superadmin') document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
-                
-                await logSecurityEvent(currentUser.name, "تسجيل دخول ناجح", "success");
-                initSystem();
-            } else { 
-                document.getElementById('login-error').style.display = 'block'; 
-                await logSecurityEvent(u, "محاولة دخول فاشلة - باسورد خاطئ", "danger");
+            let reportForAdmin = "";
+            for (const [testKey, eyeData] of Object.entries(currentResults)) {
+                let titleName = i18n.ar[testKey === 'vision' ? 'resVision' : testKey === 'contrast' ? 'resContrast' : testKey === 'astigmatism' ? 'resAst' : testKey === 'color' ? 'resColor' : testKey === 'duochrome' ? 'resDuo' : 'resDry'];
+                reportForAdmin += `\n[ ${titleName} ]\n`;
+                for (const [eye, score] of Object.entries(eyeData)) {
+                    reportForAdmin += `- ${i18n.ar[eye]}: ${score}\n`;
+                }
+            }
+
+            // إرسال البيانات للإدارة
+            if(window.saveToAdmin) await window.saveToAdmin(currentPatient, reportForAdmin);
+
+            renderReportUI(currentPatient, currentResults);
+            show('screen-report');
+        }
+
+        function loadRecords() {
+            const records = JSON.parse(localStorage.getItem('delta_patients')) || [];
+            const list = document.getElementById('records-list'); list.innerHTML = "";
+            if(records.length === 0) { list.innerHTML = `<p style="text-align:center; color:gray;">لا يوجد مراجعين سابقين.</p>`; return; }
+            records.reverse().forEach((r, idx) => {
+                let firstLetter = r.name.charAt(0).toUpperCase();
+                list.innerHTML += `<div class="history-item"><div class="history-info"><div class="avatar">${firstLetter}</div><div><div class="hist-name">${r.name}</div><div class="hist-date">${r.date}</div></div></div><button class="view-btn" onclick="viewHistoryReport(${idx})"><i class="fas fa-file-medical"></i></button></div>`;
+            });
+        }
+
+        function viewHistoryReport(idx) {
+            const records = JSON.parse(localStorage.getItem('delta_patients')) || [];
+            const r = records.reverse()[idx];
+            renderReportUI(r.name, r.results);
+            show('screen-report');
+        }
+
+        function renderReportUI(name, resultsMap) {
+            document.getElementById('report-patient-name').innerText = name;
+            let html = ""; let waDetails = `👤 *الاسم:* ${name}\n\n`;
+            for (const [testKey, eyeData] of Object.entries(resultsMap)) {
+                let titleName = i18n.ar[testKey === 'vision' ? 'resVision' : testKey === 'contrast' ? 'resContrast' : testKey === 'astigmatism' ? 'resAst' : testKey === 'color' ? 'resColor' : testKey === 'duochrome' ? 'resDuo' : 'resDry'];
+                let tData = testDetailsMap[testKey];
+                html += `<div class="res-item"><div class="res-title"><span>${tData.icon} ${titleName}</span></div>`;
+                waDetails += `\n${tData.icon} *${titleName}*\n`;
+                for (const [eye, score] of Object.entries(eyeData)) {
+                    html += `<div class="eye-row"><span>• ${i18n.ar[eye]}</span><span>${score}</span></div>`;
+                    waDetails += `• ${i18n.ar[eye]}: ${score}\n`;
+                }
+                html += `</div>`;
+            }
+            document.getElementById('report-details').innerHTML = html;
+            document.getElementById('wa-btn').href = `https://wa.me/962775549700?text=${encodeURIComponent(i18n.ar.introMsg + waDetails)}`;
+        }
+
+        function resetSystem() { currentPatient = ""; currentResults = {}; document.getElementById('patientNameInput').value = ""; show('screen-login'); }
+        function show(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); if(id === 'screen-records') loadRecords(); }
+        function setProgress(id, percent) { document.getElementById(id).style.width = percent + '%'; }
+
+        function startTest(testName) {
+            activeTest = testName;
+            if(testName === 'color' || testName === 'dryeye') {
+                currentEye = "bothEyes";
+                showModal("تعليمات الفحص", `يرجى النظر للشاشة بالعينين معاً.`, i18n.ar.voiceBoth, () => { 
+                    if(testName === 'color') startColor(); else { document.getElementById('btn-dry-start').style.display='flex'; document.getElementById('btn-dry-stop').style.display='none'; document.getElementById('dry-timer').innerText="0.0"; show('test-dryeye'); }
+                });
+            } else {
+                currentEye = "rightEye";
+                showModal("تنبيه الفحص", `غطي عينك الشمال بيدك بدون ما تضغط عليها.`, i18n.ar.voiceCoverLeft, () => {
+                    if(testName === 'vision') startVisionProcess(); if(testName === 'contrast') startContrastProcess();
+                    if(testName === 'duochrome') show('test-duochrome'); if(testName === 'astigmatism') show('test-astigmatism');
+                });
             }
         }
 
-        // ==========================================
-        // 4. مركز التنبيهات الداخلي (Dropdown)
-        // ==========================================
-        window.toggleNotif = () => { document.getElementById('notifDropdown').classList.toggle('show'); }
-        window.clearNotifs = () => { 
-            unreadNotifs = 0; document.getElementById('notifBadge').style.display = 'none'; document.getElementById('notifBadge').innerText = 0;
-            document.getElementById('notif-list').innerHTML = `<div style="padding:20px; text-align:center; color:var(--text-muted); font-size:0.9rem;">لا توجد تنبيهات جديدة</div>`;
-            document.getElementById('notifDropdown').classList.remove('show');
-        }
-
-        function addNotificationToDropdown(title, msg, type) {
-            const list = document.getElementById('notif-list');
-            if(unreadNotifs === 0) list.innerHTML = ""; // مسح رسالة "لا يوجد"
-            
-            let iconBox = type === 'test' ? `<div class="notif-icon" style="background:#e0f2fe; color:#0ea5e9;"><i class="fas fa-stethoscope"></i></div>` : `<div class="notif-icon" style="background:#fee2e2; color:#ef4444;"><i class="fas fa-exclamation-triangle"></i></div>`;
-            
-            const itemHtml = `<div class="notif-item">${iconBox}<div class="notif-text"><h4>${title}</h4><p>${msg}</p></div></div>`;
-            list.insertAdjacentHTML('afterbegin', itemHtml); // إضافة للأعلى
-            
-            unreadNotifs++;
-            const badge = document.getElementById('notifBadge');
-            badge.innerText = unreadNotifs; badge.style.display = 'flex';
-            try { new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3').play(); } catch(e) {}
-        }
-
-        // ==========================================
-        // 5. تهيئة النظام والبيانات الحية
-        // ==========================================
-        function initSystem() {
-            // التقارير
-            onSnapshot(query(collection(db, "tests"), orderBy("timestamp", "desc")), (snap) => {
-                const tbody = document.getElementById('reports-body'); tbody.innerHTML = "";
-                let stats = {}; let total = 0; let todayCount = 0; let todayStr = new Date().toLocaleDateString('ar-EG');
-
-                if(!isInitialLoad) {
-                    snap.docChanges().forEach(change => { 
-                        if(change.type === "added") {
-                            const d = change.doc.data();
-                            addNotificationToDropdown("فحص جديد مكتمل", `قام المراجع ${d.name} بإنهاء فحصه للتو.`, "test");
-                            sendEmailNotification(d.name, d.details); // تفعيل الإيميل
-                        }
-                    });
-                }
-
-                snap.forEach(d => {
-                    const r = d.data(); total++;
-                    const date = r.timestamp ? r.timestamp.toDate().toLocaleDateString('ar-EG') : "غير محدد";
-                    if(date === todayStr) todayCount++; stats[date] = (stats[date] || 0) + 1;
-                    
-                    tbody.innerHTML += `<tr><td><strong style="color:var(--brand)">${r.name}</strong></td><td><div style="font-family:monospace; font-size:0.8rem; background:#f8fafc; padding:10px; border-radius:8px; border:1px solid #e2e8f0; white-space:pre-wrap;">${r.details}</div></td><td><span class="badge badge-success">${date}</span></td></tr>`;
+        function saveEyeResult(score) {
+            if(!currentResults[activeTest]) currentResults[activeTest] = {};
+            if(currentEye === "rightEye") {
+                currentResults[activeTest]['rightEye'] = score; currentEye = 'leftEye';
+                showModal("تبديل العين", "الآن غطي عينك اليمنى لكي نفحص اليسرى.", i18n.ar.voiceCoverRight, () => {
+                    if(activeTest === 'vision') startVisionProcess(); if(activeTest === 'contrast') startContrastProcess();
                 });
-
-                document.getElementById('kpi-total').innerText = total; document.getElementById('kpi-today').innerText = todayCount;
-                updateChart(stats); isInitialLoad = false;
-            });
-
-            // المراقبة
-            onSnapshot(query(collection(db, "system_logs"), orderBy("timestamp", "desc")), (snap) => {
-                const tbody = document.getElementById('logs-body'); tbody.innerHTML = ""; securityAlerts = 0;
-                snap.forEach(d => {
-                    const l = d.data();
-                    let badgeClass = l.type === 'danger' ? 'badge-danger' : (l.type === 'success' ? 'badge-success' : 'badge-warning');
-                    if(l.type === 'danger') securityAlerts++;
-                    tbody.innerHTML += `<tr><td><strong>${l.user}</strong></td><td><span class="badge ${badgeClass}">${l.action}</span></td><td><small style="color:var(--text-muted)">${l.tech_details}</small></td><td>${l.timestamp?.toDate().toLocaleString('ar-EG')}</td></tr>`;
-                });
-                document.getElementById('kpi-alerts').innerText = securityAlerts;
-            });
+            } else { currentResults[activeTest]['leftEye'] = score; show('menu'); }
         }
 
-        window.switchTab = (e, tab) => {
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); e.currentTarget.classList.add('active');
-            document.querySelectorAll('.section-card').forEach(s => s.classList.remove('active')); document.getElementById('sec-'+tab).classList.add('active');
-        }
-        window.forceRefreshReports = () => { isInitialLoad = true; initSystem(); }
-
-        function updateChart(dataMap) {
-            const ctx = document.getElementById('mainChart').getContext('2d');
-            if(myChart) myChart.destroy();
-            let gradient = ctx.createLinearGradient(0, 0, 0, 300); gradient.addColorStop(0, 'rgba(14, 165, 233, 0.4)'); gradient.addColorStop(1, 'rgba(14, 165, 233, 0.0)');
-            myChart = new Chart(ctx, { type: 'line', data: { labels: Object.keys(dataMap).reverse(), datasets: [{ label: 'الفحوصات', data: Object.values(dataMap).reverse(), borderColor: '#0ea5e9', backgroundColor: gradient, fill: true, tension: 0.4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
-        }
+        const vSizes = [130, 100, 70, 50, 35, 25]; const vLabels = ["6/60", "6/36", "6/24", "6/18", "6/12", "6/6"];
+        let vStep = 0, vRot = 0, vErrors = 0;
+        function startVisionProcess() { vStep=0; vErrors=0; updateE(); show('test-vision'); }
+        function updateE() { setProgress('prog-vision', (vStep/vSizes.length)*100); if(vStep >= vSizes.length) { setTimeout(()=>saveEyeResult("6/6"), 300); return; } vRot = [0, 90, 180, 270][Math.floor(Math.random()*4)]; document.getElementById('e-char').style.cssText = `font-size:${vSizes[vStep]}px; transform:rotate(${vRot}deg);`; }
+        function checkVision(dir) { if(dir === vRot) { vStep++; updateE(); } else { vErrors++; if(vErrors > 1) saveEyeResult(vStep > 0 ? vLabels[vStep-1] : "< 6/60"); else updateE(); } }
+        function saveDuochrome(res) { saveEyeResult(res === 'red' ? i18n.ar.myopia : (res === 'green' ? i18n.ar.hyperopia : i18n.ar.normal)); }
+        const cOpacities = [0.8, 0.5, 0.3, 0.15, 0.08, 0.03]; let cStep = 0, cRot = 0, cErrors = 0;
+        function startContrastProcess() { cStep=0; cErrors=0; updateContrastE(); show('test-contrast'); }
+        function updateContrastE() { setProgress('prog-contrast', (cStep/cOpacities.length)*100); if(cStep >= cOpacities.length) { setTimeout(()=>saveEyeResult(i18n.ar.perfect), 300); return; } cRot = [0, 90, 180, 270][Math.floor(Math.random()*4)]; document.getElementById('c-char').style.cssText = `font-size:60px; color:#fff; opacity:${cOpacities[cStep]}; transform:rotate(${cRot}deg);`; }
+        function checkContrast(dir) { if(dir === cRot) { cStep++; updateContrastE(); } else { cErrors++; if(cErrors > 1) saveEyeResult(cStep > 3 ? i18n.ar.normal : i18n.ar.bad); else updateContrastE(); } }
+        let dryInterval; let dryTime = 0.0;
+        function startDryTimer() { dryTime = 0.0; document.getElementById('dry-timer').innerText = "0.0"; document.getElementById('btn-dry-start').style.display = 'none'; document.getElementById('btn-dry-stop').style.display = 'flex'; document.getElementById('dry-timer').classList.add('active'); dryInterval = setInterval(() => { dryTime += 0.1; document.getElementById('dry-timer').innerText = dryTime.toFixed(1); }, 100); }
+        function stopDryTimer() { clearInterval(dryInterval); document.getElementById('dry-timer').classList.remove('active'); if(!currentResults['dryeye']) currentResults['dryeye'] = {}; currentResults['dryeye']['bothEyes'] = dryTime < 10.0 ? i18n.ar.dryYes : i18n.ar.dryNo; setTimeout(() => show('menu'), 800); }
+        function finishAstigmatism(hasDefect) { saveEyeResult(hasDefect ? i18n.ar.bad : i18n.ar.normal); }
+        let colRound = 0, colScore = 0, colInput = ""; const colTests = [12, 5, 29]; 
+        function startColor() { colRound=0; colScore=0; nextColorPlate(); show('test-color'); }
+        function nextColorPlate() { setProgress('prog-color', (colRound/colTests.length)*100); if(colRound >= colTests.length) { if(!currentResults['color']) currentResults['color'] = {}; currentResults['color']['bothEyes'] = `${colScore}/${colTests.length}`; setTimeout(() => show('menu'), 300); return; } colInput = ""; document.getElementById('color-display').innerText = ""; generateIshiharaPlate(colTests[colRound]); }
+        function generateIshiharaPlate(num) { const ctx = document.getElementById('ishiharaCanvas').getContext('2d'); ctx.clearRect(0,0,220,220); ctx.font="bold 130px Arial"; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText(num, 110, 110); const mData = ctx.getImageData(0,0,220,220); const dots = []; for(let i=0; i<1200; i++) { let r=Math.random()*4+2, x=Math.random()*220, y=Math.random()*220; if(Math.sqrt((x-110)**2 + (y-110)**2) > 105) continue; if(!dots.some(d => Math.sqrt((d.x-x)**2 + (d.y-y)**2) < d.r+r+1)) { let isNum = mData.data[(Math.floor(y)*220 + Math.floor(x))*4 +3] > 100; dots.push({x, y, r, c: isNum ? `rgb(${220+Math.random()*35}, ${50+Math.random()*100}, 40)` : `rgb(${80+Math.random()*50}, ${160+Math.random()*60}, ${140+Math.random()*60})`}); } } for(let d of dots) { ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI*2); ctx.fillStyle = d.c; ctx.fill(); } }
+        function typeColor(n) { if(colInput.length < 2) colInput += n; document.getElementById('color-display').innerText = colInput; }
+        function clearColor() { colInput = ""; document.getElementById('color-display').innerText = ""; }
+        function checkColor() { if(parseInt(colInput) === colTests[colRound]) colScore++; colRound++; nextColorPlate(); }
+        function toggleLang() { alert("العربية مفعلة."); }
     </script>
 </body>
 </html>

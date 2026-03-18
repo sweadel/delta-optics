@@ -3,81 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Delta AR - مضمون 100%</title>
+    <title>Delta AR - نظام هندسي متطور</title>
     
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.5/dist/mindar-face-aframe.prod.js"></script>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-face-aframe.prod.js"></script>
     
     <style>
-        body { margin: 0; overflow: hidden; font-family: sans-serif; background: #000; }
+        body { margin: 0; overflow: hidden; background: #000; font-family: 'Segoe UI', Tahoma, sans-serif; }
         
-        /* شاشة البداية - ضرورية جداً لتفعيل الكاميرا */
-        #overlay {
-            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95);
-            z-index: 9999; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; color: white; text-align: center;
+        /* واجهة البدء */
+        #loading-overlay {
+            position: fixed; inset: 0; background: #0f172a; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: white; text-align: center; transition: opacity 0.5s;
         }
         .start-btn {
-            background: #0ea5e9; color: white; border: none; padding: 20px 50px;
-            border-radius: 50px; font-size: 1.5rem; font-weight: bold; cursor: pointer;
-            box-shadow: 0 10px 25px rgba(14, 165, 233, 0.5); transition: 0.3s;
+            background: #0ea5e9; color: white; border: none; padding: 20px 60px;
+            border-radius: 15px; font-size: 1.4rem; font-weight: bold; cursor: pointer;
+            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.4); display: none; /* يظهر فقط عند الجاهزية */
         }
-        .start-btn:active { transform: scale(0.95); }
-        
-        /* واجهة التحكم */
-        .ui-controls {
-            position: absolute; top: 20px; width: 100%; display: flex;
-            justify-content: space-between; padding: 0 20px; box-sizing: border-box; z-index: 100;
-        }
-        .back-link { background: rgba(255,255,255,0.2); color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-weight: bold; }
+        .spinner { width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.1); border-top-color: #0ea5e9; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* شاشة الـ UI فوق الكاميرا */
+        #ui-header { position: fixed; top: 0; width: 100%; padding: 20px; z-index: 100; pointer-events: none; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
+        .back-btn { background: rgba(0,0,0,0.6); color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; pointer-events: auto; font-weight: bold; border: 1px solid rgba(255,255,255,0.2); }
     </style>
 </head>
 <body>
 
-    <div id="overlay">
-        <h2 style="margin-bottom: 10px;">Delta Optics AR</h2>
-        <p style="margin-bottom: 30px; opacity: 0.8;">اضغط للبدء بالسماح للكاميرا</p>
-        <button class="start-btn" id="startButton">ابدأ التجربة الآن</button>
+    <div id="loading-overlay">
+        <div id="spinner" class="spinner"></div>
+        <p id="status-text">جاري تحميل الأنظمة الذكية...</p>
+        <button class="start-btn" id="start-btn">بدء تجربة القياس 3D</button>
     </div>
 
-    <div class="ui-controls">
-        <a href="index.html" class="back-link">رجوع</a>
-        <div style="background: #0e7490; color: white; padding: 10px 20px; border-radius: 50px; font-weight: bold;">Delta 3D LIVE</div>
+    <div id="ui-header">
+        <a href="index.html" class="back-btn">خروج</a>
+        <div style="background: #0e7490; color: white; padding: 8px 20px; border-radius: 50px; font-weight: bold; font-size: 0.9rem;">DELTA OPTICS LIVE</div>
     </div>
 
-    <a-scene mindar-face="uiLoading:no; uiError:no" embedded color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+    <a-scene mindar-face="autoStart: false; uiLoading: no; uiError: no;" embedded color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
         
         <a-assets>
-            <a-asset-item id="glassesModel" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.1.5/examples/face-tracking/assets/glasses/scene.gltf"></a-asset-item>
+            <a-asset-item id="glassesModel" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.2/examples/face-tracking/assets/glasses/scene.gltf"></a-asset-item>
         </a-assets>
         
-        <a-camera active="false" position="0 0 0"></a-camera>
+        <a-camera active="false" position="0 0 0" look-controls="enabled: false"></a-camera>
 
         <a-entity mindar-face-target="anchorIndex: 168">
-            <a-gltf-model rotation="0 0 0" position="0 -0.1 0" scale="0.01 0.01 0.01" src="#glassesModel"></a-gltf-model>
+            <a-gltf-model id="model-entity" rotation="0 0 0" position="0 -0.1 0" scale="0.01 0.01 0.01" src="#glassesModel"></a-gltf-model>
         </a-entity>
         
-        <a-entity light="type: ambient; intensity: 1"></a-entity>
+        <a-entity light="type: ambient; intensity: 1.2"></a-entity>
+        <a-entity light="type: directional; intensity: 0.6" position="1 2 1"></a-entity>
     </a-scene>
 
     <script>
-        const startButton = document.querySelector("#startButton");
-        const overlay = document.querySelector("#overlay");
         const sceneEl = document.querySelector('a-scene');
+        const startBtn = document.querySelector('#start-btn');
+        const spinner = document.querySelector('#spinner');
+        const statusText = document.querySelector('#status-text');
+        const overlay = document.querySelector('#loading-overlay');
 
-        startButton.addEventListener('click', () => {
-            // إخفاء الشاشة والبدء الحقيقي
-            overlay.style.display = "none";
-            
-            // تفعيل المحرك يدوياً
-            if (sceneEl.systems["mindar-face-system"]) {
-                sceneEl.systems["mindar-face-system"].start(); 
+        // 1. الانتظار حتى تحميل المشهد
+        sceneEl.addEventListener("loaded", () => {
+            console.log("Scene Loaded");
+            statusText.innerText = "الأنظمة جاهزة الآن";
+            spinner.style.display = "none";
+            startBtn.style.display = "block";
+        });
+
+        // 2. تشغيل الكاميرا عند ضغط الزر (أمر إجباري للمتصفح)
+        startBtn.addEventListener('click', () => {
+            overlay.style.opacity = "0";
+            setTimeout(() => overlay.style.display = "none", 500);
+
+            // استدعاء نظام الـ AR يدوياً
+            const arSystem = sceneEl.systems['mindar-face-system'];
+            if (arSystem) {
+                arSystem.start(); 
+            } else {
+                alert("خطأ تقني: لم يتم تحميل نظام التتبع.");
             }
         });
 
-        // رسالة تنبيه إذا تأخر التحميل
-        sceneEl.addEventListener("render-target-loaded", () => {
-            console.log("Scene loaded");
+        // 3. مراقبة الأخطاء
+        sceneEl.addEventListener("arError", (event) => {
+            alert("حدث خطأ في الكاميرا: تأكد من إغلاق أي تطبيق آخر يستخدمها.");
         });
     </script>
 </body>

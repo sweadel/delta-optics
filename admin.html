@@ -3,148 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم المركزية | Delta</title>
+    <title>لوحة التحكم الذكية | Delta Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --primary: #0E7490; --secondary: #164E63; --bg: #F8FAFC; --text: #1E293B; --danger: #EF4444; --success: #10B981; --warning: #F59E0B; }
-        body { font-family: 'Tajawal', sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+        :root { --primary: #0E7490; --secondary: #164E63; --bg: #F8FAFC; --text: #1E293B; --danger: #EF4444; --success: #10B981; }
+        body { font-family: 'Tajawal', sans-serif; background: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
-        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100%; background: var(--bg); position: absolute; z-index: 1000; padding: 20px; box-sizing: border-box;}
-        .login-box { background: white; padding: 40px 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 350px; text-align: center; }
-        .input-field { width: 100%; padding: 12px 15px; margin-bottom: 15px; border-radius: 10px; border: 2px solid #E2E8F0; font-size: 1rem; outline: none; box-sizing: border-box; transition: 0.3s; }
-        .btn { width: 100%; padding: 12px; border-radius: 10px; border: none; background: var(--primary); color: white; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s; }
-
+        /* Sidebar */
         #sidebar { width: 260px; background: var(--secondary); color: white; display: none; flex-direction: column; padding: 20px 0; z-index: 500; }
         #sidebar.show { display: flex; }
-        .nav-item { padding: 15px 25px; cursor: pointer; display: flex; align-items: center; gap: 15px; font-weight: bold; color: #CBD5E1; border-right: 4px solid transparent; transition: 0.2s; }
+        .nav-item { padding: 15px 25px; cursor: pointer; display: flex; align-items: center; gap: 15px; font-weight: bold; color: #CBD5E1; transition: 0.2s; border-right: 4px solid transparent; }
         .nav-item.active { background: rgba(255,255,255,0.1); color: white; border-right-color: var(--primary); }
-        .admin-nav { display: none; } 
 
-        #main-content { flex: 1; padding: 30px; overflow-y: auto; display: none; box-sizing: border-box; }
+        /* Main Content */
+        #main-content { flex: 1; padding: 25px; overflow-y: auto; display: none; background: var(--bg); }
         #main-content.show { display: block; }
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; background: white; padding: 15px 25px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
         
-        .section-card { background: white; padding: 25px; border-radius: 15px; margin-bottom: 25px; display: none; border: 1px solid #E2E8F0; animation: fadeIn 0.4s; }
+        header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px 25px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        
+        /* التنبيهات */
+        .notif-container { display: flex; align-items: center; gap: 20px; }
+        .notif-btn { position: relative; cursor: pointer; font-size: 1.4rem; color: var(--secondary); transition: 0.2s; }
+        .notif-btn:hover { color: var(--primary); }
+        .notif-badge { position: absolute; top: -5px; right: -5px; width: 12px; height: 12px; background: var(--danger); border-radius: 50%; display: none; border: 2px solid white; animation: pulse 1s infinite alternate; }
+        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.2); } }
+
+        .section-card { background: white; padding: 25px; border-radius: 15px; margin-bottom: 25px; border: 1px solid #E2E8F0; display: none; animation: fadeIn 0.4s; }
         .section-card.active { display: block !important; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* الجداول */
         .table-responsive { width: 100%; overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th, td { padding: 15px; text-align: right; border-bottom: 1px solid #E2E8F0; }
-        
         .report-box { background: #F8FAFC; padding: 10px; border-radius: 10px; font-size: 0.85rem; line-height: 1.6; white-space: pre-wrap; border: 1px solid #E2E8F0; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-top: 20px; }
-        .product-card { background: white; border: 1px solid #E2E8F0; border-radius: 15px; padding: 12px; text-align: center; }
-        .product-card img { width: 100%; height: 120px; object-fit: contain; border-radius: 10px; background: #F8FAFC; }
+
+        /* لوحة المهام */
+        .task-input-group { display: flex; gap: 10px; margin-bottom: 15px; }
+        .task-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #E2E8F0; border-radius: 10px; margin-bottom: 10px; background: #F8FAFC; transition: 0.2s; }
+        .task-item:hover { background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        
+        .btn { padding: 10px 20px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        
+        .input-field { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #E2E8F0; outline: none; }
+        
+        /* شاشة الدخول */
+        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100%; background: var(--bg); position: absolute; z-index: 1000; }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
-        <div class="login-box">
-            <i class="fas fa-user-shield" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
-            <h2 style="margin-bottom: 25px;">Delta Admin Portal</h2>
-            <input type="text" id="username" class="input-field" placeholder="اسم المستخدم" dir="ltr">
-            <input type="password" id="password" class="input-field" placeholder="كلمة المرور" dir="ltr">
-            <button class="btn" onclick="attemptLogin()">دخول آمن</button>
-            <p id="error-msg" style="color: var(--danger); display: none; margin-top: 15px;">خطأ في البيانات!</p>
+        <div style="background:white; padding:40px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.1); text-align:center; width:320px;">
+            <i class="fas fa-shield-alt" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
+            <h2>Delta Admin</h2>
+            <input type="text" id="username" class="input-field" placeholder="اليوزر" style="margin-bottom:10px;" dir="ltr">
+            <input type="password" id="password" class="input-field" placeholder="الباسورد" style="margin-bottom:20px;" dir="ltr">
+            <button class="btn btn-primary" style="width:100%" onclick="attemptLogin()">دخول آمن</button>
         </div>
     </div>
 
     <div id="sidebar">
-        <div style="text-align:center; padding: 20px 0;"><h2 style="margin:0; color:white;"><i class="fas fa-chart-line"></i> دلتا</h2></div>
-        <div class="nav-item active" onclick="switchTab(event, 'reports')"><i class="fas fa-notes-medical"></i> <span>التقارير</span></div>
+        <div style="text-align:center; padding: 20px 0;"><h2 style="margin:0; color:white;"><i class="fas fa-chart-line"></i> عيادة دلتا</h2></div>
+        <div class="nav-item active" onclick="switchTab(event, 'reports')"><i class="fas fa-file-medical"></i> <span>التقارير الحية</span></div>
         <div class="nav-item" onclick="switchTab(event, 'analytics')"><i class="fas fa-chart-pie"></i> <span>الإحصائيات</span></div>
-        <div class="nav-item" onclick="switchTab(event, 'brands')"><i class="fas fa-glasses"></i> <span>الماركات</span></div>
-        <div class="nav-item admin-nav" onclick="switchTab(event, 'users')"><i class="fas fa-users-cog"></i> <span>الحسابات</span></div>
-        <div class="nav-item admin-nav" onclick="switchTab(event, 'audit')"><i class="fas fa-user-secret"></i> <span>المراقبة</span></div>
+        <div class="nav-item" onclick="switchTab(event, 'tasks')"><i class="fas fa-tasks"></i> <span>لوحة المهام</span></div>
+        <div class="nav-item" onclick="switchTab(event, 'audit')"><i class="fas fa-user-secret"></i> <span>سجل المراقبة</span></div>
     </div>
 
     <div id="main-content">
         <header>
-            <div id="welcome-text" style="font-weight:900; color:var(--primary);"></div>
-            <button class="btn btn-danger" style="width:auto; padding:8px 20px;" onclick="location.reload()">خروج</button>
+            <div class="notif-container">
+                <div id="welcome-text" style="font-weight:900; color:var(--primary);"></div>
+                <div class="notif-btn" title="تنبيهات الفحوصات الجديدة" onclick="clearNotification()">
+                    <i class="fas fa-bell"></i>
+                    <div class="notif-badge" id="notifBadge"></div>
+                </div>
+            </div>
+            <button class="btn btn-danger" style="padding:8px 20px;" onclick="location.reload()">تسجيل خروج</button>
         </header>
 
         <div id="sec-reports" class="section-card active">
-            <h2><i class="fas fa-clipboard-list"></i> تقارير المراجعين</h2>
-            <div class="table-responsive"><table><thead><tr><th>المراجع</th><th>التفاصيل</th><th>الوقت</th></tr></thead><tbody id="reports-body"></tbody></table></div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+                <h2 style="margin:0;"><i class="fas fa-clipboard-list"></i> تقارير المراجعين</h2>
+                <button class="btn btn-primary" onclick="forceRefreshReports()"><i class="fas fa-sync-alt" id="sync-icon"></i> تحديث النتائج</button>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead><tr><th>المراجع</th><th>التفاصيل الطبية</th><th>التوقيت</th></tr></thead>
+                    <tbody id="reports-body"></tbody>
+                </table>
+            </div>
         </div>
 
         <div id="sec-analytics" class="section-card">
             <h2><i class="fas fa-chart-line"></i> نشاط العيادة اليومي</h2>
-            <div style="width:100%; height:300px; padding:10px;">
-                <canvas id="reportsChart"></canvas>
-            </div>
+            <div style="width:100%; height:300px; padding:10px;"><canvas id="reportsChart"></canvas></div>
         </div>
 
-        <div id="sec-brands" class="section-card">
-            <div style="background:#ECFEFF; padding:15px; border-radius:15px; margin-bottom:20px; border: 1px solid #CFFAFE;">
-                <h3>إضافة ماركة جديدة</h3>
-                <input type="text" id="brand-name" class="input-field" placeholder="اسم الماركة">
-                <select id="brand-type" class="input-field"><option value="medical">طبي</option><option value="sun">شمسي</option></select>
-                <input type="file" id="brand-image" class="input-field" accept="image/*">
-                <button class="btn btn-success" id="btn-upload" onclick="uploadBrand()">رفع ونشر</button>
+        <div id="sec-tasks" class="section-card">
+            <h2><i class="fas fa-th-list"></i> لوحة المهام والملاحظات للإدارة</h2>
+            <div class="task-input-group">
+                <input type="text" id="newTaskInput" class="input-field" placeholder="اكتب ملاحظة أو مهمة جديدة هنا...">
+                <button class="btn btn-success" onclick="addTask()"><i class="fas fa-plus"></i> إضافة</button>
             </div>
-            <div class="products-grid" id="brands-gallery"></div>
+            <div id="tasks-list"></div>
         </div>
 
         <div id="sec-audit" class="section-card">
-            <h2>سجل المراقبة (Data Forensic)</h2>
-            <div class="table-responsive"><table><thead><tr><th>المسؤول</th><th>الحدث</th><th>الجهاز | البطارية</th><th>التوقيت</th></tr></thead><tbody id="logs-body"></tbody></table></div>
-        </div>
-
-        <div id="sec-users" class="section-card">
-            <h3>إدارة حسابات الموظفين</h3>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <input type="text" id="new-name" class="input-field" placeholder="الاسم">
-                <input type="text" id="new-username" class="input-field" placeholder="اليوزر">
-                <input type="text" id="new-password" class="input-field" placeholder="الباسورد">
+            <h2><i class="fas fa-search-location"></i> سجل التتبع الأمني</h2>
+            <div class="table-responsive">
+                <table>
+                    <thead><tr><th>المسؤول</th><th>الحدث</th><th>معلومات الجهاز</th><th>التوقيت</th></tr></thead>
+                    <tbody id="logs-body"></tbody>
+                </table>
             </div>
-            <button class="btn btn-success" onclick="addNewUser()">إضافة حساب</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDocs, where, doc, getDoc, setDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDocs, where, doc, setDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyB11C4GGgAyqeThs8a9cvDNN7frvAA1nqQ", authDomain: "delta-optics-system.firebaseapp.com", projectId: "delta-optics-system", storageBucket: "delta-optics-system.firebasestorage.app", messagingSenderId: "111176219224", appId: "1:111176219224:web:e0d8a5f26b84d57249a82d" };
-        const app = initializeApp(firebaseConfig); const db = getFirestore(app); const storage = getStorage(app);
-        let currentUser = null; let myChart = null;
-
-        // 🕵️ جلب التفاصيل التقنية
-        async function getTech() {
-            let t = { d: "PC", b: "N/A" };
-            if(/Android/i.test(navigator.userAgent)) t.d = "Android";
-            else if(/iPhone/i.test(navigator.userAgent)) t.d = "iPhone";
-            if(navigator.getBattery) { const b = await navigator.getBattery(); t.b = (b.level*100).toFixed(0) + "%"; }
-            return t;
-        }
+        const app = initializeApp(firebaseConfig); const db = getFirestore(app);
+        
+        let currentUser = null; 
+        let myChart = null;
+        let isInitialLoad = true;
+        let reportsListener = null;
 
         window.attemptLogin = async function() {
-            const u = document.getElementById('username').value;
-            const p = document.getElementById('password').value;
-            const qry = query(collection(db, "system_users"), where("username", "==", u), where("pass", "==", p));
-            const snap = await getDocs(qry);
-            if(!snap.empty) {
-                currentUser = snap.docs[0].data();
+            const u = document.getElementById('username').value.trim();
+            const p = document.getElementById('password').value.trim();
+            if(u === "adel" && p === "123123") {
+                currentUser = { name: "المهندس عادل" };
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('sidebar').classList.add('show');
                 document.getElementById('main-content').classList.add('show');
                 document.getElementById('welcome-text').innerText = "أهلاً، " + currentUser.name;
-                if(currentUser.role === 'superadmin') document.querySelectorAll('.admin-nav').forEach(el => el.style.display = 'flex');
-                await logAct("دخول للنظام"); loadReports(); loadBrands(); loadLogs();
-            } else alert("خطأ في الدخول");
+                
+                await logAct("دخول للنظام");
+                initSystem();
+            } else { alert("بيانات خاطئة!"); }
         }
 
         async function logAct(a) {
-            if(!currentUser) return;
-            const tech = await getTech();
-            await addDoc(collection(db, "system_logs"), { user: currentUser.name, action: a, info: `${tech.d} | ${tech.b}`, timestamp: serverTimestamp() });
+            let t = { d: "PC", b: "N/A" };
+            if(/Android/i.test(navigator.userAgent)) t.d = "Android"; else if(/iPhone/i.test(navigator.userAgent)) t.d = "iPhone";
+            if(navigator.getBattery) { try{ const b = await navigator.getBattery(); t.b = (b.level*100).toFixed(0) + "%"; }catch(e){} }
+            await addDoc(collection(db, "system_logs"), { user: currentUser.name, action: a, info: `${t.d} | 🔋 ${t.b}`, timestamp: serverTimestamp() });
+        }
+
+        function initSystem() {
+            loadReports(); loadTasks(); loadLogs();
         }
 
         window.switchTab = (e, tab) => {
@@ -154,61 +171,110 @@
             document.getElementById('sec-'+tab).classList.add('active');
         }
 
+        // --- نظام التقارير اللحظي ---
+        function loadReports() {
+            if(reportsListener) reportsListener(); // تنظيف المستمع القديم
+            
+            reportsListener = onSnapshot(query(collection(db, "tests"), orderBy("timestamp", "desc")), (snap) => {
+                const b = document.getElementById('reports-body'); b.innerHTML = "";
+                let stats = {};
+
+                // 🔔 تفعيل التنبيه اللحظي (إذا كان في بيانات جديدة بعد التحميل الأول)
+                if(!isInitialLoad) {
+                    snap.docChanges().forEach((change) => {
+                        if (change.type === "added") triggerNotification();
+                    });
+                }
+
+                snap.forEach(d => {
+                    const r = d.data();
+                    const date = r.timestamp ? r.timestamp.toDate().toLocaleDateString('ar-EG') : "اليوم";
+                    const time = r.timestamp ? r.timestamp.toDate().toLocaleTimeString('ar-EG') : "";
+                    stats[date] = (stats[date] || 0) + 1;
+                    b.innerHTML += `<tr><td><strong>${r.name}</strong></td><td><div class="report-box">${r.details}</div></td><td style="color:var(--primary); font-weight:bold;">${date}<br><small>${time}</small></td></tr>`;
+                });
+                
+                updateChartUI(stats);
+                isInitialLoad = false;
+            });
+        }
+
+        // 🔄 زر التحديث اليدوي
+        window.forceRefreshReports = () => {
+            const icon = document.getElementById('sync-icon');
+            icon.classList.add('fa-spin');
+            isInitialLoad = true; // منع إطلاق جرس التنبيه أثناء التحديث اليدوي
+            loadReports();
+            setTimeout(() => { icon.classList.remove('fa-spin'); }, 800);
+        }
+
+        // 🔔 وظائف التنبيهات
+        function triggerNotification() {
+            document.getElementById('notifBadge').style.display = 'block';
+            try {
+                // صوت تنبيه خفيف جداً
+                let audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+                audio.play();
+            } catch(e) {}
+        }
+
+        window.clearNotification = () => {
+            document.getElementById('notifBadge').style.display = 'none';
+            switchTab({currentTarget: document.querySelector('.nav-item')}, 'reports'); // ينقلك لصفحة التقارير
+        }
+
         // 📊 تحديث الرسم البياني
         function updateChartUI(dataMap) {
             const ctx = document.getElementById('reportsChart').getContext('2d');
             if(myChart) myChart.destroy();
             myChart = new Chart(ctx, {
-                type: 'line',
+                type: 'bar', // حولناه لأعمدة ليكون أوضح
                 data: {
                     labels: Object.keys(dataMap).reverse(),
-                    datasets: [{ label: 'عدد الفحوصات', data: Object.values(dataMap).reverse(), borderColor: '#0E7490', tension: 0.4, fill: true, backgroundColor: 'rgba(14, 116, 144, 0.1)' }]
+                    datasets: [{ label: 'عدد الفحوصات', data: Object.values(dataMap).reverse(), backgroundColor: '#0E7490', borderRadius: 5 }]
                 },
                 options: { responsive: true, maintainAspectRatio: false }
             });
         }
 
-        function loadReports() {
-            onSnapshot(query(collection(db, "tests"), orderBy("timestamp", "desc")), (snap) => {
-                const b = document.getElementById('reports-body'); b.innerHTML = "";
-                let stats = {};
-                snap.forEach(d => {
-                    const r = d.data();
-                    const date = r.timestamp ? r.timestamp.toDate().toLocaleDateString('ar-EG') : "اليوم";
-                    stats[date] = (stats[date] || 0) + 1;
-                    b.innerHTML += `<tr><td><strong>${r.name}</strong></td><td><div class="report-box">${r.details}</div></td><td>${date}</td></tr>`;
-                });
-                updateChartUI(stats);
-            });
+        // --- لوحة المهام (To-Do List) ---
+        window.addTask = async () => {
+            const val = document.getElementById('newTaskInput').value.trim();
+            if(!val) return;
+            await addDoc(collection(db, "admin_tasks"), { text: val, done: false, timestamp: serverTimestamp() });
+            document.getElementById('newTaskInput').value = "";
+            logAct("أضاف مهمة جديدة: " + val);
         }
 
-        window.uploadBrand = async () => {
-            const n = document.getElementById('brand-name').value;
-            const f = document.getElementById('brand-image').files[0];
-            if(!n || !f) return alert("أكمل البيانات");
-            const sRef = ref(storage, `brands/${Date.now()}_${f.name}`);
-            await uploadBytes(sRef, f);
-            const url = await getDownloadURL(sRef);
-            await addDoc(collection(db, "brands"), { name: n, type: document.getElementById('brand-type').value, imageUrl: url, timestamp: serverTimestamp() });
-            alert("تم الرفع"); await logAct("إضافة نظارة: " + n);
-        }
+        window.toggleTask = async (id, state) => { await updateDoc(doc(db, "admin_tasks", id), { done: !state }); }
+        window.deleteTask = async (id) => { await deleteDoc(doc(db, "admin_tasks", id)); }
 
-        function loadBrands() {
-            onSnapshot(query(collection(db, "brands"), orderBy("timestamp", "desc")), (snap) => {
-                const g = document.getElementById('brands-gallery'); g.innerHTML = "";
+        function loadTasks() {
+            onSnapshot(query(collection(db, "admin_tasks"), orderBy("timestamp", "desc")), (snap) => {
+                const list = document.getElementById('tasks-list'); list.innerHTML = "";
                 snap.forEach(d => {
-                    const b = d.data();
-                    g.innerHTML += `<div class="product-card"><img src="${b.imageUrl}"><h4>${b.name}</h4><small>${b.type}</small></div>`;
+                    const t = d.data();
+                    const check = t.done ? "checked" : "";
+                    const style = t.done ? "text-decoration: line-through; color: #94A3B8;" : "font-weight:bold;";
+                    list.innerHTML += `
+                    <div class="task-item">
+                        <div style="display:flex; align-items:center; gap:15px;">
+                            <input type="checkbox" ${check} onchange="toggleTask('${d.id}', ${t.done})" style="transform:scale(1.3); cursor:pointer;">
+                            <span style="${style}">${t.text}</span>
+                        </div>
+                        <button class="btn btn-danger" style="padding:8px 12px;" onclick="deleteTask('${d.id}')"><i class="fas fa-trash"></i></button>
+                    </div>`;
                 });
             });
         }
 
+        // --- المراقبة السريعة ---
         function loadLogs() {
             onSnapshot(query(collection(db, "system_logs"), orderBy("timestamp", "desc")), (snap) => {
                 const b = document.getElementById('logs-body'); b.innerHTML = "";
                 snap.forEach(d => {
                     const l = d.data();
-                    b.innerHTML += `<tr><td>${l.user}</td><td>${l.action}</td><td><small>${l.info}</small></td><td>${l.timestamp?.toDate().toLocaleTimeString('ar-EG')}</td></tr>`;
+                    b.innerHTML += `<tr><td><strong>${l.user}</strong></td><td>${l.action}</td><td><small style="color:gray;">${l.info}</small></td><td>${l.timestamp?.toDate().toLocaleTimeString('ar-EG')}</td></tr>`;
                 });
             });
         }

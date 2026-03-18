@@ -1,49 +1,217 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>القياس الافتراضي | Delta Optics</title>
-    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-face-aframe.prod.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Delta Optics | دلتا للبصريات</title>
+    
+    <link rel="icon" href="logo.jpg" type="image/jpeg">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:ital,wght@1,900&family=Playfair+Display:wght@700&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Tajawal', sans-serif; background: #0f172a; }
+        :root { 
+            --primary: #0e7490;        
+            --secondary: #0ea5e9;      
+            --bg-color: #f8fafc;
+            --surface: rgba(255, 255, 255, 0.7); 
+            --surface-border: rgba(255, 255, 255, 0.5);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --success: #10b981;
+            --error: #ef4444;
+            --gold: #f59e0b;
+        }
+
+        [data-theme="dark"] {
+            --primary: #22d3ee;        
+            --secondary: #38bdf8;      
+            --bg-color: #0f172a;
+            --surface: rgba(30, 41, 59, 0.7);
+            --surface-border: rgba(255, 255, 255, 0.05);
+            --text-main: #f8fafc;
+            --text-muted: #cbd5e1;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        /* واجهة المستخدم فوق الكاميرا */
-        .ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; box-sizing: border-box; }
+        body { 
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.04) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(14, 116, 144, 0.04) 0px, transparent 50%);
+            color: var(--text-main); 
+            min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden;
+            padding-bottom: 90px; transition: background-color 0.4s, color 0.4s;
+            position: relative;
+        }
+
+        header { 
+            background: var(--surface); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            padding: 12px 20px; border-bottom: 1px solid var(--surface-border);
+            display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .header-brand { display: flex; align-items: center; gap: 10px; }
+        .header-logo { width: 38px; height: 38px; object-fit: contain; border-radius: 8px; }
+        .header-title { font-size: 1.2rem; font-weight: 900; color: var(--primary); margin: 0; }
         
-        .header { display: flex; justify-content: space-between; align-items: center; pointer-events: auto; }
-        .back-btn { background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1.2rem; }
-        .title-box { background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); color: white; padding: 10px 20px; border-radius: 20px; font-weight: bold; border: 1px solid rgba(255,255,255,0.2); }
-        
-        .footer { text-align: center; pointer-events: auto; }
-        .capture-btn { background: #0ea5e9; color: white; border: none; padding: 15px 30px; border-radius: 30px; font-size: 1.1rem; font-weight: bold; box-shadow: 0 10px 20px rgba(14, 165, 233, 0.4); }
+        .header-actions { display: flex; gap: 10px; }
+        .icon-btn {
+            background: rgba(128, 128, 128, 0.1); border: 1px solid var(--surface-border);
+            width: 38px; height: 38px; border-radius: 10px; color: var(--primary); 
+            cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;
+        }
+
+        main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 30px 20px; text-align: center; width: 100%; max-width: 500px; margin: 0 auto; }
+
+        .logo-box { width: 130px; height: 130px; object-fit: contain; margin-bottom: 15px; border-radius: 25px; background: var(--surface); padding: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--surface-border); }
+
+        h1 { font-size: 2rem; font-weight: 900; margin-bottom: 5px; color: var(--text-main); }
+        .subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; line-height: 1.6; }
+
+        .info-row { display: flex; gap: 10px; justify-content: center; margin-bottom: 25px; }
+        .badge { background: var(--surface); backdrop-filter: blur(10px); padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 8px; border: 1px solid var(--surface-border); color: var(--text-main); }
+        .dot { width: 8px; height: 8px; border-radius: 50%; }
+        .open-dot { background: var(--success); }
+        .closed-dot { background: var(--error); }
+
+        .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; margin-bottom: 25px; }
+        .main-card {
+            background: var(--surface); backdrop-filter: blur(10px); border: 1px solid var(--surface-border);
+            padding: 25px 15px; border-radius: 20px; display: flex; flex-direction: column; align-items: center; gap: 12px;
+            text-decoration: none; box-shadow: 0 10px 30px rgba(0,0,0,0.03); transition: 0.3s;
+        }
+        .card-icon { font-size: 2.2rem; color: var(--primary); }
+        .card-title { font-size: 1.05rem; font-weight: 900; color: var(--text-main); }
+        .highlight-card { background: linear-gradient(135deg, rgba(14, 116, 144, 0.05), rgba(14, 165, 233, 0.1)); }
+
+        /* AR Card Style */
+        .ar-card {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #0f172a 0%, #0ea5e9 100%);
+            border: none; flex-direction: row; justify-content: space-around; padding: 20px; height: auto;
+        }
+        .ar-card .card-title, .ar-card .card-icon { color: white; }
+
+        .social-section { width: 100%; margin-bottom: 30px; }
+        .social-row { display: flex; gap: 12px; justify-content: center; }
+        .soc-btn { flex: 1; padding: 14px; border-radius: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; color: white; font-weight: 800; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .fb-btn { background: #1877F2; } .insta-btn { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+
+        .marquee-wrap { background: var(--surface); padding: 22px 0; overflow: hidden; white-space: nowrap; direction: ltr; margin-top: auto; border-top: 1px solid var(--surface-border); }
+        .marquee-content { display: inline-block; animation: scroll 40s linear infinite; }
+        @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        .brand-item { margin: 0 30px; font-size: 1.2rem; font-weight: bold; color: var(--text-main); opacity: 0.7; }
+
+        .fab-area { position: fixed; bottom: 25px; right: 25px; display: flex; flex-direction: column; gap: 15px; z-index: 200; }
+        .fab { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.6rem; text-decoration: none; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .fab-wa { background: #25D366; } .fab-call { background: var(--primary); }
     </style>
 </head>
 <body>
 
-    <div class="ui-layer">
-        <div class="header">
-            <a href="index.html" class="back-btn"><i class="fas fa-arrow-right"></i></a>
-            <div class="title-box">جرب أحدث الموديلات</div>
+    <header>
+        <div class="header-brand">
+            <img src="logo.jpg" class="header-logo" alt="Delta">
+            <h2 class="header-title">DELTA OPTICS</h2>
         </div>
-        <div class="footer">
-            <button class="capture-btn" onclick="alert('سيتم توفير النظارة قريباً في فروعنا!')"><i class="fas fa-camera"></i> التقط صورة</button>
+        <div class="header-actions">
+            <button class="icon-btn" onclick="toggleTheme()" id="theme-btn"><i class="fas fa-moon"></i></button>
+            <button class="icon-btn" onclick="toggleLang()" id="lang-btn">EN</button>
+        </div>
+    </header>
+
+    <main>
+        <img src="logo.jpg" class="logo-box" alt="Logo">
+        <h1 id="txt-hero">دلتا للبصريات</h1>
+        <p class="subtitle" id="txt-sub">خبراء العناية بالعين وأحدث الماركات العالمية</p>
+
+        <div class="info-row">
+            <div id="status-badge" class="badge"><div class="dot"></div> <span id="status-text">...</span></div>
+            <div class="badge"><i class="fas fa-star" style="color:var(--gold)"></i> 4.9</div>
+        </div>
+
+        <div class="cards-grid">
+            <a href="test.html" class="main-card highlight-card"><i class="fas fa-microscope card-icon"></i><span class="card-title" id="txt-test">الفحص الذكي</span></a>
+            <a href="collection.html" class="main-card"><i class="fas fa-glasses card-icon"></i><span class="card-title" id="txt-coll">التشكيلات</span></a>
+            
+            <a href="ar.html" class="main-card ar-card">
+                <div style="text-align: right;">
+                    <span class="card-title" id="txt-ar-title">القياس الافتراضي 3D</span><br>
+                    <small style="color:rgba(255,255,255,0.8)" id="txt-ar-sub">جرب النظارة بالكاميرا</small>
+                </div>
+                <i class="fas fa-vr-cardboard card-icon"></i>
+            </a>
+        </div>
+
+        <div class="social-section">
+            <div class="social-row">
+                <a href="https://www.facebook.com/delta.optics1" target="_blank" class="soc-btn fb-btn"><i class="fab fa-facebook-f"></i> Facebook</a>
+                <a href="https://www.instagram.com/delta.optics1/" target="_blank" class="soc-btn insta-btn"><i class="fab fa-instagram"></i> Instagram</a>
+            </div>
+        </div>
+    </main>
+
+    <div class="marquee-wrap">
+        <div class="marquee-content">
+            <span class="brand-item">RAY-BAN</span><span class="brand-item">GUCCI</span><span class="brand-item">PRADA</span><span class="brand-item">OAKLEY</span><span class="brand-item">DIOR</span><span class="brand-item">POLICE</span><span class="brand-item">VERSACE</span>
+            <span class="brand-item">RAY-BAN</span><span class="brand-item">GUCCI</span><span class="brand-item">PRADA</span><span class="brand-item">OAKLEY</span><span class="brand-item">DIOR</span><span class="brand-item">POLICE</span><span class="brand-item">VERSACE</span>
         </div>
     </div>
 
-    <a-scene mindar-face embedded color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
-        <a-assets>
-            <a-asset-item id="glassesModel" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.2/examples/face-tracking/assets/glasses/scene.gltf"></a-asset-item>
-        </a-assets>
-        
-        <a-camera active="false" position="0 0 0"></a-camera>
-        
-        <a-entity mindar-face-target="anchorIndex: 168">
-            <a-gltf-model rotation="0 0 0" position="0 -0.1 0" scale="0.009 0.009 0.009" src="#glassesModel"></a-gltf-model>
-        </a-entity>
-    </a-scene>
+    <div class="fab-area">
+        <a href="https://wa.me/962775549700" target="_blank" class="fab fab-wa"><i class="fab fa-whatsapp"></i></a>
+        <a href="tel:+962775549700" class="fab fab-call"><i class="fas fa-phone-alt"></i></a>
+    </div>
 
+    <script>
+        // 1. إدارة المظهر (Dark Mode)
+        let isDark = localStorage.getItem('deltaTheme') === 'dark';
+        const applyTheme = (dark) => {
+            document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+            document.getElementById('theme-btn').innerHTML = dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+            localStorage.setItem('deltaTheme', dark ? 'dark' : 'light');
+        };
+        applyTheme(isDark);
+        window.toggleTheme = () => { isDark = !isDark; applyTheme(isDark); };
+
+        // 2. إدارة اللغات
+        let curLang = 'ar';
+        const i18n = {
+            ar: { hero: "دلتا للبصريات", sub: "خبراء العناية بالعين وأحدث الماركات العالمية", test: "الفحص الذكي", coll: "التشكيلات", arT: "القياس الافتراضي 3D", arS: "جرب النظارة بالكاميرا", open: "مفتوح الآن", closed: "مغلق الآن" },
+            en: { hero: "DELTA OPTICS", sub: "Eye Care Experts & Premium Brands", test: "Smart Test", coll: "Collections", arT: "Virtual Try-On 3D", arS: "Try glasses via camera", open: "Open Now", closed: "Closed Now" }
+        };
+
+        window.toggleLang = () => {
+            curLang = curLang === 'ar' ? 'en' : 'ar';
+            const t = i18n[curLang];
+            document.documentElement.lang = curLang;
+            document.documentElement.dir = curLang === 'ar' ? 'rtl' : 'ltr';
+            document.getElementById('lang-btn').innerText = curLang === 'ar' ? 'EN' : 'عربي';
+            document.getElementById('txt-hero').innerText = t.hero;
+            document.getElementById('txt-sub').innerText = t.sub;
+            document.getElementById('txt-test').innerText = t.test;
+            document.getElementById('txt-coll').innerText = t.coll;
+            document.getElementById('txt-ar-title').innerText = t.arT;
+            document.getElementById('txt-ar-sub').innerText = t.arS;
+            checkStatus();
+        };
+
+        // 3. حالة الدوام
+        function checkStatus() {
+            const now = new Date(); const hour = now.getHours(); const day = now.getDay();
+            let isOpen = (day === 5) ? (hour >= 16 && hour < 22) : (hour >= 10 && hour < 22);
+            const badge = document.getElementById('status-badge');
+            badge.querySelector('.dot').className = 'dot ' + (isOpen ? 'open-dot' : 'closed-dot');
+            document.getElementById('status-text').innerText = isOpen ? i18n[curLang].open : i18n[curLang].closed;
+        }
+        checkStatus();
+    </script>
 </body>
 </html>

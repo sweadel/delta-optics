@@ -7,118 +7,133 @@
     
     <link rel="icon" href="logo.jpg" type="image/jpeg">
     
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* --- التصميم الملكي الجديد (فقط CSS) --- */
         :root { 
-            --brand-color: #0E7490; --gold: #D4AF37; --bg-body: #F8FAFC; 
-            --white: #FFFFFF; --text-main: #1E293B; --text-light: #64748B;
-            --success: #10B981; --error: #EF4444; --warning: #F59E0B;
+            --brand-color: #0891b2; 
+            --gold: #f59e0b; 
+            --bg-body: #f8fafc; 
+            --white: #ffffff; 
+            --text-main: #0f172a; 
+            --text-light: #64748b;
+            --success: #10b981; 
+            --error: #ef4444; 
+            --warning: #f59e0b;
+            --shadow-soft: 0 10px 30px rgba(0,0,0,0.03);
+            --border-soft: 1px solid rgba(0,0,0,0.04);
+            --radius-lg: 24px;
+            --radius-md: 16px;
         }
 
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
         
         body { background: var(--bg-body); color: var(--text-main); margin: 0; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
 
+        /* الهيدر النظيف */
         header { 
-            background: var(--white); height: 60px; padding: 0 20px;
-            box-shadow: 0 2px 15px rgba(14, 116, 144, 0.08); 
+            background: rgba(255,255,255,0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            height: 70px; padding: 0 20px; border-bottom: var(--border-soft);
             display: flex; align-items: center; justify-content: space-between;
             position: sticky; top: 0; z-index: 100;
         }
-        .lang-btn { background: #F1F5F9; border: 1px solid #E2E8F0; border-radius: 8px; padding: 6px 12px; font-weight: 700; color: var(--brand-color); cursor: pointer; font-size: 0.9rem; z-index: 2; }
+        .lang-btn { background: var(--white); border: var(--border-soft); border-radius: 12px; padding: 8px 14px; font-weight: 800; color: var(--brand-color); cursor: pointer; font-size: 0.95rem; z-index: 2; box-shadow: 0 4px 10px rgba(0,0,0,0.02); transition: 0.2s;}
+        .lang-btn:active { transform: scale(0.9); }
         .header-center { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 8px; }
-        .header-title { font-weight: 800; font-size: 1.1rem; color: var(--brand-color); margin: 0; }
-        .back-btn { width: 38px; height: 38px; border-radius: 50%; background: #F1F5F9; color: var(--text-main); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1.1rem; z-index: 2; }
+        .header-title { font-weight: 900; font-size: 1.2rem; color: var(--text-main); margin: 0; letter-spacing: 0.5px;}
+        .back-btn { width: 42px; height: 42px; border-radius: 14px; background: var(--white); color: var(--brand-color); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1.2rem; z-index: 2; box-shadow: 0 4px 10px rgba(0,0,0,0.02); border: var(--border-soft); transition: 0.2s;}
+        .back-btn:active { transform: scale(0.9); }
 
-        .container { flex: 1; padding: 20px; max-width: 500px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; align-items: center; }
-        .screen { display: none; width: 100%; animation: fadeIn 0.4s ease-out; }
+        .container { flex: 1; padding: 25px 20px; max-width: 500px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; align-items: center; }
+        .screen { display: none; width: 100%; animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0;}
         .screen.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
         /* شاشة البداية */
-        .login-box { background: var(--white); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; width: 100%; border: 1px solid #E2E8F0; margin-top: 20px;}
-        .login-box img { width: 80px; margin-bottom: 15px; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
-        .login-input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #E2E8F0; font-size: 1.1rem; margin-bottom: 20px; text-align: center; outline: none; transition: 0.2s;}
-        .login-input:focus { border-color: var(--brand-color); }
+        .login-box { background: var(--white); padding: 35px 25px; border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); text-align: center; width: 100%; border: var(--border-soft); margin-top: 20px;}
+        .login-box img { width: 90px; margin-bottom: 20px; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+        .login-input { width: 100%; padding: 18px; border-radius: var(--radius-md); border: 2px solid #f1f5f9; background: #f8fafc; font-size: 1.1rem; font-weight: 700; margin-bottom: 25px; text-align: center; outline: none; transition: 0.3s; color: var(--text-main);}
+        .login-input:focus { border-color: var(--brand-color); background: var(--white); box-shadow: 0 0 0 4px rgba(8, 145, 178, 0.1); }
 
         /* القائمة */
-        .welcome-box { text-align: center; margin-bottom: 15px; }
-        .patient-badge { display: inline-block; background: #ECFEFF; color: var(--brand-color); padding: 6px 16px; border-radius: 20px; font-weight: 800; font-size: 0.9rem; border: 1px solid #CFFAFE;}
+        .welcome-box { text-align: center; margin-bottom: 25px; }
+        .patient-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--white); color: var(--brand-color); padding: 10px 20px; border-radius: 50px; font-weight: 800; font-size: 0.95rem; border: var(--border-soft); box-shadow: var(--shadow-soft);}
         
-        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .test-card { background: var(--white); padding: 15px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); cursor: pointer; display: flex; flex-direction: column; align-items: center; text-align: center; border: 1px solid #E2E8F0; transition: 0.2s; }
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .test-card { background: var(--white); padding: 20px 15px; border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); cursor: pointer; display: flex; flex-direction: column; align-items: center; text-align: center; border: var(--border-soft); transition: 0.2s; position: relative; overflow: hidden;}
         .test-card:active { transform: scale(0.96); }
-        .icon-wrap { width: 45px; height: 45px; background: #ECFEFF; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--brand-color); font-size: 1.3rem; margin-bottom: 8px; }
-        .card-info h3 { margin: 0 0 4px; font-size: 0.95rem; color: var(--text-main); font-weight: 800; }
-        .card-info p { margin: 0; font-size: 0.75rem; color: var(--text-light); }
+        .icon-wrap { width: 55px; height: 55px; background: rgba(8, 145, 178, 0.08); border-radius: 18px; display: flex; align-items: center; justify-content: center; color: var(--brand-color); font-size: 1.6rem; margin-bottom: 12px; transition: 0.3s;}
+        .card-info h3 { margin: 0 0 6px; font-size: 1.05rem; color: var(--text-main); font-weight: 900; }
+        .card-info p { margin: 0; font-size: 0.8rem; color: var(--text-light); font-weight: 500;}
 
         /* مناطق الفحص */
-        .progress-container { width: 100%; background: #E2E8F0; border-radius: 10px; height: 6px; margin-bottom: 15px; overflow: hidden; }
-        .progress-bar { height: 100%; background: var(--success); width: 0%; transition: width 0.3s ease; }
-        .eye-indicator { background: var(--brand-color); color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-bottom: 10px; text-align: center; display: inline-block; }
+        .progress-container { width: 100%; background: #f1f5f9; border-radius: 50px; height: 8px; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--success); width: 0%; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 50px;}
+        .eye-indicator { background: var(--white); color: var(--brand-color); padding: 8px 20px; border-radius: 50px; font-size: 0.9rem; font-weight: 800; margin-bottom: 15px; text-align: center; display: inline-block; border: var(--border-soft); box-shadow: var(--shadow-soft);}
 
-        .test-area { background: var(--white); border-radius: 20px; padding: 20px; text-align: center; margin-bottom: 20px; min-height: 240px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid #E2E8F0; position: relative; overflow: hidden; }
-        .test-area.dark-mode { background: #0F172A; border-color: #0F172A; }
+        .test-area { background: var(--white); border-radius: var(--radius-lg); padding: 20px; text-align: center; margin-bottom: 25px; min-height: 260px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: var(--border-soft); box-shadow: var(--shadow-soft); position: relative; overflow: hidden; }
+        .test-area.dark-mode { background: #0f172a; border-color: #0f172a; box-shadow: 0 15px 35px rgba(0,0,0,0.2);}
         
-        .e-char { font-weight: 900; line-height: 1; transition: transform 0.2s, font-size 0.2s; }
+        .e-char { font-weight: 900; line-height: 1; transition: transform 0.3s ease, font-size 0.3s ease; }
         
         /* ذراع التحكم (D-Pad) */
-        .d-pad-container { direction: ltr; display: grid; grid-template-columns: 60px 60px 60px; grid-template-rows: 60px 60px; gap: 15px; justify-content: center; margin: 0 auto; }
-        .pad-btn { width: 60px; height: 60px; border-radius: 50%; border: none; background: var(--white); color: var(--brand-color); font-size: 1.6rem; box-shadow: 0 5px 15px rgba(14, 116, 144, 0.15); cursor: pointer; transition: 0.1s; display: flex; align-items: center; justify-content: center; }
-        .pad-btn:active { transform: scale(0.9) translateY(4px); box-shadow: none; background: #ECFEFF; }
+        .d-pad-container { direction: ltr; display: grid; grid-template-columns: 65px 65px 65px; grid-template-rows: 65px 65px; gap: 15px; justify-content: center; margin: 0 auto; }
+        .pad-btn { width: 65px; height: 65px; border-radius: 20px; border: var(--border-soft); background: var(--white); color: var(--brand-color); font-size: 1.6rem; box-shadow: var(--shadow-soft); cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .pad-btn:active { transform: scale(0.9) translateY(2px); box-shadow: none; background: #f8fafc; }
         .btn-up { grid-column: 2; grid-row: 1; } .btn-left { grid-column: 1; grid-row: 2; } .btn-down { grid-column: 2; grid-row: 2; } .btn-right { grid-column: 3; grid-row: 2; }
 
         /* لوحة أرقام الألوان */
-        .color-canvas { background: #fff; border-radius: 50%; width: 220px; height: 220px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .numpad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; max-width: 260px; margin: 0 auto; direction: ltr; }
-        .num-key { width: 70px; height: 70px; border-radius: 50%; border: none; background: #F8FAFC; color: var(--text-main); font-size: 1.5rem; font-weight: 800; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: 0.1s; display: flex; align-items: center; justify-content: center; }
-        .num-key:active { background: #E2E8F0; transform: scale(0.95); }
-        .key-action { background: #ECFEFF; color: var(--brand-color); font-size: 1.2rem; }
-        .key-submit { background: var(--brand-color); color: white; }
+        .color-canvas { background: #fff; border-radius: 50%; width: 230px; height: 230px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); margin-top: 10px;}
+        .numpad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; max-width: 280px; margin: 0 auto; direction: ltr; }
+        .num-key { width: 75px; height: 75px; border-radius: 24px; border: var(--border-soft); background: var(--white); color: var(--text-main); font-size: 1.6rem; font-weight: 900; cursor: pointer; box-shadow: var(--shadow-soft); transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .num-key:active { background: #f1f5f9; transform: scale(0.92); }
+        .key-action { background: #fef2f2; color: var(--error); }
+        .key-submit { background: var(--brand-color); color: white; border: none;}
 
         /* فحص الأحمر والأخضر */
-        .duo-split { display: flex; width: 100%; height: 200px; border-radius: 15px; overflow: hidden; box-shadow: inset 0 0 20px rgba(0,0,0,0.2); }
-        .duo-red { flex: 1; background: #EF4444; display: flex; align-items: center; justify-content: center; }
-        .duo-green { flex: 1; background: #10B981; display: flex; align-items: center; justify-content: center; }
-        .duo-circle { width: 60px; height: 60px; border: 8px solid black; border-radius: 50%; }
+        .duo-split { display: flex; width: 100%; height: 220px; border-radius: 20px; overflow: hidden; box-shadow: inset 0 0 20px rgba(0,0,0,0.1); }
+        .duo-red { flex: 1; background: #ef4444; display: flex; align-items: center; justify-content: center; }
+        .duo-green { flex: 1; background: #10b981; display: flex; align-items: center; justify-content: center; }
+        .duo-circle { width: 65px; height: 65px; border: 10px solid #111; border-radius: 50%; }
 
         /* فحص الجفاف */
-        .timer-circle { width: 150px; height: 150px; border-radius: 50%; border: 8px solid #E2E8F0; display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: 900; color: var(--brand-color); margin: 20px auto; position: relative; }
+        .timer-circle { width: 160px; height: 160px; border-radius: 50%; border: 8px solid #f1f5f9; background: var(--white); display: flex; align-items: center; justify-content: center; font-size: 3.5rem; font-weight: 900; color: var(--brand-color); margin: 20px auto; position: relative; box-shadow: var(--shadow-soft);}
         .timer-circle.active { border-color: var(--success); color: var(--success); animation: pulseTimer 1s infinite alternate; }
-        @keyframes pulseTimer { from { transform: scale(1); } to { transform: scale(1.05); } }
+        @keyframes pulseTimer { from { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); } to { transform: scale(1.02); box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); } }
 
         /* الأزرار العامة */
-        .action-btn { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: 800; font-size: 1rem; cursor: pointer; margin-bottom: 10px; display: flex; justify-content: center; gap: 8px; align-items: center; text-decoration: none; transition: 0.2s;}
+        .action-btn { width: 100%; padding: 18px; border-radius: var(--radius-md); border: none; font-weight: 900; font-size: 1.05rem; cursor: pointer; margin-bottom: 12px; display: flex; justify-content: center; gap: 10px; align-items: center; text-decoration: none; transition: 0.3s; box-shadow: var(--shadow-soft);}
+        .action-btn:active { transform: scale(0.98); }
         .btn-primary { background: var(--brand-color); color: white; }
-        .btn-outline { background: transparent; border: 2px solid #E2E8F0; color: var(--text-main); }
+        .btn-outline { background: var(--white); border: 2px solid #f1f5f9; color: var(--text-main); }
         .btn-success { background: var(--success); color: white; }
 
         /* سجلات المرضى */
-        .history-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        .history-item { background: var(--white); border: 1px solid #E2E8F0; border-radius: 16px; padding: 15px; display: flex; align-items: center; justify-content: space-between; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-        .history-info { display: flex; align-items: center; gap: 12px; }
-        .avatar { width: 45px; height: 45px; border-radius: 50%; background: #ECFEFF; color: var(--brand-color); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 900; }
-        .hist-name { font-weight: 800; font-size: 1rem; color: var(--text-main); margin-bottom: 3px; }
-        .hist-date { font-size: 0.75rem; color: var(--text-light); }
-        .view-btn { background: #F1F5F9; border: none; width: 40px; height: 40px; border-radius: 10px; color: var(--brand-color); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+        .history-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; }
+        .history-item { background: var(--white); border: var(--border-soft); border-radius: var(--radius-lg); padding: 18px; display: flex; align-items: center; justify-content: space-between; transition: 0.2s; box-shadow: var(--shadow-soft); }
+        .history-info { display: flex; align-items: center; gap: 15px; }
+        .avatar { width: 50px; height: 50px; border-radius: 18px; background: rgba(8, 145, 178, 0.1); color: var(--brand-color); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 900; }
+        .hist-name { font-weight: 900; font-size: 1.05rem; color: var(--text-main); margin-bottom: 4px; }
+        .hist-date { font-size: 0.8rem; color: var(--text-light); font-weight: 500;}
+        .view-btn { background: var(--bg-body); border: var(--border-soft); width: 45px; height: 45px; border-radius: 14px; color: var(--brand-color); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.2s;}
+        .view-btn:active { transform: scale(0.9); }
 
         /* التقرير الشامل */
-        .report-card { background: var(--white); padding: 20px; border-radius: 20px; border: 1px solid #E2E8F0; margin-bottom: 15px; width: 100%; }
-        .res-item { background: #F8FAFC; padding: 12px; border-radius: 12px; margin-bottom: 12px; border: 1px solid #E2E8F0; }
-        .res-title { font-weight: 800; color: var(--brand-color); font-size: 0.95rem; margin-bottom: 8px; border-bottom: 1px solid #E2E8F0; padding-bottom: 8px; display: flex; align-items: center; gap: 6px;}
-        .eye-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 5px; padding: 4px 8px; background: white; border-radius: 6px;}
+        .report-card { background: var(--white); padding: 25px; border-radius: var(--radius-lg); border: var(--border-soft); margin-bottom: 20px; width: 100%; box-shadow: var(--shadow-soft);}
+        .res-item { background: var(--bg-body); padding: 15px; border-radius: var(--radius-md); margin-bottom: 15px; border: var(--border-soft); }
+        .res-title { font-weight: 900; color: var(--brand-color); font-size: 1rem; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; display: flex; align-items: center; gap: 8px;}
+        .eye-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 6px; padding: 6px 12px; background: var(--white); border-radius: 8px; font-weight: 700; border: var(--border-soft);}
 
         /* النافذة المنبثقة الذكية (Modal) */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 1000; }
         .modal-overlay.active { display: flex; }
-        .modal-box { background: var(--white); padding: 30px 25px; border-radius: 24px; width: 90%; max-width: 350px; text-align: center; animation: popModal 0.3s ease-out; }
-        @keyframes popModal { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        .modal-icon { font-size: 3rem; color: var(--brand-color); margin-bottom: 15px; }
-        .modal-title { font-size: 1.2rem; font-weight: 900; color: var(--text-main); margin-bottom: 10px; }
-        .modal-text { font-size: 0.95rem; color: var(--text-light); line-height: 1.6; margin-bottom: 25px; }
-
+        .modal-box { background: var(--white); padding: 35px 25px; border-radius: 28px; width: 90%; max-width: 360px; text-align: center; animation: popModal 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 20px 50px rgba(0,0,0,0.1); border: var(--border-soft);}
+        @keyframes popModal { 0% { transform: scale(0.85) translateY(20px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
+        .modal-icon { font-size: 3.5rem; color: var(--brand-color); margin-bottom: 20px; }
+        .modal-title { font-size: 1.3rem; font-weight: 900; color: var(--text-main); margin-bottom: 12px; }
+        .modal-text { font-size: 1rem; color: var(--text-light); line-height: 1.6; margin-bottom: 30px; font-weight: 500;}
     </style>
 </head>
 <body>
@@ -135,9 +150,9 @@
 
         <div id="screen-login" class="screen active">
             <div class="login-box">
-                <img src="logo.jpg" onerror="this.src='https://via.placeholder.com/80?text=Delta'">
-                <h2 style="color:var(--brand-color); margin-bottom:10px;">تسجيل المراجع</h2>
-                <p style="color:var(--text-light); font-size:0.85rem; margin-bottom:20px;">أدخل اسم المراجع لبدء أو استكمال الفحوصات</p>
+                <img src="logo.jpg" onerror="this.src='https://via.placeholder.com/90?text=Delta'">
+                <h2 style="color:var(--brand-color); margin-bottom:12px; font-weight: 900;">تسجيل المراجع</h2>
+                <p style="color:var(--text-light); font-size:0.95rem; margin-bottom:25px; font-weight: 500;">أدخل اسم المراجع لبدء أو استكمال الفحوصات</p>
                 
                 <input type="text" id="patientNameInput" class="login-input" placeholder="مثال: أحمد عادل">
                 
@@ -152,7 +167,7 @@
 
         <div id="menu" class="screen">
             <div class="welcome-box">
-                <div class="patient-badge"><i class="fas fa-user"></i> المراجع: <span id="display-patient-name"></span></div>
+                <div class="patient-badge"><i class="fas fa-user-circle"></i> المراجع: <span id="display-patient-name" style="margin-right: 5px;"></span></div>
             </div>
 
             <div class="menu-grid">
@@ -162,17 +177,17 @@
                 </div>
 
                 <div class="test-card" onclick="startTest('duochrome')">
-                    <div class="icon-wrap" style="background:#FEF2F2; color:#EF4444;"><i class="fas fa-adjust"></i></div>
+                    <div class="icon-wrap" style="background:#fef2f2; color:#ef4444;"><i class="fas fa-adjust"></i></div>
                     <div class="card-info"><h3>أحمر وأخضر</h3><p>طول وقصر النظر</p></div>
                 </div>
 
                 <div class="test-card" onclick="startTest('contrast')">
-                    <div class="icon-wrap" style="background:#1E293B; color:white;"><i class="fas fa-moon"></i></div>
+                    <div class="icon-wrap" style="background:#0f172a; color:white;"><i class="fas fa-moon"></i></div>
                     <div class="card-info"><h3>الرؤية الليلية</h3><p>قيادة ليلاً وتباين</p></div>
                 </div>
                 
                 <div class="test-card" onclick="startTest('dryeye')">
-                    <div class="icon-wrap" style="background:#FFFBEB; color:#F59E0B;"><i class="fas fa-tint"></i></div>
+                    <div class="icon-wrap" style="background:#fffbeb; color:#f59e0b;"><i class="fas fa-tint"></i></div>
                     <div class="card-info"><h3>جفاف العين</h3><p>معدل رمش العين</p></div>
                 </div>
 
@@ -187,7 +202,7 @@
                 </div>
             </div>
             
-            <button class="action-btn btn-success" style="margin-top:20px;" onclick="showFinalReport()">
+            <button class="action-btn btn-success" style="margin-top:25px;" onclick="showFinalReport()">
                 <i class="fas fa-file-alt"></i> إنهاء وعرض التقرير
             </button>
         </div>
@@ -208,23 +223,23 @@
 
         <div id="test-duochrome" class="screen">
             <div class="eye-indicator" id="eye-ind-duo">العين اليمنى</div>
-            <div class="test-area" style="padding:15px;">
-                <h4 style="margin:0 0 15px;">أين ترى الدائرة أوضح وأغمق؟</h4>
+            <div class="test-area" style="padding:20px;">
+                <h4 style="margin:0 0 20px; font-weight: 900; font-size: 1.1rem;">أين ترى الدائرة أوضح وأغمق؟</h4>
                 <div class="duo-split">
                     <div class="duo-green"><div class="duo-circle"></div></div>
                     <div class="duo-red"><div class="duo-circle"></div></div>
                 </div>
             </div>
-            <button class="action-btn" style="background:#EF4444; color:white;" onclick="saveDuochrome('red')">أوضح على الأحمر</button>
-            <button class="action-btn" style="background:#10B981; color:white;" onclick="saveDuochrome('green')">أوضح على الأخضر</button>
-            <button class="action-btn" style="background:#E2E8F0; color:var(--text-main);" onclick="saveDuochrome('equal')">نفس الوضوح (طبيعي)</button>
+            <button class="action-btn" style="background:#ef4444; color:white;" onclick="saveDuochrome('red')">أوضح على الأحمر</button>
+            <button class="action-btn" style="background:#10b981; color:white;" onclick="saveDuochrome('green')">أوضح على الأخضر</button>
+            <button class="action-btn" style="background:#f1f5f9; color:var(--text-main);" onclick="saveDuochrome('equal')">نفس الوضوح (طبيعي)</button>
         </div>
 
         <div id="test-dryeye" class="screen">
             <div class="eye-indicator" id="eye-ind-dry">العينين معاً</div>
-            <div class="test-area" style="padding:30px 10px;">
-                <h4 style="margin:0 0 10px;">افتح عينيك وركز جيداً بالمركز</h4>
-                <p style="font-size:0.8rem; color:var(--text-light); margin:0;">اضغط "بدء"، وإذا شعرت بحرقة أو رمشت اضغط "رمشت!" فوراً.</p>
+            <div class="test-area" style="padding:30px 15px;">
+                <h4 style="margin:0 0 12px; font-weight: 900; font-size: 1.2rem;">افتح عينيك وركز جيداً بالمركز</h4>
+                <p style="font-size:0.9rem; color:var(--text-light); margin:0; font-weight: 500;">اضغط "بدء"، وإذا شعرت بحرقة أو رمشت اضغط "رمشت!" فوراً.</p>
                 <div class="timer-circle" id="dry-timer">0.0</div>
             </div>
             <button class="action-btn btn-primary" id="btn-dry-start" onclick="startDryTimer()"><i class="fas fa-play"></i> بدء الفحص</button>
@@ -247,28 +262,28 @@
 
         <div id="test-astigmatism" class="screen">
             <div class="eye-indicator" id="eye-ind-ast">العين اليمنى</div>
-            <div class="test-area" style="padding:20px 0;">
-                <svg width="200" height="200" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="48" fill="none" stroke="#E2E8F0" stroke-width="1"/>
-                    <line x1="50" y1="5" x2="50" y2="95" stroke="#1E293B" stroke-width="1.5"/>
-                    <line x1="5" y1="50" x2="95" y2="50" stroke="#1E293B" stroke-width="1.5"/>
-                    <line x1="18.18" y1="18.18" x2="81.82" y2="81.82" stroke="#1E293B" stroke-width="1.5"/>
-                    <line x1="18.18" y1="81.82" x2="81.82" y2="18.18" stroke="#1E293B" stroke-width="1.5"/>
-                    <line x1="32.8" y1="8.4" x2="67.2" y2="91.6" stroke="#1E293B" stroke-width="1.5"/>
-                    <line x1="8.4" y1="32.8" x2="91.6" y2="67.2" stroke="#1E293B" stroke-width="1.5"/>
-                    <circle cx="50" cy="50" r="4" fill="#1E293B"/>
+            <div class="test-area" style="padding:25px 0;">
+                <svg width="220" height="220" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="48" fill="none" stroke="#e2e8f0" stroke-width="1.5"/>
+                    <line x1="50" y1="5" x2="50" y2="95" stroke="#0f172a" stroke-width="1.5"/>
+                    <line x1="5" y1="50" x2="95" y2="50" stroke="#0f172a" stroke-width="1.5"/>
+                    <line x1="18.18" y1="18.18" x2="81.82" y2="81.82" stroke="#0f172a" stroke-width="1.5"/>
+                    <line x1="18.18" y1="81.82" x2="81.82" y2="18.18" stroke="#0f172a" stroke-width="1.5"/>
+                    <line x1="32.8" y1="8.4" x2="67.2" y2="91.6" stroke="#0f172a" stroke-width="1.5"/>
+                    <line x1="8.4" y1="32.8" x2="91.6" y2="67.2" stroke="#0f172a" stroke-width="1.5"/>
+                    <circle cx="50" cy="50" r="4" fill="#0f172a"/>
                 </svg>
             </div>
-            <button class="action-btn" style="background:#FEF2F2; color:var(--error);" onclick="finishAstigmatism(true)">نعم، أرى خطوطاً أغمق</button>
-            <button class="action-btn" style="background:var(--white); border:2px solid #E2E8F0;" onclick="finishAstigmatism(false)">لا، جميعها متساوية بالوضوح</button>
+            <button class="action-btn" style="background:#fef2f2; color:var(--error);" onclick="finishAstigmatism(true)">نعم، أرى خطوطاً أغمق</button>
+            <button class="action-btn" style="background:var(--white); border:2px solid #e2e8f0; color:var(--text-main);" onclick="finishAstigmatism(false)">لا، جميعها متساوية بالوضوح</button>
         </div>
 
         <div id="test-color" class="screen">
             <div class="progress-container"><div class="progress-bar" id="prog-color"></div></div>
-            <div style="display:flex; justify-content:center; margin-bottom:15px;">
+            <div style="display:flex; justify-content:center; margin-bottom:20px;">
                 <canvas id="ishiharaCanvas" class="color-canvas"></canvas>
             </div>
-            <div id="color-display" style="text-align:center; height:35px; font-size:1.8rem; font-weight:900; color:var(--brand-color); letter-spacing:5px;"></div>
+            <div id="color-display" style="text-align:center; height:40px; font-size:2rem; font-weight:900; color:var(--brand-color); letter-spacing:6px; margin-bottom: 10px;"></div>
             
             <div class="numpad-grid">
                 <button class="num-key" onclick="typeColor(1)">1</button>
@@ -287,7 +302,7 @@
         </div>
 
         <div id="screen-records" class="screen">
-            <h2 style="color:var(--brand-color); text-align:center; margin-bottom:20px;">المراجعين السابقين</h2>
+            <h2 style="color:var(--brand-color); text-align:center; margin-bottom:25px; font-weight: 900;">المراجعين السابقين</h2>
             <div class="history-list" id="records-list"></div>
             <button class="action-btn btn-outline" onclick="show('screen-login')">
                 <i class="fas fa-arrow-right"></i> العودة للرئيسية
@@ -296,8 +311,8 @@
 
         <div id="screen-report" class="screen">
             <div class="report-card">
-                <h2 style="color:var(--brand-color); margin-top:0; text-align:center;">التقرير الطبي المبدئي</h2>
-                <h4 style="text-align:center; color:var(--text-light); margin-bottom:20px;" id="report-patient-name">الاسم</h4>
+                <h2 style="color:var(--brand-color); margin-top:0; text-align:center; font-weight: 900;">التقرير الطبي المبدئي</h2>
+                <h4 style="text-align:center; color:var(--text-light); margin-bottom:25px; font-weight: 800; font-size: 1.1rem;" id="report-patient-name">الاسم</h4>
                 <div id="report-details"></div>
             </div>
             <a id="wa-btn" href="#" class="action-btn btn-success" target="_blank">
@@ -500,7 +515,7 @@
         let colRound = 0, colScore = 0, colInput = ""; const colTests = [12, 5, 29]; 
         function startColor() { colRound=0; colScore=0; nextColorPlate(); show('test-color'); }
         function nextColorPlate() { setProgress('prog-color', (colRound/colTests.length)*100); if(colRound >= colTests.length) { if(!currentResults['color']) currentResults['color'] = {}; currentResults['color']['bothEyes'] = `${colScore}/${colTests.length}`; setTimeout(() => show('menu'), 300); return; } colInput = ""; document.getElementById('color-display').innerText = ""; generateIshiharaPlate(colTests[colRound]); }
-        function generateIshiharaPlate(num) { const ctx = document.getElementById('ishiharaCanvas').getContext('2d'); ctx.clearRect(0,0,220,220); ctx.font="bold 130px Arial"; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText(num, 110, 110); const mData = ctx.getImageData(0,0,220,220); const dots = []; for(let i=0; i<1200; i++) { let r=Math.random()*4+2, x=Math.random()*220, y=Math.random()*220; if(Math.sqrt((x-110)**2 + (y-110)**2) > 105) continue; if(!dots.some(d => Math.sqrt((d.x-x)**2 + (d.y-y)**2) < d.r+r+1)) { let isNum = mData.data[(Math.floor(y)*220 + Math.floor(x))*4 +3] > 100; dots.push({x, y, r, c: isNum ? `rgb(${220+Math.random()*35}, ${50+Math.random()*100}, 40)` : `rgb(${80+Math.random()*50}, ${160+Math.random()*60}, ${140+Math.random()*60})`}); } } for(let d of dots) { ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI*2); ctx.fillStyle = d.c; ctx.fill(); } }
+        function generateIshiharaPlate(num) { const ctx = document.getElementById('ishiharaCanvas').getContext('2d'); ctx.clearRect(0,0,230,230); ctx.font="bold 130px Arial"; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText(num, 115, 115); const mData = ctx.getImageData(0,0,230,230); const dots = []; for(let i=0; i<1200; i++) { let r=Math.random()*4+2, x=Math.random()*230, y=Math.random()*230; if(Math.sqrt((x-115)**2 + (y-115)**2) > 110) continue; if(!dots.some(d => Math.sqrt((d.x-x)**2 + (d.y-y)**2) < d.r+r+1)) { let isNum = mData.data[(Math.floor(y)*230 + Math.floor(x))*4 +3] > 100; dots.push({x, y, r, c: isNum ? `rgb(${220+Math.random()*35}, ${50+Math.random()*100}, 40)` : `rgb(${80+Math.random()*50}, ${160+Math.random()*60}, ${140+Math.random()*60})`}); } } for(let d of dots) { ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI*2); ctx.fillStyle = d.c; ctx.fill(); } }
         function typeColor(n) { if(colInput.length < 2) colInput += n; document.getElementById('color-display').innerText = colInput; }
         function clearColor() { colInput = ""; document.getElementById('color-display').innerText = ""; }
         function checkColor() { if(parseInt(colInput) === colTests[colRound]) colScore++; colRound++; nextColorPlate(); }

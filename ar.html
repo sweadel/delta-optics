@@ -1,124 +1,95 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="light">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>القياس الافتراضي البريميوم | Delta Optics</title>
-    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-face-aframe.prod.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <script src="https://appstatic.jeeliz.com/glassesVTO/jeelizFaceFilter.js"></script>
+    <script src="https://appstatic.jeeliz.com/glassesVTO/jeelizGlassesVTOWidget.js"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
-        :root { --bg: #f8fafc; --text: #0f172a; --primary: #0e7490; --secondary: #0ea5e9; --ui-surface: rgba(255, 255, 255, 0.7); --ui-border: rgba(255, 255, 255, 0.5); }
-        [data-theme="dark"] { --bg: #0f172a; --text: #f8fafc; --primary: #22d3ee; --secondary: #38bdf8; --ui-surface: rgba(30, 41, 59, 0.7); --ui-border: rgba(255, 255, 255, 0.05); }
-
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: var(--text); -webkit-user-select: none; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #000; font-family: 'Tajawal', sans-serif; }
         
-        /* 1. طبقة واجهة المستخدم فوق الكاميرا */
+        /* طبقة الكاميرا - Jeeliz بفتحها تلقائياً خلف الستايل */
+        #jeeFaceFilterCanvas { position: fixed; top: 0; left: 0; width: 100% !important; height: 100% !important; object-fit: cover; z-index: 1; }
+
+        /* طبقة واجهة المستخدم فوق الكاميرا */
         .ui-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px; box-sizing: border-box; }
         
-        /* 2. الـ Header: Delta Branding */
         .header { display: flex; justify-content: space-between; align-items: center; pointer-events: auto; }
-        .back-btn { background: var(--ui-surface); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); color: var(--primary); width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1.3rem; border: 1px solid var(--ui-border); box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.2s; }
+        .back-btn { background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(15px); color: white; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1.3rem; border: 1px solid rgba(255,255,255,0.3); transition: 0.2s; }
         .back-btn:active { transform: scale(0.9); }
-        .title-box { background: var(--ui-surface); backdrop-filter: blur(15px); border: 1px solid var(--ui-border); color: var(--text); padding: 12px 25px; border-radius: 50px; font-weight: 800; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .title-box { background: rgba(14, 116, 144, 0.7); backdrop-filter: blur(15px); color: white; padding: 12px 25px; border-radius: 50px; font-weight: 800; font-size: 0.9rem; }
 
-        /* 3. الـ Footer: Model Selector & Photo Button */
-        .footer { text-align: center; pointer-events: auto; background: var(--ui-surface); border: 1px solid var(--ui-border); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 25px 25px 0 0; padding: 15px 20px env(safe-area-inset-bottom); width: 100%; margin: 0 auto; max-width: 500px; box-shadow: 0 -10px 30px rgba(0,0,0,0.05); }
-        .footer-label { display: block; color: var(--text-muted); font-size: 0.8rem; font-weight: bold; margin-bottom: 15px; }
-        .controls-row { display: flex; gap: 15px; justify-content: space-between; align-items: center; }
+        .footer { text-align: center; pointer-events: auto; background: rgba(255, 255, 255, 0.15); border-radius: 20px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 15px; width: 100%; max-width: 350px; margin: 0 auto env(safe-area-inset-bottom); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .controls-row { display: flex; gap: 10px; justify-content: center; align-items: center; }
         
-        .selector-btn { background: rgba(128, 128, 128, 0.1); color: var(--text); border: none; width: 45px; height: 45px; border-radius: 12px; font-size: 1rem; transition: 0.2s; }
-        .selector-btn:active { background: var(--primary); color: white; transform: scale(0.9); }
-        .selector-btn.active { background: var(--primary); color: white; box-shadow: 0 0 0 3px rgba(14, 116, 144, 0.2); }
+        .selector-btn { background: rgba(255, 255, 255, 0.2); color: white; border: none; width: 45px; height: 45px; border-radius: 10px; font-size: 1.1rem; cursor: pointer; }
+        .capture-btn { background: linear-gradient(135deg, #0f172a 0%, #0ea5e9 100%); color: white; border: none; padding: 15px 30px; border-radius: 15px; font-size: 1.1rem; font-weight: 900; box-shadow: 0 10px 20px rgba(14, 165, 233, 0.4); cursor: pointer; flex: 1; margin: 0 10px; }
 
-        .capture-btn { background: linear-gradient(135deg, #0f172a 0%, #0ea5e9 100%); color: white; border: none; width: 100%; max-width: 150px; padding: 15px; border-radius: 15px; font-size: 1.1rem; font-weight: 900; box-shadow: 0 10px 20px rgba(14, 165, 233, 0.4); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        /* شاشة التحميل الملكية لدلتا */
+        #delta-loader { position: fixed; inset: 0; background: #0f172a; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; color: white; transition: opacity 0.5s; }
+        .spinner { width: 60px; height: 60px; border: 6px solid rgba(255,255,255,0.1); border-top-color: #0ea5e9; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .logo-load { width: 80px; margin-bottom: 20px; border-radius: 20px; animation: pulse 2s infinite alternate; }
+        @keyframes pulse { from { opacity: 0.6; transform: scale(1); } to { opacity: 1; transform: scale(1.05); } }
 
     </style>
 </head>
 <body>
 
+    <div id="delta-loader">
+        <img src="logo.jpg" class="logo-load" alt="Delta">
+        <div class="spinner"></div>
+        <p style="font-weight: bold;">Delta Optics 3D</p>
+        <p style="font-size: 0.8rem; opacity: 0.6; margin-top: 5px;">جاري تشغيل تجربة القياس الافتراضي...</p>
+    </div>
+
     <div class="ui-layer">
         <div class="header">
             <a href="index.html" class="back-btn"><i class="fas fa-arrow-right"></i></a>
-            <div class="title-box"><img src="logo.jpg" style="width:20px; border-radius:50%;"> Delta AR Prototype</div>
+            <div class="title-box">Delta AR Premium</div>
         </div>
         <div class="footer">
-            <span class="footer-label" id="txt-label">اختر النظارة للتجربة:</span>
             <div class="controls-row">
-                <button class="selector-btn" id="m1" onclick="setModel(0)"><i class="fas fa-glasses"></i></button>
-                <button class="selector-btn" id="m2" onclick="setModel(1)"><i class="fas fa-glasses"></i></button>
-                <button class="capture-btn" onclick="alert('سيتم تفعيل حفظ الصورة في النسخة الكاملة!')"><i class="fas fa-camera"></i> التقط صورة</button>
-                <button class="selector-btn" id="m3" onclick="setModel(2)"><i class="fas fa-glasses"></i></button>
-                <button class="selector-btn" id="m4" onclick="setModel(3)"><i class="fas fa-glasses"></i></button>
+                <button class="selector-btn" onclick="JEELIZGLASSESVTOWIDGET.load('rayban_aviator')"><i class="fas fa-glasses"></i></button>
+                <button class="capture-btn" onclick="JEELIZGLASSESVTOWIDGET.take_snapshot()"><i class="fas fa-camera"></i> التقاط</button>
+                <button class="selector-btn" onclick="JEELIZGLASSESVTOWIDGET.load('gucci_blue')"><i class="fas fa-glasses"></i></button>
             </div>
         </div>
     </div>
 
-    <a-scene id="arScene" mindar-face="fps: 60; detectionScale: 0.25; uIError: none; uILoading: none;" embedded color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
-        
-        <a-assets>
-            <a-asset-item id="model1" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.2/examples/face-tracking/assets/glasses/scene.gltf"></a-asset-item>
-            <a-asset-item id="model2" src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/GlamVelvetSunglasses/glTF-Binary/GlamVelvetSunglasses.glb"></a-asset-item>
-        </a-assets>
-        
-        <a-camera active="false" position="0 0 0" look-controls="enabled: false"></a-camera>
-        
-        <a-entity light="type: ambient; color: #BBB; intensity: 0.8"></a-entity>
-        <a-entity light="type: directional; color: #FFF; intensity: 0.6; shadowCameraVisible: false;" position="-1 1 1"></a-entity>
-
-        <a-entity id="faceTarget" mindar-face-target="anchorIndex: 168">
-            <a-gltf-model id="glassesGltf" rotation="0 0 0" position="0 -0.05 0" scale="0.01 0.01 0.01" src="#model1"></a-gltf-model>
-        </a-entity>
-    </a-scene>
+    <canvas id='jeeFaceFilterCanvas'></canvas>
 
     <script>
         // الذاكرة الذكية للوضع الليلي
-        let isDark = localStorage.getItem('theme') === 'dark';
-        if (isDark) document.documentElement.setAttribute('data-theme', 'dark');
+        if (localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
 
-        // قائمة الموديلات والترجمة
-        const i18n = {
-            ar: { title: "القياس الافتراضي", label: "اختر النظارة للتجربة:" },
-            en: { title: "Virtual Try-On", label: "Select Glasses to Test:" }
-        };
-        const curLang = document.documentElement.lang === 'en' ? 'en' : 'ar';
-        const t = i18n[curLang];
-        document.getElementById('txt-label').innerText = t.label;
-
-        // إعدادات الموديلات التجريبية (Scale & Position لكل نوع)
-        const modelConfigs = [
-            { src: "#model1", scale: "0.009 0.009 0.009", position: "0 -0.08 0", rotation: "0 0 0" },
-            { src: "#model2", scale: "0.15 0.15 0.15", position: "0 -0.05 0", rotation: "0 0 0" },
-            // بتقدر تضيف موديلات أكثر هون
-        ];
-
-        let curIndex = 0;
-        const modelEnt = document.getElementById('glassesGltf');
-        const selectorBtns = document.querySelectorAll('.selector-btn');
-
-        function setModel(index) {
-            if(index >= modelConfigs.length) return alert('هاد الموديل تحت التطوير!');
-            curIndex = index;
-            const config = modelConfigs[curIndex];
-            
-            modelEnt.setAttribute('gltf-model', config.src);
-            modelEnt.setAttribute('scale', config.scale);
-            modelEnt.setAttribute('position', config.position);
-            modelEnt.setAttribute('rotation', config.rotation);
-            
-            // تحديث حالة الأزرار
-            selectorBtns.forEach(b => b.classList.remove('active'));
-            document.getElementById('m' + (index + 1))?.classList.add('active');
-        }
-
-        // تفعيل الموديل الأول تلقائياً
-        setModel(0);
+        // تشغيل محرك Jeeliz البريميوم
+        window.addEventListener('load', function(){
+            JEELIZGLASSESVTOWIDGET.init({
+                canvasId: 'jeeFaceFilterCanvas',
+                // روابط الموديلات - Jeeliz بتدعم موديلات فخمة جداً
+                models: [
+                    {id: 'rayban_aviator', src: 'https://cdn.jsdelivr.net/gh/jeeliz/jeelizGlassesVTOWidget@master/models/shades1.json'},
+                    {id: 'gucci_blue', src: 'https://cdn.jsdelivr.net/gh/jeeliz/jeelizGlassesVTOWidget@master/models/clear1.json'}
+                ],
+                // تفعيل انعكاسات الإضاءة الواقعية (هذا هو السر!)
+                followLight: true,
+                intensity_ambient: 0.8,
+                intensity_directional: 0.6,
+                // إخفاء الـ Loader القديم
+                callbackReady: function(){
+                    document.getElementById('delta-loader').style.opacity = '0';
+                    setTimeout(() => { document.getElementById('delta-loader').style.display = 'none'; }, 500);
+                }
+            });
+        });
     </script>
-
 </body>
 </html>

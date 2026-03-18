@@ -51,6 +51,12 @@
             position: relative;
         }
 
+        .top-bar {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white; text-align: center; padding: 6px 10px;
+            font-size: 0.8rem; font-weight: 700; letter-spacing: 0.5px;
+        }
+
         header { 
             background: var(--surface); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
             padding: 12px 20px; border-bottom: 1px solid var(--surface-border);
@@ -64,12 +70,11 @@
         .header-actions { display: flex; gap: 10px; }
         .icon-btn {
             background: rgba(128, 128, 128, 0.1); border: 1px solid var(--surface-border);
-            width: 38px; height: 38px; border-radius: 10px; color: var(--primary); 
-            cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;
+            width: 38px; height: 38px; border-radius: 10px; color: var(--primary); cursor: pointer; font-size: 1rem;
+            display: flex; align-items: center; justify-content: center; transition: 0.2s;
         }
 
         main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 30px 20px; text-align: center; width: 100%; max-width: 500px; margin: 0 auto; }
-
         .logo-box { width: 130px; height: 130px; object-fit: contain; margin-bottom: 15px; border-radius: 25px; background: var(--surface); padding: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--surface-border); }
 
         h1 { font-size: 2rem; font-weight: 900; margin-bottom: 5px; color: var(--text-main); }
@@ -85,29 +90,39 @@
         .main-card {
             background: var(--surface); backdrop-filter: blur(10px); border: 1px solid var(--surface-border);
             padding: 25px 15px; border-radius: 20px; display: flex; flex-direction: column; align-items: center; gap: 12px;
-            text-decoration: none; box-shadow: 0 10px 30px rgba(0,0,0,0.03); transition: 0.3s;
+            text-decoration: none; box-shadow: 0 10px 30px rgba(0,0,0,0.03); height: 145px; justify-content: center; transition: 0.3s;
         }
         .card-icon { font-size: 2.2rem; color: var(--primary); }
         .card-title { font-size: 1.05rem; font-weight: 900; color: var(--text-main); }
-        .highlight-card { background: linear-gradient(135deg, rgba(14, 116, 144, 0.05), rgba(14, 165, 233, 0.1)); }
+        .highlight-card { background: linear-gradient(135deg, rgba(14, 116, 144, 0.05), rgba(14, 165, 233, 0.1)); border-color: rgba(14, 165, 233, 0.2); }
 
         /* AR Card Style */
         .ar-card {
-            grid-column: 1 / -1;
+            grid-column: 1 / -1; /* يأخذ العرض كاملاً */
             background: linear-gradient(135deg, #0f172a 0%, #0ea5e9 100%);
-            border: none; flex-direction: row; justify-content: space-around; padding: 20px; height: auto;
+            border: none; height: 100px; flex-direction: row; justify-content: space-around; padding: 20px;
         }
         .ar-card .card-title, .ar-card .card-icon { color: white; }
 
+        .quick-services { display: flex; justify-content: space-around; width: 100%; margin-bottom: 30px; background: var(--surface); padding: 15px; border-radius: 20px; border: 1px solid var(--surface-border); }
+        .service-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .srv-icon { width: 40px; height: 40px; border-radius: 50%; background: rgba(14, 116, 144, 0.1); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+        .srv-text { font-size: 0.75rem; font-weight: 700; color: var(--text-main); }
+
+        .wide-btn { width: 100%; padding: 18px; border-radius: 16px; font-size: 1rem; font-weight: 800; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--surface); color: var(--primary); border: 1px solid var(--surface-border); margin-bottom: 30px; }
+        
         .social-section { width: 100%; margin-bottom: 30px; }
         .social-row { display: flex; gap: 12px; justify-content: center; }
         .soc-btn { flex: 1; padding: 14px; border-radius: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; color: white; font-weight: 800; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         .fb-btn { background: #1877F2; } .insta-btn { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
 
-        .marquee-wrap { background: var(--surface); padding: 22px 0; overflow: hidden; white-space: nowrap; direction: ltr; margin-top: auto; border-top: 1px solid var(--surface-border); }
-        .marquee-content { display: inline-block; animation: scroll 40s linear infinite; }
-        @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-        .brand-item { margin: 0 30px; font-size: 1.2rem; font-weight: bold; color: var(--text-main); opacity: 0.7; }
+        .reviews-box { width: 100%; text-align: right; margin-bottom: 10px; }
+        .review { background: var(--surface); padding: 18px; border-radius: 20px; margin-bottom: 12px; border: 1px solid var(--surface-border); text-align: start; }
+
+        .marquee-wrap { background: var(--surface); padding: 22px 0; overflow: hidden; position: relative; direction: ltr; border-top: 1px solid var(--surface-border); margin-top: auto;}
+        .marquee-content { display: flex; animation: scroll 35s linear infinite; }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .brand-item { margin: 0 35px; font-size: 1.4rem; font-weight: bold; color: var(--text-main); opacity: 0.6; }
 
         .fab-area { position: fixed; bottom: 25px; right: 25px; display: flex; flex-direction: column; gap: 15px; z-index: 200; }
         .fab { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.6rem; text-decoration: none; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
@@ -115,6 +130,8 @@
     </style>
 </head>
 <body>
+
+    <div class="top-bar" id="txt-topbar">👓 أحدث تشكيلات 2026 متوفرة الآن في فرع المقابلين!</div>
 
     <header>
         <div class="header-brand">
@@ -128,12 +145,14 @@
     </header>
 
     <main>
-        <img src="logo.jpg" class="logo-box" alt="Logo">
+        <img src="logo.jpg" class="logo-box" alt="Delta Logo">
         <h1 id="txt-hero">دلتا للبصريات</h1>
         <p class="subtitle" id="txt-sub">خبراء العناية بالعين وأحدث الماركات العالمية</p>
 
         <div class="info-row">
-            <div id="status-badge" class="badge"><div class="dot"></div> <span id="status-text">...</span></div>
+            <div id="status-badge" class="badge">
+                <div class="dot"></div> <span id="status-text">...</span>
+            </div>
             <div class="badge"><i class="fas fa-star" style="color:var(--gold)"></i> 4.9</div>
         </div>
 
@@ -143,25 +162,37 @@
             
             <a href="ar.html" class="main-card ar-card">
                 <div style="text-align: right;">
-                    <span class="card-title" id="txt-ar-title">القياس الافتراضي 3D</span><br>
-                    <small style="color:rgba(255,255,255,0.8)" id="txt-ar-sub">جرب النظارة بالكاميرا</small>
+                    <span class="card-title" id="txt-ar-title" style="margin:0">القياس الافتراضي 3D</span><br>
+                    <small id="txt-ar-sub">جرب النظارة بالكاميرا</small>
                 </div>
                 <i class="fas fa-vr-cardboard card-icon"></i>
             </a>
         </div>
 
+        <div class="quick-services">
+            <div class="service-item"><div class="srv-icon"><i class="fas fa-tools"></i></div><span class="srv-text" id="txt-srv-1">صيانة فورية</span></div>
+            <div class="service-item"><div class="srv-icon"><i class="fas fa-truck"></i></div><span class="srv-text" id="txt-srv-2">توصيل متاح</span></div>
+            <div class="service-item"><div class="srv-icon"><i class="fas fa-eye"></i></div><span class="srv-text" id="txt-srv-3">تجهيز عدسات</span></div>
+        </div>
+
+        <a href="https://maps.google.com/?q=Delta+Optics+Amman" target="_blank" class="wide-btn"><i class="fas fa-location-dot"></i> <span id="txt-loc">موقع الفرع على الخريطة</span></a>
+
         <div class="social-section">
             <div class="social-row">
-                <a href="https://www.facebook.com/delta.optics1" target="_blank" class="soc-btn fb-btn"><i class="fab fa-facebook-f"></i> Facebook</a>
+                <a href="https://www.facebook.com/delta.optics1/" target="_blank" class="soc-btn fb-btn"><i class="fab fa-facebook-f"></i> Facebook</a>
                 <a href="https://www.instagram.com/delta.optics1/" target="_blank" class="soc-btn insta-btn"><i class="fab fa-instagram"></i> Instagram</a>
             </div>
+        </div>
+
+        <div class="reviews-box">
+            <div id="reviews-container"></div>
         </div>
     </main>
 
     <div class="marquee-wrap">
         <div class="marquee-content">
-            <span class="brand-item">RAY-BAN</span><span class="brand-item">GUCCI</span><span class="brand-item">PRADA</span><span class="brand-item">OAKLEY</span><span class="brand-item">DIOR</span><span class="brand-item">POLICE</span><span class="brand-item">VERSACE</span>
-            <span class="brand-item">RAY-BAN</span><span class="brand-item">GUCCI</span><span class="brand-item">PRADA</span><span class="brand-item">OAKLEY</span><span class="brand-item">DIOR</span><span class="brand-item">POLICE</span><span class="brand-item">VERSACE</span>
+            <span class="brand-item">RAY-BAN</span><span class="brand-item">GUCCI</span><span class="brand-item">OAKLEY</span><span class="brand-item">DIOR</span><span class="brand-item">POLICE</span><span class="brand-item">VERSACE</span>
+            <span class="brand-item">RAY-BAN</span><span class="brand-item">GUCCI</span><span class="brand-item">OAKLEY</span><span class="brand-item">DIOR</span><span class="brand-item">POLICE</span><span class="brand-item">VERSACE</span>
         </div>
     </div>
 
@@ -171,21 +202,21 @@
     </div>
 
     <script>
-        // 1. إدارة المظهر (Dark Mode)
-        let isDark = localStorage.getItem('deltaTheme') === 'dark';
+        // 1. الوضع الليلي مع الحفظ
+        let isDark = localStorage.getItem('theme') === 'dark';
         const applyTheme = (dark) => {
             document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
             document.getElementById('theme-btn').innerHTML = dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-            localStorage.setItem('deltaTheme', dark ? 'dark' : 'light');
-        };
+            localStorage.setItem('theme', dark ? 'dark' : 'light');
+        }
         applyTheme(isDark);
-        window.toggleTheme = () => { isDark = !isDark; applyTheme(isDark); };
+        window.toggleTheme = () => { isDark = !isDark; applyTheme(isDark); }
 
         // 2. إدارة اللغات
         let curLang = 'ar';
         const i18n = {
-            ar: { hero: "دلتا للبصريات", sub: "خبراء العناية بالعين وأحدث الماركات العالمية", test: "الفحص الذكي", coll: "التشكيلات", arT: "القياس الافتراضي 3D", arS: "جرب النظارة بالكاميرا", open: "مفتوح الآن", closed: "مغلق الآن" },
-            en: { hero: "DELTA OPTICS", sub: "Eye Care Experts & Premium Brands", test: "Smart Test", coll: "Collections", arT: "Virtual Try-On 3D", arS: "Try glasses via camera", open: "Open Now", closed: "Closed Now" }
+            ar: { hero: "دلتا للبصريات", sub: "خبراء العناية بالعين وأحدث الماركات العالمية", test: "الفحص الذكي", coll: "التشكيلات", arT: "القياس الافتراضي 3D", arS: "جرب النظارة بالكاميرا", open: "مفتوح الآن", closed: "مغلق الآن", loc: "موقع الفرع على الخريطة" },
+            en: { hero: "DELTA OPTICS", sub: "Eye Care Experts & Premium Brands", test: "Smart Test", coll: "Collections", arT: "Virtual Try-On 3D", arS: "Try glasses via camera", open: "Open Now", closed: "Closed Now", loc: "Location Map" }
         };
 
         window.toggleLang = () => {
@@ -200,10 +231,11 @@
             document.getElementById('txt-coll').innerText = t.coll;
             document.getElementById('txt-ar-title').innerText = t.arT;
             document.getElementById('txt-ar-sub').innerText = t.arS;
+            document.getElementById('txt-loc').innerText = t.loc;
             checkStatus();
-        };
+        }
 
-        // 3. حالة الدوام
+        // 3. التحقق من حالة الدوام
         function checkStatus() {
             const now = new Date(); const hour = now.getHours(); const day = now.getDay();
             let isOpen = (day === 5) ? (hour >= 16 && hour < 22) : (hour >= 10 && hour < 22);

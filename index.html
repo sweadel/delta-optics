@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" data-theme="light">
 <head>
@@ -17,8 +16,8 @@
     
     <style>
         :root { 
-            --primary: #0e7490;        
-            --secondary: #0ea5e9;      
+            --primary: #0e7490;       
+            --secondary: #0ea5e9;     
             --bg-color: #f8fafc;
             --surface: rgba(255, 255, 255, 0.7); 
             --surface-border: rgba(255, 255, 255, 0.5);
@@ -30,8 +29,8 @@
         }
 
         [data-theme="dark"] {
-            --primary: #22d3ee;        
-            --secondary: #38bdf8;      
+            --primary: #22d3ee;       
+            --secondary: #38bdf8;     
             --bg-color: #0f172a;
             --surface: rgba(30, 41, 59, 0.7);
             --surface-border: rgba(255, 255, 255, 0.05);
@@ -52,11 +51,23 @@
             position: relative;
         }
 
+        [data-theme="dark"] body {
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(34, 211, 238, 0.03) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(56, 189, 248, 0.03) 0px, transparent 50%);
+        }
+
+        .top-bar {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white; text-align: center; padding: 6px 10px;
+            font-size: 0.8rem; font-weight: 700; letter-spacing: 0.5px;
+        }
+
         header { 
             background: var(--surface); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
             padding: 12px 20px; border-bottom: 1px solid var(--surface-border);
             display: flex; align-items: center; justify-content: space-between;
-            position: sticky; top: 0; z-index: 100;
+            position: sticky; top: 0; z-index: 100; transition: 0.4s;
         }
         .header-brand { display: flex; align-items: center; gap: 10px; }
         .header-logo { width: 38px; height: 38px; object-fit: contain; border-radius: 8px; }
@@ -65,154 +76,384 @@
         .header-actions { display: flex; gap: 10px; }
         .icon-btn {
             background: rgba(128, 128, 128, 0.1); border: 1px solid var(--surface-border);
-            width: 38px; height: 38px; border-radius: 10px; color: var(--primary); 
-            cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;
+            width: 38px; height: 38px; border-radius: 10px; font-weight: 700;
+            color: var(--primary); cursor: pointer; font-size: 1rem;
+            display: flex; align-items: center; justify-content: center; transition: 0.2s;
+        }
+        .icon-btn:active { transform: scale(0.9); background: var(--primary); color: white; }
+
+        main { 
+            flex: 1; display: flex; flex-direction: column; align-items: center; 
+            padding: 30px 20px; text-align: center; width: 100%; max-width: 500px; margin: 0 auto;
+            z-index: 1;
         }
 
-        main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 30px 20px; text-align: center; width: 100%; max-width: 500px; margin: 0 auto; }
-
-        .logo-box { width: 130px; height: 130px; object-fit: contain; margin-bottom: 15px; border-radius: 25px; background: var(--surface); padding: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--surface-border); }
+        .logo-box {
+            width: 130px; height: 130px; object-fit: contain; margin-bottom: 15px;
+            border-radius: 25px; background: var(--surface); padding: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--surface-border);
+            backdrop-filter: blur(10px);
+        }
 
         h1 { font-size: 2rem; font-weight: 900; margin-bottom: 5px; color: var(--text-main); }
         .subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; line-height: 1.6; }
 
         .info-row { display: flex; gap: 10px; justify-content: center; margin-bottom: 25px; }
-        .badge { background: var(--surface); backdrop-filter: blur(10px); padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 8px; border: 1px solid var(--surface-border); color: var(--text-main); }
+        .badge {
+            background: var(--surface); backdrop-filter: blur(10px);
+            padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; font-weight: 700;
+            display: flex; align-items: center; gap: 8px; border: 1px solid var(--surface-border);
+            color: var(--text-main); box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
         .dot { width: 8px; height: 8px; border-radius: 50%; }
-        .open-dot { background: var(--success); }
-        .closed-dot { background: var(--error); }
+        .open-dot { background: var(--success); box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2); }
+        .closed-dot { background: var(--error); box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2); }
 
-        .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; margin-bottom: 25px; }
+        .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; margin-bottom: 25px; perspective: 1000px; }
         .main-card {
             background: var(--surface); backdrop-filter: blur(10px); border: 1px solid var(--surface-border);
             padding: 25px 15px; border-radius: 20px; display: flex; flex-direction: column; align-items: center; gap: 12px;
-            text-decoration: none; box-shadow: 0 10px 30px rgba(0,0,0,0.03); transition: 0.3s;
+            text-decoration: none; box-shadow: 0 10px 30px rgba(0,0,0,0.03); height: 145px; justify-content: center;
+            transform-style: preserve-3d; transition: transform 0.1s; 
         }
-        .card-icon { font-size: 2.2rem; color: var(--primary); }
-        .card-title { font-size: 1.05rem; font-weight: 900; color: var(--text-main); }
-        .highlight-card { background: linear-gradient(135deg, rgba(14, 116, 144, 0.05), rgba(14, 165, 233, 0.1)); }
+        .card-icon { font-size: 2.2rem; color: var(--primary); margin-bottom: 5px; transform: translateZ(30px); }
+        .card-title { font-size: 1.05rem; font-weight: 900; color: var(--text-main); transform: translateZ(20px); }
+        .highlight-card { background: linear-gradient(135deg, rgba(14, 116, 144, 0.05), rgba(14, 165, 233, 0.1)); border-color: rgba(14, 165, 233, 0.2); }
+        .highlight-card .card-icon { color: var(--secondary); }
 
-        /* AR Card Style */
-        .ar-card {
-            grid-column: 1 / -1;
-            background: linear-gradient(135deg, #0f172a 0%, #0ea5e9 100%);
-            border: none; flex-direction: row; justify-content: space-around; padding: 20px; height: auto;
+        .quick-services { display: flex; justify-content: space-around; width: 100%; margin-bottom: 30px; background: var(--surface); padding: 15px; border-radius: 20px; border: 1px solid var(--surface-border); backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.02);}
+        .service-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .srv-icon { width: 40px; height: 40px; border-radius: 50%; background: rgba(14, 116, 144, 0.1); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+        .srv-text { font-size: 0.75rem; font-weight: 700; color: var(--text-main); }
+
+        .wide-btn {
+            width: 100%; padding: 18px; border-radius: 16px; font-size: 1rem; font-weight: 800; text-decoration: none;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: var(--surface); color: var(--primary); border: 1px solid var(--surface-border);
+            margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); backdrop-filter: blur(10px);
         }
-        .ar-card .card-title, .ar-card .card-icon { color: white; }
-
+        
         .social-section { width: 100%; margin-bottom: 30px; }
+        .sec-title { font-size: 0.9rem; font-weight: 800; color: var(--text-muted); margin-bottom: 15px; display: block; }
         .social-row { display: flex; gap: 12px; justify-content: center; }
-        .soc-btn { flex: 1; padding: 14px; border-radius: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; color: white; font-weight: 800; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .fb-btn { background: #1877F2; } .insta-btn { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+        .soc-btn {
+            flex: 1; padding: 14px; border-radius: 15px; display: flex; align-items: center; justify-content: center; gap: 8px;
+            text-decoration: none; color: white; font-weight: 800; font-size: 0.95rem; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .fb-btn { background: #1877F2; } 
+        .insta-btn { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
 
-        .marquee-wrap { background: var(--surface); padding: 22px 0; overflow: hidden; white-space: nowrap; direction: ltr; margin-top: auto; border-top: 1px solid var(--surface-border); }
-        .marquee-content { display: inline-block; animation: scroll 40s linear infinite; }
-        @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-        .brand-item { margin: 0 30px; font-size: 1.2rem; font-weight: bold; color: var(--text-main); opacity: 0.7; }
+        .reviews-box { width: 100%; text-align: right; margin-bottom: 10px; }
+        .rev-head-title { font-size: 1rem; font-weight: 800; color: var(--text-muted); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .review {
+            background: var(--surface); padding: 18px; border-radius: 20px; backdrop-filter: blur(10px);
+            margin-bottom: 12px; border: 1px solid var(--surface-border); animation: slideUp 0.5s ease; text-align: start;
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .rev-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .rev-user { font-weight: 800; font-size: 0.95rem; color: var(--text-main); }
+        .rev-stars { font-size: 0.85rem; color: var(--gold); }
+        .rev-msg { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+
+        .marquee-wrap {
+            background: var(--surface); padding: 22px 0; backdrop-filter: blur(10px);
+            border-top: 1px solid var(--surface-border); margin-top: auto; 
+            overflow: hidden; position: relative; direction: ltr; display: flex;
+        }
+        .marquee-wrap::before, .marquee-wrap::after {
+            content: ""; position: absolute; top: 0; width: 60px; height: 100%; z-index: 2; pointer-events: none;
+        }
+        .marquee-wrap::before { left: 0; background: linear-gradient(to right, var(--bg-color), transparent); }
+        .marquee-wrap::after { right: 0; background: linear-gradient(to left, var(--bg-color), transparent); }
+
+        .marquee-content { display: flex; flex-shrink: 0; align-items: center; animation: scroll 35s linear infinite; }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+
+        .brand-item { margin: 0 35px; font-size: 1.4rem; opacity: 0.8; display: inline-block; color: var(--text-main); }
+        
+        .rayban { font-family: 'Montserrat', sans-serif; font-weight: 900; font-style: italic; color: #E01E26; }
+        .gucci { font-family: 'Playfair Display', serif; font-weight: 700; letter-spacing: 2px; font-size: 1.2rem; }
+        .lacoste { font-family: 'Montserrat', sans-serif; font-weight: 800; color: #004526; }
+        .tomford { font-family: 'Montserrat', sans-serif; font-weight: 700; letter-spacing: 1px; border: 2px solid var(--text-main); padding: 0 5px; font-size: 1rem; }
+        .prada { font-family: 'Playfair Display', serif; font-weight: 700; letter-spacing: 3px; font-size: 1.1rem; }
+        .versace { font-family: 'Cinzel', serif; font-weight: 700; color: #EAB308; }
+        .police { font-family: 'Impact', sans-serif; letter-spacing: 1px; font-style: italic; }
+        .carrera { font-family: 'Roboto Condensed', sans-serif; font-weight: 700; color: #C51D24; font-style: italic; }
+        .dior { font-family: 'Playfair Display', serif; font-weight: 700; letter-spacing: 2px; }
+        .cartier { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 700; }
+        .armani { font-family: 'Montserrat', sans-serif; font-weight: 400; letter-spacing: 2px; }
+        .burberry { font-family: 'Montserrat', sans-serif; font-weight: 800; letter-spacing: 1px; font-size: 1.2rem; }
+        .oakley { font-family: 'Montserrat', sans-serif; font-weight: 900; font-style: italic; font-size: 1.5rem; letter-spacing: -1px; }
+        .persol { font-family: 'Playfair Display', serif; font-weight: 700; font-style: italic; letter-spacing: 1px; }
+        .fendi { font-family: 'Montserrat', sans-serif; font-weight: 900; letter-spacing: 1px; }
+        .celine { font-family: 'Montserrat', sans-serif; font-weight: 800; letter-spacing: 2px; }
+        .boss { font-family: 'Montserrat', sans-serif; font-weight: 900; letter-spacing: -1px; }
 
         .fab-area { position: fixed; bottom: 25px; right: 25px; display: flex; flex-direction: column; gap: 15px; z-index: 200; }
-        .fab { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.6rem; text-decoration: none; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .fab-wa { background: #25D366; } .fab-call { background: var(--primary); }
+        .fab { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.6rem; text-decoration: none; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transition: transform 0.2s; }
+        .fab-wa { background: #25D366; }
+        .fab-call { background: var(--primary); }
+        .fab:active { transform: scale(0.9); }
+        html[dir="ltr"] .fab-area { right: auto; left: 25px; }
+
     </style>
 </head>
 <body>
 
+    <div class="top-bar" id="txt-topbar">👓 أحدث تشكيلات 2026 متوفرة الآن في فرع المقابلين!</div>
+
     <header>
         <div class="header-brand">
-            <img src="logo.jpg" class="header-logo" alt="Delta">
-            <h2 class="header-title">DELTA OPTICS</h2>
+            <img src="logo.jpg" class="header-logo" alt="logo" onerror="this.style.display='none'">
+            <h2 class="header-title" id="txt-header">DELTA OPTICS</h2>
         </div>
         <div class="header-actions">
-            <button class="icon-btn" onclick="toggleTheme()" id="theme-btn"><i class="fas fa-moon"></i></button>
-            <button class="icon-btn" onclick="toggleLang()" id="lang-btn">EN</button>
+            <button class="icon-btn" onclick="toggleTheme()" id="theme-btn" aria-label="تغيير المظهر"><i class="fas fa-moon"></i></button>
+            <button class="icon-btn" onclick="toggleLang()" id="lang-btn" aria-label="تغيير اللغة">EN</button>
         </div>
     </header>
 
     <main>
-        <img src="logo.jpg" class="logo-box" alt="Logo">
+        <img src="logo.jpg" class="logo-box" alt="Delta Logo" loading="lazy" onerror="this.src='https://via.placeholder.com/150?text=LOGO'">
+
         <h1 id="txt-hero">دلتا للبصريات</h1>
-        <p class="subtitle" id="txt-sub">خبراء العناية بالعين وأحدث الماركات العالمية</p>
+        <p class="subtitle" id="txt-sub">الفرع الرئيسي - المقابلين<br>خبراء العناية بالعين وأحدث الماركات</p>
 
         <div class="info-row">
-            <div id="status-badge" class="badge"><div class="dot"></div> <span id="status-text">...</span></div>
-            <div class="badge"><i class="fas fa-star" style="color:var(--gold)"></i> 4.9</div>
+            <div id="status-badge" class="badge">
+                <div class="dot closed-dot"></div> <span id="status-text">...</span>
+            </div>
+            <div class="badge">
+                <i class="fas fa-star" style="color:var(--gold)"></i> 4.9
+            </div>
         </div>
 
         <div class="cards-grid">
-            <a href="test.html" class="main-card highlight-card"><i class="fas fa-microscope card-icon"></i><span class="card-title" id="txt-test">الفحص الذكي</span></a>
-            <a href="collection.html" class="main-card"><i class="fas fa-glasses card-icon"></i><span class="card-title" id="txt-coll">التشكيلات</span></a>
-            
-            <a href="ar.html" class="main-card ar-card">
-                <div style="text-align: right;">
-                    <span class="card-title" id="txt-ar-title">القياس الافتراضي 3D</span><br>
-                    <small style="color:rgba(255,255,255,0.8)" id="txt-ar-sub">جرب النظارة بالكاميرا</small>
-                </div>
-                <i class="fas fa-vr-cardboard card-icon"></i>
+            <a href="test.html" class="main-card highlight-card tilt-card">
+                <i class="fas fa-microscope card-icon"></i>
+                <span class="card-title" id="txt-test">الفحص الذكي</span>
+            </a>
+            <a href="collection.html" class="main-card tilt-card">
+                <i class="fas fa-glasses card-icon"></i>
+                <span class="card-title" id="txt-coll">التشكيلات</span>
             </a>
         </div>
 
-        <div class="social-section">
-            <div class="social-row">
-                <a href="https://www.facebook.com/delta.optics1" target="_blank" class="soc-btn fb-btn"><i class="fab fa-facebook-f"></i> Facebook</a>
-                <a href="https://www.instagram.com/delta.optics1/" target="_blank" class="soc-btn insta-btn"><i class="fab fa-instagram"></i> Instagram</a>
+        <div class="quick-services">
+            <div class="service-item">
+                <div class="srv-icon"><i class="fas fa-tools"></i></div>
+                <span class="srv-text" id="txt-srv-1">صيانة فورية</span>
             </div>
+            <div class="service-item">
+                <div class="srv-icon"><i class="fas fa-truck"></i></div>
+                <span class="srv-text" id="txt-srv-2">توصيل متاح</span>
+            </div>
+            <div class="service-item">
+                <div class="srv-icon"><i class="fas fa-eye"></i></div>
+                <span class="srv-text" id="txt-srv-3">تجهيز عدسات</span>
+            </div>
+        </div>
+
+        <a href="https://www.google.com/maps/search/?api=1&query=Delta+Optics+Al-Muqabalain" target="_blank" rel="noopener noreferrer" class="wide-btn">
+            <i class="fas fa-location-dot" style="color:var(--secondary)"></i> <span id="txt-loc">موقع الفرع على الخريطة</span>
+        </a>
+
+        <div class="social-section">
+            <span class="sec-title" id="txt-follow">تابعونا على منصات التواصل</span>
+            <div class="social-row">
+                <a href="https://www.facebook.com/delta.optics1/" target="_blank" rel="noopener noreferrer" class="soc-btn fb-btn">
+                    <i class="fab fa-facebook-f"></i> Facebook
+                </a>
+                <a href="https://www.instagram.com/delta.optics1/" target="_blank" rel="noopener noreferrer" class="soc-btn insta-btn">
+                    <i class="fab fa-instagram"></i> Instagram
+                </a>
+            </div>
+        </div>
+
+        <div class="reviews-box">
+            <div class="rev-head-title"><i class="fas fa-comment-dots"></i> <span id="txt-rev-title">آراء عملائنا</span></div>
+            <div id="reviews-container"></div>
         </div>
     </main>
 
     <div class="marquee-wrap">
         <div class="marquee-content">
-            <span class="brand-item">RAY-BAN</span><span class="brand-item">GUCCI</span><span class="brand-item">PRADA</span><span class="brand-item">OAKLEY</span><span class="brand-item">DIOR</span><span class="brand-item">POLICE</span><span class="brand-item">VERSACE</span>
-            <span class="brand-item">RAY-BAN</span><span class="brand-item">GUCCI</span><span class="brand-item">PRADA</span><span class="brand-item">OAKLEY</span><span class="brand-item">DIOR</span><span class="brand-item">POLICE</span><span class="brand-item">VERSACE</span>
+            <span class="brand-item rayban">Ray-Ban</span><span class="brand-item oakley">OAKLEY</span>
+            <span class="brand-item gucci">GUCCI</span><span class="brand-item lacoste">LACOSTE</span>
+            <span class="brand-item prada">PRADA</span><span class="brand-item celine">CELINE</span>
+            <span class="brand-item versace">VERSACE</span><span class="brand-item tomford">TOM FORD</span>
+            <span class="brand-item dior">DIOR</span><span class="brand-item police">POLICE</span>
+            <span class="brand-item carrera">CARRERA</span><span class="brand-item boss">HUGO BOSS</span>
+            <span class="brand-item cartier">Cartier</span><span class="brand-item armani">GIORGIO ARMANI</span>
+            <span class="brand-item burberry">BURBERRY</span><span class="brand-item persol">Persol</span>
+            <span class="brand-item fendi">FENDI</span>
+        </div>
+        <div class="marquee-content">
+            <span class="brand-item rayban">Ray-Ban</span><span class="brand-item oakley">OAKLEY</span>
+            <span class="brand-item gucci">GUCCI</span><span class="brand-item lacoste">LACOSTE</span>
+            <span class="brand-item prada">PRADA</span><span class="brand-item celine">CELINE</span>
+            <span class="brand-item versace">VERSACE</span><span class="brand-item tomford">TOM FORD</span>
+            <span class="brand-item dior">DIOR</span><span class="brand-item police">POLICE</span>
+            <span class="brand-item carrera">CARRERA</span><span class="brand-item boss">HUGO BOSS</span>
+            <span class="brand-item cartier">Cartier</span><span class="brand-item armani">GIORGIO ARMANI</span>
+            <span class="brand-item burberry">BURBERRY</span><span class="brand-item persol">Persol</span>
+            <span class="brand-item fendi">FENDI</span>
         </div>
     </div>
 
     <div class="fab-area">
-        <a href="https://wa.me/962775549700" target="_blank" class="fab fab-wa"><i class="fab fa-whatsapp"></i></a>
+        <a href="https://wa.me/962775549700" target="_blank" rel="noopener noreferrer" class="fab fab-wa"><i class="fab fa-whatsapp"></i></a>
         <a href="tel:+962775549700" class="fab fab-call"><i class="fas fa-phone-alt"></i></a>
     </div>
 
     <script>
-        // 1. إدارة المظهر (Dark Mode)
-        let isDark = localStorage.getItem('deltaTheme') === 'dark';
-        const applyTheme = (dark) => {
-            document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-            document.getElementById('theme-btn').innerHTML = dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-            localStorage.setItem('deltaTheme', dark ? 'dark' : 'light');
-        };
-        applyTheme(isDark);
-        window.toggleTheme = () => { isDark = !isDark; applyTheme(isDark); };
+        const tiltCards = document.querySelectorAll('.tilt-card');
+        tiltCards.forEach(card => {
+            card.addEventListener('mousemove', e => {
+                let rect = card.getBoundingClientRect();
+                let x = e.clientX - rect.left; 
+                let y = e.clientY - rect.top;
+                let rotateX = ((y / rect.height - 0.5) * -15).toFixed(2);
+                let rotateY = ((x / rect.width - 0.5) * 15).toFixed(2);
+                card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+            });
+        });
 
-        // 2. إدارة اللغات
-        let curLang = 'ar';
+        let isDark = false;
+        function toggleTheme() {
+            isDark = !isDark;
+            document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+            document.getElementById('theme-btn').innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        }
+
         const i18n = {
-            ar: { hero: "دلتا للبصريات", sub: "خبراء العناية بالعين وأحدث الماركات العالمية", test: "الفحص الذكي", coll: "التشكيلات", arT: "القياس الافتراضي 3D", arS: "جرب النظارة بالكاميرا", open: "مفتوح الآن", closed: "مغلق الآن" },
-            en: { hero: "DELTA OPTICS", sub: "Eye Care Experts & Premium Brands", test: "Smart Test", coll: "Collections", arT: "Virtual Try-On 3D", arS: "Try glasses via camera", open: "Open Now", closed: "Closed Now" }
+            ar: {
+                topbar: "👓 أحدث تشكيلات 2026 متوفرة الآن في فرع المقابلين!",
+                hero: "دلتا للبصريات",
+                sub: "الفرع الرئيسي - المقابلين<br>خبراء العناية بالعين وأحدث الماركات",
+                statusOpen: "مفتوح الآن", statusClosed: "مغلق الآن",
+                test: "الفحص الذكي", coll: "التشكيلات", loc: "موقع الفرع على الخريطة",
+                srv1: "صيانة فورية", srv2: "توصيل متاح", srv3: "تجهيز عدسات",
+                follow: "تابعونا على منصات التواصل", revTitle: "آراء عملائنا"
+            },
+            en: {
+                topbar: "👓 The latest 2026 collections are now available!",
+                hero: "DELTA OPTICS",
+                sub: "Main Branch - Al Muqablain<br>Eye Care Experts & Premium Brands",
+                statusOpen: "Open Now", statusClosed: "Closed Now",
+                test: "Smart Test", coll: "Collections", loc: "Location Map",
+                srv1: "Quick Repair", srv2: "Delivery", srv3: "Lens Fitting",
+                follow: "Follow Us", revTitle: "Customer Reviews"
+            }
+        };
+        
+        const reviewsData = {
+            ar: [
+                { name: "محمد العلي", text: "خدمة ممتازة، الدكتور شاطر والفحص دقيق جداً." },
+                { name: "سعاد محمد", text: "المحل مرتب والتعامل راقي، الأسعار مناسبة." },
+                { name: "خالد الزعبي", text: "أفضل محل بصريات في المقابلين، أنصح به بشدة." }
+            ],
+            en: [
+                { name: "Mohammad Ali", text: "Excellent service, very accurate eye test." },
+                { name: "Suad M.", text: "Great shop, professional staff and good prices." },
+                { name: "Khaled Z.", text: "Best optical shop in Al Muqablain, highly recommended." }
+            ]
         };
 
-        window.toggleLang = () => {
+        let curLang = 'ar';
+
+        function toggleLang() {
             curLang = curLang === 'ar' ? 'en' : 'ar';
+            const html = document.documentElement;
             const t = i18n[curLang];
-            document.documentElement.lang = curLang;
-            document.documentElement.dir = curLang === 'ar' ? 'rtl' : 'ltr';
+
+            html.lang = curLang;
+            html.dir = curLang === 'ar' ? 'rtl' : 'ltr';
             document.getElementById('lang-btn').innerText = curLang === 'ar' ? 'EN' : 'عربي';
+
+            document.getElementById('txt-topbar').innerText = t.topbar;
+            document.getElementById('txt-header').innerText = curLang === 'ar' ? 'DELTA OPTICS' : 'DELTA OPTICS';
             document.getElementById('txt-hero').innerText = t.hero;
-            document.getElementById('txt-sub').innerText = t.sub;
+            document.getElementById('txt-sub').innerHTML = t.sub;
             document.getElementById('txt-test').innerText = t.test;
             document.getElementById('txt-coll').innerText = t.coll;
-            document.getElementById('txt-ar-title').innerText = t.arT;
-            document.getElementById('txt-ar-sub').innerText = t.arS;
-            checkStatus();
-        };
+            document.getElementById('txt-srv-1').innerText = t.srv1;
+            document.getElementById('txt-srv-2').innerText = t.srv2;
+            document.getElementById('txt-srv-3').innerText = t.srv3;
+            document.getElementById('txt-loc').innerText = t.loc;
+            document.getElementById('txt-follow').innerText = t.follow;
+            document.getElementById('txt-rev-title').innerText = t.revTitle;
 
-        // 3. حالة الدوام
-        function checkStatus() {
-            const now = new Date(); const hour = now.getHours(); const day = now.getDay();
-            let isOpen = (day === 5) ? (hour >= 16 && hour < 22) : (hour >= 10 && hour < 22);
-            const badge = document.getElementById('status-badge');
-            badge.querySelector('.dot').className = 'dot ' + (isOpen ? 'open-dot' : 'closed-dot');
-            document.getElementById('status-text').innerText = isOpen ? i18n[curLang].open : i18n[curLang].closed;
+            checkStatus();
+            loadRandomReviews();
         }
+
+        function checkStatus() {
+            const now = new Date();
+            const day = now.getDay(); 
+            const hour = now.getHours();
+            const statusDiv = document.getElementById('status-badge');
+            const statusText = document.getElementById('status-text');
+            
+            let isOpen = false;
+            // تم إضافة شرط الإغلاق (الساعة 22 تعني 10 مساءً)
+            if (day === 5) { 
+                if (hour >= 16 && hour < 22) isOpen = true; 
+            } else { 
+                if (hour >= 10 && hour < 22) isOpen = true; 
+            }
+
+            if (isOpen) {
+                statusText.innerText = i18n[curLang].statusOpen;
+                statusDiv.querySelector('.dot').className = 'dot open-dot';
+            } else {
+                statusText.innerText = i18n[curLang].statusClosed;
+                statusDiv.querySelector('.dot').className = 'dot closed-dot';
+            }
+        }
+
+        function loadRandomReviews() {
+            const container = document.getElementById('reviews-container');
+            container.innerHTML = ''; // تنظيف الحاوية بشكل آمن
+            
+            const list = reviewsData[curLang];
+            const shuffled = [...list].sort(() => 0.5 - Math.random()).slice(0, 2);
+
+            shuffled.forEach(rev => {
+                const reviewDiv = document.createElement('div');
+                reviewDiv.className = 'review';
+
+                const revTopDiv = document.createElement('div');
+                revTopDiv.className = 'rev-top';
+
+                const spanUser = document.createElement('span');
+                spanUser.className = 'rev-user';
+                spanUser.textContent = rev.name;
+
+                const spanStars = document.createElement('span');
+                spanStars.className = 'rev-stars';
+                spanStars.textContent = '★★★★★';
+
+                revTopDiv.appendChild(spanUser);
+                revTopDiv.appendChild(spanStars);
+
+                const pMsg = document.createElement('p');
+                pMsg.className = 'rev-msg';
+                pMsg.textContent = rev.text;
+
+                reviewDiv.appendChild(revTopDiv);
+                reviewDiv.appendChild(pMsg);
+
+                container.appendChild(reviewDiv);
+            });
+        }
+
         checkStatus();
+        loadRandomReviews();
+
     </script>
 </body>
 </html>

@@ -2,48 +2,40 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Delta AR - نظام هندسي متطور</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Delta HD Experience | دلتا للبصريات</title>
     
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-face-aframe.prod.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        body { margin: 0; overflow: hidden; background: #000; font-family: 'Segoe UI', Tahoma, sans-serif; }
-        
-        /* واجهة البدء */
-        #loading-overlay {
-            position: fixed; inset: 0; background: #0f172a; z-index: 9999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: white; text-align: center; transition: opacity 0.5s;
-        }
-        .start-btn {
-            background: #0ea5e9; color: white; border: none; padding: 20px 60px;
-            border-radius: 15px; font-size: 1.4rem; font-weight: bold; cursor: pointer;
-            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.4); display: none; /* يظهر فقط عند الجاهزية */
-        }
-        .spinner { width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.1); border-top-color: #0ea5e9; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* شاشة الـ UI فوق الكاميرا */
-        #ui-header { position: fixed; top: 0; width: 100%; padding: 20px; z-index: 100; pointer-events: none; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
-        .back-btn { background: rgba(0,0,0,0.6); color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; pointer-events: auto; font-weight: bold; border: 1px solid rgba(255,255,255,0.2); }
+        body { margin: 0; overflow: hidden; background: #000; font-family: 'Segoe UI', sans-serif; }
+        #overlay { position: fixed; inset: 0; background: #0f172a; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; transition: 0.5s; }
+        .start-btn { background: #0ea5e9; color: white; border: none; padding: 20px 50px; border-radius: 15px; font-size: 1.3rem; font-weight: 900; cursor: pointer; box-shadow: 0 10px 30px rgba(14, 165, 233, 0.4); }
+        .ui-header { position: fixed; top: 0; width: 100%; padding: 20px; z-index: 100; pointer-events: none; display: flex; justify-content: space-between; align-items: center; }
+        .back-btn { background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); color: white; padding: 12px 25px; border-radius: 12px; text-decoration: none; pointer-events: auto; font-weight: bold; border: 1px solid rgba(255,255,255,0.2); }
     </style>
 </head>
 <body>
 
-    <div id="loading-overlay">
-        <div id="spinner" class="spinner"></div>
-        <p id="status-text">جاري تحميل الأنظمة الذكية...</p>
-        <button class="start-btn" id="start-btn">بدء تجربة القياس 3D</button>
+    <div id="overlay">
+        <h2 style="margin-bottom: 25px;">Delta Optics HD</h2>
+        <button class="start-btn" id="start-btn">ابدأ القياس بجودة عالية</button>
+        <p style="margin-top: 15px; opacity: 0.6; font-size: 0.8rem;">يرجى الوقوف في مكان بإضاءة جيدة</p>
     </div>
 
-    <div id="ui-header">
-        <a href="index.html" class="back-btn">خروج</a>
-        <div style="background: #0e7490; color: white; padding: 8px 20px; border-radius: 50px; font-weight: bold; font-size: 0.9rem;">DELTA OPTICS LIVE</div>
+    <div class="ui-header">
+        <a href="index.html" class="back-btn"><i class="fas fa-chevron-right"></i> رجوع</a>
+        <div style="background: rgba(14, 116, 144, 0.9); color: white; padding: 10px 25px; border-radius: 50px; font-weight: 900; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">LIVE HD MODE</div>
     </div>
 
-    <a-scene mindar-face="autoStart: false; uiLoading: no; uiError: no;" embedded color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+    <a-scene mindar-face="autoStart: false; uiLoading: no; uiError: no; filterMinCF:0.0001; filterBeta: 0.001;" 
+             embedded 
+             color-space="sRGB" 
+             renderer="colorManagement: true; physicallyCorrectLights: true; antialias: true; logarithmicDepthBuffer: true;" 
+             vr-mode-ui="enabled: false" 
+             device-orientation-permission-ui="enabled: false">
         
         <a-assets>
             <a-asset-item id="glassesModel" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.2/examples/face-tracking/assets/glasses/scene.gltf"></a-asset-item>
@@ -51,46 +43,35 @@
         
         <a-camera active="false" position="0 0 0" look-controls="enabled: false"></a-camera>
 
+        <a-entity light="type: hemisphere; color: #ffffff; groundColor: #444444; intensity: 1.2"></a-entity>
+        <a-entity light="type: directional; color: #ffffff; intensity: 0.8" position="0.5 1 1"></a-entity>
+        <a-entity light="type: point; intensity: 0.5; distance: 10" position="0 2 2"></a-entity>
+
         <a-entity mindar-face-target="anchorIndex: 168">
-            <a-gltf-model id="model-entity" rotation="0 0 0" position="0 -0.1 0" scale="0.01 0.01 0.01" src="#glassesModel"></a-gltf-model>
+            <a-gltf-model rotation="0 0 0" position="0 -0.08 0" scale="0.0105 0.0105 0.0105" src="#glassesModel"></a-gltf-model>
         </a-entity>
-        
-        <a-entity light="type: ambient; intensity: 1.2"></a-entity>
-        <a-entity light="type: directional; intensity: 0.6" position="1 2 1"></a-entity>
+
     </a-scene>
 
     <script>
-        const sceneEl = document.querySelector('a-scene');
         const startBtn = document.querySelector('#start-btn');
-        const spinner = document.querySelector('#spinner');
-        const statusText = document.querySelector('#status-text');
-        const overlay = document.querySelector('#loading-overlay');
+        const overlay = document.querySelector('#overlay');
+        const sceneEl = document.querySelector('a-scene');
 
-        // 1. الانتظار حتى تحميل المشهد
-        sceneEl.addEventListener("loaded", () => {
-            console.log("Scene Loaded");
-            statusText.innerText = "الأنظمة جاهزة الآن";
-            spinner.style.display = "none";
-            startBtn.style.display = "block";
-        });
-
-        // 2. تشغيل الكاميرا عند ضغط الزر (أمر إجباري للمتصفح)
         startBtn.addEventListener('click', () => {
             overlay.style.opacity = "0";
             setTimeout(() => overlay.style.display = "none", 500);
 
-            // استدعاء نظام الـ AR يدوياً
             const arSystem = sceneEl.systems['mindar-face-system'];
-            if (arSystem) {
-                arSystem.start(); 
-            } else {
-                alert("خطأ تقني: لم يتم تحميل نظام التتبع.");
-            }
-        });
-
-        // 3. مراقبة الأخطاء
-        sceneEl.addEventListener("arError", (event) => {
-            alert("حدث خطأ في الكاميرا: تأكد من إغلاق أي تطبيق آخر يستخدمها.");
+            
+            // محاولة إجبار الكاميرا على جودة HD
+            navigator.mediaDevices.getUserMedia({ 
+                video: { width: { min: 1280 }, height: { min: 720 }, facingMode: 'user' } 
+            }).then(() => {
+                arSystem.start();
+            }).catch(() => {
+                arSystem.start(); // إذا فشل الـ HD يفتح الجودة المتاحة
+            });
         });
     </script>
 </body>

@@ -10,6 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
     <style>
         /* --- التصميم الملكي الجديد (فقط CSS) --- */
         :root { 
@@ -348,6 +350,9 @@
     </script>
 
     <script>
+        // تهيئة خدمة الإيميل
+        emailjs.init("C73X3wkgP71p7DY1F");
+
         // --- 1. القاموس والتفاصيل ---
         const i18n = {
             ar: {
@@ -413,7 +418,7 @@
             show('menu');
         }
 
-        // --- ✅ تعديل الإنهاء ليرسل البيانات للإدارة فوراً ---
+        // --- ✅ تعديل الإنهاء ليرسل الإيميل فوراً ---
         async function showFinalReport() {
             if(Object.keys(currentResults).length === 0) { alert("لم تقم بإجراء أي فحص!"); return; }
             
@@ -426,9 +431,20 @@
                 }
             }
 
-            // إرسال البيانات للإدارة
+            // 1. إرسال البيانات لقاعدة البيانات (Firebase)
             if(window.saveToAdmin) await window.saveToAdmin(currentPatient, reportForAdmin);
 
+            // 2. إرسال التقرير فوراً على الإيميل من جهاز المراجع
+            emailjs.send("service_0w4ek18", "template_msh2s9p", {
+                patient_name: currentPatient,
+                message: reportForAdmin,
+                date: new Date().toLocaleString('ar-EG')
+            }).then(
+                function(response) { console.log("تم إرسال الإيميل بنجاح!", response.status, response.text); }, 
+                function(error) { console.log("فشل إرسال الإيميل...", error); }
+            );
+
+            // 3. عرض التقرير على الشاشة
             renderReportUI(currentPatient, currentResults);
             show('screen-report');
         }

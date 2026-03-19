@@ -50,29 +50,30 @@
         .patient-avatar { width: 40px; height: 40px; border-radius: 10px; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: bold; }
         .report-box { background: #F8FAFC; padding: 15px; border-radius: 12px; font-size: 0.85rem; line-height: 1.8; color: var(--text); border: 1px solid #E2E8F0; font-family: monospace; white-space: pre-wrap; }
 
-        .notif-wrapper { position: relative; }
-        .notif-btn { position: relative; cursor: pointer; font-size: 1.5rem; color: var(--text-muted); transition: 0.3s; }
-        .notif-btn:hover { color: var(--primary); }
-        .notif-badge { position: absolute; top: -2px; right: -2px; width: 12px; height: 12px; background: var(--danger); border-radius: 50%; display: none; border: 2px solid white; animation: pulse 1.5s infinite; }
-        
-        .notif-dropdown { position: absolute; top: 45px; left: 0; background: white; width: 300px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; display: none; z-index: 1000; overflow: hidden; }
-        .notif-dropdown.show { display: block; animation: slideUp 0.3s ease; }
-        .notif-header { padding: 15px; background: #f8fafc; font-weight: bold; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
-        .notif-item { padding: 12px 15px; border-bottom: 1px solid #f1f5f9; display: flex; gap: 10px; align-items: center; cursor: pointer; transition: 0.2s; }
-        .notif-item:hover { background: #f0f9ff; }
-
         .badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; }
         .badge-danger { background: #fee2e2; color: #ef4444; }
         .badge-success { background: #dcfce7; color: #10b981; }
+        .badge-warning { background: #fef3c7; color: #f59e0b; }
 
         #login-screen { position: fixed; inset: 0; background: var(--secondary); display: flex; align-items: center; justify-content: center; z-index: 1000; }
         .login-box { background: white; padding: 50px 40px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); text-align: center; width: 100%; max-width: 400px; }
 
         .btn { padding: 12px 25px; border-radius: 12px; border: none; cursor: pointer; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; text-decoration: none;}
         .btn-primary { background: var(--primary); color: white; }
+        .btn-danger { background: #fee2e2; color: var(--danger); }
+        .btn-warning { background: #fef3c7; color: var(--warning); }
         .input-field { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #E2E8F0; outline: none; background: #F8FAFC; font-size: 0.95rem; }
 
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        /* نافذة المراسلة الذكية (Modal) */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 2000; }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.3s; }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 550px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
+        .modal-content h3 { margin-top: 0; color: var(--primary); font-weight: 900; }
+        
+        .template-controls { display: flex; gap: 10px; margin-bottom: 15px; }
+        .template-controls select { flex: 1; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -97,7 +98,7 @@
         <div class="nav-item" onclick="switchTab(event, 'analytics')"><i class="fas fa-chart-bar"></i> <span>الإحصائيات المتقدمة</span></div>
         <div class="nav-item" onclick="switchTab(event, 'tasks')"><i class="fas fa-tasks"></i> <span>المهام والمتابعة</span></div>
         <div class="nav-item admin-only" onclick="switchTab(event, 'users')"><i class="fas fa-users-cog"></i> <span>صلاحيات الموظفين</span></div>
-        <div class="nav-item admin-only" onclick="switchTab(event, 'audit')"><i class="fas fa-shield-alt"></i> <span>المراقبة الأمنية</span></div>
+        <div class="nav-item admin-only" onclick="switchTab(event, 'audit')"><i class="fas fa-user-secret"></i> <span>المراقبة السرية</span></div>
     </div>
 
     <div id="main-content">
@@ -107,13 +108,6 @@
                 <p style="margin:5px 0 0; color:var(--text-muted); font-size:0.9rem;">إليك نظرة عامة على أداء العيادة اليوم</p>
             </div>
             <div style="display:flex; align-items:center; gap:25px;">
-                <div class="notif-wrapper">
-                    <div class="notif-btn" onclick="toggleNotif()"><i class="fas fa-bell"></i><div class="notif-badge" id="notifBadge">0</div></div>
-                    <div class="notif-dropdown" id="notifDropdown">
-                        <div class="notif-header"><span>الإشعارات الجديدة</span><span style="font-size:0.7rem; color:var(--primary); cursor:pointer;" onclick="clearNotifs()">تصفير</span></div>
-                        <div id="notif-list"><div style="padding:20px; text-align:center; color:gray; font-size:0.8rem;">لا توجد تنبيهات</div></div>
-                    </div>
-                </div>
                 <button class="btn" style="background:#F1F5F9; color:var(--secondary);" onclick="location.reload()"><i class="fas fa-sign-out-alt"></i> خروج</button>
             </div>
         </header>
@@ -128,7 +122,7 @@
                 <div class="kpi-info"><h3 id="kpi-today">0</h3><p>فحوصات اليوم</p></div>
             </div>
             <div class="kpi-card">
-                <div class="kpi-icon" style="background:#FEE2E2; color:var(--danger);"><i class="fas fa-user-secret"></i></div>
+                <div class="kpi-icon" style="background:#FEE2E2; color:var(--danger);"><i class="fas fa-shield-alt"></i></div>
                 <div class="kpi-info"><h3 id="kpi-security">0</h3><p>أحداث أمنية</p></div>
             </div>
         </div>
@@ -153,17 +147,30 @@
             </div>
         </div>
 
-        <div id="sec-users" class="section-card">
-            <h2 style="margin-top:0;">إدارة حسابات الموظفين</h2>
+        <div id="sec-users" class="section-card admin-only">
+            <h2 style="margin-top:0;">إدارة حسابات الموظفين والصلاحيات</h2>
+            
             <div style="background:#F8FAFC; padding:25px; border-radius:15px; border:1px solid #E2E8F0; margin-bottom:25px;">
-                <h3>إضافة حساب جديد</h3>
+                <h3 id="user-form-title">إضافة حساب جديد</h3>
+                <input type="hidden" id="edit-user-id" value="">
                 <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:15px; margin-bottom:15px;">
-                    <input type="text" id="new-name" class="input-field" placeholder="الاسم">
-                    <input type="text" id="new-username" class="input-field" placeholder="اليوزر" dir="ltr">
-                    <input type="text" id="new-password" class="input-field" placeholder="الباسورد" dir="ltr">
-                    <select id="new-role" class="input-field"><option value="manager">موظف</option><option value="superadmin">مدير نظام</option></select>
+                    <input type="text" id="new-name" class="input-field" placeholder="الاسم الكامل">
+                    <input type="text" id="new-username" class="input-field" placeholder="اسم المستخدم (للدخول)" dir="ltr">
+                    <input type="password" id="new-password" class="input-field" placeholder="كلمة المرور" dir="ltr">
+                    <select id="new-role" class="input-field">
+                        <option value="manager">موظف مختص (إدارة المرضى)</option>
+                        <option value="superadmin">مدير نظام (صلاحيات كاملة)</option>
+                    </select>
                 </div>
-                <button class="btn btn-primary" onclick="addNewUser()">إنشاء الحساب</button>
+                <button class="btn btn-primary" id="btn-save-user" onclick="saveUser()">إضافة الحساب</button>
+                <button class="btn" style="background:#E2E8F0; color:#1E293B; display:none;" id="btn-cancel-user" onclick="cancelEditUser()">إلغاء التعديل</button>
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <thead><tr><th>الموظف</th><th>اسم المستخدم</th><th>كلمة المرور</th><th>الرتبة</th><th>إجراءات</th></tr></thead>
+                    <tbody id="users-body"></tbody>
+                </table>
             </div>
         </div>
 
@@ -176,24 +183,49 @@
             <div id="tasks-list"></div>
         </div>
 
-        <div id="sec-audit" class="section-card">
-            <h2>المراقبة الأمنية (IP & Radar)</h2>
+        <div id="sec-audit" class="section-card admin-only">
+            <h2>المراقبة السرية الدقيقة</h2>
             <div class="table-responsive">
-                <table><thead><tr><th>المسؤول / الآي بي</th><th>الحدث</th><th>نظام التشغيل | المتصفح</th><th>التوقيت</th></tr></thead><tbody id="logs-body"></tbody></table>
+                <table><thead><tr><th>المسؤول / الآي بي</th><th>الحدث الأمني</th><th>نظام التشغيل | المتصفح</th><th>التوقيت</th></tr></thead><tbody id="logs-body"></tbody></table>
             </div>
+        </div>
+    </div>
+
+    <div id="msgModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3><i class="fas fa-paper-plane"></i> المراسلة الذكية</h3>
+            <p id="msgPatientName" style="color: var(--text-muted); margin-bottom: 15px; font-weight: bold;"></p>
+            
+            <label style="font-weight:bold; font-size:0.9rem; display:block; margin-bottom:8px;">إدارة قوالب الرسائل:</label>
+            <div class="template-controls">
+                <select id="msgTemplateType" class="input-field" onchange="applyTemplate()"></select>
+                <button class="btn btn-warning" onclick="saveTemplate()"><i class="fas fa-save"></i> حفظ</button>
+                <button class="btn btn-danger" onclick="deleteTemplate()"><i class="fas fa-trash"></i></button>
+            </div>
+            
+            <label style="font-weight:bold; font-size:0.9rem; display:block; margin-bottom:8px;">نص الرسالة (سيتم استبدال {اسم} باسم المراجع):</label>
+            <textarea id="msgContentBox" class="input-field" style="height: 150px; resize: none;" placeholder="اكتب رسالتك هنا..."></textarea>
+            
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn" style="background:#25D366; color:white; flex:1;" onclick="sendFinalMessage('whatsapp')"><i class="fab fa-whatsapp"></i> واتساب</button>
+                <button class="btn" style="background:#0ea5e9; color:white; flex:1;" onclick="sendFinalMessage('sms')"><i class="fas fa-sms"></i> SMS</button>
+            </div>
+            <button class="btn" style="background:#F1F5F9; color:var(--text); width: 100%; margin-top: 10px;" onclick="closeMsgModal()">إلغاء</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDocs, where, doc, setDoc, updateDoc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDocs, where, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyB11C4GGgAyqeThs8a9cvDNN7frvAA1nqQ", authDomain: "delta-optics-system.firebaseapp.com", projectId: "delta-optics-system", storageBucket: "delta-optics-system.firebasestorage.app", messagingSenderId: "111176219224", appId: "1:111176219224:web:e0d8a5f26b84d57249a82d" };
         const app = initializeApp(firebaseConfig); const db = getFirestore(app);
 
-        let currentUser = null; let myChart = null; let systemUsersList = {};
-        let initialLoadDone = false; let unreadNotifs = 0;
+        let currentUser = null; let myChart = null; let initialLoadDone = false;
+        let targetPhone = ""; let targetName = "";
+        let templatesList = [];
 
+        // --- نظام المراقبة السرية ---
         async function logSecurity(u, act, type="info") {
             let info = { ip: "Checking...", os: "Unknown" };
             try { const res = await fetch('https://api.ipify.org?format=json'); const data = await res.json(); info.ip = data.ip; } catch(e){}
@@ -202,96 +234,235 @@
             await addDoc(collection(db, "system_logs"), { user: u, action: act, type: type, info: `IP: ${info.ip} | OS: ${info.os}`, timestamp: serverTimestamp() });
         }
 
+        // --- الدخول والتهيئة ---
         window.attemptLogin = async function() {
             const u = document.getElementById('username').value.trim(); const p = document.getElementById('password').value.trim();
             if(!u || !p) return;
             const q = query(collection(db, "system_users"), where("username", "==", u), where("pass", "==", p));
             const snap = await getDocs(q);
             if(!snap.empty) {
-                currentUser = snap.docs[0].data();
+                currentUser = snap.docs[0].data(); currentUser.id = snap.docs[0].id;
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('sidebar').classList.add('show');
                 document.getElementById('main-content').classList.add('show');
                 document.getElementById('welcome-text').innerText = "مرحباً، " + currentUser.name;
-                if(currentUser.role === 'superadmin') document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
-                await logSecurity(currentUser.name, "دخول للنظام", "success");
+                
+                if(currentUser.role === 'superadmin') {
+                    document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
+                    loadUsersManager(); // تحميل الموظفين فقط للمدير
+                }
+                
+                await logSecurity(currentUser.name, "تسجيل دخول للنظام", "success");
                 initDashboard();
-            } else { alert("بيانات خاطئة!"); await logSecurity(u, "محاولة فاشلة", "danger"); }
+            } else { alert("البيانات خاطئة أو الحساب غير موجود!"); await logSecurity(u, "محاولة اختراق/دخول فاشلة", "danger"); }
         }
 
         function initDashboard() {
-            loadReportsRealtime(); loadUsersManager(); loadTasks(); loadLogs();
+            loadReportsRealtime(); loadTasks(); loadLogs(); loadTemplates();
         }
 
-        function triggerAdvancedNotif(name, details) {
-            unreadNotifs++;
-            const badge = document.getElementById('notifBadge');
-            badge.style.display = 'flex'; badge.innerText = unreadNotifs;
-            
-            const list = document.getElementById('notif-list');
-            if(unreadNotifs === 1) list.innerHTML = "";
-            list.insertAdjacentHTML('afterbegin', `<div class="notif-item"><i class="fas fa-notes-medical" style="color:var(--primary)"></i><div><b>فحص مكتمل</b><br><small>المراجع ${name} أنهى الفحص</small></div></div>`);
-            
-            try { new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3').play(); } catch(e){}
-        }
+        window.switchTab = (e, tab) => { document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); e.currentTarget.classList.add('active'); document.querySelectorAll('.section-card').forEach(s => s.classList.remove('active')); document.getElementById('sec-'+tab).classList.add('active'); }
 
-        window.toggleNotif = () => document.getElementById('notifDropdown').classList.toggle('show');
-        window.clearNotifs = () => { unreadNotifs = 0; document.getElementById('notifBadge').style.display = 'none'; document.getElementById('notif-list').innerHTML = '<div style="padding:20px; text-align:center; color:gray;">لا يوجد تنبيهات</div>'; }
-
+        // --- 1. إدارة المراجعين (التقارير) ---
         function loadReportsRealtime() {
             onSnapshot(query(collection(db, "tests"), orderBy("timestamp", "desc")), (snap) => {
                 const tbody = document.getElementById('reports-body'); tbody.innerHTML = "";
-                let stats = {}; let total = 0; let todayCount = 0;
-                let todayStr = new Date().toLocaleDateString('ar-EG');
-
-                if(initialLoadDone) {
-                    snap.docChanges().forEach(change => { if(change.type === "added") triggerAdvancedNotif(change.doc.data().name, change.doc.data().details); });
-                }
+                let stats = {}; let total = 0; let todayCount = 0; let todayStr = new Date().toLocaleDateString('ar-EG');
 
                 snap.forEach(d => {
                     const r = d.data(); total++;
                     const date = r.timestamp ? r.timestamp.toDate().toLocaleDateString('ar-EG') : "اليوم";
                     if(date === todayStr) todayCount++; stats[date] = (stats[date] || 0) + 1;
-                    const letter = r.name ? r.name.charAt(0) : "م";
                     
-                    // تحضير أزرار التواصل (واتساب و SMS) باستخدام الرقم المحفوظ
                     const rawPhone = r.phone || "";
-                    const cleanPhone = rawPhone.replace(/\D/g,''); // تنظيف الرقم من أي مسافات
-                    let contactHTML = `<span style="color:gray; font-size:0.8rem;">لا يوجد رقم</span>`;
-                    
-                    if(cleanPhone) {
-                        // إضافة كود الأردن تلقائيا إذا كان الرقم بيبدأ بـ 07
-                        let waPhone = cleanPhone.startsWith('07') ? '962' + cleanPhone.substring(1) : cleanPhone;
-                        contactHTML = `
-                            <div style="display:flex; gap:8px;">
-                                <a href="https://wa.me/${waPhone}" target="_blank" class="btn" style="background:#25D366; color:white; padding:8px 12px; border-radius:8px;" title="مراسلة واتساب"><i class="fab fa-whatsapp"></i></a>
-                                <a href="sms:${cleanPhone}" class="btn" style="background:#0ea5e9; color:white; padding:8px 12px; border-radius:8px;" title="رسالة SMS"><i class="fas fa-sms"></i></a>
-                            </div>
-                        `;
-                    }
+                    let contactBtn = `<span style="color:gray; font-size:0.8rem;">بدون رقم</span>`;
+                    if(rawPhone) { contactBtn = `<button class="btn btn-primary" style="padding: 8px 15px; font-size: 0.85rem;" onclick="openMsgModal('${r.name}', '${rawPhone}')"><i class="fas fa-paper-plane"></i> مراسلة</button>`; }
 
-                    tbody.innerHTML += `
-                        <tr>
-                            <td><div class="patient-name"><div class="patient-avatar">${letter}</div><div>${r.name}<br><small style="color:var(--text-muted); font-weight:normal;">${rawPhone}</small></div></div></td>
-                            <td><div class="report-box">${r.details}</div></td>
-                            <td><span class="badge badge-success">${date}</span></td>
-                            <td>${contactHTML}</td>
-                        </tr>
-                    `;
+                    tbody.innerHTML += `<tr>
+                        <td><div class="patient-name"><div class="patient-avatar">${r.name.charAt(0)}</div><div>${r.name}<br><small style="color:var(--text-muted); font-weight:normal;">${rawPhone}</small></div></div></td>
+                        <td><div class="report-box">${r.details}</div></td>
+                        <td><span class="badge badge-success">${date}</span></td>
+                        <td>${contactBtn}</td>
+                    </tr>`;
                 });
                 document.getElementById('kpi-total').innerText = total; document.getElementById('kpi-today').innerText = todayCount;
                 updateChart(stats); initialLoadDone = true;
             });
         }
+        window.forceRefreshReports = () => { document.getElementById('sync-icon').classList.add('fa-spin'); loadReportsRealtime(); setTimeout(() => document.getElementById('sync-icon').classList.remove('fa-spin'), 1000); }
 
-        function loadLogs() { onSnapshot(query(collection(db, "system_logs"), orderBy("timestamp", "desc")), (snap) => { const b = document.getElementById('logs-body'); b.innerHTML = ""; let danger = 0; snap.forEach(d => { const l = d.data(); if(l.type === 'danger') danger++; b.innerHTML += `<tr><td><strong>${l.user}</strong></td><td><span class="badge ${l.type==='danger'?'badge-danger':'badge-success'}">${l.action}</span></td><td><small>${l.info}</small></td><td>${l.timestamp?.toDate().toLocaleString('ar-EG')}</td></tr>`; }); document.getElementById('kpi-security').innerText = danger; }); }
-        window.switchTab = (e, tab) => { document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); e.currentTarget.classList.add('active'); document.querySelectorAll('.section-card').forEach(s => s.classList.remove('active')); document.getElementById('sec-'+tab).classList.add('active'); }
+        // --- 2. نظام المراسلة والقوالب (CRM) ---
+        function loadTemplates() {
+            onSnapshot(collection(db, "msg_templates"), (snap) => {
+                templatesList = [];
+                let optionsHtml = `<option value="">-- رسالة حرة (كتابة يدوية) --</option>`;
+                if(snap.empty) {
+                    // القوالب الافتراضية
+                    addDoc(collection(db, "msg_templates"), { title: "متابعة طبية", content: "مرحباً {اسم}،\nمعك العيادة الذكية من دلتا للبصريات 👓.\nبناءً على فحصك نود إعلامك بـ ... وننصحك بزيارتنا.\nنتمنى لك دوام الصحة." });
+                    addDoc(collection(db, "msg_templates"), { title: "عرض ترويجي", content: "مرحباً {اسم}،\nمعك دلتا للبصريات 👓.\nيسعدنا أن نقدم لك خصم خاص حصرياً لك.\nننتظر زيارتك قريباً!" });
+                } else {
+                    snap.forEach(doc => {
+                        let t = {id: doc.id, ...doc.data()};
+                        templatesList.push(t);
+                        optionsHtml += `<option value="${t.id}">${t.title}</option>`;
+                    });
+                }
+                document.getElementById('msgTemplateType').innerHTML = optionsHtml;
+            });
+        }
+
+        window.openMsgModal = (name, phone) => {
+            targetName = name;
+            targetPhone = phone.replace(/\D/g,''); 
+            if(targetPhone.startsWith('07')) { targetPhone = '962' + targetPhone.substring(1); }
+            document.getElementById('msgPatientName').innerText = `المراجع: ${targetName} | هاتف: ${phone}`;
+            document.getElementById('msgTemplateType').value = ""; document.getElementById('msgContentBox').value = "";
+            document.getElementById('msgModal').classList.add('active');
+        }
+
+        window.closeMsgModal = () => document.getElementById('msgModal').classList.remove('active');
+
+        window.applyTemplate = () => {
+            const tId = document.getElementById('msgTemplateType').value;
+            const textBox = document.getElementById('msgContentBox');
+            if(!tId) { textBox.value = ""; return; }
+            const temp = templatesList.find(t => t.id === tId);
+            if(temp) { textBox.value = temp.content.replace(/{اسم}/g, targetName); }
+        }
+
+        window.saveTemplate = async () => {
+            const content = document.getElementById('msgContentBox').value.trim();
+            const tId = document.getElementById('msgTemplateType').value;
+            if(!content) return alert("لا يمكن حفظ قالب فارغ!");
+            
+            if(tId) {
+                // تعديل قالب موجود
+                const cleanContent = content.replace(new RegExp(targetName, 'g'), "{اسم}"); // نرجع المتغير مكانه
+                await setDoc(doc(db, "msg_templates", tId), { title: templatesList.find(t=>t.id===tId).title, content: cleanContent });
+                alert("تم تحديث القالب بنجاح!");
+                await logSecurity(currentUser.name, "تعديل قالب رسائل");
+            } else {
+                // قالب جديد
+                let title = prompt("أدخل اسماً للقالب الجديد (مثال: رسالة ترحيب):");
+                if(title) {
+                    const cleanContent = content.replace(new RegExp(targetName, 'g'), "{اسم}");
+                    await addDoc(collection(db, "msg_templates"), { title: title, content: cleanContent });
+                    alert("تم إضافة القالب الجديد!");
+                    await logSecurity(currentUser.name, "إضافة قالب رسائل جديد");
+                }
+            }
+        }
+
+        window.deleteTemplate = async () => {
+            const tId = document.getElementById('msgTemplateType').value;
+            if(!tId) return alert("الرجاء اختيار قالب لحذفه أولاً");
+            if(confirm("هل أنت متأكد من حذف هذا القالب؟")) {
+                await deleteDoc(doc(db, "msg_templates", tId));
+                document.getElementById('msgContentBox').value = "";
+                await logSecurity(currentUser.name, "حذف قالب رسائل", "warning");
+            }
+        }
+
+        window.sendFinalMessage = async (method) => {
+            const textContent = encodeURIComponent(document.getElementById('msgContentBox').value);
+            if (method === 'whatsapp') { window.open(`https://wa.me/${targetPhone}?text=${textContent}`, '_blank'); } 
+            else { window.open(`sms:${targetPhone}?body=${textContent}`, '_self'); }
+            await logSecurity(currentUser.name, `مراسلة المراجع ${targetName} عبر ${method}`);
+            closeMsgModal();
+        }
+
+        // --- 3. إدارة الموظفين والصلاحيات (للمدير فقط) ---
+        function loadUsersManager() {
+            onSnapshot(collection(db, "system_users"), (snap) => {
+                const tbody = document.getElementById('users-body'); tbody.innerHTML = "";
+                snap.forEach(d => {
+                    const u = d.data();
+                    const roleBadge = u.role === 'superadmin' ? `<span class="badge badge-danger">مدير نظام</span>` : `<span class="badge badge-success">موظف مختص</span>`;
+                    // الباسوورد مخفي كنوع من الحماية، وبيظهر عند الضغط
+                    tbody.innerHTML += `<tr>
+                        <td><strong>${u.name}</strong></td>
+                        <td dir="ltr">${u.username}</td>
+                        <td dir="ltr">
+                            <input type="password" id="pw-${d.id}" value="${u.pass}" readonly style="border:none; background:transparent; outline:none; width:80px;">
+                            <button class="btn" style="padding:4px; background:transparent; color:var(--primary);" onclick="togglePw('pw-${d.id}')"><i class="fas fa-eye"></i></button>
+                        </td>
+                        <td>${roleBadge}</td>
+                        <td>
+                            <button class="btn btn-warning" style="padding:6px 12px; font-size:0.8rem;" onclick="editUser('${d.id}', '${u.name}', '${u.username}', '${u.pass}', '${u.role}')"><i class="fas fa-edit"></i></button>
+                            ${u.username !== currentUser.username ? `<button class="btn btn-danger" style="padding:6px 12px; font-size:0.8rem;" onclick="deleteUser('${d.id}', '${u.name}')"><i class="fas fa-trash"></i></button>` : ''}
+                        </td>
+                    </tr>`;
+                });
+            });
+        }
+
+        window.togglePw = (id) => {
+            const input = document.getElementById(id);
+            input.type = input.type === "password" ? "text" : "password";
+        }
+
+        window.saveUser = async () => {
+            const editId = document.getElementById('edit-user-id').value;
+            const n = document.getElementById('new-name').value.trim();
+            const u = document.getElementById('new-username').value.trim();
+            const p = document.getElementById('new-password').value.trim();
+            const r = document.getElementById('new-role').value;
+            
+            if(!n || !u || !p) return alert("الرجاء إكمال جميع بيانات الموظف!");
+
+            if(editId) {
+                // تحديث مستخدم
+                await setDoc(doc(db, "system_users", editId), { name: n, username: u, pass: p, role: r });
+                alert("تم تحديث بيانات الموظف بنجاح");
+                await logSecurity(currentUser.name, `تعديل بيانات/رتبة الموظف: ${n}`, "warning");
+                cancelEditUser();
+            } else {
+                // إضافة مستخدم جديد
+                // نستخدم اليوزر كـ ID للدوكيومنت لسهولة الوصول
+                await setDoc(doc(db, "system_users", u), { name: n, username: u, pass: p, role: r });
+                alert("تمت إضافة الموظف الجديد بنجاح");
+                await logSecurity(currentUser.name, `إضافة موظف جديد: ${n}`, "success");
+                cancelEditUser();
+            }
+        }
+
+        window.editUser = (id, name, username, pass, role) => {
+            document.getElementById('user-form-title').innerText = "تعديل بيانات الموظف";
+            document.getElementById('edit-user-id').value = id;
+            document.getElementById('new-name').value = name;
+            document.getElementById('new-username').value = username;
+            document.getElementById('new-password').value = pass;
+            document.getElementById('new-role').value = role;
+            
+            document.getElementById('btn-save-user').innerText = "حفظ التعديلات";
+            document.getElementById('btn-cancel-user').style.display = "inline-flex";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.cancelEditUser = () => {
+            document.getElementById('user-form-title').innerText = "إضافة حساب جديد";
+            document.getElementById('edit-user-id').value = "";
+            document.getElementById('new-name').value = "";
+            document.getElementById('new-username').value = "";
+            document.getElementById('new-password').value = "";
+            document.getElementById('new-role').value = "manager";
+            document.getElementById('btn-save-user').innerText = "إضافة الحساب";
+            document.getElementById('btn-cancel-user').style.display = "none";
+        }
+
+        window.deleteUser = async (id, name) => {
+            if(confirm(`هل أنت متأكد تماماً من حذف الموظف (${name}) وإلغاء صلاحياته؟`)) {
+                await deleteDoc(doc(db, "system_users", id));
+                await logSecurity(currentUser.name, `حذف الموظف: ${name} وإنهاء صلاحياته`, "danger");
+            }
+        }
+
+        // --- مهام، لوجز، شارت ---
+        function loadLogs() { onSnapshot(query(collection(db, "system_logs"), orderBy("timestamp", "desc")), (snap) => { const b = document.getElementById('logs-body'); b.innerHTML = ""; let danger = 0; snap.forEach(d => { const l = d.data(); if(l.type === 'danger') danger++; b.innerHTML += `<tr><td><strong>${l.user}</strong></td><td><span class="badge ${l.type==='danger'?'badge-danger': l.type==='warning'?'badge-warning':'badge-success'}">${l.action}</span></td><td><small>${l.info}</small></td><td>${l.timestamp?.toDate().toLocaleString('ar-EG')}</td></tr>`; }); document.getElementById('kpi-security').innerText = danger; }); }
         window.addTask = async () => { const v = document.getElementById('newTaskInput').value; if(v) { await addDoc(collection(db, "admin_tasks"), { text: v, timestamp: serverTimestamp() }); document.getElementById('newTaskInput').value = ""; } }
         function loadTasks() { onSnapshot(query(collection(db, "admin_tasks"), orderBy("timestamp", "desc")), (snap) => { const list = document.getElementById('tasks-list'); list.innerHTML = ""; snap.forEach(d => { list.innerHTML += `<div style="display:flex; justify-content:space-between; padding:15px; background:#F8FAFC; margin-bottom:10px; border-radius:10px; border:1px solid #E2E8F0;"><span>${d.data().text}</span><button class="btn" style="background:var(--danger); color:white; padding:5px 10px;" onclick="deleteTask('${d.id}')"><i class="fas fa-trash"></i></button></div>`; }); }); }
         window.deleteTask = async (id) => await deleteDoc(doc(db, "admin_tasks", id));
-        window.addNewUser = async () => { const n = document.getElementById('new-name').value; const u = document.getElementById('new-username').value; const p = document.getElementById('new-password').value; const r = document.getElementById('new-role').value; if(!n || !u || !p) return alert("أكمل البيانات"); await setDoc(doc(db, "system_users", u), { name: n, username: u, pass: p, role: r }); alert("تمت الإضافة"); }
         function updateChart(dataMap) { const ctx = document.getElementById('reportsChart').getContext('2d'); if(myChart) myChart.destroy(); myChart = new Chart(ctx, { type: 'line', data: { labels: Object.keys(dataMap).reverse(), datasets: [{ label: 'الفحوصات', data: Object.values(dataMap).reverse(), borderColor: '#0E7490', backgroundColor: 'rgba(14, 116, 144, 0.1)', fill: true, tension: 0.4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } }); }
-        window.forceRefreshReports = () => { document.getElementById('sync-icon').classList.add('fa-spin'); initialLoadDone = false; loadReportsRealtime(); setTimeout(() => document.getElementById('sync-icon').classList.remove('fa-spin'), 1000); }
     </script>
 </body>
 </html>

@@ -30,16 +30,16 @@
         .nav-item { padding: 18px 25px; cursor: pointer; display: flex; align-items: center; gap: 15px; font-weight: 600; color: #94A3B8; transition: 0.3s; border-right: 4px solid transparent; font-size: 1.05rem;}
         .nav-item:hover { color: white; background: rgba(255,255,255,0.05); }
         .nav-item.active { background: linear-gradient(90deg, rgba(14,116,144,0.15) 0%, transparent 100%); color: white; border-right-color: var(--primary); }
-        .admin-only { display: none; }
+        .admin-nav { display: none; } /* تم حل مشكلة التداخل هنا */
 
         /* 3. المحتوى الرئيسي */
         #main-content { flex: 1; padding: 20px 30px; overflow-y: auto; display: none; background: var(--bg); }
         #main-content.show { display: block; }
         header { display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); padding: 20px 25px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 30px; border: var(--border);}
         
-        /* البطاقات والجداول */
+        /* البطاقات والأقسام (التبويبات) */
         .section-card { background: var(--card-bg); padding: 30px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 30px; border: var(--border); display: none; animation: slideUp 0.3s ease; }
-        .section-card.active { display: block; }
+        .section-card.active { display: block !important; } /* إجبار القسم النشط فقط على الظهور */
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
         .table-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 15px; flex-wrap: wrap; }
@@ -48,6 +48,9 @@
         th { background: #F8FAFC; padding: 18px 20px; text-align: right; color: var(--text-muted); font-weight: 800; font-size: 0.9rem; border-bottom: 2px solid #E2E8F0; }
         td { padding: 18px 20px; border-bottom: 1px solid #F1F5F9; vertical-align: middle; }
         tr:hover td { background: #F8FAFC; }
+
+        /* تنسيق فورم إدارة الحسابات الجديد (مرتب وغير مضغوط) */
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
 
         /* الشات الداخلي */
         .chat-container { display: flex; flex-direction: column; height: 450px; background: #f0fdfa; border-radius: 15px; border: var(--border); overflow: hidden; }
@@ -66,7 +69,7 @@
         .btn-warning { background: #fef3c7; color: var(--warning); }
         .btn:active { transform: scale(0.95); }
         
-        .input-field { width: 100%; padding: 16px; border-radius: 12px; border: var(--border); outline: none; background: #F8FAFC; font-size: 1rem; font-weight: 600; transition: 0.2s; margin-bottom: 15px;}
+        .input-field { width: 100%; padding: 16px; border-radius: 12px; border: var(--border); outline: none; background: #F8FAFC; font-size: 1rem; font-weight: 600; transition: 0.2s; }
         .input-field:focus { border-color: var(--primary); background: white; }
 
         .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 3000; }
@@ -82,10 +85,10 @@
         <div class="login-box">
             <div style="width: 80px; height: 80px; background: var(--primary-light); color: var(--primary); border-radius: 22px; display: flex; align-items: center; justify-content: center; font-size: 2.8rem; margin: 0 auto 20px;"><i class="fas fa-fingerprint"></i></div>
             <h2 style="color: var(--secondary); font-weight: 900; margin:0 0 25px;">بوابة الإدارة المركزية</h2>
-            <input type="text" id="login-user" class="input-field" placeholder="اسم المستخدم" dir="ltr">
-            <input type="password" id="login-pass" class="input-field" placeholder="كلمة المرور" dir="ltr" onkeypress="if(event.key === 'Enter') attemptLogin()">
+            <input type="text" id="login-user" class="input-field" placeholder="اسم المستخدم" dir="ltr" style="margin-bottom: 15px;">
+            <input type="password" id="login-pass" class="input-field" placeholder="كلمة المرور" dir="ltr" onkeypress="if(event.key === 'Enter') attemptLogin()" style="margin-bottom: 15px;">
             <button class="btn btn-primary" style="width:100%; padding: 16px;" onclick="attemptLogin()" id="btn-login">تسجيل الدخول</button>
-            <button class="btn" style="background:transparent; color:var(--text-muted); width: 100%; font-size:0.9rem;" onclick="document.getElementById('reportModal').classList.add('active')">نسيت كلمة المرور أو واجهت مشكلة؟</button>
+            <button class="btn" style="background:transparent; color:var(--text-muted); width: 100%; font-size:0.9rem; margin-top: 10px;" onclick="document.getElementById('reportModal').classList.add('active')">نسيت كلمة المرور أو واجهت مشكلة؟</button>
         </div>
     </div>
 
@@ -94,10 +97,10 @@
             <i class="fas fa-headset" style="font-size: 3rem; color: var(--warning); margin-bottom: 15px;"></i>
             <h3 style="margin-top: 0;">التواصل مع الإدارة</h3>
             <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">سيتم إرسال بلاغك فوراً لمدير النظام.</p>
-            <input type="text" id="rep-user" class="input-field" placeholder="اسم المستخدم" dir="ltr">
-            <textarea id="rep-msg" class="input-field" placeholder="اشرح المشكلة..." style="height:100px; resize:none;"></textarea>
+            <input type="text" id="rep-user" class="input-field" placeholder="اسم المستخدم" dir="ltr" style="margin-bottom: 15px;">
+            <textarea id="rep-msg" class="input-field" placeholder="اشرح المشكلة..." style="height:100px; resize:none; margin-bottom: 15px;"></textarea>
             <button class="btn btn-primary" style="width:100%;" id="btn-rep" onclick="sendReport()">إرسال البلاغ</button>
-            <button class="btn" style="background:transparent; color:var(--text); width: 100%;" onclick="document.getElementById('reportModal').classList.remove('active')">إلغاء</button>
+            <button class="btn" style="background:transparent; color:var(--text); width: 100%; margin-top: 10px;" onclick="document.getElementById('reportModal').classList.remove('active')">إلغاء</button>
         </div>
     </div>
 
@@ -106,12 +109,12 @@
             <i class="fas fa-infinity" style="color:var(--primary); font-size: 1.8rem;"></i>
             <h2 style="margin:0; color:white; font-size:1.6rem; font-weight: 900;">DELTA</h2>
         </div>
-        <div class="nav-item active" onclick="switchTab('reports')"><i class="fas fa-users"></i> <span>سجل المراجعين</span></div>
-        <div class="nav-item" onclick="switchTab('analytics')"><i class="fas fa-chart-bar"></i> <span>التحليل البياني</span></div>
-        <div class="nav-item" onclick="switchTab('chat')"><i class="fas fa-comments"></i> <span>التواصل الداخلي</span></div>
-        <div class="nav-item" onclick="switchTab('tasks')"><i class="fas fa-tasks"></i> <span>المهام والملاحظات</span></div>
-        <div class="nav-item admin-only" onclick="switchTab('users')"><i class="fas fa-users-cog"></i> <span>إدارة الموظفين</span></div>
-        <div class="nav-item admin-only" onclick="switchTab('audit')"><i class="fas fa-shield-alt"></i> <span>المراقبة السرية</span></div>
+        <div class="nav-item active" onclick="switchTab(event, 'reports')"><i class="fas fa-users"></i> <span>سجل المراجعين</span></div>
+        <div class="nav-item" onclick="switchTab(event, 'analytics')"><i class="fas fa-chart-bar"></i> <span>التحليل البياني</span></div>
+        <div class="nav-item" onclick="switchTab(event, 'chat')"><i class="fas fa-comments"></i> <span>التواصل الداخلي</span></div>
+        <div class="nav-item" onclick="switchTab(event, 'tasks')"><i class="fas fa-tasks"></i> <span>المهام والملاحظات</span></div>
+        <div class="nav-item admin-nav" onclick="switchTab(event, 'users')"><i class="fas fa-users-cog"></i> <span>إدارة الموظفين</span></div>
+        <div class="nav-item admin-nav" onclick="switchTab(event, 'audit')"><i class="fas fa-shield-alt"></i> <span>المراقبة السرية</span></div>
     </div>
 
     <div id="main-content">
@@ -160,15 +163,17 @@
             <div id="tasks-list"></div>
         </div>
 
-        <div id="sec-users" class="section-card admin-only">
+        <div id="sec-users" class="section-card">
             <h2 style="margin-top:0;">إدارة الحسابات</h2>
-            <div style="background:#F8FAFC; padding:20px; border-radius:15px; border:var(--border); margin-bottom:20px; display:flex; gap:10px; flex-wrap:wrap;">
+            <div style="background:#F8FAFC; padding:25px; border-radius:15px; border:var(--border); margin-bottom:25px;">
                 <input type="hidden" id="edit-uid">
-                <input type="text" id="u-name" class="input-field" style="flex:1; margin:0;" placeholder="الاسم">
-                <input type="text" id="u-user" class="input-field" style="flex:1; margin:0;" placeholder="اليوزر" dir="ltr">
-                <input type="password" id="u-pass" class="input-field" style="flex:1; margin:0;" placeholder="الباسورد" dir="ltr">
-                <select id="u-role" class="input-field" style="flex:1; margin:0;"><option value="manager">موظف</option><option value="superadmin">مدير نظام</option></select>
-                <button class="btn btn-primary" onclick="saveUser()"><i class="fas fa-save"></i> حفظ</button>
+                <div class="form-grid">
+                    <input type="text" id="u-name" class="input-field" style="margin:0;" placeholder="الاسم الكامل">
+                    <input type="text" id="u-user" class="input-field" style="margin:0;" placeholder="اليوزر" dir="ltr">
+                    <input type="password" id="u-pass" class="input-field" style="margin:0;" placeholder="الباسورد" dir="ltr">
+                    <select id="u-role" class="input-field" style="margin:0;"><option value="manager">موظف</option><option value="superadmin">مدير نظام</option></select>
+                </div>
+                <button class="btn btn-primary" style="width: 100%; max-width: 200px;" onclick="saveUser()"><i class="fas fa-save"></i> حفظ الحساب</button>
             </div>
             <div class="table-responsive">
                 <table>
@@ -178,11 +183,11 @@
             </div>
         </div>
 
-        <div id="sec-audit" class="section-card admin-only">
+        <div id="sec-audit" class="section-card">
             <h2 style="margin-top:0; color:var(--danger);"><i class="fas fa-user-secret"></i> السجل الأمني الدقيق</h2>
             <div class="table-responsive">
                 <table>
-                    <thead><tr><th>المسؤول / IP</th><th>الحدث</th><th>الجهاز | المتصفح</th><th>التوقيت</th></tr></thead>
+                    <thead><tr><th>المسؤول / IP</th><th>الحدث الأمني</th><th>الجهاز | المتصفح</th><th>التوقيت</th></tr></thead>
                     <tbody id="logs-body"></tbody>
                 </table>
             </div>
@@ -194,12 +199,12 @@
             <h3 style="margin-top:0; color:var(--primary);"><i class="fas fa-paper-plane"></i> المراسلة الذكية</h3>
             <p id="msgPatientName" style="background:#ECFEFF; color:var(--primary); font-weight:bold; padding:10px; border-radius:10px;"></p>
             
-            <div style="display:flex; gap:10px; margin-bottom: 10px;">
+            <div style="display:flex; gap:10px; margin-bottom: 15px;">
                 <select id="msgTemplateType" class="input-field" style="margin:0;" onchange="applyTemplate()"></select>
                 <button class="btn btn-warning" onclick="saveTemplate()" title="حفظ"><i class="fas fa-save"></i></button>
                 <button class="btn btn-danger" onclick="deleteTemplate()" title="حذف"><i class="fas fa-trash"></i></button>
             </div>
-            <textarea id="msgContentBox" class="input-field" style="height: 120px; resize: none;" placeholder="نص الرسالة ({اسم} سيستبدل تلقائياً)"></textarea>
+            <textarea id="msgContentBox" class="input-field" style="height: 120px; resize: none; margin-bottom: 15px;" placeholder="نص الرسالة ({اسم} سيستبدل تلقائياً)"></textarea>
             
             <div style="display: flex; gap: 10px;">
                 <button class="btn btn-success" style="flex:1;" onclick="sendFinalMsg('whatsapp')"><i class="fab fa-whatsapp"></i> واتساب</button>
@@ -238,7 +243,12 @@
                 document.getElementById('sidebar').classList.add('show');
                 document.getElementById('main-content').classList.add('show');
                 document.getElementById('welcome-text').innerText = `أهلاً، ${currentUser.name}`;
-                if(currentUser.role === 'superadmin') document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
+                
+                // إظهار روابط القائمة الجانبية الخاصة بالمدير فقط
+                if(currentUser.role === 'superadmin') {
+                    document.querySelectorAll('.admin-nav').forEach(el => el.style.display = 'flex');
+                }
+                
                 logAudit(currentUser.name, "تسجيل دخول", "success");
                 initAllData();
             } else { alert("بيانات خاطئة"); document.getElementById('btn-login').innerHTML = "تسجيل الدخول"; logAudit(u, "محاولة دخول فاشلة", "danger"); }
@@ -253,10 +263,17 @@
             .then(() => { alert("تم إرسال البلاغ للمدير."); document.getElementById('reportModal').classList.remove('active'); document.getElementById('btn-rep').innerText = "إرسال البلاغ"; }, () => alert("خطأ بالاتصال."));
         }
 
-        // التنقل بين الأقسام
-        window.switchTab = (tab) => {
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); event.currentTarget.classList.add('active');
-            document.querySelectorAll('.section-card').forEach(s => s.classList.remove('active')); document.getElementById('sec-'+tab).classList.add('active');
+        // التنقل بين الأقسام (تم التعديل لضمان عدم الخربطة)
+        window.switchTab = (event, tab) => {
+            // إزالة الكلاس من كل الروابط
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); 
+            if(event) event.currentTarget.classList.add('active');
+            
+            // إخفاء كل الأقسام
+            document.querySelectorAll('.section-card').forEach(s => s.classList.remove('active')); 
+            
+            // إظهار القسم المطلوب فقط
+            document.getElementById('sec-' + tab).classList.add('active');
         }
 
         // تهيئة وجلب كل البيانات الحية
@@ -299,7 +316,7 @@
                 snap.forEach(d => { list.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; padding:15px; background:#F8FAFC; margin-bottom:10px; border-radius:10px; border:1px solid #E2E8F0;"><span style="font-weight:600;">${d.data().text}</span><button class="btn btn-danger" style="padding:5px 10px;" onclick="deleteTask('${d.id}')"><i class="fas fa-trash"></i></button></div>`; }); 
             });
 
-            // 5. الموظفين والمراقبة (للمدير)
+            // 5. الموظفين والمراقبة (تُجلب فقط للمدير)
             if(currentUser.role === 'superadmin') {
                 onSnapshot(collection(db, "system_users"), (snap) => {
                     const tb = document.getElementById('users-body'); tb.innerHTML = "";
@@ -319,7 +336,7 @@
             }
         }
 
-        // ================= دوال الأقسام =================
+        // ================= دوال الإجراءات =================
 
         // المراسلة والقوالب
         window.openMsg = (n, p) => { targetName = n; targetPhone = p.replace(/\D/g,''); if(targetPhone.startsWith('07')) targetPhone='962'+targetPhone.substring(1); document.getElementById('msgPatientName').innerText=`${n} (${p})`; document.getElementById('msgContentBox').value=""; document.getElementById('msgModal').classList.add('active'); }
@@ -338,7 +355,7 @@
         // الموظفين
         window.saveUser = async () => { const id = document.getElementById('edit-uid').value; const n=document.getElementById('u-name').value, u=document.getElementById('u-user').value, p=document.getElementById('u-pass').value, r=document.getElementById('u-role').value; if(!n||!u||!p) return; if(id) { await setDoc(doc(db, "system_users", id), {name:n, username:u, pass:p, role:r}); logAudit(currentUser.name, `تعديل الموظف ${n}`, "warning"); } else { await setDoc(doc(db, "system_users", u), {name:n, username:u, pass:p, role:r}); logAudit(currentUser.name, `إضافة الموظف ${n}`, "success"); } document.getElementById('edit-uid').value=""; document.getElementById('u-name').value=""; document.getElementById('u-user').value=""; document.getElementById('u-pass').value=""; }
         window.editU = (id,n,u,p,r) => { document.getElementById('edit-uid').value=id; document.getElementById('u-name').value=n; document.getElementById('u-user').value=u; document.getElementById('u-pass').value=p; document.getElementById('u-role').value=r; }
-        window.delU = async (id,n) => { if(confirm("حذف؟")) { await deleteDoc(doc(db, "system_users", id)); logAudit(currentUser.name, `حذف الموظف ${n}`, "danger"); } }
+        window.delU = async (id,n) => { if(confirm("تأكيد الحذف؟")) { await deleteDoc(doc(db, "system_users", id)); logAudit(currentUser.name, `حذف الموظف ${n}`, "danger"); } }
 
         // فلاتر، إكسل، ورسم بياني
         window.filterTable = () => { let input = document.getElementById("searchReports").value.toUpperCase(); let trs = document.getElementById("reports-body").getElementsByTagName("tr"); for(let i=0; i<trs.length; i++) { let td = trs[i].getElementsByTagName("td")[0]; if(td) trs[i].style.display = (td.textContent||td.innerText).toUpperCase().indexOf(input) > -1 ? "" : "none"; } }

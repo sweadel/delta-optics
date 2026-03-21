@@ -29,8 +29,6 @@
             --success: #10b981;
             --error: #ef4444;
             --gold: #f59e0b;
-            --radius: 20px;
-            --shadow-lg: 0 10px 30px -10px rgba(0,0,0,0.1);
         }
 
         [data-theme="dark"] {
@@ -114,30 +112,6 @@
         .open-dot { background: var(--success); box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2); }
         .closed-dot { background: var(--error); box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2); }
 
-        /* --- 🖼️ ستايل معرض الصور الحقيقي الجديد (VIP Style) --- */
-        .gallery-section { width: 100%; margin-bottom: 30px; text-align: right; }
-        .gallery-container {
-            width: 100%; overflow-x: auto;
-            display: flex; gap: 15px;
-            scroll-snap-type: x mandatory; /* تفعيل ميزة السحب المغناطيسي للصور */
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--surface-border);
-            -webkit-overflow-scrolling: touch; /* سحب ناعم على آيفون */
-            padding: 5px; background: var(--surface); backdrop-filter: blur(10px);
-        }
-        /* إخفاء شريط التمرير الافتراضي لشكل أجمل */
-        .gallery-container::-webkit-scrollbar { display: none; }
-        
-        .gallery-slide {
-            flex: 0 0 100%; /* كل صورة تأخذ العرض الكامل للكونتينر */
-            width: 100%; height: 220px;
-            scroll-snap-align: start; /* محاذاة بداية الصورة مع بداية الكونتينر */
-            border-radius: 16px;
-            object-fit: cover; /* لضمان عدم تشوه الصورة مهما كان حجمها */
-            border: 1px solid var(--surface-border);
-        }
-
         .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; margin-bottom: 25px; perspective: 1000px; }
         .main-card {
             background: var(--surface); backdrop-filter: blur(10px); border: 1px solid var(--surface-border);
@@ -163,7 +137,7 @@
         }
         
         .social-section { width: 100%; margin-bottom: 30px; }
-        .sec-title { font-size: 0.95rem; font-weight: 800; color: var(--text-main); margin-bottom: 15px; display: block; }
+        .sec-title { font-size: 0.9rem; font-weight: 800; color: var(--text-muted); margin-bottom: 15px; display: block; }
         .social-row { display: flex; gap: 12px; justify-content: center; }
         .soc-btn {
             flex: 1; padding: 14px; border-radius: 15px; display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -200,13 +174,23 @@
 
         .brand-item { margin: 0 35px; font-size: 1.4rem; opacity: 0.8; display: inline-block; color: var(--text-main); }
         
-        /* ستايلات الماركات المحددة... */
         .rayban { font-family: 'Montserrat', sans-serif; font-weight: 900; font-style: italic; color: #E01E26; }
         .gucci { font-family: 'Playfair Display', serif; font-weight: 700; letter-spacing: 2px; font-size: 1.2rem; }
         .lacoste { font-family: 'Montserrat', sans-serif; font-weight: 800; color: #004526; }
+        .tomford { font-family: 'Montserrat', sans-serif; font-weight: 700; letter-spacing: 1px; border: 2px solid var(--text-main); padding: 0 5px; font-size: 1rem; }
+        .prada { font-family: 'Playfair Display', serif; font-weight: 700; letter-spacing: 3px; font-size: 1.1rem; }
         .versace { font-family: 'Cinzel', serif; font-weight: 700; color: #EAB308; }
+        .police { font-family: 'Impact', sans-serif; letter-spacing: 1px; font-style: italic; }
         .carrera { font-family: 'Roboto Condensed', sans-serif; font-weight: 700; color: #C51D24; font-style: italic; }
+        .dior { font-family: 'Playfair Display', serif; font-weight: 700; letter-spacing: 2px; }
+        .cartier { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 700; }
+        .armani { font-family: 'Montserrat', sans-serif; font-weight: 400; letter-spacing: 2px; }
+        .burberry { font-family: 'Montserrat', sans-serif; font-weight: 800; letter-spacing: 1px; font-size: 1.2rem; }
         .oakley { font-family: 'Montserrat', sans-serif; font-weight: 900; font-style: italic; font-size: 1.5rem; letter-spacing: -1px; }
+        .persol { font-family: 'Playfair Display', serif; font-weight: 700; font-style: italic; letter-spacing: 1px; }
+        .fendi { font-family: 'Montserrat', sans-serif; font-weight: 900; letter-spacing: 1px; }
+        .celine { font-family: 'Montserrat', sans-serif; font-weight: 800; letter-spacing: 2px; }
+        .boss { font-family: 'Montserrat', sans-serif; font-weight: 900; letter-spacing: -1px; }
 
         .fab-area { position: fixed; bottom: 25px; right: 25px; display: flex; flex-direction: column; gap: 15px; z-index: 200; }
         .fab { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.6rem; text-decoration: none; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transition: transform 0.2s; cursor: pointer; border: none;}
@@ -291,15 +275,6 @@
             </div>
         </div>
 
-        <div class="gallery-section">
-            <span class="sec-title" id="txt-gallery-title"><i class="fas fa-store" style="color:var(--secondary);"></i> جولة داخل فرع المقابلين</span>
-            <div class="gallery-container">
-                <img src="image_0.png" alt="فرع المقابلين - Delta Optics" class="gallery-slide" fetchpriority="high" onerror="this.src='https://via.placeholder.com/600x220?text=Clinic+Photo+1'">
-                <img src="image_2.png" alt="تشكيلة النظارات - Delta Optics" class="gallery-slide" fetchpriority="high" onerror="this.src='https://via.placeholder.com/600x220?text=Clinic+Photo+2'">
-                <img src="image_1.png" alt="أجهزة فحص العين - Delta Optics" class="gallery-slide" onerror="this.src='https://via.placeholder.com/600x220?text=Clinic+Photo+3'">
-            </div>
-        </div>
-
         <div class="cards-grid">
             <a href="test.html" class="main-card highlight-card tilt-card">
                 <i class="fas fa-microscope card-icon"></i>
@@ -331,7 +306,7 @@
         </a>
 
         <div class="social-section">
-            <span class="sec-title" id="txt-follow"><i class="fas fa-share-alt" style="color:var(--primary);"></i> تابعونا على منصات التواصل</span>
+            <span class="sec-title" id="txt-follow">تابعونا على منصات التواصل</span>
             <div class="social-row">
                 <a href="https://www.facebook.com/delta.optics1/" target="_blank" rel="noopener noreferrer" class="soc-btn fb-btn">
                     <i class="fab fa-facebook-f"></i> Facebook
@@ -397,7 +372,7 @@
     </div>
 
     <script>
-        // إعدادات الـ Tilt (الإمالة ثلاثية الأبعاد) للكروت
+        // تأثير الإمالة للكروت (Tilt Effect)
         const tiltCards = document.querySelectorAll('.tilt-card');
         tiltCards.forEach(card => {
             card.addEventListener('mousemove', e => {
@@ -421,27 +396,25 @@
             document.getElementById('theme-btn').innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
         }
 
-        // إعدادات اللغة (Bilingual Support)
+        // إعدادات النصوص واللغة (Bilingual Support)
         const i18n = {
             ar: {
                 topbar: "👓 أحدث تشكيلات 2026 متوفرة الآن في فرع المقابلين!",
                 hero: "دلتا للبصريات",
                 sub: "الفرع الرئيسي - المقابلين<br>خبراء العناية بالعين وأحدث الماركات",
                 statusOpen: "مفتوح الآن", statusClosed: "مغلق الآن",
-                galleryTitle: "<i class='fas fa-store' style='color:var(--secondary);'></i> جولة داخل فرع المقابلين",
                 test: "الفحص الذكي", coll: "التشكيلات", loc: "موقع الفرع على الخريطة",
                 srv1: "صيانة فورية", srv2: "توصيل متاح", srv3: "تجهيز عدسات",
-                follow: "<i class='fas fa-share-alt' style='color:var(--primary);'></i> تابعونا على منصات التواصل", revTitle: "آراء عملائنا"
+                follow: "تابعونا على منصات التواصل", revTitle: "آراء عملائنا"
             },
             en: {
                 topbar: "👓 The latest 2026 collections are now available!",
                 hero: "DELTA OPTICS",
                 sub: "Main Branch - Al Muqablain<br>Eye Care Experts & Premium Brands",
                 statusOpen: "Open Now", statusClosed: "Closed Now",
-                galleryTitle: "<i class='fas fa-store' style='color:var(--secondary);'></i> Virtual Tour of Al Muqablain Branch",
                 test: "Smart Test", coll: "Collections", loc: "Location Map",
                 srv1: "Quick Repair", srv2: "Delivery", srv3: "Lens Fitting",
-                follow: "<i class='fas fa-share-alt' style='color:var(--primary);'></i> Follow Us", revTitle: "Customer Reviews"
+                follow: "Follow Us", revTitle: "Customer Reviews"
             }
         };
         
@@ -461,6 +434,7 @@
 
         let curLang = 'ar';
 
+        // تغيير اللغة
         function toggleLang() {
             curLang = curLang === 'ar' ? 'en' : 'ar';
             const html = document.documentElement;
@@ -470,26 +444,25 @@
             html.dir = curLang === 'ar' ? 'rtl' : 'ltr';
             document.getElementById('lang-btn').innerText = curLang === 'ar' ? 'EN' : 'عربي';
 
-            // تحديث النصوص
+            // تحديث النصوص في الصفحة
             document.getElementById('txt-topbar').innerText = t.topbar;
-            document.getElementById('txt-header').innerText = 'DELTA OPTICS';
+            document.getElementById('txt-header').innerText = curLang === 'ar' ? 'DELTA OPTICS' : 'DELTA OPTICS';
             document.getElementById('txt-hero').innerText = t.hero;
             document.getElementById('txt-sub').innerHTML = t.sub;
-            document.getElementById('txt-gallery-title').innerHTML = t.galleryTitle;
             document.getElementById('txt-test').innerText = t.test;
             document.getElementById('txt-coll').innerText = t.coll;
             document.getElementById('txt-srv-1').innerText = t.srv1;
             document.getElementById('txt-srv-2').innerText = t.srv2;
             document.getElementById('txt-srv-3').innerText = t.srv3;
             document.getElementById('txt-loc').innerText = t.loc;
-            document.getElementById('txt-follow').innerHTML = t.follow;
+            document.getElementById('txt-follow').innerText = t.follow;
             document.getElementById('txt-rev-title').innerText = t.revTitle;
 
-            checkStatus();
-            loadRandomReviews();
+            checkStatus(); // تحديث نص حالة الدوام حسب اللغة الجديدة
+            loadRandomReviews(); // تحميل مراجعات جديدة باللغة الجديدة
         }
 
-        // فحص حالة الدوام
+        // فحص حالة الدوام (مفتوح/مغلق)
         function checkStatus() {
             const now = new Date();
             const day = now.getDay(); 
@@ -498,9 +471,10 @@
             const statusText = document.getElementById('status-text');
             
             let isOpen = false;
-            if (day === 5) { // الجمعة: 4 عصراً - 10 مساءً
+            // السبت - الخميس: 10 ص - 10 م | الجمعة: 4 ع - 10 م
+            if (day === 5) { // الجمعة
                 if (hour >= 16 && hour < 22) isOpen = true; 
-            } else { // باقي الأيام: 10 صباحاً - 10 مساءً
+            } else { // باقي الأيام
                 if (hour >= 10 && hour < 22) isOpen = true; 
             }
 
@@ -513,12 +487,13 @@
             }
         }
 
-        // تحميل الآراء العشوائية
+        // تحميل آراء عشوائية
         function loadRandomReviews() {
             const container = document.getElementById('reviews-container');
             container.innerHTML = ''; 
             
             const list = reviewsData[curLang];
+            // خلط الآراء واختيار اثنين
             const shuffled = [...list].sort(() => 0.5 - Math.random()).slice(0, 2);
 
             shuffled.forEach(rev => {
@@ -543,32 +518,36 @@
             });
         }
 
-        // تشغيل الوظائف الأساسية عند التحميل
+        // تشغيل الوظائف الأساسية عند تحميل الصفحة
         checkStatus();
         loadRandomReviews();
 
-        // --- المساعد الذكي (Gemini AI) ---
+        // --- المساعد الذكي (Gemini AI integration) ---
         const GEMINI_API_KEY = "AIzaSyAgR51pScEgGUIky_N6fX6GaelzsfI5ZBM"; 
 
+        // فتح/إغلاق نافذة الدردشة
         function toggleChat() {
             const chat = document.getElementById('chat-overlay');
             chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
         }
 
+        // التعامل مع زر Enter في الإدخال
         function handleChatKey(e) {
             if (e.key === 'Enter') sendChatMessage();
         }
 
+        // إرسال الرسالة إلى الـ AI واستقبال الرد
         async function sendChatMessage() {
             const input = document.getElementById('chat-input');
             const message = input.value.trim();
             if (!message) return;
 
+            // إضافة رسالة المستخدم للواجهة
             addMessageToChat(message, 'user-msg');
             input.value = '';
             document.getElementById('typing-indicator').style.display = 'block';
 
-            // تعليمات النظام للمساعد (لهجة أردنية لطيفة)
+            // تعليمات النظام المخصصة لـ Gemini
             const systemInstruction = "أنت مساعد ذكي ولطيف تعمل في 'دلتا للبصريات' في الأردن (فرع المقابلين). أجب باختصار واحترافية عن أسئلة النظارات والعدسات، وشجع العميل على زيارة الفرع لعمل فحص نظر مجاني. تحدث باللغة العربية بلهجة أردنية لطيفة ومفهومة.";
 
             const requestBody = {
@@ -586,6 +565,7 @@
 
                 const data = await response.json();
                 
+                // إضافة رد الـ AI للواجهة
                 if (data.candidates && data.candidates[0].content.parts[0].text) {
                     const aiReply = data.candidates[0].content.parts[0].text;
                     addMessageToChat(aiReply, 'ai-msg');
@@ -596,18 +576,20 @@
                 console.error("AI Error:", error);
                 addMessageToChat("عذراً، حدث خطأ في النظام. تواصل معنا على الواتساب.", 'ai-msg');
             } finally {
+                // إخفاء مؤشر التحميل
                 document.getElementById('typing-indicator').style.display = 'none';
             }
         }
 
+        // وظيفة مساعدة لإضافة فقاعات الدردشة
         function addMessageToChat(text, className) {
             const chatBody = document.getElementById('chat-body');
             const msgDiv = document.createElement('div');
             msgDiv.className = `msg ${className}`;
-            // تنظيف النص وتنسيقه
+            // تنسيق بسيط للنص (إزالة النجوم، تحويل السطور الجديدة لـ <br>)
             msgDiv.innerHTML = text.replace(/\*\*/g, '').replace(/\n/g, '<br>');
             chatBody.appendChild(msgDiv);
-            chatBody.scrollTop = chatBody.scrollHeight; 
+            chatBody.scrollTop = chatBody.scrollHeight; // التمرير للأسفل تلقائياً
         }
     </script>
 </body>

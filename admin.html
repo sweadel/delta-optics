@@ -110,7 +110,7 @@
         <div class="login-box">
             <div style="width: 80px; height: 80px; background: var(--primary-light); color: var(--primary); border-radius: 22px; display: flex; align-items: center; justify-content: center; font-size: 2.8rem; margin: 0 auto 20px;"><i class="fas fa-shield-alt"></i></div>
             <h2 style="color: var(--sidebar); font-weight: 900; margin:0 0 25px; font-size: 1.6rem;">بوابة الإدارة (المحمية)</h2>
-            <input type="email" id="login-email" class="input-field" placeholder="البريد الإلكتروني" dir="ltr" style="margin-bottom: 15px;">
+            <input type="text" id="login-user" class="input-field" placeholder="اسم المستخدم" dir="ltr" style="margin-bottom: 15px;">
             <input type="password" id="login-pass" class="input-field" placeholder="كلمة المرور" dir="ltr" onkeypress="if(event.key === 'Enter') attemptLogin()" style="margin-bottom: 20px;">
             <button class="btn btn-primary" style="width:100%; padding: 16px; font-size: 1.1rem; height: 55px;" onclick="attemptLogin()" id="btn-login">تسجيل دخول آمن</button>
             <button class="btn" style="background:transparent; color:var(--text-muted); width: 100%; font-size:0.9rem; margin-top: 10px;" onclick="document.getElementById('reportModal').classList.add('active')">نسيت كلمة المرور؟</button>
@@ -122,7 +122,7 @@
             <i class="fas fa-headset" style="font-size: 3.5rem; color: var(--primary); margin-bottom: 15px;"></i>
             <h3 style="margin-top: 0; font-weight: 800;">دعم طاقم Delta Optics</h3>
             <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px;">سيتم إرسال بلاغك فوراً لمدير النظام لاتخاذ اللازم.</p>
-            <input type="text" id="rep-user" class="input-field" placeholder="اسم المستخدم أو الإيميل" dir="ltr" style="margin-bottom: 15px;">
+            <input type="text" id="rep-user" class="input-field" placeholder="اسم المستخدم" dir="ltr" style="margin-bottom: 15px;">
             <textarea id="rep-msg" class="input-field" placeholder="اشرح المشكلة باختصار..." style="height:110px; resize:none; margin-bottom: 20px;"></textarea>
             <button class="btn btn-primary" style="width:100%; margin-bottom:10px;" id="btn-rep" onclick="sendReport()">إرسال البلاغ</button>
             <button class="btn btn-outline" style="width: 100%;" onclick="document.getElementById('reportModal').classList.remove('active')">تراجع</button>
@@ -148,7 +148,7 @@
                 <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
                 <div>
                     <h2 id="welcome-text" style="margin:0; color:var(--sidebar); font-weight:900; font-size: 1.5rem;"></h2>
-                    <p style="margin: 5px 0 0; color: var(--text-muted); font-size: 0.95rem;">مرحباً بك في النظام المحمي بـ Firebase Auth</p>
+                    <p style="margin: 5px 0 0; color: var(--text-muted); font-size: 0.95rem;">مرحباً بك في النظام الاحترافي</p>
                 </div>
             </div>
             <button class="btn btn-outline" style="color:var(--danger); border-color: #fee2e2;" onclick="logout()"><i class="fas fa-sign-out-alt"></i> تسجيل خروج</button>
@@ -193,19 +193,20 @@
         </div>
 
         <div id="sec-users" class="section-card admin-only">
-            <h2 style="margin-top:0;">إدارة الحسابات (يتم إضافتها من Firebase Console)</h2>
-            <p style="color: var(--text-muted); margin-bottom: 20px;">لأقصى درجات الأمان، يتم إضافة المستخدمين الجدد من لوحة تحكم Firebase (قسم Authentication)، وهنا فقط نقوم بتحديد صلاحياتهم (مدير أو موظف) بربط الإيميل.</p>
+            <h2 style="margin-top:0;">إدارة الحسابات (باليوزر والباسوورد)</h2>
             <div style="background:#f8fafc; padding:25px; border-radius:15px; border:var(--border); margin-bottom:25px;">
+                <input type="hidden" id="edit-uid">
                 <div class="form-grid">
-                    <input type="text" id="u-name" class="input-field" placeholder="الاسم الكامل للموظف">
-                    <input type="email" id="u-email" class="input-field" placeholder="الإيميل المسجل في Firebase" dir="ltr">
+                    <input type="text" id="u-name" class="input-field" placeholder="الاسم الكامل">
+                    <input type="text" id="u-user" class="input-field" placeholder="اسم الدخول (User)" dir="ltr">
+                    <input type="password" id="u-pass" class="input-field" placeholder="كلمة المرور" dir="ltr">
                     <select id="u-role" class="input-field"><option value="manager">موظف مختص</option><option value="superadmin">مدير نظام</option></select>
                 </div>
-                <button class="btn btn-primary" style="margin-top: 15px; width: 100%; max-width: 220px;" onclick="saveUserRole()"><i class="fas fa-link"></i> ربط الصلاحيات</button>
+                <button class="btn btn-primary" style="margin-top: 15px; width: 100%; max-width: 220px;" onclick="saveUser()"><i class="fas fa-save"></i> حفظ الحساب</button>
             </div>
             <div class="table-responsive">
                 <table>
-                    <thead><tr><th>الموظف</th><th>الإيميل (المعرف)</th><th>الصلاحية</th><th>إجراء</th></tr></thead>
+                    <thead><tr><th>الموظف</th><th>اسم الدخول</th><th>كلمة المرور</th><th>الصلاحية</th><th>إجراء</th></tr></thead>
                     <tbody id="users-body"></tbody>
                 </table>
             </div>
@@ -239,13 +240,11 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDocs, where, doc, setDoc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDocs, where, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyB11C4GGgAyqeThs8a9cvDNN7frvAA1nqQ", authDomain: "delta-optics-system.firebaseapp.com", projectId: "delta-optics-system", storageBucket: "delta-optics-system.firebasestorage.app", messagingSenderId: "111176219224", appId: "1:111176219224:web:e0d8a5f26b84d57249a82d" };
         const app = initializeApp(firebaseConfig); 
         const db = getFirestore(app);
-        const auth = getAuth(app); // ربط خدمة المصادقة
         emailjs.init("C73X3wkgP71p7DY1F");
 
         let currentUser = null; let lastCount = -1;
@@ -258,45 +257,51 @@
             await addDoc(collection(db, "security_audit"), { user: user, action: act, type: type, info: ip, device: navigator.userAgent.includes("Win") ? "Windows" : navigator.userAgent.includes("Android") ? "Android" : "Apple", timestamp: serverTimestamp() });
         }
 
-        // ================= نظام تسجيل الدخول المشفر (Firebase Auth) =================
+        // ================= نظام تسجيل الدخول المباشر =================
         window.attemptLogin = async () => {
-            const email = document.getElementById('login-email').value.trim();
-            const pass = document.getElementById('login-pass').value.trim();
-            if(!email || !pass) return;
-            document.getElementById('btn-login').innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق المشفر...';
-            
-            try {
-                // 1. تسجيل الدخول عبر Auth
-                const userCredential = await signInWithEmailAndPassword(auth, email, pass);
-                const user = userCredential.user;
+            const u = document.getElementById('login-user').value.trim();
+            const p = document.getElementById('login-pass').value.trim();
+            if(!u || !p) return;
+            document.getElementById('btn-login').innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
 
-                // 2. جلب صلاحيات واسم المستخدم من Firestore
-                const userDoc = await getDoc(doc(db, "system_users", user.email));
-                if (userDoc.exists()) {
-                    currentUser = { email: user.email, ...userDoc.data() };
-                    document.getElementById('login-screen').style.display = 'none';
-                    document.getElementById('sidebar').classList.add('show');
-                    document.getElementById('main-content').classList.add('show');
-                    document.getElementById('welcome-text').innerText = `أهلاً ${currentUser.name}`;
-                    
-                    if(currentUser.role === 'superadmin') document.querySelectorAll('.admin-nav').forEach(el => el.style.display = 'flex');
-                    
-                    logAudit(currentUser.name, "دخول آمن", "success");
-                    initAllData();
+            // تجاوز مبرمج خاص لك (Master Key) عشان تفوت فوراً
+            if (u === "adel" && p === "123123") {
+                currentUser = { id: "master", username: "adel", name: "المهندس عادل", role: "superadmin" };
+                loginSuccess();
+                return;
+            }
+
+            // فحص من الفايربيس للحسابات التانية
+            try {
+                const snap = await getDocs(query(collection(db, "system_users"), where("username", "==", u), where("pass", "==", p)));
+                if(!snap.empty) {
+                    currentUser = { id: snap.docs[0].id, ...snap.docs[0].data() };
+                    loginSuccess();
                 } else {
-                    // إذا كان مسجل بـ Auth بس ماله صلاحيات بالداتا بيس
-                    alert("حسابك صحيح، لكن ليس لديك صلاحيات إدارية في النظام.");
-                    signOut(auth);
+                    alert("بيانات خاطئة!");
                     document.getElementById('btn-login').innerHTML = "تسجيل دخول آمن";
+                    logAudit(u, "محاولة دخول فاشلة", "danger");
                 }
             } catch (error) {
-                alert("البريد الإلكتروني أو كلمة المرور غير صحيحة.");
+                alert("بيانات خاطئة أو يوجد مشكلة في الاتصال.");
                 document.getElementById('btn-login').innerHTML = "تسجيل دخول آمن";
-                logAudit(email, "محاولة دخول فاشلة", "danger");
             }
         };
+
+        function loginSuccess() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('sidebar').classList.add('show');
+            document.getElementById('main-content').classList.add('show');
+            document.getElementById('welcome-text').innerText = `أهلاً، ${currentUser.name}`;
+            
+            if(currentUser.role === 'superadmin') {
+                document.querySelectorAll('.admin-nav').forEach(el => el.style.display = 'flex');
+            }
+            logAudit(currentUser.name, "دخول النظام", "success");
+            initAllData();
+        }
         
-        window.logout = async () => { await signOut(auth); location.reload(); }
+        window.logout = () => { location.reload(); }
 
         window.sendReport = () => {
             const u = document.getElementById('rep-user').value; const msg = document.getElementById('rep-msg').value;
@@ -332,12 +337,11 @@
             });
 
             if(currentUser.role === 'superadmin') {
-                // جلب بيانات الموظفين (الصلاحيات فقط، الباسوورد مش موجود بالداتا بيس أصلاً)
                 onSnapshot(collection(db, "system_users"), (snap) => {
                     const tb = document.getElementById('users-body'); tb.innerHTML = "";
                     snap.forEach(d => {
                         const u = d.data(); const badge = u.role === 'superadmin' ? `<span class="badge" style="background:#fee2e2; color:#ef4444;">مدير</span>` : `<span class="badge" style="background:#dcfce7; color:#10b981;">موظف</span>`;
-                        tb.innerHTML += `<tr><td><strong>${u.name}</strong></td><td dir="ltr" style="font-family:monospace; color:var(--text-muted);">${d.id}</td><td>${badge}</td><td><button class="btn btn-outline" style="padding:6px 10px; color:var(--danger);" onclick="delU('${d.id}','${u.name}')"><i class="fas fa-trash"></i></button></td></tr>`;
+                        tb.innerHTML += `<tr><td><strong>${u.name}</strong></td><td dir="ltr" style="font-family:monospace; color:var(--text-muted);">${u.username}</td><td dir="ltr"><input type="password" id="pw-${d.id}" value="${u.pass}" readonly style="border:none; background:transparent; font-weight:800; width:70px; color:var(--sidebar); outline:none;"><button style="background:none; border:none; cursor:pointer; color:var(--text-muted);" onclick="const i=document.getElementById('pw-${d.id}'); i.type=i.type==='password'?'text':'password';"><i class="fas fa-eye"></i></button></td><td>${badge}</td><td><div style="display:flex; gap:5px;"><button class="btn btn-outline" style="padding:6px 10px; color:var(--warning);" onclick="editU('${d.id}','${u.name}','${u.username}','${u.pass}','${u.role}')"><i class="fas fa-pen"></i></button>${u.username!==currentUser.username?`<button class="btn btn-outline" style="padding:6px 10px; color:var(--danger);" onclick="delU('${d.id}','${u.name}')"><i class="fas fa-trash"></i></button>`:''}</div></td></tr>`;
                     });
                 });
                 
@@ -356,15 +360,25 @@
         window.sendFinalMsg = (m) => { const phone = document.getElementById('target-phone').value; const txt = encodeURIComponent(document.getElementById('msgContentBox').value); window.open(`https://wa.me/${phone.startsWith('07') ? '962'+phone.substring(1) : phone}?text=${txt}`, '_blank'); logAudit(currentUser.name, `مراسلة ${targetName}`); document.getElementById('msgModal').classList.remove('active'); }
         window.sendInternalMsg = async () => { const i = document.getElementById('internal-chat-input'); if(i.value.trim()) { await addDoc(collection(db, "internal_chat"), { sender: currentUser.name, role: currentUser.role, text: i.value.trim(), timestamp: serverTimestamp() }); i.value = ""; } }
         
-        // ربط الصلاحيات بالإيميل
-        window.saveUserRole = async () => { 
-            const n=document.getElementById('u-name').value, email=document.getElementById('u-email').value.trim(), r=document.getElementById('u-role').value; 
-            if(!n || !email) return alert("الرجاء إدخال الاسم والإيميل"); 
-            await setDoc(doc(db, "system_users", email), {name:n, role:r}); 
-            logAudit(currentUser.name, `ربط صلاحيات للإيميل ${email}`, "warning"); 
-            document.getElementById('u-name').value=""; document.getElementById('u-email').value=""; 
+        // إدارة الحسابات بالنظام المباشر
+        window.saveUser = async () => { 
+            const id = document.getElementById('edit-uid').value; 
+            const n=document.getElementById('u-name').value, u=document.getElementById('u-user').value, p=document.getElementById('u-pass').value, r=document.getElementById('u-role').value; 
+            if(!n || !u || !p) return alert("الرجاء إدخال كافة البيانات"); 
+            
+            if(id) { 
+                await setDoc(doc(db, "system_users", id), {name:n, username:u, pass:p, role:r}); 
+                logAudit(currentUser.name, `تعديل الموظف ${n}`, "warning"); 
+            } else { 
+                await setDoc(doc(db, "system_users", u), {name:n, username:u, pass:p, role:r}); 
+                logAudit(currentUser.name, `إضافة الموظف ${n}`, "success"); 
+            } 
+            
+            document.getElementById('edit-uid').value=""; document.getElementById('u-name').value=""; document.getElementById('u-user').value=""; document.getElementById('u-pass').value=""; 
         }
-        window.delU = async (email,n) => { if(confirm("حذف الصلاحيات نهائياً؟")) { await deleteDoc(doc(db, "system_users", email)); logAudit(currentUser.name, `حذف الموظف ${n}`, "danger"); } }
+        
+        window.editU = (id,n,u,p,r) => { document.getElementById('edit-uid').value=id; document.getElementById('u-name').value=n; document.getElementById('u-user').value=u; document.getElementById('u-pass').value=p; document.getElementById('u-role').value=r; window.scrollTo({top:0, behavior:'smooth'});}
+        window.delU = async (id,n) => { if(confirm("حذف الحساب نهائياً؟")) { await deleteDoc(doc(db, "system_users", id)); logAudit(currentUser.name, `حذف الموظف ${n}`, "danger"); } }
         
         window.filterTable = () => { let input = document.getElementById("searchReports").value.toUpperCase(); let trs = document.getElementById("reports-body").getElementsByTagName("tr"); for(let i=0; i<trs.length; i++) { let td = trs[i].getElementsByTagName("td")[0]; if(td) trs[i].style.display = (td.textContent||td.innerText).toUpperCase().indexOf(input) > -1 ? "" : "none"; } }
         window.exportToCSV = () => { let csv = []; let rows = document.querySelectorAll("#reportsTable tr"); for(let i=0; i<rows.length; i++) { let row=[], cols=rows[i].querySelectorAll("td, th"); for(let j=0; j<cols.length-1; j++) row.push('"'+cols[j].innerText.replace(/"/g, '""')+'"'); csv.push(row.join(",")); } let link = document.createElement("a"); link.href = URL.createObjectURL(new Blob(["\uFEFF"+csv.join("\n")], {type: "text/csv;charset=utf-8;"})); link.download = `سجل_دلتا.csv`; link.click(); logAudit(currentUser.name, "تصدير داتا لإكسل", "warning"); }

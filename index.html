@@ -16,7 +16,7 @@
     
     <style>
         :root { 
-            --primary: #0e7490;       
+            --primary: #0e7490;        
             --secondary: #0ea5e9;     
             --bg-color: #f8fafc;
             --surface: rgba(255, 255, 255, 0.7); 
@@ -29,7 +29,7 @@
         }
 
         [data-theme="dark"] {
-            --primary: #22d3ee;       
+            --primary: #22d3ee;        
             --secondary: #38bdf8;     
             --bg-color: #0f172a;
             --surface: rgba(30, 41, 59, 0.7);
@@ -190,11 +190,47 @@
         .boss { font-family: 'Montserrat', sans-serif; font-weight: 900; letter-spacing: -1px; }
 
         .fab-area { position: fixed; bottom: 25px; right: 25px; display: flex; flex-direction: column; gap: 15px; z-index: 200; }
-        .fab { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.6rem; text-decoration: none; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transition: transform 0.2s; }
+        .fab { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.6rem; text-decoration: none; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transition: transform 0.2s; cursor: pointer; border: none;}
         .fab-wa { background: #25D366; }
         .fab-call { background: var(--primary); }
+        .fab-ai { background: linear-gradient(135deg, #6366f1, #8b5cf6, #d946ef); animation: pulseAI 2s infinite; }
         .fab:active { transform: scale(0.9); }
         html[dir="ltr"] .fab-area { right: auto; left: 25px; }
+        @keyframes pulseAI { 0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(139, 92, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); } }
+
+        /* --- تصميم نافذة الذكاء الاصطناعي --- */
+        .chat-overlay {
+            position: fixed; bottom: 90px; right: 25px; width: 350px; max-width: calc(100vw - 40px);
+            background: var(--surface); border: 1px solid var(--surface-border);
+            border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            z-index: 1000; overflow: hidden; display: none; flex-direction: column;
+            transform-origin: bottom right; animation: scaleUp 0.3s ease;
+        }
+        @keyframes scaleUp { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        html[dir="ltr"] .chat-overlay { right: auto; left: 25px; transform-origin: bottom left; }
+        
+        .chat-header {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white;
+            padding: 15px 20px; font-weight: 800; display: flex; justify-content: space-between; align-items: center;
+        }
+        .chat-header button { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; transition: 0.2s; }
+        .chat-header button:hover { transform: scale(1.1); }
+        
+        .chat-body {
+            height: 320px; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px;
+        }
+        .msg { padding: 12px 16px; border-radius: 16px; font-size: 0.9rem; line-height: 1.5; max-width: 85%; font-weight: 500; word-wrap: break-word;}
+        .ai-msg { background: rgba(139, 92, 246, 0.1); color: var(--text-main); align-self: flex-start; border-top-right-radius: 4px; border: 1px solid rgba(139, 92, 246, 0.2);}
+        .user-msg { background: var(--primary); color: white; align-self: flex-end; border-top-left-radius: 4px; box-shadow: 0 4px 10px rgba(14, 116, 144, 0.2);}
+        
+        .chat-footer { padding: 15px; border-top: 1px solid var(--surface-border); display: flex; flex-direction: column; gap: 10px; background: rgba(255,255,255,0.5); }
+        .input-row { display: flex; gap: 10px; }
+        .chat-footer input { flex: 1; padding: 12px 15px; border-radius: 12px; border: 1px solid var(--surface-border); background: var(--bg-color); color: var(--text-main); outline: none; font-weight: 600;}
+        .chat-footer input:focus { border-color: #8b5cf6; }
+        .chat-footer button { background: #8b5cf6; color: white; border: none; width: 45px; height: 45px; border-radius: 12px; cursor: pointer; transition: 0.2s; font-size: 1.1rem;}
+        .chat-footer button:active { transform: scale(0.9); }
+        .typing-indicator { color: var(--text-muted); font-size: 0.8rem; font-style: italic; display: none; text-align: center;}
 
     </style>
 </head>
@@ -302,8 +338,26 @@
     </div>
 
     <div class="fab-area">
+        <button class="fab fab-ai" onclick="toggleChat()" title="المساعد الذكي"><i class="fas fa-sparkles"></i></button>
         <a href="https://wa.me/962775549700" target="_blank" rel="noopener noreferrer" class="fab fab-wa"><i class="fab fa-whatsapp"></i></a>
         <a href="tel:+962775549700" class="fab fab-call"><i class="fas fa-phone-alt"></i></a>
+    </div>
+
+    <div class="chat-overlay" id="chat-overlay">
+        <div class="chat-header">
+            <span><i class="fas fa-robot"></i> مستشار دلتا الذكي</span>
+            <button onclick="toggleChat()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="chat-body" id="chat-body">
+            <div class="msg ai-msg">أهلاً بك في عيادة دلتا للبصريات! 👓<br>أنا المساعد الذكي، تفضل بسؤالي عن أي شيء يخص النظارات، العدسات، أو الفحوصات وسأكون سعيداً بإجابتك.</div>
+        </div>
+        <div class="chat-footer">
+            <div class="input-row">
+                <input type="text" id="chat-input" placeholder="اكتب سؤالك هنا..." onkeypress="handleChatKey(event)">
+                <button onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+            <div id="typing-indicator" class="typing-indicator">جاري التفكير...</div>
+        </div>
     </div>
 
     <script>
@@ -399,7 +453,6 @@
             const statusText = document.getElementById('status-text');
             
             let isOpen = false;
-            // تم إضافة شرط الإغلاق (الساعة 22 تعني 10 مساءً)
             if (day === 5) { 
                 if (hour >= 16 && hour < 22) isOpen = true; 
             } else { 
@@ -417,7 +470,7 @@
 
         function loadRandomReviews() {
             const container = document.getElementById('reviews-container');
-            container.innerHTML = ''; // تنظيف الحاوية بشكل آمن
+            container.innerHTML = ''; 
             
             const list = reviewsData[curLang];
             const shuffled = [...list].sort(() => 0.5 - Math.random()).slice(0, 2);
@@ -425,28 +478,21 @@
             shuffled.forEach(rev => {
                 const reviewDiv = document.createElement('div');
                 reviewDiv.className = 'review';
-
                 const revTopDiv = document.createElement('div');
                 revTopDiv.className = 'rev-top';
-
                 const spanUser = document.createElement('span');
                 spanUser.className = 'rev-user';
                 spanUser.textContent = rev.name;
-
                 const spanStars = document.createElement('span');
                 spanStars.className = 'rev-stars';
                 spanStars.textContent = '★★★★★';
-
                 revTopDiv.appendChild(spanUser);
                 revTopDiv.appendChild(spanStars);
-
                 const pMsg = document.createElement('p');
                 pMsg.className = 'rev-msg';
                 pMsg.textContent = rev.text;
-
                 reviewDiv.appendChild(revTopDiv);
                 reviewDiv.appendChild(pMsg);
-
                 container.appendChild(reviewDiv);
             });
         }
@@ -454,6 +500,67 @@
         checkStatus();
         loadRandomReviews();
 
+        // --- المساعد الذكي (Gemini AI) ---
+        const GEMINI_API_KEY = "AIzaSyAgR51pScEgGUIky_N6fX6GaelzsfI5ZBM"; 
+        let chatHistory = [];
+
+        function toggleChat() {
+            const chat = document.getElementById('chat-overlay');
+            chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function handleChatKey(e) {
+            if (e.key === 'Enter') sendChatMessage();
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+
+            addMessageToChat(message, 'user-msg');
+            input.value = '';
+            document.getElementById('typing-indicator').style.display = 'block';
+
+            const systemInstruction = "أنت مساعد ذكي ولطيف تعمل في 'دلتا للبصريات' في الأردن (فرع المقابلين). أجب باختصار واحترافية عن أسئلة النظارات والعدسات، وشجع العميل على زيارة الفرع لعمل فحص نظر مجاني. تحدث باللغة العربية بلهجة أردنية لطيفة ومفهومة.";
+
+            const requestBody = {
+                contents: [{
+                    parts: [{ text: `${systemInstruction}\n\nسؤال العميل: ${message}` }]
+                }]
+            };
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    const aiReply = data.candidates[0].content.parts[0].text;
+                    addMessageToChat(aiReply, 'ai-msg');
+                } else {
+                    addMessageToChat("عذراً، أواجه مشكلة في الاتصال حالياً. يرجى التواصل معنا عبر الواتساب.", 'ai-msg');
+                }
+            } catch (error) {
+                console.error("AI Error:", error);
+                addMessageToChat("عذراً، حدث خطأ في النظام. تواصل معنا على الواتساب.", 'ai-msg');
+            } finally {
+                document.getElementById('typing-indicator').style.display = 'none';
+            }
+        }
+
+        function addMessageToChat(text, className) {
+            const chatBody = document.getElementById('chat-body');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `msg ${className}`;
+            msgDiv.innerHTML = text.replace(/\*\*/g, '').replace(/\n/g, '<br>');
+            chatBody.appendChild(msgDiv);
+            chatBody.scrollTop = chatBody.scrollHeight; 
+        }
     </script>
 </body>
 </html>

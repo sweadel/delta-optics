@@ -3,65 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-    <title>Delta ERP | إدارة النظام</title>
+    <title>Delta Optics ERP | Admin Panel</title>
 </head>
 <body>
-
     <aside class="sidebar">
-        <div style="padding:30px; text-align:center; border-bottom:1px solid #334155;">
-            <h2 style="margin:0; font-weight:900; letter-spacing:1px;">DELTA OPTICS</h2>
-        </div>
-        <nav style="padding:20px;">
-            <div class="nav-item active" onclick="showView('dash')"><i class="fas fa-home"></i> الرئيسية</div>
-            <div class="nav-item" onclick="showView('pos')"><i class="fas fa-cash-register"></i> نقطة البيع (POS)</div>
-            <div class="nav-item" onclick="showView('rx')"><i class="fas fa-eye"></i> فحص المراجعين</div>
-            <div class="nav-item" onclick="showView('inv')"><i class="fas fa-boxes"></i> المخزون</div>
-            
-            <div class="admin-only" style="margin-top:20px; border-top:1px solid #334155; padding-top:20px;">
-                <p style="font-size:12px; color:#64748b; margin-bottom:10px;">إدارة عليا</p>
-                <div class="nav-item" onclick="showView('staff')"><i class="fas fa-users-cog"></i> الموظفين</div>
-                <div class="nav-item" onclick="showView('logs')"><i class="fas fa-shield-alt"></i> السجل الأمني</div>
-            </div>
-        </nav>
+        <h2 style="color:var(--primary)">Delta Optics</h2>
+        <p style="font-size:12px; color:gray">المهندس عادل جعاروة</p>
+        <hr style="width:100%; border:0.5px solid var(--border); margin:20px 0;">
+        <button class="nav-btn active" onclick="view('dash')">لوحة البيانات</button>
+        <button class="nav-btn" onclick="view('pos')">نقطة البيع (POS)</button>
+        <button class="nav-btn" onclick="view('rx')">فحص المراجعين (Rx)</button>
+        <button class="nav-btn" onclick="view('inv')">إدارة المخزون</button>
+        <button class="nav-btn" onclick="view('logs')">سجل النظام</button>
     </aside>
 
-    <div class="main-layout">
-        <header style="height:70px; background:white; display:flex; align-items:center; justify-content:space-between; padding:0 30px; border-bottom:1px solid var(--border);">
-            <h3 id="view-title">لوحة التحكم</h3>
-            <div id="user-info" style="font-weight:700; color:var(--primary);"></div>
-        </header>
+    <main class="main-content">
+        <section id="dash">
+            <div class="grid-4">
+                <div class="card"><h3>مبيعات اليوم</h3><p id="today-sales">0 JOD</p></div>
+                <div class="card"><h3>المراجعين</h3><p>12 اليوم</p></div>
+                <div class="card"><h3>المخزون</h3><p>45 إطار</p></div>
+                <div class="card"><h3>تنبيهات</h3><p>3 طلبات مختبر</p></div>
+            </div>
+        </section>
 
-        <main style="padding:30px;">
-            <section id="view-dash" class="view">
-                <div class="card">
-                    <h2>أهلاً بك يا بشمهندس</h2>
-                    <p>هون بتشوف ملخص المبيعات، المراجعين لليوم، وحالة المختبر.</p>
+        <section id="rx" style="display:none;">
+            <div class="card">
+                <h2>إضافة فحص نظر جديد</h2>
+                <div class="grid-4">
+                    <input type="text" id="p_name" placeholder="اسم المراجع">
+                    <input type="text" id="p_phone" placeholder="رقم الهاتف">
                 </div>
-            </section>
-            
-            <section id="view-pos" class="view" style="display:none;">
-                <div class="card">
-                    <h2>إصدار فاتورة جديدة</h2>
-                    </div>
-            </section>
-        </main>
-    </div>
+                <table>
+                    <tr><th>العين</th><th>SPH</th><th>CYL</th><th>AXIS</th><th>ADD</th></tr>
+                    <tr><td>اليمين</td><td><input type="text" id="r_sph"></td><td><input type="text" id="r_cyl"></td><td><input type="text" id="r_axis"></td><td><input type="text" id="r_add"></td></tr>
+                    <tr><td>اليسار</td><td><input type="text" id="l_sph"></td><td><input type="text" id="l_cyl"></td><td><input type="text" id="l_axis"></td><td><input type="text" id="l_add"></td></tr>
+                </table>
+                <button class="btn-save" onclick="saveRxData()" style="margin-top:20px;">حفظ الفحص</button>
+            </div>
+        </section>
+    </main>
 
     <script type="module">
-        import { db } from './config.js';
-        import { checkAccess } from './auth.js';
-        
-        // محاكاة دخول الموظف عادل
-        const user = { name: "المهندس عادل", role: "superadmin" };
-        document.getElementById('user-info').innerText = user.name;
-        checkAccess(user);
+        import { Inventory, POS, Optometry, Security } from './app.js';
 
-        window.showView = (id) => {
-            document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
-            document.getElementById('view-' + id).style.display = 'block';
-        }
+        window.view = (id) => {
+            document.querySelectorAll('section').forEach(s => s.style.display = 'none');
+            document.getElementById(id).style.display = 'block';
+        };
+
+        window.saveRxData = async () => {
+            const data = {
+                name: document.getElementById('p_name').value,
+                r: { sph: document.getElementById('r_sph').value },
+                // ... باقي البيانات
+            };
+            await Optometry.saveRx(data);
+            await Security.log("Adel", "قام بإضافة فحص جديد للمراجع: " + data.name);
+            alert("تم الحفظ بنجاح!");
+        };
     </script>
 </body>
 </html>

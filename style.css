@@ -1,0 +1,23 @@
+/* style.css - نظام الألوان والتنسيق */
+:root {
+    --primary: #2563eb; --bg-main: #f8fafc; --sidebar: #0f172a;
+    --card-bg: #ffffff; --text: #1e293b; --border: #e2e8f0;
+}
+[data-theme="dark"] {
+    --bg-main: #020617; --card-bg: #1e293b; --text: #f8fafc; --border: #334155;
+}
+
+body { font-family: 'Tajawal', sans-serif; background: var(--bg-main); color: var(--text); margin: 0; display: flex; height: 100vh; overflow: hidden; }
+.sidebar { width: 280px; background: var(--sidebar); color: white; display: flex; flex-direction: column; transition: 0.3s; }
+.main-layout { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+.card { background: var(--card-bg); border-radius: 15px; padding: 25px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 20px; }
+
+/* جداول احترافية */
+table { width: 100%; border-collapse: collapse; text-align: right; }
+th { padding: 15px; background: var(--bg-main); font-weight: 800; border-bottom: 2px solid var(--border); }
+td { padding: 15px; border-bottom: 1px solid var(--border); }
+
+/* أزرار تفاعلية */
+.btn { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: 700; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4); }

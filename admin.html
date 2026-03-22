@@ -3,98 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delta Optics | الإدارة الاحترافية</title>
+    <title>Delta Optics | لوحة الإدارة الاحترافية</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
     <style>
-        /* ================= المتغيرات الأساسية (Theme) ================= */
+        /* ================= متغيرات التصميم (SaaS Theme) ================= */
         :root { 
-            --primary: #0891b2; --primary-hover: #0e7490; --primary-light: #cffafe;
-            --bg-color: #f8fafc; --surface: #ffffff; 
-            --sidebar-bg: #0f172a; --sidebar-hover: #1e293b;
-            --text-main: #0f172a; --text-muted: #64748b;
+            --primary: #06b6d4; --primary-hover: #0891b2; 
+            --bg-app: #f1f5f9; --surface: #ffffff; 
+            --sidebar-bg: #0f172a; --sidebar-hover: #1e293b; --sidebar-text: #94a3b8;
+            --text-main: #1e293b; --text-muted: #64748b;
             --success: #10b981; --warning: #f59e0b; --danger: #ef4444;
-            --border: #e2e8f0; --radius-lg: 20px; --radius-md: 12px;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
-            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+            --border: #e2e8f0; 
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --radius-md: 12px; --radius-lg: 20px;
         }
 
-        /* ================= الإعدادات العامة ================= */
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; outline: none; margin: 0; padding: 0; }
-        body { background-color: var(--bg-color); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
-        
-        /* ================= شاشة تسجيل الدخول ================= */
-        #login-screen { position: fixed; inset: 0; background: var(--sidebar-bg); display: flex; align-items: center; justify-content: center; z-index: 9999; }
-        .login-card { background: var(--surface); padding: 40px; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); width: 100%; max-width: 400px; text-align: center; }
-        .login-icon { font-size: 3rem; color: var(--primary); margin-bottom: 20px; }
-        
-        /* ================= الشريط الجانبي (Sidebar) ================= */
-        .sidebar { width: 280px; background: var(--sidebar-bg); color: white; display: flex; flex-direction: column; transition: 0.3s ease; z-index: 1000; }
-        .sidebar-header { padding: 30px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px; }
-        .nav-menu { flex: 1; padding: 10px; overflow-y: auto; }
-        .nav-item { padding: 15px 20px; margin-bottom: 5px; border-radius: var(--radius-md); cursor: pointer; display: flex; align-items: center; gap: 15px; color: #94a3b8; font-weight: 600; transition: 0.2s; }
-        .nav-item:hover { background: var(--sidebar-hover); color: white; }
-        .nav-item.active { background: var(--primary); color: white; box-shadow: var(--shadow-md); }
-        .admin-nav { display: none; } /* يظهر فقط للمدير */
+        body { background: var(--bg-app); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
 
-        /* ================= منطقة المحتوى (Main Content) ================= */
-        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg-color); }
-        .topbar { background: var(--surface); padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); z-index: 10; box-shadow: var(--shadow-sm); }
-        .content-area { flex: 1; padding: 30px; overflow-y: auto; }
+        /* ================= التمرير (Scrollbar) ================= */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* ================= شاشة الدخول ================= */
+        #login-screen { position: fixed; inset: 0; background: var(--sidebar-bg); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        .login-card { background: var(--surface); padding: 50px 40px; border-radius: var(--radius-lg); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); width: 100%; max-width: 420px; text-align: center; }
+        
+        /* ================= الشريط الجانبي ================= */
+        .sidebar { width: 280px; background: var(--sidebar-bg); color: white; display: flex; flex-direction: column; z-index: 1000; box-shadow: 4px 0 24px rgba(0,0,0,0.05); transition: 0.3s; }
+        .sidebar-logo { padding: 30px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .nav-menu { padding: 15px 10px; flex: 1; overflow-y: auto; }
+        .nav-item { padding: 14px 20px; margin-bottom: 8px; border-radius: var(--radius-md); cursor: pointer; display: flex; align-items: center; gap: 15px; color: var(--sidebar-text); font-weight: 600; transition: all 0.2s; font-size: 1.05rem; }
+        .nav-item:hover { background: var(--sidebar-hover); color: white; }
+        .nav-item.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(6,182,212,0.3); }
+        .admin-nav { display: none; }
+
+        /* ================= المحتوى الرئيسي ================= */
+        .main-layout { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { background: var(--surface); padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); z-index: 10; }
+        .content-area { flex: 1; padding: 30px; overflow-y: auto; background: var(--bg-app); }
 
         /* ================= الكروت والإحصائيات ================= */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: var(--surface); padding: 25px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border: 1px solid var(--border); display: flex; align-items: center; gap: 20px; transition: transform 0.2s; }
-        .stat-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
-        .stat-icon { width: 60px; height: 60px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 30px; }
+        .stat-card { background: var(--surface); padding: 25px; border-radius: var(--radius-lg); border: 1px solid var(--border); display: flex; align-items: center; gap: 20px; box-shadow: var(--shadow-sm); }
+        .stat-icon { width: 64px; height: 64px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
         
-        .section-panel { background: var(--surface); padding: 30px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border: 1px solid var(--border); margin-bottom: 30px; display: none; animation: fadeIn 0.4s ease; }
-        .section-panel.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+        .panel { background: var(--surface); padding: 30px; border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 30px; box-shadow: var(--shadow-sm); display: none; animation: fadeUp 0.4s ease; }
+        .panel.active { display: block; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
 
-        /* ================= الجداول الاحترافية ================= */
-        .table-container { width: 100%; overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--border); }
+        /* ================= الجداول ================= */
+        .table-wrap { width: 100%; overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--border); }
         table { width: 100%; border-collapse: collapse; background: var(--surface); text-align: right; }
-        th { background: #f8fafc; padding: 18px 20px; font-weight: 700; color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase; border-bottom: 2px solid var(--border); white-space: nowrap; }
-        td { padding: 18px 20px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text-main); font-weight: 500; }
+        th { background: #f8fafc; padding: 18px 24px; font-weight: 700; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+        td { padding: 18px 24px; border-bottom: 1px solid var(--border); vertical-align: middle; font-weight: 500; }
+        tr:last-child td { border-bottom: none; }
         tr:hover td { background: #f1f5f9; }
 
         /* ================= النماذج والأزرار ================= */
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 20px; }
-        .input-control { width: 100%; padding: 14px 18px; border-radius: var(--radius-md); border: 1px solid var(--border); background: #f8fafc; font-size: 0.95rem; font-weight: 500; transition: 0.2s; color: var(--text-main); }
-        .input-control:focus { border-color: var(--primary); background: var(--surface); box-shadow: 0 0 0 4px var(--primary-light); }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .input-box { width: 100%; padding: 14px 18px; border-radius: var(--radius-md); border: 1px solid var(--border); background: #f8fafc; color: var(--text-main); font-weight: 500; font-size: 0.95rem; transition: 0.2s; }
+        .input-box:focus { border-color: var(--primary); background: var(--surface); box-shadow: 0 0 0 4px var(--primary-light); }
         
         .btn { padding: 12px 24px; border-radius: var(--radius-md); border: none; cursor: pointer; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; font-size: 0.95rem; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-primary:hover { background: var(--primary-hover); }
         .btn-danger { background: #fee2e2; color: var(--danger); }
-        .btn-success { background: var(--success); color: white; }
+        .btn-success { background: #dcfce7; color: var(--success); }
         .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
-        .btn:active { transform: scale(0.95); }
+        .btn:active { transform: scale(0.96); }
 
-        /* ================= الشات والميزات الأخرى ================= */
-        .chat-box { height: 400px; background: #f8fafc; border-radius: var(--radius-lg); display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border); }
-        .chat-history { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
-        .msg-bubble { max-width: 75%; padding: 15px 20px; border-radius: 18px; font-size: 0.95rem; line-height: 1.5; }
-        .msg-my { background: var(--primary); color: white; align-self: flex-end; border-bottom-left-radius: 4px; box-shadow: var(--shadow-sm); }
-        .msg-other { background: var(--surface); color: var(--text-main); align-self: flex-start; border-bottom-right-radius: 4px; border: 1px solid var(--border); }
-        .chat-input-area { display: flex; padding: 15px; background: var(--surface); border-top: 1px solid var(--border); gap: 10px; }
+        /* ================= الشات والمودال ================= */
+        .chat-container { height: 450px; background: #f8fafc; border-radius: var(--radius-md); display: flex; flex-direction: column; border: 1px solid var(--border); }
+        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .msg-bubble { max-width: 70%; padding: 14px 18px; border-radius: 18px; font-size: 0.95rem; line-height: 1.5; }
+        .msg-my { background: var(--primary); color: white; align-self: flex-end; border-bottom-left-radius: 4px; }
+        .msg-other { background: var(--surface); border: 1px solid var(--border); align-self: flex-start; border-bottom-right-radius: 4px; }
+        
+        .modal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 5000; opacity: 0; transition: 0.3s; }
+        .modal.active { display: flex; opacity: 1; }
+        .modal-content { background: var(--surface); padding: 30px; border-radius: var(--radius-lg); width: 100%; max-width: 500px; box-shadow: var(--shadow-lg); transform: scale(0.95); transition: 0.3s; }
+        .modal.active .modal-content { transform: scale(1); }
 
-        .badge { padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; white-space: nowrap; }
-        .img-thumb { width: 50px; height: 50px; border-radius: 10px; object-fit: cover; border: 1px solid var(--border); }
+        .badge { padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 800; white-space: nowrap; }
+        .img-thumb { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; border: 1px solid var(--border); background: #f1f5f9; }
 
-        /* للموبايل */
-        .menu-btn { display: none; font-size: 1.5rem; color: var(--text-main); background: none; border: none; cursor: pointer; }
         @media (max-width: 992px) {
             .sidebar { position: fixed; right: -300px; height: 100vh; box-shadow: var(--shadow-lg); }
             .sidebar.open { right: 0; }
-            .menu-btn { display: block; }
             .topbar { padding: 15px 20px; }
             .content-area { padding: 15px; }
         }
@@ -102,40 +108,38 @@
 </head>
 <body>
 
-    <audio id="alertSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
-
     <div id="login-screen">
         <div class="login-card">
-            <i class="fas fa-fingerprint login-icon"></i>
-            <h2 style="margin-bottom: 25px; font-weight: 900;">بوابة الإدارة (Delta Pro)</h2>
-            <input type="text" id="login-user" class="input-control" placeholder="اسم المستخدم" dir="ltr" style="margin-bottom: 15px;">
-            <input type="password" id="login-pass" class="input-control" placeholder="كلمة المرور" dir="ltr" onkeypress="if(event.key === 'Enter') attemptLogin()" style="margin-bottom: 25px;">
-            <button class="btn btn-primary" style="width: 100%; height: 50px; font-size: 1.1rem;" id="btn-login" onclick="attemptLogin()">تسجيل الدخول</button>
+            <i class="fas fa-shield-alt" style="font-size: 3.5rem; color: var(--primary); margin-bottom: 20px;"></i>
+            <h2 style="margin-bottom: 30px; font-weight: 900; color: var(--text-main);">نظام إدارة دلتا</h2>
+            <input type="text" id="login-user" class="input-box" placeholder="اسم المستخدم" dir="ltr" style="margin-bottom: 15px;">
+            <input type="password" id="login-pass" class="input-box" placeholder="كلمة المرور" dir="ltr" onkeypress="if(event.key === 'Enter') attemptLogin()" style="margin-bottom: 25px;">
+            <button class="btn btn-primary" style="width: 100%; height: 50px;" onclick="attemptLogin()" id="btn-login">تسجيل الدخول</button>
         </div>
     </div>
 
     <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <i class="fas fa-infinity" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 10px;"></i>
-            <h2 style="margin:0; font-weight: 900; letter-spacing: 1px;">DELTA OPTICS</h2>
+        <div class="sidebar-logo">
+            <i class="fas fa-infinity" style="font-size: 2rem; color: var(--primary);"></i>
+            <h2 style="margin:0; font-weight: 900; letter-spacing: 1px;">DELTA PRO</h2>
         </div>
         <nav class="nav-menu">
-            <div class="nav-item active" onclick="switchTab(event, 'dashboard')"><i class="fas fa-chart-pie"></i> لوحة القيادة</div>
-            <div class="nav-item" onclick="switchTab(event, 'collections')"><i class="fas fa-glasses"></i> إدارة التشكيلات</div>
+            <div class="nav-item active" onclick="switchTab(event, 'dash')"><i class="fas fa-chart-pie"></i> لوحة القيادة</div>
+            <div class="nav-item" onclick="switchTab(event, 'products')"><i class="fas fa-glasses"></i> إدارة التشكيلات</div>
             <div class="nav-item" onclick="switchTab(event, 'chat')"><i class="fas fa-comments"></i> دردشة الطاقم</div>
-            <div class="nav-item admin-nav" onclick="switchTab(event, 'users')"><i class="fas fa-users-cog"></i> الموظفين والصلاحيات</div>
-            <div class="nav-item admin-nav" onclick="switchTab(event, 'images')"><i class="fas fa-images"></i> سجل الصور</div>
+            <div class="nav-item admin-nav" onclick="switchTab(event, 'users')"><i class="fas fa-users-cog"></i> الموظفين</div>
+            <div class="nav-item admin-nav" onclick="switchTab(event, 'recycle')"><i class="fas fa-trash-restore"></i> سلة المحذوفات</div>
             <div class="nav-item admin-nav" onclick="switchTab(event, 'audit')"><i class="fas fa-shield-alt"></i> السجل الأمني</div>
         </nav>
     </aside>
 
-    <main class="main-content">
+    <main class="main-layout">
         <header class="topbar">
             <div style="display: flex; align-items: center; gap: 20px;">
-                <button class="menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="fas fa-bars"></i></button>
+                <button class="btn btn-outline" style="padding: 10px;" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="fas fa-bars"></i></button>
                 <div>
-                    <h2 id="welcome-text" style="margin:0; font-weight: 900; font-size: 1.4rem;"></h2>
-                    <span style="color: var(--text-muted); font-size: 0.9rem;">مدير النظام</span>
+                    <h2 id="welcome-text" style="margin:0; font-weight: 900; font-size: 1.3rem;"></h2>
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">نظام الإدارة المركزي</span>
                 </div>
             </div>
             <button class="btn btn-danger" onclick="location.reload()"><i class="fas fa-power-off"></i> خروج</button>
@@ -145,120 +149,94 @@
             
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-icon" style="background:#e0f2fe; color:var(--primary);"><i class="fas fa-calendar-check"></i></div>
-                    <div><p style="color:var(--text-muted); margin-bottom:5px;">فحوصات اليوم</p><h2 id="stat-today" style="font-size:1.8rem; margin:0;">0</h2></div>
+                    <div class="stat-icon" style="background:#e0f2fe; color:var(--primary);"><i class="fas fa-user-check"></i></div>
+                    <div><p style="color:var(--text-muted); margin-bottom:5px; font-weight:600;">مراجعين اليوم</p><h2 id="stat-today" style="margin:0; font-weight:900;">0</h2></div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon" style="background:#dcfce7; color:var(--success);"><i class="fas fa-database"></i></div>
-                    <div><p style="color:var(--text-muted); margin-bottom:5px;">إجمالي السجل</p><h2 id="stat-total" style="font-size:1.8rem; margin:0;">0</h2></div>
+                    <div><p style="color:var(--text-muted); margin-bottom:5px; font-weight:600;">إجمالي الفحوصات</p><h2 id="stat-total" style="margin:0; font-weight:900;">0</h2></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon" style="background:#fef3c7; color:var(--warning);"><i class="fas fa-chart-line"></i></div>
-                    <div><p style="color:var(--text-muted); margin-bottom:5px;">حالة النظام</p><h2 style="font-size:1.4rem; margin:0; color:var(--success);">مستقر نشط</h2></div>
+                    <div class="stat-icon" style="background:#fef3c7; color:var(--warning);"><i class="fas fa-glasses"></i></div>
+                    <div><p style="color:var(--text-muted); margin-bottom:5px; font-weight:600;">المنتجات المعروضة</p><h2 id="stat-prods" style="margin:0; font-weight:900;">0</h2></div>
                 </div>
             </div>
 
-            <div id="sec-dashboard" class="section-panel active">
-                <div class="section-header">
-                    <h3 style="margin:0;"><i class="fas fa-clipboard-list" style="color:var(--primary); margin-left:10px;"></i> سجل الفحوصات والمراجعين</h3>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" id="searchReports" class="input-control" style="width: 200px; padding: 8px 15px;" placeholder="بحث سريع..." onkeyup="filterTable()">
-                        <button class="btn btn-success" onclick="exportToCSV()"><i class="fas fa-file-excel"></i> تصدير</button>
-                    </div>
+            <div id="sec-dash" class="panel active">
+                <div class="panel-header">
+                    <h3 style="margin:0; font-weight:800;"><i class="fas fa-clipboard-list" style="color:var(--primary); margin-left:10px;"></i> سجل الفحوصات الطبية</h3>
+                    <input type="text" id="searchReports" class="input-box" style="width: 250px; margin:0;" placeholder="بحث باسم المراجع..." onkeyup="filterTable('reports-body', 'searchReports')">
                 </div>
-                <div style="margin-bottom: 30px; padding: 20px; background: #f8fafc; border-radius: var(--radius-md); border: 1px solid var(--border);">
+                <div style="margin-bottom: 25px; padding: 20px; border: 1px solid var(--border); border-radius: var(--radius-md);">
                     <canvas id="mainChart" height="80"></canvas>
                 </div>
-                <div class="table-container">
-                    <table id="reportsTable">
-                        <thead><tr><th>اسم المراجع</th><th>التفاصيل الطبية</th><th>تاريخ الفحص</th><th>إجراءات</th></tr></thead>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>المراجع</th><th>التفاصيل الطبية</th><th>التاريخ</th><th>إجراء</th></tr></thead>
                         <tbody id="reports-body"></tbody>
                     </table>
                 </div>
             </div>
 
-            <div id="sec-collections" class="section-panel">
-                <div class="section-header">
-                    <h3 style="margin:0;"><i class="fas fa-glasses" style="color:var(--primary); margin-left:10px;"></i> إدارة تشكيلات النظارات</h3>
+            <div id="sec-products" class="panel">
+                <div class="panel-header">
+                    <h3 style="margin:0; font-weight:800;"><i class="fas fa-store" style="color:var(--primary); margin-left:10px;"></i> إدارة منتجات الموقع</h3>
+                    <button class="btn btn-primary" onclick="openProductModal()"><i class="fas fa-plus"></i> إضافة منتج جديد</button>
                 </div>
-                <div style="background:#f8fafc; padding:25px; border-radius:var(--radius-md); border:1px solid var(--border); margin-bottom: 25px;">
-                    <div class="form-grid">
-                        <input type="text" class="input-control" placeholder="اسم الموديل (مثال: Aviator Classic)">
-                        <input type="text" class="input-control" placeholder="الماركة (مثال: Ray-Ban)">
-                        <input type="number" class="input-control" placeholder="السعر (JOD)">
-                        <input type="file" class="input-control" accept="image/*">
-                    </div>
-                    <button class="btn btn-primary"><i class="fas fa-plus"></i> إضافة للتشكيلة</button>
-                </div>
-                <div class="table-container">
+                <div class="table-wrap">
                     <table>
-                        <thead><tr><th>صورة الموديل</th><th>الاسم</th><th>الماركة</th><th>السعر</th><th>إجراء</th></tr></thead>
-                        <tbody>
-                            <tr>
-                                <td><img src="logo.jpg" class="img-thumb" onerror="this.src='https://via.placeholder.com/50'"></td>
-                                <td>Wayfarer</td><td>Ray-Ban</td><td><span class="badge" style="background:#e0f2fe; color:var(--primary);">50 JOD</span></td>
-                                <td>
-                                    <button class="btn btn-outline" style="padding: 8px 12px; color:var(--warning);"><i class="fas fa-pen"></i></button>
-                                    <button class="btn btn-danger" style="padding: 8px 12px;" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                        </tbody>
+                        <thead><tr><th>الصورة</th><th>المنتج / الماركة</th><th>النوع</th><th>السعر</th><th>إجراءات</th></tr></thead>
+                        <tbody id="products-body"></tbody>
                     </table>
                 </div>
             </div>
 
-            <div id="sec-chat" class="section-panel">
-                <div class="section-header"><h3 style="margin:0;"><i class="fas fa-comments" style="color:var(--primary); margin-left:10px;"></i> قناة التواصل الداخلي للطاقم</h3></div>
+            <div id="sec-chat" class="panel">
+                <div class="panel-header"><h3 style="margin:0; font-weight:800;"><i class="fas fa-comments" style="color:var(--primary); margin-left:10px;"></i> التواصل الداخلي</h3></div>
                 <div class="chat-box">
                     <div class="chat-history" id="internal-chat-body"></div>
                     <div class="chat-input-area">
-                        <input type="text" id="internal-chat-input" class="input-control" style="margin:0; border-radius:50px; flex: 1;" placeholder="اكتب رسالتك للطاقم هنا..." onkeypress="if(event.key === 'Enter') sendInternalMsg()">
-                        <button class="btn btn-primary" style="border-radius: 50%; width: 50px; height: 50px; padding: 0;" onclick="sendInternalMsg()"><i class="fas fa-paper-plane"></i></button>
+                        <input type="text" id="internal-chat-input" class="input-box" style="margin:0; flex:1;" placeholder="رسالتك..." onkeypress="if(event.key === 'Enter') sendInternalMsg()">
+                        <button class="btn btn-primary" style="padding: 14px 20px;" onclick="sendInternalMsg()"><i class="fas fa-paper-plane"></i></button>
                     </div>
                 </div>
             </div>
 
-            <div id="sec-users" class="section-panel admin-only">
-                <div class="section-header"><h3 style="margin:0;"><i class="fas fa-users-cog" style="color:var(--primary); margin-left:10px;"></i> إدارة حسابات النظام</h3></div>
+            <div id="sec-users" class="panel admin-only">
+                <div class="panel-header"><h3 style="margin:0; font-weight:800;"><i class="fas fa-users-cog" style="color:var(--primary); margin-left:10px;"></i> حسابات النظام</h3></div>
                 <div style="background:#f8fafc; padding:25px; border-radius:var(--radius-md); border:1px solid var(--border); margin-bottom: 25px;">
                     <input type="hidden" id="edit-uid">
                     <div class="form-grid">
-                        <input type="text" id="u-name" class="input-control" placeholder="الاسم الكامل للموظف">
-                        <input type="text" id="u-user" class="input-control" placeholder="اسم الدخول (Username)" dir="ltr">
-                        <input type="password" id="u-pass" class="input-control" placeholder="كلمة المرور" dir="ltr">
-                        <select id="u-role" class="input-control"><option value="manager">موظف (Manager)</option><option value="superadmin">مدير نظام (Admin)</option></select>
+                        <input type="text" id="u-name" class="input-box" placeholder="الاسم الكامل">
+                        <input type="text" id="u-user" class="input-box" placeholder="اسم الدخول (Username)" dir="ltr">
+                        <input type="password" id="u-pass" class="input-box" placeholder="كلمة المرور" dir="ltr">
+                        <select id="u-role" class="input-box"><option value="manager">موظف مختص</option><option value="superadmin">مدير نظام</option></select>
                     </div>
-                    <button class="btn btn-primary" onclick="saveUser()"><i class="fas fa-save"></i> حفظ بيانات الموظف</button>
+                    <button class="btn btn-primary" onclick="saveUser()"><i class="fas fa-save"></i> حفظ الموظف</button>
                 </div>
-                <div class="table-container">
+                <div class="table-wrap">
                     <table>
-                        <thead><tr><th>الموظف</th><th>اسم الدخول</th><th>كلمة المرور</th><th>الصلاحية</th><th>إجراء</th></tr></thead>
+                        <thead><tr><th>الموظف</th><th>اسم الدخول</th><th>الباسوورد</th><th>الصلاحية</th><th>إجراء</th></tr></thead>
                         <tbody id="users-body"></tbody>
                     </table>
                 </div>
             </div>
 
-            <div id="sec-images" class="section-panel admin-only">
-                <div class="section-header"><h3 style="margin:0;"><i class="fas fa-images" style="color:var(--primary); margin-left:10px;"></i> سجل الصور والمحذوفات</h3></div>
-                <div class="table-container">
+            <div id="sec-recycle" class="panel admin-only">
+                <div class="panel-header"><h3 style="margin:0; font-weight:800;"><i class="fas fa-trash-restore" style="color:var(--primary); margin-left:10px;"></i> سلة المحذوفات (المنتجات)</h3></div>
+                <div class="table-wrap">
                     <table>
-                        <thead><tr><th>معاينة الصورة</th><th>اسم الملف القديم</th><th>تاريخ الحذف</th><th>إجراء</th></tr></thead>
-                        <tbody>
-                            <tr>
-                                <td><img src="https://via.placeholder.com/50" class="img-thumb"></td>
-                                <td dir="ltr">banner_2025.jpg</td><td>2026-03-21</td>
-                                <td><button class="btn btn-success" style="padding: 8px 15px;"><i class="fas fa-undo"></i> استرجاع</button></td>
-                            </tr>
-                        </tbody>
+                        <thead><tr><th>الصورة</th><th>المنتج</th><th>النوع</th><th>السعر</th><th>إجراء</th></tr></thead>
+                        <tbody id="recycle-body"></tbody>
                     </table>
                 </div>
             </div>
 
-            <div id="sec-audit" class="section-panel admin-only">
-                <div class="section-header"><h3 style="margin:0; color:var(--danger);"><i class="fas fa-shield-alt" style="margin-left:10px;"></i> السجل الأمني ومراقبة النظام</h3></div>
-                <div class="table-container">
+            <div id="sec-audit" class="panel admin-only">
+                <div class="panel-header"><h3 style="margin:0; font-weight:800; color:var(--danger);"><i class="fas fa-shield-alt" style="margin-left:10px;"></i> السجل الأمني للعمليات</h3></div>
+                <div class="table-wrap">
                     <table>
-                        <thead><tr><th>المستخدم</th><th>وصف الحدث</th><th>تفاصيل الجهاز/IP</th><th>التوقيت</th></tr></thead>
+                        <thead><tr><th>المسؤول</th><th>الحدث</th><th>الجهاز</th><th>التوقيت</th></tr></thead>
                         <tbody id="logs-body"></tbody>
                     </table>
                 </div>
@@ -267,151 +245,255 @@
         </div>
     </main>
 
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <h3 id="prod-modal-title" style="margin:0 0 20px; font-weight:900;">إضافة منتج جديد</h3>
+            <input type="hidden" id="p-id">
+            
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img id="p-img-preview" src="https://via.placeholder.com/150" style="width:120px; height:120px; border-radius:15px; object-fit:cover; border:2px dashed var(--border); margin-bottom:10px;">
+                <input type="file" id="p-img-file" accept="image/*" style="display:none;" onchange="previewImage(event)">
+                <button class="btn btn-outline" style="width:100%;" onclick="document.getElementById('p-img-file').click()"><i class="fas fa-upload"></i> اختر صورة للمنتج</button>
+                <input type="hidden" id="p-img-base64">
+            </div>
+
+            <div style="display:grid; gap:15px; margin-bottom: 25px;">
+                <input type="text" id="p-name" class="input-box" placeholder="اسم الموديل (مثال: Aviator)">
+                <input type="text" id="p-brand" class="input-box" placeholder="الماركة (مثال: Ray-Ban)">
+                <div style="display:flex; gap:15px;">
+                    <select id="p-type" class="input-box">
+                        <option value="طبي">نظارة طبية</option>
+                        <option value="شمسي">نظارة شمسية</option>
+                        <option value="عدسات">عدسات لاصقة</option>
+                    </select>
+                    <input type="number" id="p-price" class="input-box" placeholder="السعر">
+                </div>
+            </div>
+
+            <div style="display:flex; gap:10px;">
+                <button class="btn btn-primary" style="flex:1;" onclick="saveProduct()">حفظ المنتج</button>
+                <button class="btn btn-outline" onclick="document.getElementById('productModal').classList.remove('active')">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDocs, where, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // إعدادات الفايربيس (كما هي في كودك الأصلي لضمان عمل قاعدة البيانات)
+        // إعداداتك الأصلية
         const firebaseConfig = { apiKey: "AIzaSyB11C4GGgAyqeThs8a9cvDNN7frvAA1nqQ", authDomain: "delta-optics-system.firebaseapp.com", projectId: "delta-optics-system", storageBucket: "delta-optics-system.firebasestorage.app", messagingSenderId: "111176219224", appId: "1:111176219224:web:e0d8a5f26b84d57249a82d" };
         const app = initializeApp(firebaseConfig); 
         const db = getFirestore(app);
 
         let currentUser = null; let lastCount = -1;
 
-        // دالة التبديل بين الأقسام
+        // دوال التبديل
         window.switchTab = (e, tab) => {
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             e.currentTarget.classList.add('active');
-            document.querySelectorAll('.section-panel').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.panel').forEach(s => s.classList.remove('active'));
             document.getElementById('sec-' + tab).classList.add('active');
         };
 
-        // دالة الرسم البياني
+        // الرسم البياني
         function initChart() {
             const ctx = document.getElementById('mainChart').getContext('2d');
             new Chart(ctx, {
                 type: 'line',
-                data: {
-                    labels: ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'],
-                    datasets: [{ label: 'الفحوصات', data: [15, 22, 18, 30, 25, 40, 10], borderColor: '#0891b2', backgroundColor: 'rgba(8, 145, 178, 0.1)', fill: true, tension: 0.4 }]
-                },
+                data: { labels: ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'], datasets: [{ label: 'الفحوصات', data: [5, 12, 8, 15, 20, 10, 25], borderColor: '#0891b2', backgroundColor: 'rgba(8, 145, 178, 0.1)', fill: true, tension: 0.4 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
         }
 
-        // تسجيل حدث أمني
         async function logAudit(user, act, type="info") {
-            let ip = "Unknown"; try { const r = await fetch('https://api.ipify.org?format=json'); const d = await r.json(); ip = d.ip; } catch(e){}
-            await addDoc(collection(db, "security_audit"), { user: user, action: act, type: type, info: ip, device: navigator.userAgent, timestamp: serverTimestamp() });
+            await addDoc(collection(db, "security_audit"), { user: user, action: act, type: type, info: navigator.userAgent.substring(0,40), timestamp: serverTimestamp() });
         }
 
         // تسجيل الدخول
         window.attemptLogin = async () => {
-            const u = document.getElementById('login-user').value.trim();
-            const p = document.getElementById('login-pass').value.trim();
+            const u = document.getElementById('login-user').value.trim(); const p = document.getElementById('login-pass').value.trim();
             if(!u || !p) return;
-            const btn = document.getElementById('btn-login');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
+            const btn = document.getElementById('btn-login'); btn.innerHTML = 'جاري التحقق...';
 
-            // يوزر "عادل" للطوارئ والدخول السريع
             if (u === "adel" && p === "123123") {
-                currentUser = { id: "master", username: "adel", name: "المهندس عادل", role: "superadmin" };
+                currentUser = { id: "master", username: "adel", name: "م. عادل", role: "superadmin" };
                 loginSuccess(); return;
             }
 
-            // التحقق من الفايربيس
             try {
                 const snap = await getDocs(query(collection(db, "system_users"), where("username", "==", u), where("pass", "==", p)));
-                if(!snap.empty) {
-                    currentUser = { id: snap.docs[0].id, ...snap.docs[0].data() };
-                    loginSuccess();
-                } else {
-                    alert("بيانات الدخول غير صحيحة!"); btn.innerHTML = "تسجيل الدخول"; logAudit(u, "محاولة دخول فاشلة", "danger");
-                }
-            } catch (error) { alert("يوجد مشكلة في الاتصال بقاعدة البيانات."); btn.innerHTML = "تسجيل الدخول"; }
+                if(!snap.empty) { currentUser = { id: snap.docs[0].id, ...snap.docs[0].data() }; loginSuccess(); } 
+                else { alert("بيانات خاطئة!"); btn.innerHTML = "تسجيل الدخول"; }
+            } catch (error) { alert("يوجد مشكلة في الاتصال."); btn.innerHTML = "تسجيل الدخول"; }
         };
 
         function loginSuccess() {
             document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('welcome-text').innerText = `أهلاً بك، ${currentUser.name}`;
+            document.getElementById('welcome-text').innerText = `${currentUser.name}`;
             if(currentUser.role === 'superadmin') document.querySelectorAll('.admin-nav').forEach(el => el.style.display = 'flex');
-            logAudit(currentUser.name, "دخول ناجح للنظام", "success");
-            initChart(); initAllData();
+            logAudit(currentUser.name, "تسجيل دخول", "success");
+            initChart(); initData();
         }
 
-        // جلب البيانات من الفايربيس (الفحوصات، الشات، المستخدمين، السجل الأمني)
-        function initAllData() {
-            
-            // 1. الفحوصات (المراجعين)
+        // ================= الداتا الأساسية والمنتجات =================
+        function initData() {
+            // 1. الفحوصات
             onSnapshot(query(collection(db, "tests"), orderBy("timestamp", "desc")), (snap) => {
                 const tb = document.getElementById('reports-body'); tb.innerHTML = ""; let today = 0;
-                if (lastCount !== -1 && snap.size > lastCount) document.getElementById('alertSound').play().catch(e=>console.log(e));
+                if (lastCount !== -1 && snap.size > lastCount) document.getElementById('alertSound').play().catch(e=>{});
                 lastCount = snap.size;
                 snap.forEach(d => {
                     const r = d.data(); const date = r.timestamp ? r.timestamp.toDate().toLocaleDateString('ar-EG') : "الآن";
                     if(r.timestamp?.toDate().toDateString() === new Date().toDateString()) today++;
-                    let btn = r.phone ? `<button class="btn btn-outline" style="padding:6px 12px; color:var(--success);" onclick="window.open('https://wa.me/962${r.phone.replace(/^0+/, '')}', '_blank')"><i class="fab fa-whatsapp"></i> واتساب</button>` : `<span class="badge" style="background:#e2e8f0; color:var(--text-muted);">لا يوجد رقم</span>`;
-                    tb.innerHTML += `<tr><td><strong>${r.name}</strong><br><small dir="ltr" style="color:var(--text-muted);">${r.phone || ''}</small></td><td><div style="background:#f8fafc; padding:10px; border-radius:8px; font-size:0.85rem; border:1px solid var(--border);">${r.details}</div></td><td><span class="badge" style="background:#e0f2fe; color:var(--primary);">${date}</span></td><td>${btn}</td></tr>`;
+                    tb.innerHTML += `<tr><td><strong>${r.name}</strong><br><small dir="ltr" style="color:var(--text-muted);">${r.phone||''}</small></td><td><div style="font-size:0.85rem; max-width:250px;">${r.details}</div></td><td><span class="badge" style="background:#e0f2fe; color:var(--primary);">${date}</span></td><td><button class="btn btn-outline" style="padding:6px 12px; color:var(--success);" onclick="window.open('https://wa.me/962${(r.phone||'').replace(/^0+/, '')}', '_blank')"><i class="fab fa-whatsapp"></i></button></td></tr>`;
                 });
                 document.getElementById('stat-today').innerText = today; document.getElementById('stat-total').innerText = snap.size;
             });
 
-            // 2. دردشة الطاقم
-            onSnapshot(query(collection(db, "internal_chat"), orderBy("timestamp", "asc")), (snap) => {
-                const box = document.getElementById('internal-chat-body'); box.innerHTML = "";
+            // 2. المنتجات (التشكيلات) - الكود الجديد
+            onSnapshot(collection(db, "products"), (snap) => {
+                const tb = document.getElementById('products-body'); tb.innerHTML = "";
+                document.getElementById('stat-prods').innerText = snap.size;
                 snap.forEach(d => {
-                    const m = d.data(); const css = m.sender === currentUser.name ? "msg-my" : "msg-other";
-                    box.innerHTML += `<div class="msg-bubble ${css}"><span style="font-size:0.75rem; font-weight:800; display:block; margin-bottom:5px; opacity:0.8;"><i class="fas fa-user"></i> ${m.sender}</span>${m.text}</div>`;
+                    const p = d.data();
+                    const badgeColor = p.type === 'طبي' ? '#dcfce7' : p.type === 'شمسي' ? '#fef3c7' : '#e0f2fe';
+                    const textColor = p.type === 'طبي' ? '#10b981' : p.type === 'شمسي' ? '#f59e0b' : '#0891b2';
+                    tb.innerHTML += `<tr>
+                        <td><img src="${p.image || 'https://via.placeholder.com/50'}" class="img-thumb"></td>
+                        <td><strong>${p.name}</strong><br><small style="color:var(--text-muted);">${p.brand}</small></td>
+                        <td><span class="badge" style="background:${badgeColor}; color:${textColor};">${p.type}</span></td>
+                        <td><strong>${p.price}</strong> JOD</td>
+                        <td>
+                            <button class="btn btn-outline" style="padding:6px 10px; color:var(--warning);" onclick="editProduct('${d.id}','${p.name}','${p.brand}','${p.type}','${p.price}','${p.image||''}')"><i class="fas fa-pen"></i></button>
+                            <button class="btn btn-danger" style="padding:6px 10px;" onclick="delProduct('${d.id}', '${p.name}', '${p.brand}', '${p.type}', '${p.price}', '${p.image||''}')"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>`;
                 });
-                box.scrollTop = box.scrollHeight;
             });
 
-            // 3. مدير النظام (الموظفين والسجل الأمني)
+            // 3. المنتجات المحذوفة (Recycle Bin)
             if(currentUser.role === 'superadmin') {
-                // الموظفين
+                onSnapshot(collection(db, "deleted_products"), (snap) => {
+                    const tb = document.getElementById('recycle-body'); tb.innerHTML = "";
+                    snap.forEach(d => {
+                        const p = d.data();
+                        tb.innerHTML += `<tr>
+                            <td><img src="${p.image || 'https://via.placeholder.com/50'}" class="img-thumb"></td>
+                            <td><strong>${p.name}</strong><br><small>${p.brand}</small></td>
+                            <td>${p.type}</td><td>${p.price} JOD</td>
+                            <td><button class="btn btn-success" style="padding:6px 12px;" onclick="restoreProduct('${d.id}', '${p.name}', '${p.brand}', '${p.type}', '${p.price}', '${p.image||''}')"><i class="fas fa-undo"></i> استرجاع</button></td>
+                        </tr>`;
+                    });
+                });
+
+                // الموظفين والسجل الأمني
                 onSnapshot(collection(db, "system_users"), (snap) => {
                     const tb = document.getElementById('users-body'); tb.innerHTML = "";
                     snap.forEach(d => {
-                        const u = d.data(); const badge = u.role === 'superadmin' ? `<span class="badge" style="background:#fee2e2; color:var(--danger);">مدير نظام</span>` : `<span class="badge" style="background:#dcfce7; color:var(--success);">موظف</span>`;
-                        tb.innerHTML += `<tr><td><strong>${u.name}</strong></td><td dir="ltr" style="font-family:monospace;">${u.username}</td><td dir="ltr"><input type="password" value="${u.pass}" readonly style="border:none; background:transparent; font-weight:800; width:80px; outline:none;"></td><td>${badge}</td><td><div style="display:flex; gap:5px;"><button class="btn btn-outline" style="padding:6px 10px; color:var(--warning);" onclick="editU('${d.id}','${u.name}','${u.username}','${u.pass}','${u.role}')"><i class="fas fa-pen"></i></button>${u.username!==currentUser.username?`<button class="btn btn-outline" style="padding:6px 10px; color:var(--danger);" onclick="delU('${d.id}','${u.name}')"><i class="fas fa-trash"></i></button>`:''}</div></td></tr>`;
+                        const u = d.data(); const badge = u.role === 'superadmin' ? `<span class="badge" style="background:#fee2e2; color:var(--danger);">مدير</span>` : `<span class="badge" style="background:#dcfce7; color:var(--success);">موظف</span>`;
+                        tb.innerHTML += `<tr><td><strong>${u.name}</strong></td><td dir="ltr">${u.username}</td><td dir="ltr">*****</td><td>${badge}</td><td><button class="btn btn-outline" style="padding:6px 10px; color:var(--warning);" onclick="editU('${d.id}','${u.name}','${u.username}','${u.pass}','${u.role}')"><i class="fas fa-pen"></i></button> ${u.username!==currentUser.username?`<button class="btn btn-danger" style="padding:6px 10px;" onclick="delU('${d.id}')"><i class="fas fa-trash"></i></button>`:''}</td></tr>`;
                     });
                 });
                 
-                // السجل الأمني
                 onSnapshot(query(collection(db, "security_audit"), orderBy("timestamp", "desc")), (snap) => {
                     const tb = document.getElementById('logs-body'); tb.innerHTML = "";
                     snap.forEach(d => {
                         const l = d.data(); const c = l.type==='danger'?'var(--danger)':l.type==='warning'?'var(--warning)':'var(--primary)';
                         const bg = l.type==='danger'?'#fee2e2':l.type==='warning'?'#fef3c7':'#e0f2fe';
-                        tb.innerHTML += `<tr><td><strong>${l.user}</strong></td><td><span class="badge" style="background:${bg}; color:${c};">${l.action}</span></td><td dir="ltr" style="font-size:0.8rem; color:var(--text-muted);">${l.info}</td><td style="font-size:0.8rem; font-weight:600;">${l.timestamp?.toDate().toLocaleString('ar-EG')}</td></tr>`;
+                        tb.innerHTML += `<tr><td><strong>${l.user}</strong></td><td><span class="badge" style="background:${bg}; color:${c};">${l.action}</span></td><td dir="ltr" style="font-size:0.8rem; color:var(--text-muted);">${l.info}</td><td style="font-size:0.8rem;">${l.timestamp?.toDate().toLocaleString('ar-EG')}</td></tr>`;
                     });
                 });
             }
+
+            // الشات
+            onSnapshot(query(collection(db, "internal_chat"), orderBy("timestamp", "asc")), (snap) => {
+                const box = document.getElementById('internal-chat-body'); box.innerHTML = "";
+                snap.forEach(d => {
+                    const m = d.data(); const css = m.sender === currentUser.name ? "msg-my" : "msg-other";
+                    box.innerHTML += `<div class="msg-bubble ${css}"><span style="font-size:0.75rem; font-weight:800; display:block; margin-bottom:5px; opacity:0.8;">${m.sender}</span>${m.text}</div>`;
+                });
+                box.scrollTop = box.scrollHeight;
+            });
         }
 
-        // إرسال رسالة في الشات
-        window.sendInternalMsg = async () => { 
-            const i = document.getElementById('internal-chat-input'); 
-            if(i.value.trim()) { await addDoc(collection(db, "internal_chat"), { sender: currentUser.name, text: i.value.trim(), timestamp: serverTimestamp() }); i.value = ""; } 
+        // ================= دوال المنتجات (التشكيلات) =================
+        window.openProductModal = () => {
+            document.getElementById('prod-modal-title').innerText = "إضافة منتج جديد";
+            document.getElementById('p-id').value = ""; document.getElementById('p-name').value = "";
+            document.getElementById('p-brand').value = ""; document.getElementById('p-price').value = "";
+            document.getElementById('p-type').value = "طبي";
+            document.getElementById('p-img-preview').src = "https://via.placeholder.com/150";
+            document.getElementById('p-img-base64').value = "";
+            document.getElementById('productModal').classList.add('active');
         }
 
-        // إدارة الحسابات (إضافة وتعديل وحذف)
-        window.saveUser = async () => { 
-            const id = document.getElementById('edit-uid').value; 
-            const n=document.getElementById('u-name').value, u=document.getElementById('u-user').value, p=document.getElementById('u-pass').value, r=document.getElementById('u-role').value; 
-            if(!n || !u || !p) return alert("يرجى تعبئة كافة الحقول"); 
-            
-            if(id) { await setDoc(doc(db, "system_users", id), {name:n, username:u, pass:p, role:r}); logAudit(currentUser.name, `تعديل الموظف ${n}`, "warning"); } 
-            else { await setDoc(doc(db, "system_users", u), {name:n, username:u, pass:p, role:r}); logAudit(currentUser.name, `إضافة الموظف ${n}`, "success"); } 
-            document.getElementById('edit-uid').value=""; document.getElementById('u-name').value=""; document.getElementById('u-user').value=""; document.getElementById('u-pass').value=""; 
+        window.previewImage = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    // تحويل الصورة لـ Base64 عشان تنحفظ بالفايربيس بسهولة بدون Storage
+                    document.getElementById('p-img-preview').src = evt.target.result;
+                    document.getElementById('p-img-base64').value = evt.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
         }
-        
-        window.editU = (id,n,u,p,r) => { document.getElementById('edit-uid').value=id; document.getElementById('u-name').value=n; document.getElementById('u-user').value=u; document.getElementById('u-pass').value=p; document.getElementById('u-role').value=r; switchTab({currentTarget: document.querySelector('.nav-item:nth-child(4)')}, 'users'); }
-        window.delU = async (id,n) => { if(confirm("تأكيد الحذف نهائياً؟")) { await deleteDoc(doc(db, "system_users", id)); logAudit(currentUser.name, `حذف الموظف ${n}`, "danger"); } }
-        
-        // بحث وتصدير
-        window.filterTable = () => { let input = document.getElementById("searchReports").value.toUpperCase(); let trs = document.getElementById("reports-body").getElementsByTagName("tr"); for(let i=0; i<trs.length; i++) { let td = trs[i].getElementsByTagName("td")[0]; if(td) trs[i].style.display = (td.textContent||td.innerText).toUpperCase().indexOf(input) > -1 ? "" : "none"; } }
-        window.exportToCSV = () => { let csv = []; let rows = document.querySelectorAll("#reportsTable tr"); for(let i=0; i<rows.length; i++) { let row=[], cols=rows[i].querySelectorAll("td, th"); for(let j=0; j<cols.length-1; j++) row.push('"'+cols[j].innerText.replace(/"/g, '""')+'"'); csv.push(row.join(",")); } let link = document.createElement("a"); link.href = URL.createObjectURL(new Blob(["\uFEFF"+csv.join("\n")], {type: "text/csv;charset=utf-8;"})); link.download = `سجل_فحوصات_دلتا.csv`; link.click(); logAudit(currentUser.name, "تصدير البيانات لإكسل", "warning"); }
+
+        window.saveProduct = async () => {
+            const id = document.getElementById('p-id').value;
+            const n = document.getElementById('p-name').value;
+            const b = document.getElementById('p-brand').value;
+            const t = document.getElementById('p-type').value;
+            const p = document.getElementById('p-price').value;
+            const img = document.getElementById('p-img-base64').value;
+
+            if(!n || !b || !p) return alert("يرجى تعبئة الاسم والماركة والسعر");
+
+            const data = { name: n, brand: b, type: t, price: p, image: img, timestamp: serverTimestamp() };
+
+            if(id) { await setDoc(doc(db, "products", id), data); logAudit(currentUser.name, `تعديل منتج: ${n}`, "warning"); } 
+            else { await addDoc(collection(db, "products"), data); logAudit(currentUser.name, `إضافة منتج: ${n}`, "success"); }
+
+            document.getElementById('productModal').classList.remove('active');
+        }
+
+        window.editProduct = (id, n, b, t, p, img) => {
+            document.getElementById('prod-modal-title').innerText = "تعديل المنتج";
+            document.getElementById('p-id').value = id; document.getElementById('p-name').value = n;
+            document.getElementById('p-brand').value = b; document.getElementById('p-type').value = t;
+            document.getElementById('p-price').value = p; 
+            document.getElementById('p-img-preview').src = img || "https://via.placeholder.com/150";
+            document.getElementById('p-img-base64').value = img;
+            document.getElementById('productModal').classList.add('active');
+        }
+
+        window.delProduct = async (id, n, b, t, p, img) => {
+            if(confirm("هل تريد حذف هذا المنتج؟ (سيتم نقله لسلة المحذوفات)")) {
+                // نقل لسلة المحذوفات
+                await addDoc(collection(db, "deleted_products"), { old_id: id, name: n, brand: b, type: t, price: p, image: img, deletedAt: serverTimestamp() });
+                // حذفه من المنتجات
+                await deleteDoc(doc(db, "products", id));
+                logAudit(currentUser.name, `حذف منتج: ${n}`, "danger");
+            }
+        }
+
+        window.restoreProduct = async (delId, n, b, t, p, img) => {
+            // استرجاع للمنتجات
+            await addDoc(collection(db, "products"), { name: n, brand: b, type: t, price: p, image: img, timestamp: serverTimestamp() });
+            // حذفه من السلة
+            await deleteDoc(doc(db, "deleted_products", delId));
+            logAudit(currentUser.name, `استرجاع منتج: ${n}`, "success");
+        }
+
+        // ================= دوال عامة =================
+        window.sendInternalMsg = async () => { const i = document.getElementById('internal-chat-input'); if(i.value.trim()) { await addDoc(collection(db, "internal_chat"), { sender: currentUser.name, text: i.value.trim(), timestamp: serverTimestamp() }); i.value = ""; } }
+        window.saveUser = async () => { const id = document.getElementById('edit-uid').value; const n=document.getElementById('u-name').value, u=document.getElementById('u-user').value, p=document.getElementById('u-pass').value, r=document.selectElementById('u-role').value; if(!n || !u || !p) return alert("يرجى تعبئة البيانات"); if(id) { await setDoc(doc(db, "system_users", id), {name:n, username:u, pass:p, role:r}); } else { await setDoc(doc(db, "system_users", u), {name:n, username:u, pass:p, role:r}); } document.getElementById('edit-uid').value=""; document.getElementById('u-name').value=""; document.getElementById('u-user').value=""; document.getElementById('u-pass').value=""; }
+        window.editU = (id,n,u,p,r) => { document.getElementById('edit-uid').value=id; document.getElementById('u-name').value=n; document.getElementById('u-user').value=u; document.getElementById('u-pass').value=p; document.getElementById('u-role').value=r; }
+        window.delU = async (id) => { if(confirm("حذف الموظف؟")) await deleteDoc(doc(db, "system_users", id)); }
+        window.filterTable = (bodyId, inputId) => { let input = document.getElementById(inputId).value.toUpperCase(); let trs = document.getElementById(bodyId).getElementsByTagName("tr"); for(let i=0; i<trs.length; i++) { let td = trs[i].getElementsByTagName("td")[0]; if(td) trs[i].style.display = (td.textContent||td.innerText).toUpperCase().indexOf(input) > -1 ? "" : "none"; } }
+
     </script>
 </body>
 </html>

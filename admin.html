@@ -64,7 +64,7 @@
         .nav-item { padding: 14px 18px; margin-bottom: 5px; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 15px; color: #94a3b8; font-weight: 600; cursor: pointer; transition: var(--transition); font-size: 0.95rem; }
         .nav-item:hover { background: var(--sidebar-hover); color: var(--text-inverse); transform: translateX(-5px); }
         .nav-item.active { background: var(--sidebar-active); color: var(--text-inverse); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
-        .admin-only { display: none; } /* إخفاء عن الموظف العادي */
+        .admin-only { display: none; } 
 
         /* ================= 5. الهيكل (Layout: Main) ================= */
         .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
@@ -95,7 +95,6 @@
         
         .input-control { width: 100%; padding: 14px 18px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; font-size: 0.95rem; font-weight: 600; background: var(--bg-base); color: var(--text-main); transition: var(--transition); }
         .input-control:focus { border-color: var(--primary); background: var(--bg-surface); box-shadow: 0 0 0 4px var(--primary-light); }
-        textarea.input-control { resize: vertical; min-height: 100px; }
         
         .btn { padding: 12px 24px; border: none; border-radius: var(--radius-sm); font-family: inherit; font-weight: 800; font-size: 0.95rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: var(--transition); }
         .btn-primary { background: var(--primary); color: white; }
@@ -106,6 +105,7 @@
         .btn-success:hover { background: var(--success); color: white; }
         .btn-outline { border: 1px solid var(--border); background: transparent; color: var(--text-main); }
         .btn-outline:hover { background: var(--bg-base); }
+        .btn:disabled { opacity: 0.7; cursor: not-allowed; }
         .btn-icon { width: 40px; height: 40px; padding: 0; border-radius: 50%; }
 
         /* ================= 8. الجداول الاحترافية (Data Tables) ================= */
@@ -125,7 +125,7 @@
         
         .img-upload-box { border: 2px dashed var(--border); border-radius: var(--radius-md); padding: 20px; text-align: center; cursor: pointer; background: var(--bg-base); transition: var(--transition); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 180px; }
         .img-upload-box:hover { border-color: var(--primary); background: var(--primary-light); }
-        .preview-img { width: 100px; height: 100px; border-radius: var(--radius-sm); object-fit: cover; box-shadow: var(--shadow-sm); }
+        .preview-img { width: 100px; height: 100px; border-radius: var(--radius-sm); object-fit: cover; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .thumb-img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border); background: var(--bg-base); }
 
         /* ================= 10. الشات الداخلي (Chat System) ================= */
@@ -438,10 +438,10 @@
         let lastReportCount = -1;
 
         // ================= أدوات مساعدة (Utilities) =================
-        window.switchView = (viewId) => {
+        window.routeTo = (viewId) => {
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             event.currentTarget.classList.add('active');
-            document.querySelectorAll('.section-view').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.panel').forEach(el => el.classList.remove('active'));
             document.getElementById('view-' + viewId).classList.add('active');
         };
 
@@ -513,7 +513,7 @@
         }
 
         window.executeLogin = async () => {
-            const u = document.getElementById('login-user').value.trim(); const p = document.getElementById('login-pass').value.trim();
+            const u = document.getElementById('auth-user').value.trim(); const p = document.getElementById('auth-pass').value.trim();
             const btn = document.getElementById('btn-login');
             if(!u || !p) return alert("البيانات مطلوبة");
             
@@ -707,7 +707,8 @@
                 const box = document.getElementById('chat-history-container'); box.innerHTML = "";
                 snap.forEach(doc => {
                     const m = doc.data(); const isMe = (m.sender === currentUser.name);
-                    box.innerHTML += `<div class="chat-bubble ${isMe ? 'chat-me' : 'chat-them'}"><span class="chat-sender">${m.sender}</span>${m.text}</div>`;
+                    const cssAlign = isMe ? 'align-self: flex-end; background: var(--primary); color: white; border-bottom-left-radius: 4px;' : 'align-self: flex-start; background: #f1f5f9; border: 1px solid var(--border); border-bottom-right-radius: 4px;';
+                    box.innerHTML += `<div style="max-width: 75%; padding: 12px 16px; border-radius: 12px; margin-bottom: 10px; ${cssAlign}"><span style="display:block; font-size:0.75rem; font-weight:800; margin-bottom:5px; opacity:0.8;">${m.sender}</span>${m.text}</div>`;
                 });
                 box.scrollTop = box.scrollHeight;
             });
@@ -729,7 +730,7 @@
                 onSnapshot(collection(db, "system_users"), (snap) => {
                     const tb = document.getElementById('tb-staff'); tb.innerHTML = "";
                     snap.forEach(doc => {
-                        const u = doc.data(); const badge = u.role === 'superadmin' ? 'b-red' : 'b-green'; const roleName = u.role === 'superadmin' ? 'Admin' : 'Manager';
+                        const u = doc.data(); const badgeClass = u.role === 'superadmin' ? 'b-red' : 'b-green'; const roleName = u.role === 'superadmin' ? 'Admin' : 'Manager';
                         tb.innerHTML += `<tr><td><strong>${u.name}</strong></td><td dir="ltr">${u.username}</td><td><span class="badge b-blue" style="cursor:help;" title="${u.pass}">إظهار <i class="fas fa-eye"></i></span></td><td><span class="badge ${badgeClass}">${roleName}</span></td><td>${u.createdAt ? u.createdAt.toDate().toLocaleDateString() : ''}</td><td><button class="btn btn-outline" style="padding:6px; color:var(--primary);" onclick="populateStaffModal('${doc.id}','${u.name}','${u.username}','${u.pass}','${u.role}')"><i class="fas fa-pen"></i></button> ${u.username !== currentUser.username ? `<button class="btn btn-danger" style="padding:6px;" onclick="executeDeleteStaff('${doc.id}','${u.name}')"><i class="fas fa-trash"></i></button>` : ''}</td></tr>`;
                     });
                 });

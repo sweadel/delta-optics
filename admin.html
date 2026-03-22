@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Delta Optics Pro | لوحة التحكم المتكاملة</title>
+    <title>Delta Optics Pro | لوحة التحكم الذكية</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -23,132 +23,189 @@
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; outline: none;}
         body { background: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; color: var(--text-main); }
         
-        /* شاشة الدخول */
         #login-screen { position: fixed; inset: 0; background: radial-gradient(circle at top right, #1e293b, #0f172a); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 20px; }
-        .login-box { background: rgba(255, 255, 255, 0.98); padding: 50px 40px; border-radius: 30px; box-shadow: 0 40px 100px rgba(0,0,0,0.5); width: 100%; max-width: 420px; text-align: center; }
+        .login-box { background: rgba(255, 255, 255, 0.98); padding: 50px 40px; border-radius: 30px; box-shadow: 0 40px 100px rgba(0,0,0,0.5); width: 100%; max-width: 420px; text-align: center; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
         
-        /* السايدبار */
-        #sidebar { width: 280px; background: var(--sidebar); color: white; display: none; flex-direction: column; z-index: 2000; box-shadow: 4px 0 20px rgba(0,0,0,0.05); transition: 0.4s; }
+        #sidebar { width: 280px; background: var(--sidebar); color: white; display: none; flex-direction: column; z-index: 2000; box-shadow: 4px 0 20px rgba(0,0,0,0.05); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         #sidebar.show { display: flex; }
-        .logo-area { padding: 35px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; gap: 10px;}
-        
-        .nav-item { padding: 15px 20px; cursor: pointer; display: flex; align-items: center; gap: 15px; font-weight: 600; color: #94a3b8; margin: 4px 15px; border-radius: 12px; transition: 0.3s; }
+        .logo-area { padding: 35px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 10px;}
+        .nav-item { padding: 18px 25px; cursor: pointer; display: flex; align-items: center; gap: 15px; font-weight: 600; color: #94a3b8; transition: 0.3s; border-right: 4px solid transparent; font-size: 1.05rem; margin: 4px 15px; border-radius: 12px;}
         .nav-item:hover { color: white; background: var(--sidebar-hover); }
-        .nav-item.active { background: var(--primary); color: white; box-shadow: 0 10px 20px -5px rgba(6,182,212,0.4); }
+        .nav-item.active { background: var(--primary); color: white; border-right: none; box-shadow: 0 10px 20px -5px rgba(6,182,212,0.4); }
+        .admin-nav { display: none; }
 
-        /* المحتوى الرئيسي */
+        #mobile-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 1500; backdrop-filter: blur(4px); opacity: 0; transition: 0.3s; }
+        #mobile-overlay.active { display: block; opacity: 1; }
+
         #main-content { flex: 1; padding: 25px; overflow-y: auto; display: none; background: var(--bg); position: relative; }
-        #main-content.show { display: block; }
+        #main-content.show { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: var(--border);}
+        header { display: flex; justify-content: space-between; align-items: center; background: transparent; padding: 10px 0 30px; margin-bottom: 10px; border-bottom: var(--border);}
+        .header-title-group { display: flex; align-items: center; gap: 15px; }
+        .menu-toggle { display: none; background: var(--surface); color: var(--text-main); border: var(--border); font-size: 1.2rem; padding: 10px; border-radius: 12px; cursor: pointer; }
 
-        /* الكروت والشبكة */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: var(--surface); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow-lg); border: var(--border); display: flex; align-items: center; gap: 15px; }
-        .stat-icon { width: 50px; height: 50px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
+        .stat-card { background: var(--surface); padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 20px; border: var(--border); }
+        .stat-icon { width: 60px; height: 60px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
 
-        .section-card { background: var(--surface); padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow-lg); display: none; margin-bottom: 30px; border: var(--border); }
+        .section-card { background: var(--surface); padding: 30px; border-radius: var(--radius); box-shadow: var(--shadow-lg); display: none; margin-bottom: 30px; border: var(--border); animation: slideUp 0.4s ease; }
         .section-card.active { display: block !important; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* الجداول والفورم */
-        .table-responsive { width: 100%; overflow-x: auto; border-radius: 15px; border: var(--border); }
-        table { width: 100%; border-collapse: collapse; min-width: 700px; background: var(--surface); text-align: right; }
-        th { background: #f8fafc; padding: 15px; font-size: 0.85rem; border-bottom: 2px solid #e2e8f0; }
-        td { padding: 15px; border-bottom: 1px solid #f1f5f9; }
+        .table-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 15px; flex-wrap: wrap; }
+        .table-responsive { width: 100%; overflow-x: auto; border-radius: 15px; border: var(--border); -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; min-width: 800px; background: var(--surface); text-align: right; }
+        th { background: #f8fafc; padding: 18px 20px; color: var(--text-muted); font-weight: 700; font-size: 0.85rem; border-bottom: 2px solid #e2e8f0; white-space: nowrap; text-transform: uppercase;}
+        td { padding: 18px 20px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+        tr:hover td { background: #fdfdfd; }
 
-        .input-field { width: 100%; padding: 12px; border-radius: 10px; border: var(--border); margin-bottom: 10px; background: #f8fafc; font-weight: 600; }
-        .btn { padding: 10px 20px; border-radius: 10px; border: none; cursor: pointer; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; }
-        .btn-primary { background: var(--primary); color: white; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+
+        .chat-container { display: flex; flex-direction: column; height: 60vh; max-height: 500px; background: #f8fafc; border-radius: 16px; border: var(--border); overflow: hidden; }
+        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .chat-msg { max-width: 75%; padding: 14px 18px; border-radius: 18px; font-size: 0.95rem; line-height: 1.6; }
+        .msg-my { background: var(--primary); color: white; align-self: flex-end; border-bottom-left-radius: 4px; box-shadow: 0 4px 10px rgba(6,182,212,0.2); }
+        .msg-other { background: var(--surface); color: var(--text-main); align-self: flex-start; border-bottom-right-radius: 4px; border: var(--border); }
+        .msg-admin { background: #fffbeb; border: 1px solid #fde68a; }
+        .chat-input-area { display: flex; padding: 15px; background: var(--surface); border-top: var(--border); gap: 10px; }
+
+        .btn { padding: 12px 20px; border-radius: 12px; border: none; cursor: pointer; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; font-size: 0.95rem; }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2); }
+        .btn-success { background: var(--success); color: white; }
         .btn-danger { background: #fee2e2; color: var(--danger); }
+        .btn-warning { background: #fef3c7; color: var(--warning); }
+        .btn-outline { background: transparent; border: 2px solid #e2e8f0; color: var(--text-main); }
+        .btn:active { transform: scale(0.96); }
+        
+        .input-field { width: 100%; padding: 16px; border-radius: 12px; border: var(--border); outline: none; background: #f8fafc; font-size: 1rem; font-weight: 600; transition: 0.2s; color: var(--text-main); }
+        .input-field:focus { border-color: var(--primary); background: var(--surface); box-shadow: 0 0 0 4px var(--primary-light); }
 
-        /* شاشة الشات */
-        .chat-container { height: 400px; background: #f8fafc; border-radius: 15px; display: flex; flex-direction: column; overflow: hidden; border: var(--border); }
-        .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .msg-my { background: var(--primary); color: white; align-self: flex-end; padding: 10px; border-radius: 12px 12px 0 12px; }
-        .msg-other { background: white; align-self: flex-start; padding: 10px; border-radius: 12px 12px 12px 0; border: var(--border); }
-
+        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 6000; padding: 15px; opacity: 0; transition: 0.3s;}
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-content { background: var(--surface); padding: 35px; border-radius: 24px; width: 100%; max-width: 450px; box-shadow: 0 25px 50px rgba(0,0,0,0.2); transform: scale(0.95); transition: 0.3s; }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        
+        .badge { padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 800; white-space: nowrap; }
         .img-preview-sm { width: 45px; height: 45px; border-radius: 8px; object-fit: cover; border: var(--border); }
+
+        @media (max-width: 992px) {
+            #sidebar { position: fixed; right: -300px; top: 0; height: 100vh; display: flex !important; transform: translateX(100%); }
+            #sidebar.open { right: 0; transform: translateX(0); }
+            .menu-toggle { display: block; }
+            #main-content { padding: 15px; }
+            header { margin-bottom: 20px; flex-direction: column; align-items: flex-start; gap: 15px; padding-bottom: 15px;}
+            .header-title-group { width: 100%; }
+            header .btn { width: 100%; }
+            .section-card { padding: 20px 15px; }
+            .stats-grid { grid-template-columns: 1fr; gap: 15px; }
+        }
     </style>
 </head>
 <body>
 
     <audio id="alertSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+    <div id="mobile-overlay" onclick="toggleSidebar()"></div>
 
     <div id="login-screen">
         <div class="login-box">
-            <div style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"><i class="fas fa-user-shield"></i></div>
-            <h2 style="margin-bottom: 25px; font-weight: 900;">دخول آمن للمدير</h2>
-            <input type="text" id="login-user" class="input-field" placeholder="اسم المستخدم" dir="ltr">
-            <input type="password" id="login-pass" class="input-field" placeholder="كلمة المرور" dir="ltr">
-            <button class="btn btn-primary" style="width: 100%; height: 50px;" onclick="attemptLogin()">تسجيل دخول</button>
+            <div style="width: 80px; height: 80px; background: var(--primary-light); color: var(--primary); border-radius: 22px; display: flex; align-items: center; justify-content: center; font-size: 2.8rem; margin: 0 auto 20px;"><i class="fas fa-shield-alt"></i></div>
+            <h2 style="color: var(--sidebar); font-weight: 900; margin:0 0 25px; font-size: 1.6rem;">بوابة الإدارة (المحمية)</h2>
+            <input type="text" id="login-user" class="input-field" placeholder="اسم المستخدم" dir="ltr" style="margin-bottom: 15px;">
+            <input type="password" id="login-pass" class="input-field" placeholder="كلمة المرور" dir="ltr" onkeypress="if(event.key === 'Enter') attemptLogin()" style="margin-bottom: 20px;">
+            <button class="btn btn-primary" style="width:100%; padding: 16px; font-size: 1.1rem; height: 55px;" onclick="attemptLogin()" id="btn-login">تسجيل دخول آمن</button>
+            <button class="btn" style="background:transparent; color:var(--text-muted); width: 100%; font-size:0.9rem; margin-top: 10px;" onclick="document.getElementById('reportModal').classList.add('active')">نسيت كلمة المرور؟</button>
+        </div>
+    </div>
+
+    <div id="reportModal" class="modal-overlay">
+        <div class="modal-content" style="text-align: center;">
+            <i class="fas fa-headset" style="font-size: 3.5rem; color: var(--primary); margin-bottom: 15px;"></i>
+            <h3 style="margin-top: 0; font-weight: 800;">دعم طاقم Delta Optics</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px;">سيتم إرسال بلاغك فوراً لمدير النظام لاتخاذ اللازم.</p>
+            <input type="text" id="rep-user" class="input-field" placeholder="اسم المستخدم" dir="ltr" style="margin-bottom: 15px;">
+            <textarea id="rep-msg" class="input-field" placeholder="اشرح المشكلة باختصار..." style="height:110px; resize:none; margin-bottom: 20px;"></textarea>
+            <button class="btn btn-primary" style="width:100%; margin-bottom:10px;" id="btn-rep" onclick="sendReport()">إرسال البلاغ</button>
+            <button class="btn btn-outline" style="width: 100%;" onclick="document.getElementById('reportModal').classList.remove('active')">تراجع</button>
         </div>
     </div>
 
     <div id="sidebar">
         <div class="logo-area">
-            <i class="fas fa-infinity" style="color:var(--primary); font-size: 1.8rem;"></i>
-            <h2 style="margin:0; font-weight: 900;">DELTA</h2>
+            <i class="fas fa-infinity" style="color:var(--primary); font-size: 2.2rem;"></i>
+            <h2 style="margin:0; color:white; font-size:2rem; font-weight: 900; letter-spacing: 1px;">DELTA</h2>
         </div>
         <div style="padding: 10px;">
-            <div class="nav-item active" onclick="switchTab(event, 'reports')"><i class="fas fa-chart-line"></i> <span>الرئيسية</span></div>
-            <div class="nav-item" onclick="switchTab(event, 'coll')"><i class="fas fa-glasses"></i> <span>إدارة التشكيلات</span></div>
-            <div class="nav-item" onclick="switchTab(event, 'chat')"><i class="fas fa-comments"></i> <span>دردشة الطاقم</span></div>
-            <div class="nav-item admin-nav" onclick="switchTab(event, 'users')"><i class="fas fa-users-cog"></i> <span>الموظفين</span></div>
-            <div class="nav-item admin-nav" onclick="switchTab(event, 'logs')"><i class="fas fa-history"></i> <span>سجل الصور</span></div>
-            <div class="nav-item admin-nav" onclick="switchTab(event, 'audit')"><i class="fas fa-shield-alt"></i> <span>السجل الأمني</span></div>
+            <div class="nav-item active" onclick="switchTab(event, 'reports')"><i class="fas fa-home"></i> <span>الرئيسية</span></div>
+            <div class="nav-item" onclick="switchTab(event, 'coll')"><i class="fas fa-glasses"></i> <span>التشكيلات (جديد)</span></div>
+            <div class="nav-item" onclick="switchTab(event, 'chat')"><i class="fas fa-comment-dots"></i> <span>دردشة الطاقم</span></div>
+            <div class="nav-item admin-nav" onclick="switchTab(event, 'users')"><i class="fas fa-user-shield"></i> <span>إدارة الموظفين</span></div>
+            <div class="nav-item admin-nav" onclick="switchTab(event, 'logs')"><i class="fas fa-image"></i> <span>سجل الصور (جديد)</span></div>
+            <div class="nav-item admin-nav" onclick="switchTab(event, 'audit')"><i class="fas fa-lock"></i> <span>السجل الأمني</span></div>
         </div>
     </div>
 
     <div id="main-content">
         <header>
-            <div>
-                <h2 id="welcome-text" style="margin:0; font-weight:900;">أهلاً بك</h2>
-                <p style="margin:0; color:var(--text-muted); font-size: 0.9rem;">لوحة التحكم الشاملة</p>
+            <div class="header-title-group">
+                <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <div>
+                    <h2 id="welcome-text" style="margin:0; color:var(--sidebar); font-weight:900; font-size: 1.5rem;"></h2>
+                    <p style="margin: 5px 0 0; color: var(--text-muted); font-size: 0.95rem;">مرحباً بك في النظام الاحترافي</p>
+                </div>
             </div>
-            <button class="btn btn-danger" onclick="logout()"><i class="fas fa-power-off"></i> خروج</button>
+            <button class="btn btn-outline" style="color:var(--danger); border-color: #fee2e2;" onclick="logout()"><i class="fas fa-sign-out-alt"></i> تسجيل خروج</button>
         </header>
 
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon" style="background:#e0f2fe; color:var(--primary);"><i class="fas fa-eye"></i></div>
-                <div><small>زيارات اليوم</small><div id="stat-today" style="font-size:1.4rem; font-weight:900;">0</div></div>
+                <div class="stat-icon" style="background:#e0f2fe; color:var(--primary);"><i class="fas fa-calendar-check"></i></div>
+                <div><small style="color:var(--text-muted)">مراجعين اليوم</small><div id="stat-today" style="font-size:1.8rem; font-weight:900;">0</div></div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon" style="background:#dcfce7; color:var(--success);"><i class="fas fa-clipboard-list"></i></div>
-                <div><small>إجمالي الفحوصات</small><div id="stat-total" style="font-size:1.4rem; font-weight:900;">0</div></div>
+                <div class="stat-icon" style="background:#dcfce7; color:var(--success);"><i class="fas fa-database"></i></div>
+                <div><small style="color:var(--text-muted)">إجمالي السجل</small><div id="stat-total" style="font-size:1.8rem; font-weight:900;">0</div></div>
             </div>
         </div>
 
         <div id="sec-reports" class="section-card active">
-            <div style="margin-bottom: 20px; background: white; padding: 20px; border-radius: 15px; border: var(--border);">
-                <h3 style="margin-bottom: 15px;"><i class="fas fa-chart-area" style="color:var(--primary)"></i> منحنى الزيارات الأسبوعي</h3>
+            <div style="margin-bottom: 25px; padding-bottom: 20px; border-bottom: var(--border);">
+                <h3 style="margin:0 0 15px; font-weight:800; color:var(--text-main);"><i class="fas fa-chart-line" style="color:var(--primary); margin-left:10px;"></i> إحصائيات النظام</h3>
                 <canvas id="mainChart" height="100"></canvas>
+            </div>
+
+            <div class="table-controls">
+                <h3 style="margin:0; font-weight:800; color:var(--text-main);"><i class="fas fa-table" style="color:var(--primary); margin-left:10px;"></i> سجل الفحوصات</h3>
+                <div style="display:flex; gap:10px; flex-wrap: wrap;">
+                    <input type="text" id="searchReports" class="input-field" style="max-width: 250px; margin:0; padding:10px 15px;" placeholder="بحث سريع..." onkeyup="filterTable()">
+                    <button class="btn btn-success" onclick="exportToCSV()"><i class="fas fa-file-excel"></i> تصدير إكسل</button>
+                </div>
             </div>
             <div class="table-responsive">
                 <table id="reportsTable">
-                    <thead><tr><th>المراجع</th><th>التفاصيل</th><th>التاريخ</th><th>إجراء</th></tr></thead>
+                    <thead><tr><th>المراجع</th><th>التفاصيل والملاحظات</th><th>التاريخ</th><th>إجراء</th></tr></thead>
                     <tbody id="reports-body"></tbody>
                 </table>
             </div>
         </div>
 
         <div id="sec-coll" class="section-card">
-            <h3 style="margin-bottom: 20px;">إدارة الموديلات والماركات</h3>
+            <h2 style="margin-top:0; font-weight:800;"><i class="fas fa-glasses" style="color:var(--primary);"></i> إدارة الموديلات والتشكيلات</h2>
             <div style="background:#f8fafc; padding:20px; border-radius:15px; border:var(--border); margin-bottom: 20px;">
-                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:10px;">
+                <div class="form-grid">
                     <input type="text" id="frame-name" class="input-field" placeholder="اسم الموديل">
                     <input type="text" id="frame-brand" class="input-field" placeholder="الماركة">
                     <input type="number" id="frame-price" class="input-field" placeholder="السعر">
                     <input type="file" id="frame-img" class="input-field">
-                    <button class="btn btn-primary" onclick="addCollectionItem()">إضافة للتشكيلة</button>
                 </div>
+                <button class="btn btn-primary" onclick="alert('سيتم برمجة دالة الإضافة لاحقاً للرفع على قاعدة البيانات')">إضافة للتشكيلة</button>
             </div>
             <div class="table-responsive">
                 <table>
                     <thead><tr><th>الصورة</th><th>الموديل</th><th>الماركة</th><th>السعر</th><th>إجراء</th></tr></thead>
-                    <tbody id="coll-body">
+                    <tbody>
                         <tr>
-                            <td><img src="logo.jpg" class="img-preview-sm"></td>
+                            <td><img src="logo.jpg" class="img-preview-sm" onerror="this.src='https://via.placeholder.com/45'"></td>
                             <td>Aviator</td><td>Ray-Ban</td><td>45 JOD</td>
                             <td><button class="btn btn-danger" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i></button></td>
                         </tr>
@@ -157,49 +214,74 @@
             </div>
         </div>
 
-        <div id="sec-logs" class="section-card admin-only">
-            <h3><i class="fas fa-history"></i> سجل الصور المسترجعة</h3><br>
+        <div id="sec-chat" class="section-card">
+            <h2 style="margin-top:0; color:var(--primary); font-weight:800;"><i class="fas fa-comment-dots"></i> دردشة طاقم Delta Optics</h2>
+            <div class="chat-container">
+                <div class="chat-messages" id="internal-chat-body"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="internal-chat-input" class="input-field" style="margin:0; border-radius:50px; flex: 1;" placeholder="اكتب رسالة..." onkeypress="if(event.key === 'Enter') sendInternalMsg()">
+                    <button class="btn btn-primary" style="border-radius: 50%; width: 50px; height: 50px; padding: 0;" onclick="sendInternalMsg()"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div id="sec-users" class="section-card admin-only">
+            <h2 style="margin-top:0;">إدارة الحسابات (باليوزر والباسوورد)</h2>
+            <div style="background:#f8fafc; padding:25px; border-radius:15px; border:var(--border); margin-bottom:25px;">
+                <input type="hidden" id="edit-uid">
+                <div class="form-grid">
+                    <input type="text" id="u-name" class="input-field" placeholder="الاسم الكامل">
+                    <input type="text" id="u-user" class="input-field" placeholder="اسم الدخول (User)" dir="ltr">
+                    <input type="password" id="u-pass" class="input-field" placeholder="كلمة المرور" dir="ltr">
+                    <select id="u-role" class="input-field"><option value="manager">موظف مختص</option><option value="superadmin">مدير نظام</option></select>
+                </div>
+                <button class="btn btn-primary" style="margin-top: 15px; width: 100%; max-width: 220px;" onclick="saveUser()"><i class="fas fa-save"></i> حفظ الحساب</button>
+            </div>
             <div class="table-responsive">
                 <table>
-                    <thead><tr><th>الصورة</th><th>الاسم</th><th>تاريخ الحذف</th><th>إجراء</th></tr></thead>
-                    <tbody id="img-logs-body">
+                    <thead><tr><th>الموظف</th><th>اسم الدخول</th><th>كلمة المرور</th><th>الصلاحية</th><th>إجراء</th></tr></thead>
+                    <tbody id="users-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="sec-logs" class="section-card admin-only">
+            <h2 style="margin-top:0;"><i class="fas fa-image" style="color:var(--primary);"></i> سجل الصور المحذوفة</h2>
+            <p style="color:var(--text-muted)">هنا يمكنك مشاهدة أو استرجاع الصور التي تم إزالتها من النظام.</p>
+            <div class="table-responsive">
+                <table>
+                    <thead><tr><th>الصورة</th><th>الاسم القديم</th><th>تاريخ الحذف</th><th>إجراء</th></tr></thead>
+                    <tbody>
                         <tr>
-                            <td><img src="https://via.placeholder.com/50" class="img-preview-sm"></td>
-                            <td>old_banner.jpg</td><td>2026-03-21</td>
-                            <td><button class="btn btn-primary" style="background:var(--success)">استرجاع</button></td>
+                            <td><img src="https://via.placeholder.com/45" class="img-preview-sm"></td>
+                            <td>old_banner.jpg</td><td>2026-03-22</td>
+                            <td><button class="btn btn-success" style="padding: 6px 12px; font-size: 0.8rem;">استرجاع</button></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <div id="sec-chat" class="section-card">
-            <div class="chat-container">
-                <div class="chat-messages" id="internal-chat-body"></div>
-                <div style="padding:10px; display:flex; gap:10px;">
-                    <input type="text" id="internal-chat-input" class="input-field" style="margin:0;" placeholder="رسالة للطاقم...">
-                    <button class="btn btn-primary" onclick="sendInternalMsg()"><i class="fas fa-paper-plane"></i></button>
-                </div>
-            </div>
-        </div>
-
-        <div id="sec-users" class="section-card admin-only">
-            <h3>إدارة الحسابات</h3><br>
-            <div class="table-responsive">
-                <table>
-                    <thead><tr><th>الاسم</th><th>اليوزر</th><th>الصلاحية</th><th>إجراء</th></tr></thead>
-                    <tbody id="users-body"></tbody>
-                </table>
-            </div>
-        </div>
-
         <div id="sec-audit" class="section-card admin-only">
-            <h3 style="color:var(--danger)">السجل الأمني للعمليات</h3><br>
+            <h2 style="margin-top:0; color:var(--danger);"><i class="fas fa-user-secret"></i> السجل الأمني (لا يمكن التعديل عليه)</h2>
             <div class="table-responsive">
                 <table>
-                    <thead><tr><th>المسؤول</th><th>العملية</th><th>IP</th><th>الوقت</th></tr></thead>
-                    <tbody id="audit-body"></tbody>
+                    <thead><tr><th>المسؤول</th><th>الحدث</th><th>IP و الجهاز</th><th>التوقيت</th></tr></thead>
+                    <tbody id="logs-body"></tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="msgModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 style="margin-top:0; font-weight: 800;"><i class="fas fa-comment-medical" style="color: var(--primary);"></i> مراسلة المراجع</h3>
+            <p id="msgPatientName" style="background:#f1f5f9; color:var(--sidebar); font-weight:700; padding:12px; border-radius:10px; font-size: 0.95rem; border: var(--border);"></p>
+            <input type="hidden" id="target-phone">
+            <textarea id="msgContentBox" class="input-field" style="height: 140px; resize: none; margin-top:15px;" placeholder="نص الرسالة..."></textarea>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn btn-success" style="flex:1;" onclick="sendFinalMsg('whatsapp')"><i class="fab fa-whatsapp"></i> واتس</button>
+                <button class="btn" style="background:transparent; color:var(--text); border:2px solid #e2e8f0; width:100px;" onclick="document.getElementById('msgModal').classList.remove('active')">تراجع</button>
             </div>
         </div>
     </div>
@@ -208,23 +290,66 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDocs, where, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // إعدادات الفايربيس (نفس إعداداتك الأصلية)
         const firebaseConfig = { apiKey: "AIzaSyB11C4GGgAyqeThs8a9cvDNN7frvAA1nqQ", authDomain: "delta-optics-system.firebaseapp.com", projectId: "delta-optics-system", storageBucket: "delta-optics-system.firebasestorage.app", messagingSenderId: "111176219224", appId: "1:111176219224:web:e0d8a5f26b84d57249a82d" };
         const app = initializeApp(firebaseConfig); 
         const db = getFirestore(app);
+        emailjs.init("C73X3wkgP71p7DY1F");
 
-        let currentUser = null;
+        let currentUser = null; let lastCount = -1; let targetName = "";
 
-        // --- نظام الدخول ---
+        // دوال الواجهة
+        window.toggleSidebar = () => { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('mobile-overlay').classList.toggle('active'); };
+        window.switchTab = (event, tab) => { document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); if(event) event.currentTarget.classList.add('active'); document.querySelectorAll('.section-card').forEach(s => s.classList.remove('active')); document.getElementById('sec-' + tab).classList.add('active'); if(window.innerWidth <= 992) { document.getElementById('sidebar').classList.remove('open'); document.getElementById('mobile-overlay').classList.remove('active'); } };
+
+        // تهيئة الرسم البياني
+        function initChart() {
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'],
+                    datasets: [{
+                        label: 'إحصائيات الأسبوع',
+                        data: [15, 20, 10, 25, 30, 45, 12],
+                        backgroundColor: '#06b6d4',
+                        borderRadius: 5
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } } }
+            });
+        }
+
+        async function logAudit(user, act, type="info") {
+            let ip = "Checking..."; try { const r = await fetch('https://api.ipify.org?format=json'); const d = await r.json(); ip = d.ip; } catch(e){}
+            await addDoc(collection(db, "security_audit"), { user: user, action: act, type: type, info: ip, device: navigator.userAgent.includes("Win") ? "Windows" : navigator.userAgent.includes("Android") ? "Android" : "Apple", timestamp: serverTimestamp() });
+        }
+
+        // تسجيل الدخول المباشر
         window.attemptLogin = async () => {
             const u = document.getElementById('login-user').value.trim();
             const p = document.getElementById('login-pass').value.trim();
-            
+            if(!u || !p) return;
+            document.getElementById('btn-login').innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
+
             if (u === "adel" && p === "123123") {
-                currentUser = { name: "المهندس عادل", role: "superadmin" };
+                currentUser = { id: "master", username: "adel", name: "المهندس عادل", role: "superadmin" };
                 loginSuccess();
-            } else {
-                alert("خطأ في البيانات!");
+                return;
+            }
+
+            try {
+                const snap = await getDocs(query(collection(db, "system_users"), where("username", "==", u), where("pass", "==", p)));
+                if(!snap.empty) {
+                    currentUser = { id: snap.docs[0].id, ...snap.docs[0].data() };
+                    loginSuccess();
+                } else {
+                    alert("بيانات خاطئة!");
+                    document.getElementById('btn-login').innerHTML = "تسجيل دخول آمن";
+                    logAudit(u, "محاولة دخول فاشلة", "danger");
+                }
+            } catch (error) {
+                alert("بيانات خاطئة أو يوجد مشكلة في الاتصال.");
+                document.getElementById('btn-login').innerHTML = "تسجيل دخول آمن";
             }
         };
 
@@ -233,71 +358,96 @@
             document.getElementById('sidebar').classList.add('show');
             document.getElementById('main-content').classList.add('show');
             document.getElementById('welcome-text').innerText = `أهلاً، ${currentUser.name}`;
-            initDashboard();
+            
+            if(currentUser.role === 'superadmin') {
+                document.querySelectorAll('.admin-nav').forEach(el => el.style.display = 'flex');
+            }
+            logAudit(currentUser.name, "دخول النظام", "success");
+            initChart(); // تفعيل الرسم البياني
+            initAllData();
+        }
+        
+        window.logout = () => { location.reload(); }
+
+        window.sendReport = () => {
+            const u = document.getElementById('rep-user').value; const msg = document.getElementById('rep-msg').value;
+            if(!u || !msg) return; document.getElementById('btn-rep').innerText = "جاري الإرسال...";
+            emailjs.send("service_0w4ek18", "template_msh2s9p", { patient_name: "تبليغ - "+u, message: msg, date: new Date().toLocaleString('ar-EG') })
+            .then(() => { alert("تم الإرسال."); document.getElementById('reportModal').classList.remove('active'); document.getElementById('btn-rep').innerText = "إرسال البلاغ"; }, () => alert("خطأ بالاتصال."));
         }
 
-        window.logout = () => location.reload();
-
-        // --- نظام التبويبات ---
-        window.switchTab = (e, tab) => {
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            e.currentTarget.classList.add('active');
-            document.querySelectorAll('.section-card').forEach(s => s.classList.remove('active'));
-            document.getElementById('sec-' + tab).classList.add('active');
-        };
-
-        // --- الرسوم البيانية ---
-        function initCharts() {
-            const ctx = document.getElementById('mainChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'],
-                    datasets: [{
-                        label: 'عدد الفحوصات',
-                        data: [12, 19, 15, 25, 22, 30, 10],
-                        borderColor: '#06b6d4',
-                        tension: 0.4,
-                        fill: true,
-                        backgroundColor: 'rgba(6, 182, 212, 0.1)'
-                    }]
-                },
-                options: { responsive: true, plugins: { legend: { display: false } } }
-            });
-        }
-
-        // --- البيانات الحية (Firebase) ---
-        function initDashboard() {
-            initCharts();
-            // جلب سجل الفحوصات
+        // جلب البيانات من السيرفر (نفس كودك الأصلي تماماً)
+        function initAllData() {
             onSnapshot(query(collection(db, "tests"), orderBy("timestamp", "desc")), (snap) => {
-                const tb = document.getElementById('reports-body'); tb.innerHTML = "";
+                const tb = document.getElementById('reports-body'); tb.innerHTML = ""; let today = 0;
+                if (lastCount !== -1 && snap.size > lastCount) { document.getElementById('alertSound').play().catch(e => console.log("Blocked Audio")); }
+                lastCount = snap.size;
                 snap.forEach(d => {
-                    const r = d.data();
-                    tb.innerHTML += `<tr><td>${r.name}</td><td>${r.details}</td><td>${r.timestamp?.toDate().toLocaleDateString('ar-EG') || 'الآن'}</td><td><button class="btn btn-danger" onclick="alert('تم الأرشفة')">أرشفة</button></td></tr>`;
+                    const r = d.data(); const date = r.timestamp ? r.timestamp.toDate().toLocaleDateString('ar-EG') : "الآن";
+                    const isToday = r.timestamp?.toDate().toDateString() === new Date().toDateString();
+                    if(isToday) today++;
+                    let btn = r.phone ? `<button class="btn btn-outline" style="padding:6px 12px; color:var(--primary); border-color:var(--primary-light);" onclick="openMsg('${r.name}', '${r.phone}')"><i class="fas fa-paper-plane"></i></button>` : `<span class="badge" style="background:var(--bg); color:var(--text-muted);">بدون رقم</span>`;
+                    tb.innerHTML += `<tr><td><strong>${r.name}</strong><br><small dir="ltr" style="color:var(--text-muted);">${r.phone || ''}</small></td><td><div style="background:#f1f5f9; padding:8px; border-radius:8px; font-size:0.85rem; max-height:80px; overflow-y:auto; border:var(--border);">${r.details}</div></td><td><span class="badge" style="background:#e0f2fe; color:#0369a1;">${date}</span></td><td>${btn}</td></tr>`;
                 });
-                document.getElementById('stat-total').innerText = snap.size;
+                document.getElementById('stat-today').innerText = today; document.getElementById('stat-total').innerText = snap.size;
             });
-        }
 
-        window.sendInternalMsg = async () => {
-            const i = document.getElementById('internal-chat-input');
-            if(i.value.trim()){
-                await addDoc(collection(db, "internal_chat"), { sender: currentUser.name, text: i.value, timestamp: serverTimestamp() });
-                i.value = "";
+            onSnapshot(query(collection(db, "internal_chat"), orderBy("timestamp", "asc")), (snap) => {
+                const box = document.getElementById('internal-chat-body'); box.innerHTML = "";
+                snap.forEach(d => {
+                    const m = d.data(); let css = m.sender === currentUser.name ? "msg-my" : "msg-other";
+                    if(m.role === 'superadmin' && m.sender !== currentUser.name) css = "msg-other msg-admin";
+                    let icon = m.role === 'superadmin' ? `<i class="fas fa-crown" style="color:#f59e0b"></i>` : `<i class="fas fa-user-circle"></i>`;
+                    box.innerHTML += `<div class="chat-msg ${css}"><span style="font-size:0.7rem; font-weight:800; display:block; margin-bottom:4px; opacity:0.8;">${icon} ${m.sender}</span>${m.text}</div>`;
+                });
+                box.scrollTop = box.scrollHeight;
+            });
+
+            if(currentUser.role === 'superadmin') {
+                onSnapshot(collection(db, "system_users"), (snap) => {
+                    const tb = document.getElementById('users-body'); tb.innerHTML = "";
+                    snap.forEach(d => {
+                        const u = d.data(); const badge = u.role === 'superadmin' ? `<span class="badge" style="background:#fee2e2; color:#ef4444;">مدير</span>` : `<span class="badge" style="background:#dcfce7; color:#10b981;">موظف</span>`;
+                        tb.innerHTML += `<tr><td><strong>${u.name}</strong></td><td dir="ltr" style="font-family:monospace; color:var(--text-muted);">${u.username}</td><td dir="ltr"><input type="password" id="pw-${d.id}" value="${u.pass}" readonly style="border:none; background:transparent; font-weight:800; width:70px; color:var(--sidebar); outline:none;"><button style="background:none; border:none; cursor:pointer; color:var(--text-muted);" onclick="const i=document.getElementById('pw-${d.id}'); i.type=i.type==='password'?'text':'password';"><i class="fas fa-eye"></i></button></td><td>${badge}</td><td><div style="display:flex; gap:5px;"><button class="btn btn-outline" style="padding:6px 10px; color:var(--warning);" onclick="editU('${d.id}','${u.name}','${u.username}','${u.pass}','${u.role}')"><i class="fas fa-pen"></i></button>${u.username!==currentUser.username?`<button class="btn btn-outline" style="padding:6px 10px; color:var(--danger);" onclick="delU('${d.id}','${u.name}')"><i class="fas fa-trash"></i></button>`:''}</div></td></tr>`;
+                    });
+                });
+                
+                onSnapshot(query(collection(db, "security_audit"), orderBy("timestamp", "desc")), (snap) => {
+                    const tb = document.getElementById('logs-body'); tb.innerHTML = "";
+                    snap.forEach(d => {
+                        const l = d.data(); const c = l.type==='danger'?'#ef4444':l.type==='warning'?'#f59e0b':'#0891b2';
+                        const bg = l.type==='danger'?'#fee2e2':l.type==='warning'?'#fef3c7':'#e0f2fe';
+                        tb.innerHTML += `<tr><td><strong>${l.user}</strong></td><td><span class="badge" style="background:${bg}; color:${c};">${l.action}</span></td><td dir="ltr" style="font-size:0.8rem; color:var(--text-muted); font-family:monospace;">${l.info}</td><td style="font-size:0.8rem; font-weight:600;">${l.timestamp?.toDate().toLocaleString('ar-EG')}</td></tr>`;
+                    });
+                });
             }
         }
 
-        onSnapshot(query(collection(db, "internal_chat"), orderBy("timestamp", "asc")), (snap) => {
-            const box = document.getElementById('internal-chat-body'); box.innerHTML = "";
-            snap.forEach(d => {
-                const m = d.data();
-                const css = m.sender === currentUser.name ? "msg-my" : "msg-other";
-                box.innerHTML += `<div class="${css}"><strong>${m.sender}:</strong><br>${m.text}</div>`;
-            });
-            box.scrollTop = box.scrollHeight;
-        });
-
+        window.openMsg = (n, p) => { targetName=n; document.getElementById('target-phone').value = p.replace(/\D/g,''); document.getElementById('msgPatientName').innerText=`الرسالة إلى: ${n} (${p})`; document.getElementById('msgContentBox').value=""; document.getElementById('msgModal').classList.add('active'); }
+        window.sendFinalMsg = (m) => { const phone = document.getElementById('target-phone').value; const txt = encodeURIComponent(document.getElementById('msgContentBox').value); window.open(`https://wa.me/${phone.startsWith('07') ? '962'+phone.substring(1) : phone}?text=${txt}`, '_blank'); logAudit(currentUser.name, `مراسلة ${targetName}`); document.getElementById('msgModal').classList.remove('active'); }
+        window.sendInternalMsg = async () => { const i = document.getElementById('internal-chat-input'); if(i.value.trim()) { await addDoc(collection(db, "internal_chat"), { sender: currentUser.name, role: currentUser.role, text: i.value.trim(), timestamp: serverTimestamp() }); i.value = ""; } }
+        
+        window.saveUser = async () => { 
+            const id = document.getElementById('edit-uid').value; 
+            const n=document.getElementById('u-name').value, u=document.getElementById('u-user').value, p=document.getElementById('u-pass').value, r=document.getElementById('u-role').value; 
+            if(!n || !u || !p) return alert("الرجاء إدخال كافة البيانات"); 
+            
+            if(id) { 
+                await setDoc(doc(db, "system_users", id), {name:n, username:u, pass:p, role:r}); 
+                logAudit(currentUser.name, `تعديل الموظف ${n}`, "warning"); 
+            } else { 
+                await setDoc(doc(db, "system_users", u), {name:n, username:u, pass:p, role:r}); 
+                logAudit(currentUser.name, `إضافة الموظف ${n}`, "success"); 
+            } 
+            
+            document.getElementById('edit-uid').value=""; document.getElementById('u-name').value=""; document.getElementById('u-user').value=""; document.getElementById('u-pass').value=""; 
+        }
+        
+        window.editU = (id,n,u,p,r) => { document.getElementById('edit-uid').value=id; document.getElementById('u-name').value=n; document.getElementById('u-user').value=u; document.getElementById('u-pass').value=p; document.getElementById('u-role').value=r; window.scrollTo({top:0, behavior:'smooth'});}
+        window.delU = async (id,n) => { if(confirm("حذف الحساب نهائياً؟")) { await deleteDoc(doc(db, "system_users", id)); logAudit(currentUser.name, `حذف الموظف ${n}`, "danger"); } }
+        
+        window.filterTable = () => { let input = document.getElementById("searchReports").value.toUpperCase(); let trs = document.getElementById("reports-body").getElementsByTagName("tr"); for(let i=0; i<trs.length; i++) { let td = trs[i].getElementsByTagName("td")[0]; if(td) trs[i].style.display = (td.textContent||td.innerText).toUpperCase().indexOf(input) > -1 ? "" : "none"; } }
+        window.exportToCSV = () => { let csv = []; let rows = document.querySelectorAll("#reportsTable tr"); for(let i=0; i<rows.length; i++) { let row=[], cols=rows[i].querySelectorAll("td, th"); for(let j=0; j<cols.length-1; j++) row.push('"'+cols[j].innerText.replace(/"/g, '""')+'"'); csv.push(row.join(",")); } let link = document.createElement("a"); link.href = URL.createObjectURL(new Blob(["\uFEFF"+csv.join("\n")], {type: "text/csv;charset=utf-8;"})); link.download = `سجل_دلتا.csv`; link.click(); logAudit(currentUser.name, "تصدير داتا لإكسل", "warning"); }
     </script>
 </body>
 </html>

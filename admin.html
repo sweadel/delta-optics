@@ -3,180 +3,274 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delta Optics | لوحة التحكم المركزية</title>
+    <title>Delta Optics | النظام الإداري الشامل</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
+        /* ================= Core Variables ================= */
         :root {
-            --primary: #2563eb; --primary-hover: #1d4ed8; --primary-light: #dbeafe;
-            --bg: #f8fafc; --surface: #ffffff;
-            --sidebar: #0f172a; --sidebar-hover: #1e293b; --sidebar-text: #94a3b8;
+            --primary: #0284c7; --primary-dark: #0369a1;
+            --bg-body: #f1f5f9; --bg-surface: #ffffff;
+            --sidebar: #0f172a; --sidebar-hover: #1e293b; --sidebar-text: #cbd5e1;
             --text-main: #0f172a; --text-muted: #64748b;
             --border: #e2e8f0;
-            --success: #10b981; --danger: #ef4444; --warning: #f59e0b;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            --radius: 12px;
+            --danger: #ef4444; --success: #10b981; --warning: #f59e0b;
+            --radius: 12px; --transition: 0.2s ease-in-out;
         }
 
+        /* ================= Reset & Typography ================= */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; outline: none; }
-        body { background-color: var(--bg); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
-
-        /* سكرول بار أنيق */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-
-        /* 📱 الشريط الجانبي */
-        .sidebar { width: 260px; background: var(--sidebar); display: flex; flex-direction: column; color: white; z-index: 100; transition: 0.3s; }
-        .sidebar-brand { padding: 30px 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .sidebar-brand i { font-size: 2rem; color: #3b82f6; }
-        .sidebar-brand h2 { font-size: 1.4rem; font-weight: 900; letter-spacing: 1px; }
+        body { background-color: var(--bg-body); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
         
-        .nav-menu { padding: 20px 10px; flex: 1; overflow-y: auto; }
-        .nav-item { padding: 14px 20px; display: flex; align-items: center; gap: 15px; color: var(--sidebar-text); font-weight: 600; cursor: pointer; border-radius: 8px; margin-bottom: 5px; transition: 0.2s; font-size: 0.95rem; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* ================= Login Screen ================= */
+        #login-overlay { position: fixed; inset: 0; background: var(--sidebar); display: flex; align-items: center; justify-content: center; z-index: 10000; }
+        .login-box { background: var(--bg-surface); padding: 40px; border-radius: var(--radius); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); width: 100%; max-width: 400px; text-align: center; }
+        .login-box h2 { margin-bottom: 20px; font-weight: 900; color: var(--text-main); }
+
+        /* ================= Layout: Sidebar ================= */
+        .sidebar { width: 260px; background: var(--sidebar); color: white; display: flex; flex-direction: column; transition: var(--transition); z-index: 1000; }
+        .brand { padding: 25px 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .brand i { font-size: 1.8rem; color: var(--primary); }
+        .brand h2 { font-size: 1.5rem; font-weight: 900; letter-spacing: 1px; }
+        
+        .nav-list { flex: 1; padding: 15px 10px; overflow-y: auto; }
+        .nav-item { padding: 12px 15px; margin-bottom: 5px; border-radius: 8px; display: flex; align-items: center; gap: 12px; color: var(--sidebar-text); font-weight: 600; cursor: pointer; transition: var(--transition); }
         .nav-item:hover { background: var(--sidebar-hover); color: white; }
         .nav-item.active { background: var(--primary); color: white; }
+        .admin-only { display: none; } /* يظهر فقط للمدير */
 
-        /* 💻 المحتوى الرئيسي */
-        .main-layout { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .topbar { background: var(--surface); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
-        .content-area { flex: 1; padding: 30px; overflow-y: auto; }
+        /* ================= Layout: Main Content ================= */
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .header { background: var(--bg-surface); padding: 15px 25px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .content-body { flex: 1; padding: 25px; overflow-y: auto; }
 
-        .page-title { font-size: 1.5rem; font-weight: 900; margin-bottom: 5px; color: var(--text-main); }
-        .page-subtitle { color: var(--text-muted); font-size: 0.9rem; }
+        /* ================= UI Components ================= */
+        .card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 25px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .card-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
 
-        /* 🗂️ الكروت والأقسام */
-        .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 25px; box-shadow: var(--shadow); margin-bottom: 30px; display: none; animation: fadeIn 0.3s ease; }
-        .panel.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 25px; }
+        .stat-box { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; display: flex; align-items: center; gap: 15px; }
+        .stat-icon { width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
 
-        .panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 20px; }
-        .panel-header h3 { font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        /* ================= Forms & Inputs ================= */
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        .form-control { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 0.95rem; font-weight: 500; background: var(--bg-body); color: var(--text-main); transition: var(--transition); }
+        .form-control:focus { border-color: var(--primary); background: var(--bg-surface); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1); }
+        
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; font-family: inherit; font-weight: 700; font-size: 0.95rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: var(--transition); }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-danger { background: #fee2e2; color: var(--danger); }
+        .btn-danger:hover { background: #fca5a5; }
+        .btn-success { background: #dcfce7; color: var(--success); }
+        .btn-success:hover { background: #bbf7d0; }
+        .btn-outline { border: 1px solid var(--border); background: transparent; color: var(--text-main); }
+        .btn:disabled { opacity: 0.7; cursor: not-allowed; }
 
-        /* 📊 الجداول الاحترافية */
-        .table-wrap { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; text-align: right; }
-        th { padding: 15px 20px; color: var(--text-muted); font-size: 0.85rem; border-bottom: 1px solid var(--border); background: #f8fafc; font-weight: 700; white-space: nowrap; }
-        td { padding: 15px 20px; border-bottom: 1px solid var(--border); font-weight: 500; font-size: 0.95rem; vertical-align: middle; }
+        /* ================= Tables ================= */
+        .table-responsive { width: 100%; overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; background: var(--bg-surface); text-align: right; }
+        th { background: #f8fafc; padding: 15px; font-weight: 700; color: var(--text-muted); font-size: 0.85rem; border-bottom: 1px solid var(--border); white-space: nowrap; }
+        td { padding: 15px; border-bottom: 1px solid var(--border); vertical-align: middle; font-weight: 500; }
+        tr:last-child td { border-bottom: none; }
         tr:hover td { background: #f8fafc; }
 
-        /* 🎛️ النماذج والأزرار */
-        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .input-box { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Tajawal', sans-serif; font-size: 0.95rem; transition: 0.2s; background: #f8fafc; }
-        .input-box:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px var(--primary-light); }
-        
-        .btn { padding: 10px 20px; border-radius: 8px; font-weight: 700; font-family: 'Tajawal', sans-serif; border: none; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-hover); }
-        .btn-danger { background: #fee2e2; color: var(--danger); }
-        .btn-success { background: #dcfce7; color: var(--success); }
-        .btn-outline { border: 1px solid var(--border); background: white; color: var(--text-main); }
-        .btn:active { transform: scale(0.96); }
+        /* ================= Utilities ================= */
+        .section-view { display: none; animation: fadeIn 0.3s ease; }
+        .section-view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .badge { padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; display: inline-block; }
+        .img-upload-box { border: 2px dashed var(--border); border-radius: var(--radius); padding: 20px; text-align: center; cursor: pointer; transition: var(--transition); background: var(--bg-body); }
+        .img-upload-box:hover { border-color: var(--primary); background: var(--bg-surface); }
+        .preview-img { width: 100px; height: 100px; border-radius: 8px; object-fit: cover; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .thumb-img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border); }
+        .badge { padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
 
-        /* الشات */
-        .chat-box { height: 400px; display: flex; flex-direction: column; background: #f8fafc; border-radius: var(--radius); border: 1px solid var(--border); }
-        .chat-msgs { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .msg { max-width: 75%; padding: 12px 15px; border-radius: 12px; font-size: 0.9rem; line-height: 1.5; }
-        .msg-me { align-self: flex-end; background: var(--primary); color: white; border-bottom-left-radius: 2px; }
-        .msg-them { align-self: flex-start; background: white; border: 1px solid var(--border); border-bottom-right-radius: 2px; }
+        /* ================= Chat ================= */
+        .chat-wrapper { height: 400px; display: flex; flex-direction: column; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius); }
+        .chat-history { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; background: var(--bg-body); }
+        .msg-box { max-width: 75%; padding: 12px 16px; border-radius: 12px; line-height: 1.5; font-size: 0.95rem; }
+        .msg-me { background: var(--primary); color: white; align-self: flex-end; border-bottom-left-radius: 4px; }
+        .msg-them { background: var(--bg-surface); border: 1px solid var(--border); align-self: flex-start; border-bottom-right-radius: 4px; }
 
     </style>
 </head>
 <body>
 
+    <div id="login-overlay">
+        <div class="login-box">
+            <i class="fas fa-fingerprint" style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"></i>
+            <h2>تسجيل الدخول للنظام</h2>
+            <input type="text" id="login-user" class="form-control" placeholder="اسم المستخدم" dir="ltr" style="margin-bottom: 15px;">
+            <input type="password" id="login-pass" class="form-control" placeholder="كلمة المرور" dir="ltr" style="margin-bottom: 20px;" onkeypress="if(event.key === 'Enter') login()">
+            <button id="btn-login" class="btn btn-primary" style="width: 100%; padding: 12px;" onclick="login()">دخول آمن</button>
+        </div>
+    </div>
+
     <aside class="sidebar">
-        <div class="sidebar-brand">
-            <i class="fas fa-gem"></i>
+        <div class="brand">
+            <i class="fas fa-eye"></i>
             <h2>DELTA PRO</h2>
         </div>
-        <div class="nav-menu">
-            <div class="nav-item active" onclick="switchTab(event, 'products')"><i class="fas fa-glasses"></i> إدارة التشكيلات</div>
-            <div class="nav-item" onclick="switchTab(event, 'reports')"><i class="fas fa-clipboard-list"></i> الفحوصات الطبية</div>
-            <div class="nav-item" onclick="switchTab(event, 'chat')"><i class="fas fa-comments"></i> دردشة الطاقم</div>
+        <div class="nav-list">
+            <div class="nav-item active" onclick="switchView('dashboard')"><i class="fas fa-chart-bar"></i> لوحة القيادة</div>
+            <div class="nav-item" onclick="switchView('products')"><i class="fas fa-glasses"></i> التشكيلات والمنتجات</div>
+            <div class="nav-item" onclick="switchView('reports')"><i class="fas fa-notes-medical"></i> سجل الفحوصات</div>
+            <div class="nav-item" onclick="switchView('chat')"><i class="fas fa-comments"></i> دردشة الطاقم</div>
+            <div class="nav-item admin-only" onclick="switchView('users')"><i class="fas fa-users-cog"></i> إدارة الموظفين</div>
+            <div class="nav-item admin-only" onclick="switchView('recycle')"><i class="fas fa-trash-restore"></i> سلة المحذوفات</div>
+            <div class="nav-item admin-only" onclick="switchView('audit')"><i class="fas fa-shield-alt"></i> السجل الأمني</div>
         </div>
     </aside>
 
-    <main class="main-layout">
-        <header class="topbar">
+    <main class="main-wrapper">
+        <header class="header">
             <div>
-                <h1 class="page-title">لوحة التحكم</h1>
-                <p class="page-subtitle">إدارة الموقع وعرض المنتجات</p>
+                <h2 id="welcome-text" style="font-weight: 900; margin-bottom: 2px;">أهلاً بك</h2>
+                <span id="role-text" style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600;">جاري التحميل...</span>
             </div>
-            <button class="btn btn-outline" style="color:var(--danger); border-color:#fee2e2;" onclick="location.reload()"><i class="fas fa-power-off"></i> خروج</button>
+            <button class="btn btn-outline" style="color: var(--danger); border-color: #fee2e2;" onclick="location.reload()"><i class="fas fa-sign-out-alt"></i> تسجيل خروج</button>
         </header>
 
-        <div class="content-area">
+        <div class="content-body">
             
-            <div id="sec-products" class="panel active">
-                <div class="panel-header">
-                    <h3><i class="fas fa-plus-circle" style="color:var(--primary);"></i> إضافة وتعديل منتج (طبي / شمسي)</h3>
-                    <button id="save-prod-btn" class="btn btn-primary" onclick="saveProduct()"><i class="fas fa-save"></i> حفظ المنتج</button>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-icon" style="background:#e0f2fe; color:var(--primary);"><i class="fas fa-calendar-day"></i></div>
+                    <div><p style="color:var(--text-muted); font-size:0.85rem; font-weight:700;">فحوصات اليوم</p><h2 id="stat-today" style="margin:0;">0</h2></div>
                 </div>
-                
-                <div style="background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 25px;">
-                    <input type="hidden" id="p-id">
-                    <div style="display:flex; gap:20px; flex-wrap: wrap;">
-                        <div style="text-align: center; width: 120px;">
-                            <img id="p-img-preview" src="https://via.placeholder.com/120" style="width:120px; height:120px; border-radius:8px; object-fit:cover; border:1px solid var(--border); margin-bottom:10px; cursor:pointer;" onclick="document.getElementById('p-img-file').click()">
-                            <input type="file" id="p-img-file" accept="image/*" style="display:none;" onchange="compressAndPreview(event)">
+                <div class="stat-box">
+                    <div class="stat-icon" style="background:#dcfce7; color:var(--success);"><i class="fas fa-boxes"></i></div>
+                    <div><p style="color:var(--text-muted); font-size:0.85rem; font-weight:700;">إجمالي المنتجات</p><h2 id="stat-prods" style="margin:0;">0</h2></div>
+                </div>
+            </div>
+
+            <div id="view-dashboard" class="section-view active">
+                <div class="card">
+                    <h3 class="card-title"><i class="fas fa-chart-line" style="color:var(--primary);"></i> إحصائيات أداء العيادة</h3>
+                    <div style="height: 300px; width: 100%;">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-products" class="section-view">
+                <div class="card">
+                    <h3 class="card-title"><i class="fas fa-plus-circle" style="color:var(--primary);"></i> إضافة / تعديل منتج</h3>
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                        <div class="img-upload-box" onclick="document.getElementById('p-img-file').click()">
+                            <img id="p-img-preview" src="https://via.placeholder.com/150?text=اضغط+لرفع+صورة" class="preview-img">
+                            <p style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700;"><i class="fas fa-upload"></i> اختر صورة</p>
+                            <input type="file" id="p-img-file" accept="image/*" style="display:none;" onchange="processImage(event)">
                             <input type="hidden" id="p-img-base64">
-                            <small style="color:var(--text-muted); font-size:0.75rem;">اضغط لتغيير الصورة</small>
                         </div>
                         
                         <div style="flex: 1;">
-                            <div class="form-row">
-                                <input type="text" id="p-name" class="input-box" placeholder="اسم الموديل (مثال: Aviator Classic)">
-                                <input type="text" id="p-brand" class="input-box" placeholder="الماركة (مثال: Ray-Ban)">
+                            <input type="hidden" id="p-id">
+                            <div class="form-grid">
+                                <input type="text" id="p-name" class="form-control" placeholder="اسم الموديل (مثال: Clubmaster)">
+                                <input type="text" id="p-brand" class="form-control" placeholder="الماركة (مثال: Ray-Ban)">
                             </div>
-                            <div class="form-row">
-                                <select id="p-type" class="input-box">
-                                    <option value="طبي">نظارة طبية</option>
+                            <div class="form-grid">
+                                <select id="p-type" class="form-control">
+                                    <option value="طبي">إطار طبي</option>
                                     <option value="شمسي">نظارة شمسية</option>
+                                    <option value="عدسات">عدسات لاصقة</option>
                                 </select>
-                                <input type="number" id="p-price" class="input-box" placeholder="السعر بالدينار (مثال: 45)">
+                                <input type="number" id="p-price" class="form-control" placeholder="السعر (دينار)">
                             </div>
+                            <button id="btn-save-prod" class="btn btn-primary" onclick="saveProduct()"><i class="fas fa-save"></i> حفظ ونشر المنتج</button>
+                            <button class="btn btn-outline" onclick="resetProductForm()">إفراغ الحقول</button>
                         </div>
                     </div>
                 </div>
 
-                <div class="panel-header">
-                    <h3><i class="fas fa-boxes" style="color:var(--primary);"></i> المنتجات المعروضة في الموقع</h3>
-                </div>
-                <div class="table-wrap">
-                    <table>
-                        <thead><tr><th>الصورة</th><th>المنتج</th><th>النوع</th><th>السعر</th><th>إجراء</th></tr></thead>
-                        <tbody id="products-body">
-                            </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div id="sec-reports" class="panel">
-                <div class="panel-header">
-                    <h3><i class="fas fa-file-medical-alt" style="color:var(--primary);"></i> سجل مراجعين العيادة</h3>
-                </div>
-                <div class="table-wrap">
-                    <table>
-                        <thead><tr><th>الاسم</th><th>الملاحظات الطبية</th><th>تاريخ الفحص</th></tr></thead>
-                        <tbody id="reports-body"></tbody>
-                    </table>
+                <div class="card">
+                    <h3 class="card-title"><i class="fas fa-list" style="color:var(--primary);"></i> المنتجات المعروضة حالياً</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead><tr><th>الصورة</th><th>الموديل والماركة</th><th>التصنيف</th><th>السعر</th><th>إجراءات</th></tr></thead>
+                            <tbody id="tb-products"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
-            <div id="sec-chat" class="panel">
-                <div class="panel-header">
-                    <h3><i class="fas fa-comments" style="color:var(--primary);"></i> تواصل الطاقم</h3>
+            <div id="view-reports" class="section-view">
+                <div class="card">
+                    <h3 class="card-title"><i class="fas fa-file-medical" style="color:var(--primary);"></i> سجل المراجعين والفحوصات</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead><tr><th>اسم المراجع</th><th>الهاتف</th><th>النتيجة والملاحظات</th><th>تاريخ الفحص</th></tr></thead>
+                            <tbody id="tb-reports"></tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="chat-box">
-                    <div class="chat-msgs" id="chat-body"></div>
-                    <div style="padding: 15px; border-top: 1px solid var(--border); display: flex; gap: 10px;">
-                        <input type="text" id="chat-input" class="input-box" style="margin:0;" placeholder="اكتب رسالتك..." onkeypress="if(event.key === 'Enter') sendChat()">
-                        <button class="btn btn-primary" onclick="sendChat()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+
+            <div id="view-chat" class="section-view">
+                <div class="card" style="padding: 0;">
+                    <div class="chat-wrapper">
+                        <div class="chat-history" id="chat-history"></div>
+                        <div style="padding: 15px; background: var(--bg-surface); border-top: 1px solid var(--border); display: flex; gap: 10px;">
+                            <input type="text" id="chat-input" class="form-control" style="margin:0;" placeholder="اكتب رسالة للطاقم..." onkeypress="if(event.key==='Enter') sendChatMsg()">
+                            <button class="btn btn-primary" onclick="sendChatMsg()"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-users" class="section-view admin-only">
+                <div class="card">
+                    <h3 class="card-title"><i class="fas fa-user-plus" style="color:var(--primary);"></i> إضافة حساب موظف</h3>
+                    <input type="hidden" id="u-id">
+                    <div class="form-grid">
+                        <input type="text" id="u-name" class="form-control" placeholder="الاسم الكامل">
+                        <input type="text" id="u-user" class="form-control" placeholder="اسم الدخول (Username)" dir="ltr">
+                        <input type="password" id="u-pass" class="form-control" placeholder="كلمة المرور" dir="ltr">
+                        <select id="u-role" class="form-control"><option value="manager">موظف (Manager)</option><option value="superadmin">مدير (Admin)</option></select>
+                    </div>
+                    <button class="btn btn-primary" onclick="saveUser()"><i class="fas fa-check"></i> حفظ الحساب</button>
+                </div>
+                <div class="card">
+                    <h3 class="card-title"><i class="fas fa-users" style="color:var(--primary);"></i> قائمة الموظفين</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead><tr><th>الموظف</th><th>اسم الدخول</th><th>الباسوورد</th><th>الصلاحية</th><th>إجراء</th></tr></thead>
+                            <tbody id="tb-users"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-recycle" class="section-view admin-only">
+                <div class="card">
+                    <h3 class="card-title"><i class="fas fa-trash-restore" style="color:var(--warning);"></i> المنتجات المحذوفة (سلة المهملات)</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead><tr><th>الصورة</th><th>المنتج</th><th>الماركة</th><th>وقت الحذف</th><th>إجراء</th></tr></thead>
+                            <tbody id="tb-recycle"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-audit" class="section-view admin-only">
+                <div class="card">
+                    <h3 class="card-title"><i class="fas fa-user-secret" style="color:var(--danger);"></i> السجل الأمني ومراقبة النظام</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead><tr><th>المستخدم</th><th>العملية (الحدث)</th><th>التفاصيل</th><th>الوقت</th></tr></thead>
+                            <tbody id="tb-audit"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -185,162 +279,287 @@
     </main>
 
     <script type="module">
+        // 1. استيراد مكتبات الفايربيس (كما هي في سيرفرك)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, deleteDoc, getDocs, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+        // 2. إعدادات الاتصال بالسيرفر الخاص بك
         const firebaseConfig = { apiKey: "AIzaSyB11C4GGgAyqeThs8a9cvDNN7frvAA1nqQ", authDomain: "delta-optics-system.firebaseapp.com", projectId: "delta-optics-system", storageBucket: "delta-optics-system.firebasestorage.app", messagingSenderId: "111176219224", appId: "1:111176219224:web:e0d8a5f26b84d57249a82d" };
         const app = initializeApp(firebaseConfig); 
         const db = getFirestore(app);
 
-        // التبديل بين الأقسام
-        window.switchTab = (e, tab) => {
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            e.currentTarget.classList.add('active');
-            document.querySelectorAll('.panel').forEach(s => s.classList.remove('active'));
-            document.getElementById('sec-' + tab).classList.add('active');
+        // 3. متغيرات الحالة (State)
+        let currentUser = null;
+
+        // 4. التنقل بين الأقسام (Routing)
+        window.switchView = (viewId) => {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            document.querySelectorAll('.section-view').forEach(el => el.classList.remove('active'));
+            document.getElementById('view-' + viewId).classList.add('active');
         };
 
-        // 🖼️ دالة ضغط الصورة (مهمة جداً لمنع خطأ الفايربيس واختفاء البيانات)
-        window.compressAndPreview = (e) => {
-            const file = e.target.files[0];
+        // 5. تسجيل حدث أمني (Audit Trail)
+        async function logSecurity(actionStr, typeStr="info") {
+            try {
+                await addDoc(collection(db, "security_audit"), { user: currentUser.name, action: actionStr, type: typeStr, info: navigator.userAgent.substring(0, 30), timestamp: serverTimestamp() });
+            } catch(e) { console.error("Audit log failed", e); }
+        }
+
+        // 6. نظام تسجيل الدخول (Authentication)
+        window.login = async () => {
+            const u = document.getElementById('login-user').value.trim();
+            const p = document.getElementById('login-pass').value.trim();
+            const btn = document.getElementById('btn-login');
+            
+            if(!u || !p) { alert("أدخل اسم المستخدم وكلمة المرور"); return; }
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
+            btn.disabled = true;
+
+            // مفتاح المطور (للطوارئ والدخول المباشر)
+            if(u === "adel" && p === "123123") {
+                currentUser = { id: "master", username: "adel", name: "المهندس عادل", role: "superadmin" };
+                finishLogin(); return;
+            }
+
+            try {
+                const snap = await getDocs(query(collection(db, "system_users"), where("username", "==", u), where("pass", "==", p)));
+                if(!snap.empty) {
+                    currentUser = { id: snap.docs[0].id, ...snap.docs[0].data() };
+                    finishLogin();
+                } else {
+                    alert("بيانات الدخول غير صحيحة.");
+                    btn.innerHTML = 'دخول آمن'; btn.disabled = false;
+                }
+            } catch (error) {
+                alert("مشكلة في الاتصال بقاعدة البيانات.");
+                btn.innerHTML = 'دخول آمن'; btn.disabled = false;
+            }
+        };
+
+        function finishLogin() {
+            document.getElementById('login-overlay').style.display = 'none';
+            document.getElementById('welcome-text').innerText = `أهلاً، ${currentUser.name}`;
+            document.getElementById('role-text').innerText = (currentUser.role === 'superadmin') ? 'مدير نظام عام' : 'موظف مختص';
+            
+            if(currentUser.role === 'superadmin') {
+                document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
+                document.querySelectorAll('div.admin-only').forEach(el => el.style.display = 'block'); // For panels
+            }
+            
+            logSecurity("تسجيل دخول ناجح", "success");
+            initChart();
+            listenToDatabase();
+        }
+
+        // 7. معالجة الصور وضغطها قبل الرفع (Compression Algorithm)
+        window.processImage = (event) => {
+            const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
-            reader.onload = (event) => {
+            reader.onload = (e) => {
                 const img = new Image();
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 600; // تصغير العرض لتخفيف الحجم
-                    const scaleSize = MAX_WIDTH / img.width;
+                    const MAX_WIDTH = 500; // تصغير العرض ليناسب Firestore
+                    const scale = MAX_WIDTH / img.width;
                     canvas.width = MAX_WIDTH;
-                    canvas.height = img.height * scaleSize;
+                    canvas.height = img.height * scale;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    
-                    // ضغط الجودة لـ 70%
-                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
-                    document.getElementById('p-img-preview').src = compressedDataUrl;
-                    document.getElementById('p-img-base64').value = compressedDataUrl;
+                    // ضغط الجودة لـ 0.6 (60%)
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.6);
+                    document.getElementById('p-img-preview').src = compressedBase64;
+                    document.getElementById('p-img-base64').value = compressedBase64;
                 }
-                img.src = event.target.result;
+                img.src = e.target.result;
             }
             reader.readAsDataURL(file);
-        }
+        };
 
-        // 💾 إضافة أو تعديل منتج (طبي أو شمسي)
+        // 8. إدارة المنتجات (Create & Update)
         window.saveProduct = async () => {
-            const btn = document.getElementById('save-prod-btn');
             const id = document.getElementById('p-id').value;
-            const name = document.getElementById('p-name').value;
-            const brand = document.getElementById('p-brand').value;
+            const name = document.getElementById('p-name').value.trim();
+            const brand = document.getElementById('p-brand').value.trim();
             const type = document.getElementById('p-type').value;
-            const price = document.getElementById('p-price').value;
+            const price = document.getElementById('p-price').value.trim();
             const img = document.getElementById('p-img-base64').value;
+            const btn = document.getElementById('btn-save-prod');
 
-            if(!name || !brand || !price) return alert("يرجى تعبئة الاسم والماركة والسعر كحد أدنى.");
-            if(!img && !id) return alert("يرجى إضافة صورة للمنتج.");
+            if(!name || !brand || !price) { alert("يرجى تعبئة الاسم، الماركة، والسعر."); return; }
+            if(!img && !id) { alert("يرجى اختيار صورة للمنتج."); return; }
 
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...';
-            btn.disabled = true;
-
-            const data = { name, brand, type, price, image: img, timestamp: serverTimestamp() };
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...'; btn.disabled = true;
+            const payload = { name, brand, type, price: Number(price), image: img, timestamp: serverTimestamp() };
 
             try {
                 if(id) {
-                    // إذا كان في ID يعني تعديل
-                    await setDoc(doc(db, "products", id), data);
+                    await setDoc(doc(db, "products", id), payload);
+                    logSecurity(`تعديل منتج: ${name}`, "warning");
                 } else {
-                    // إضافة جديد
-                    await addDoc(collection(db, "products"), data);
+                    await addDoc(collection(db, "products"), payload);
+                    logSecurity(`إضافة منتج: ${name}`, "success");
                 }
-                
-                // تصفير الخانات بعد النجاح
-                document.getElementById('p-id').value = "";
-                document.getElementById('p-name').value = "";
-                document.getElementById('p-brand').value = "";
-                document.getElementById('p-price').value = "";
-                document.getElementById('p-img-preview').src = "https://via.placeholder.com/120";
-                document.getElementById('p-img-base64').value = "";
-                alert("تم الحفظ بنجاح!");
+                resetProductForm();
+                alert("تم حفظ المنتج بنجاح!");
             } catch (err) {
-                alert("حدث خطأ! تأكد من اتصال الإنترنت أو صلاحيات قاعدة البيانات.");
+                alert("حدث خطأ أثناء الحفظ! حجم الصورة قد يكون كبيراً جداً.");
                 console.error(err);
             }
+            btn.innerHTML = '<i class="fas fa-save"></i> حفظ ونشر المنتج'; btn.disabled = false;
+        };
 
-            btn.innerHTML = '<i class="fas fa-save"></i> حفظ المنتج';
-            btn.disabled = false;
-        }
+        window.resetProductForm = () => {
+            document.getElementById('p-id').value = "";
+            document.getElementById('p-name').value = "";
+            document.getElementById('p-brand').value = "";
+            document.getElementById('p-price').value = "";
+            document.getElementById('p-img-preview').src = "https://via.placeholder.com/150?text=اضغط+لرفع+صورة";
+            document.getElementById('p-img-base64').value = "";
+        };
 
-        // ✏️ جلب بيانات المنتج للتعديل
         window.editProduct = (id, name, brand, type, price, img) => {
             document.getElementById('p-id').value = id;
             document.getElementById('p-name').value = name;
             document.getElementById('p-brand').value = brand;
             document.getElementById('p-type').value = type;
             document.getElementById('p-price').value = price;
-            document.getElementById('p-img-preview').src = img || "https://via.placeholder.com/120";
+            document.getElementById('p-img-preview').src = img;
             document.getElementById('p-img-base64').value = img;
             window.scrollTo({top: 0, behavior: 'smooth'});
-        }
+        };
 
-        // 🗑️ حذف المنتج
-        window.delProduct = async (id) => {
-            if(confirm("هل أنت متأكد من حذف هذا المنتج من الموقع نهائياً؟")) {
+        // 9. الحذف والاسترجاع (Delete & Restore)
+        window.deleteProduct = async (id, name, brand, type, price, img) => {
+            if(!confirm(`هل أنت متأكد من حذف (${name}) ونقله لسلة المحذوفات؟`)) return;
+            try {
+                await addDoc(collection(db, "deleted_products"), { old_id: id, name, brand, type, price, image: img, deletedAt: serverTimestamp() });
                 await deleteDoc(doc(db, "products", id));
-            }
-        }
+                logSecurity(`حذف منتج: ${name}`, "danger");
+            } catch(e) { alert("فشل الحذف"); }
+        };
 
-        // 📡 جلب البيانات تلقائياً (Real-time Listener)
-        function initData() {
-            // 1. التشكيلات (المنتجات)
+        window.restoreProduct = async (recycleId, name, brand, type, price, img) => {
+            try {
+                await addDoc(collection(db, "products"), { name, brand, type, price, image: img, timestamp: serverTimestamp() });
+                await deleteDoc(doc(db, "deleted_products", recycleId));
+                logSecurity(`استرجاع منتج: ${name}`, "success");
+            } catch(e) { alert("فشل الاسترجاع"); }
+        };
+
+        // 10. إدارة الموظفين (User CRUD)
+        window.saveUser = async () => {
+            const id = document.getElementById('u-id').value;
+            const n = document.getElementById('u-name').value.trim();
+            const u = document.getElementById('u-user').value.trim();
+            const p = document.getElementById('u-pass').value.trim();
+            const r = document.getElementById('u-role').value;
+            if(!n || !u || !p) { alert("أكمل البيانات"); return; }
+            try {
+                if(id) await setDoc(doc(db, "system_users", id), {name:n, username:u, pass:p, role:r});
+                else await addDoc(collection(db, "system_users"), {name:n, username:u, pass:p, role:r});
+                logSecurity(`تحديث حساب: ${n}`);
+                document.getElementById('u-id').value=""; document.getElementById('u-name').value=""; document.getElementById('u-user').value=""; document.getElementById('u-pass').value="";
+            } catch(e) { alert("خطأ في حفظ الموظف"); }
+        };
+        window.editUser = (id,n,u,p,r) => { document.getElementById('u-id').value=id; document.getElementById('u-name').value=n; document.getElementById('u-user').value=u; document.getElementById('u-pass').value=p; document.getElementById('u-role').value=r; };
+        window.deleteUser = async (id,n) => { if(confirm("حذف الموظف؟")) { await deleteDoc(doc(db, "system_users", id)); logSecurity(`حذف حساب: ${n}`, "danger"); } };
+
+        // 11. الشات
+        window.sendChatMsg = async () => {
+            const input = document.getElementById('chat-input');
+            const txt = input.value.trim();
+            if(!txt) return;
+            try { await addDoc(collection(db, "internal_chat"), { sender: currentUser.name, text: txt, timestamp: serverTimestamp() }); input.value = ""; } catch(e){}
+        };
+
+        // 12. المزامنة اللحظية (Real-time Listeners)
+        function listenToDatabase() {
+            // الاستماع للمنتجات
             onSnapshot(query(collection(db, "products"), orderBy("timestamp", "desc")), (snap) => {
-                const tb = document.getElementById('products-body'); tb.innerHTML = "";
-                snap.forEach(d => {
-                    const p = d.data();
-                    const badgeColor = p.type === 'طبي' ? '#dcfce7' : '#fef3c7';
-                    const textColor = p.type === 'طبي' ? '#10b981' : '#f59e0b';
+                const tb = document.getElementById('tb-products'); tb.innerHTML = "";
+                document.getElementById('stat-prods').innerText = snap.size;
+                snap.forEach(doc => {
+                    const p = doc.data();
+                    const bColor = p.type === 'طبي' ? '#dcfce7' : p.type === 'شمسي' ? '#fef3c7' : '#e0f2fe';
+                    const tColor = p.type === 'طبي' ? '#10b981' : p.type === 'شمسي' ? '#f59e0b' : '#0284c7';
                     tb.innerHTML += `<tr>
                         <td><img src="${p.image}" class="thumb-img"></td>
                         <td><strong>${p.name}</strong><br><small style="color:var(--text-muted);">${p.brand}</small></td>
-                        <td><span class="badge" style="background:${badgeColor}; color:${textColor};">${p.type}</span></td>
+                        <td><span class="badge" style="background:${bColor}; color:${tColor};">${p.type}</span></td>
                         <td><strong>${p.price}</strong> JOD</td>
                         <td>
-                            <button class="btn btn-outline" style="padding:6px 10px; color:var(--primary);" onclick="editProduct('${d.id}', '${p.name}', '${p.brand}', '${p.type}', '${p.price}', '${p.image}')"><i class="fas fa-pen"></i></button>
-                            <button class="btn btn-danger" style="padding:6px 10px;" onclick="delProduct('${d.id}')"><i class="fas fa-trash"></i></button>
+                            <button class="btn btn-outline" style="padding:6px 10px; color:var(--primary);" onclick="editProduct('${doc.id}','${p.name}','${p.brand}','${p.type}','${p.price}','${p.image}')"><i class="fas fa-pen"></i></button>
+                            <button class="btn btn-danger" style="padding:6px 10px;" onclick="deleteProduct('${doc.id}','${p.name}','${p.brand}','${p.type}','${p.price}','${p.image}')"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>`;
                 });
             });
 
-            // 2. الفحوصات الطبية
+            // الاستماع للفحوصات
             onSnapshot(query(collection(db, "tests"), orderBy("timestamp", "desc")), (snap) => {
-                const tb = document.getElementById('reports-body'); tb.innerHTML = "";
-                snap.forEach(d => {
-                    const r = d.data(); const date = r.timestamp ? r.timestamp.toDate().toLocaleDateString('ar-EG') : "الآن";
-                    tb.innerHTML += `<tr><td><strong>${r.name}</strong></td><td><div style="font-size:0.85rem; color:var(--text-muted);">${r.details}</div></td><td>${date}</td></tr>`;
+                const tb = document.getElementById('tb-reports'); tb.innerHTML = "";
+                let todayCount = 0;
+                snap.forEach(doc => {
+                    const r = doc.data(); const dateStr = r.timestamp ? r.timestamp.toDate().toLocaleDateString('ar-EG') : "الآن";
+                    if(r.timestamp?.toDate().toDateString() === new Date().toDateString()) todayCount++;
+                    tb.innerHTML += `<tr><td><strong>${r.name}</strong><br><small dir="ltr">${r.phone || ''}</small></td><td><div style="font-size:0.85rem; color:var(--text-muted);">${r.details}</div></td><td><span class="badge" style="background:#f1f5f9;">${dateStr}</span></td></tr>`;
                 });
+                document.getElementById('stat-today').innerText = todayCount;
             });
 
-            // 3. الشات
+            // الاستماع للشات
             onSnapshot(query(collection(db, "internal_chat"), orderBy("timestamp", "asc")), (snap) => {
-                const box = document.getElementById('chat-body'); box.innerHTML = "";
-                snap.forEach(d => {
-                    const m = d.data(); const css = m.sender === "المدير" ? "msg-me" : "msg-them";
-                    box.innerHTML += `<div class="msg ${css}"><strong>${m.sender}</strong><br>${m.text}</div>`;
+                const box = document.getElementById('chat-history'); box.innerHTML = "";
+                snap.forEach(doc => {
+                    const m = doc.data(); const isMe = (m.sender === currentUser.name);
+                    box.innerHTML += `<div class="msg-box ${isMe ? 'msg-me' : 'msg-them'}"><span style="display:block; font-size:0.75rem; font-weight:800; opacity:0.8; margin-bottom:5px;">${m.sender}</span>${m.text}</div>`;
                 });
                 box.scrollTop = box.scrollHeight;
             });
-        }
 
-        window.sendChat = async () => {
-            const input = document.getElementById('chat-input');
-            if(input.value.trim()) {
-                await addDoc(collection(db, "internal_chat"), { sender: "المدير", text: input.value.trim(), timestamp: serverTimestamp() });
-                input.value = "";
+            // الاستماع للأقسام الإدارية (إذا كان سوبر أدمن)
+            if(currentUser.role === 'superadmin') {
+                // سلة المحذوفات
+                onSnapshot(query(collection(db, "deleted_products"), orderBy("deletedAt", "desc")), (snap) => {
+                    const tb = document.getElementById('tb-recycle'); tb.innerHTML = "";
+                    snap.forEach(doc => {
+                        const p = doc.data(); const date = p.deletedAt ? p.deletedAt.toDate().toLocaleDateString('ar-EG') : "";
+                        tb.innerHTML += `<tr><td><img src="${p.image}" class="thumb-img" style="filter:grayscale(1);"></td><td><strong>${p.name}</strong></td><td>${p.brand}</td><td>${date}</td><td><button class="btn btn-success" style="padding:6px 12px;" onclick="restoreProduct('${doc.id}','${p.name}','${p.brand}','${p.type}','${p.price}','${p.image}')"><i class="fas fa-undo"></i> استرجاع</button></td></tr>`;
+                    });
+                });
+
+                // الموظفين
+                onSnapshot(collection(db, "system_users"), (snap) => {
+                    const tb = document.getElementById('tb-users'); tb.innerHTML = "";
+                    snap.forEach(doc => {
+                        const u = doc.data(); const badge = u.role === 'superadmin' ? `<span class="badge" style="background:#fee2e2; color:var(--danger);">مدير</span>` : `<span class="badge" style="background:#dcfce7; color:var(--success);">موظف</span>`;
+                        tb.innerHTML += `<tr><td><strong>${u.name}</strong></td><td dir="ltr">${u.username}</td><td dir="ltr">*****</td><td>${badge}</td><td><button class="btn btn-outline" style="padding:6px 10px;" onclick="editUser('${doc.id}','${u.name}','${u.username}','${u.pass}','${u.role}')"><i class="fas fa-pen"></i></button> ${u.username !== currentUser.username ? `<button class="btn btn-danger" style="padding:6px 10px;" onclick="deleteUser('${doc.id}','${u.name}')"><i class="fas fa-trash"></i></button>` : ''}</td></tr>`;
+                    });
+                });
+
+                // السجل الأمني
+                onSnapshot(query(collection(db, "security_audit"), orderBy("timestamp", "desc")), (snap) => {
+                    const tb = document.getElementById('tb-audit'); tb.innerHTML = "";
+                    snap.forEach(doc => {
+                        const l = doc.data(); const c = l.type==='danger'?'var(--danger)':l.type==='warning'?'var(--warning)':'var(--primary)';
+                        const bg = l.type==='danger'?'#fee2e2':l.type==='warning'?'#fef3c7':'#e0f2fe';
+                        tb.innerHTML += `<tr><td><strong>${l.user}</strong></td><td><span class="badge" style="background:${bg}; color:${c};">${l.action}</span></td><td dir="ltr" style="font-size:0.8rem;">${l.info}</td><td style="font-size:0.8rem;">${l.timestamp?.toDate().toLocaleString('ar-EG')}</td></tr>`;
+                    });
+                });
             }
         }
 
-        // تشغيل جلب البيانات أول ما تفتح اللوحة
-        initData();
+        // رسم بياني وهمي للتوضيح
+        function initChart() {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: { labels: ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'], datasets: [{ label: 'معدل الفحوصات', data: [12, 19, 15, 25, 22, 30, 15], borderColor: '#0284c7', backgroundColor: 'rgba(2, 132, 199, 0.1)', fill: true, tension: 0.4 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+        }
     </script>
 </body>
 </html>

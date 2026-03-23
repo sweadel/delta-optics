@@ -1,5 +1,20 @@
-import { db, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, setDoc, deleteDoc, updateDoc } from './config.js';
-import { Auth } from './auth.js';
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, setDoc, deleteDoc, updateDoc, limit } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { Auth } from './auth.js'; 
+
+// إعدادات قاعدة بياناتك (Firebase Config)
+const firebaseConfig = {
+    apiKey: "AIzaSyB11C4GGgAyqeThs8a9cvDNN7frvAA1nqQ",
+    authDomain: "delta-optics-system.firebaseapp.com",
+    projectId: "delta-optics-system",
+    storageBucket: "delta-optics-system.firebasestorage.app",
+    messagingSenderId: "111176219224",
+    appId: "1:111176219224:web:e0d8a5f26b84d57249a82d"
+};
+
+// تشغيل النظام والاتصال بالقاعدة
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 // ================== دوال أساسية وأمان ==================
 function getDeviceInfo() { const ua = navigator.userAgent; return /Mobile|Android|iP(hone|od)|IEMobile/.test(ua) ? "هاتف محمول" : "جهاز كمبيوتر"; }
@@ -20,7 +35,7 @@ window.toggleDarkMode = () => { document.body.classList.toggle('dark-mode'); };
 
 window.performGlobalSearch = () => {
     const filter = document.getElementById('global-search').value.toUpperCase();
-    const trs = document.querySelectorAll('.active table tbody tr'); // يبحث فقط في الشاشة المفتوحة حالياً لسرعة الأداء
+    const trs = document.querySelectorAll('.active table tbody tr'); 
     trs.forEach(tr => {
         const text = tr.innerText.toUpperCase();
         tr.style.display = text.includes(filter) ? "" : "none";
@@ -32,7 +47,7 @@ window.exportToCSV = (tableId, filename) => {
     const rows = document.querySelectorAll(`#${tableId} tr`);
     for (let i = 0; i < rows.length; i++) {
         let row = [], cols = rows[i].querySelectorAll("td, th");
-        for (let j = 0; j < cols.length - 1; j++) row.push(cols[j].innerText); // نستثني عمود "الإجراءات" الأخير
+        for (let j = 0; j < cols.length - 1; j++) row.push(cols[j].innerText); 
         csv.push(row.join(","));
     }
     const csvFile = new Blob(["\uFEFF" + csv.join("\n")], {type: "text/csv;charset=utf-8;"});
@@ -80,7 +95,7 @@ window.compressImage = (event, targetInputId, previewImgId = null) => {
     }; reader.readAsDataURL(file);
 };
 
-// ================== العمليات اليومية ==================
+// ================== العمليات اليومية وإدارة المنتجات ==================
 window.updatePosPrice = () => { document.getElementById('pos-total').value = document.getElementById('pos-product').options[document.getElementById('pos-product').selectedIndex]?.dataset.price || 0; };
 window.createInvoice = async () => {
     const pName = document.getElementById('pos-patient').options[document.getElementById('pos-patient').selectedIndex]?.text, prodSel = document.getElementById('pos-product'), prodName = prodSel.options[prodSel.selectedIndex]?.text;
@@ -103,12 +118,39 @@ window.saveRx = async () => {
     logAudit(`تسجيل فحص: ${name}`); Swal.fire('نجاح', 'تم الحفظ', 'success');
 };
 
+// متغير عالمي لمعرفة إذا كنا بنعدل منتج موجود أو بنضيف جديد
+let currentEditProductId = null;
+
+window.loadProductForEdit = (id, dataObj) => {
+    currentEditProductId = id;
+    document.getElementById('p-name').value = dataObj.name;
+    document.getElementById('p-price').value = dataObj.price;
+    document.getElementById('p-qty').value = dataObj.qty;
+    document.getElementById('p-type').value = dataObj.type;
+    document.getElementById('p-base64').value = dataObj.img || "";
+    Swal.fire({ icon: 'info', title: 'وضع التعديل', text: 'تم تجهيز البيانات، عدل واضغط حفظ للمستودع', timer: 2000, showConfirmButton: false });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
 window.saveProduct = async () => {
     const name = document.getElementById('p-name').value, price = document.getElementById('p-price').value, type = document.getElementById('p-type').value, qty = document.getElementById('p-qty').value, img = document.getElementById('p-base64').value;
     if (!name || !price || !type) return Swal.fire('تنبيه', 'أكمل البيانات', 'warning');
-    await addDoc(collection(db, "products"), { name, price: Number(price), type, qty: Number(qty), img: img || "", time: serverTimestamp() });
-    logAudit(`إضافة منتج: ${name}`); Swal.fire('نجاح', 'تم الإضافة', 'success');
+    
+    if (currentEditProductId) {
+        // تحديث منتج موجود
+        await updateDoc(doc(db, "products", currentEditProductId), { name, price: Number(price), type, qty: Number(qty), img: img || "" });
+        logAudit(`تعديل منتج: ${name}`); Swal.fire('نجاح', 'تم التعديل بنجاح', 'success');
+        currentEditProductId = null; // تفريغ بعد التعديل
+    } else {
+        // إضافة منتج جديد
+        await addDoc(collection(db, "products"), { name, price: Number(price), type, qty: Number(qty), img: img || "", time: serverTimestamp() });
+        logAudit(`إضافة منتج: ${name}`); Swal.fire('نجاح', 'تم الإضافة', 'success');
+    }
+    
+    // تفريغ الحقول
+    document.getElementById('p-name').value = ''; document.getElementById('p-price').value = ''; document.getElementById('p-qty').value = ''; document.getElementById('p-base64').value = '';
 };
+
 window.softDeleteProduct = async (id, data) => { if (confirm('نقل للمحذوفات؟')) { await addDoc(collection(db, "recycle_bin"), { ...data, deletedAt: serverTimestamp(), deletedBy: Auth.user.name }); await deleteDoc(doc(db, "products", id)); logAudit(`حذف منتج: ${data.name}`); } };
 window.restoreProduct = async (id, data) => { await addDoc(collection(db, "products"), { name: data.name, price: data.price, type: data.type, qty: data.qty, img: data.img, time: serverTimestamp() }); await deleteDoc(doc(db, "recycle_bin", id)); logAudit(`استرجاع منتج: ${data.name}`); };
 
@@ -164,10 +206,28 @@ function startSync() {
         document.getElementById('tb-rx').innerHTML = rxHtml; document.getElementById('pos-patient').innerHTML = posHtml;
     });
 
+    // سحب المنتجات (المخزون) مع إضافة زر التعديل
     onSnapshot(query(collection(db, "products"), orderBy("time", "desc")), (s) => {
         let invHtml = "", posProdHtml = "<option value=''>-- اختر المنتج --</option>";
-        s.forEach(d => { const p = d.data(); const imgSrc = p.img ? `<img src="${p.img}" class="img-preview">` : 'بدون'; invHtml += `<tr><td>${imgSrc}</td><td>${p.name}</td><td><span class="badge">${p.type}</span></td><td>${p.qty}</td><td>${p.price}</td><td><button class="btn btn-danger" onclick='softDeleteProduct("${d.id}", ${JSON.stringify(p)})'>حذف</button></td></tr>`; if (p.qty > 0) posProdHtml += `<option value="${d.id}" data-price="${p.price}" data-qty="${p.qty}">${p.name}</option>`; });
-        document.getElementById('tb-inv').innerHTML = invHtml; document.getElementById('pos-product').innerHTML = posProdHtml;
+        s.forEach(d => { 
+            const p = d.data(); 
+            const imgSrc = p.img ? `<img src="${p.img}" class="img-preview" style="width:40px; border-radius:4px;">` : 'بدون'; 
+            // تم إضافة زر التعديل هنا بجانب زر الحذف
+            invHtml += `<tr>
+                <td>${imgSrc}</td>
+                <td>${p.name}</td>
+                <td><span class="badge">${p.type}</span></td>
+                <td>${p.qty}</td>
+                <td>${p.price}</td>
+                <td style="display:flex; gap:5px; justify-content:center;">
+                    <button class="btn btn-warning" onclick='loadProductForEdit("${d.id}", ${JSON.stringify(p).replace(/'/g, "\\'")})'><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-danger" onclick='softDeleteProduct("${d.id}", ${JSON.stringify(p).replace(/'/g, "\\'")})'><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>`; 
+            if (p.qty > 0) posProdHtml += `<option value="${d.id}" data-price="${p.price}" data-qty="${p.qty}">${p.name}</option>`; 
+        });
+        document.getElementById('tb-inv').innerHTML = invHtml; 
+        document.getElementById('pos-product').innerHTML = posProdHtml;
     });
 
     onSnapshot(query(collection(db, "invoices"), orderBy("time", "desc")), (s) => {

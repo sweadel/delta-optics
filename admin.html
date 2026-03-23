@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>Delta Optics ERP | نظام المهندس عادل</title>
+    <title>Delta Optics | Enterprise ERP V5</title>
     <link rel="stylesheet" href="./style.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -10,169 +10,122 @@
 </head>
 <body>
 
-    <div id="login-modal" class="modal active" style="z-index: 9999; background: var(--sidebar);">
-        <div class="modal-content" style="text-align: center;">
-            <i class="fas fa-fingerprint" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
-            <h2>بوابة الإدارة | Delta Optics</h2>
-            <input type="text" id="auth-u" placeholder="اسم المستخدم" style="margin: 20px 0 10px;" dir="ltr">
-            <input type="password" id="auth-p" placeholder="كلمة المرور" style="margin-bottom: 20px;" dir="ltr">
-            <button id="btn-login" class="btn btn-primary" style="width: 100%; justify-content: center;">دخول آمن</button>
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <i class="fas fa-fingerprint" style="font-size: 3.5rem; color: var(--primary); margin-bottom: 20px;"></i>
+            <h2 style="font-weight: 900; margin-bottom: 10px;">نظام دلتا المركزي</h2>
+            <input type="text" id="auth-u" placeholder="اسم المستخدم" dir="ltr" style="margin-bottom: 15px; text-align:center;">
+            <input type="password" id="auth-p" placeholder="كلمة المرور" dir="ltr" style="margin-bottom: 20px; text-align:center;">
+            <button class="btn btn-primary" style="width:100%; justify-content:center; padding:15px;" onclick="handleLogin()">تسجيل الدخول</button>
         </div>
     </div>
 
     <aside class="sidebar">
-        <div class="logo">
-            <h2 style="margin:0; color:var(--primary);">DELTA OPTICS</h2>
-            <small style="color: #cbd5e1;">Enterprise OS</small>
+        <div class="logo-box">
+            <h2 style="font-weight: 900; color: var(--primary);">DELTA</h2><small style="color: #cbd5e1;">Enterprise ERP</small>
         </div>
-        <button class="nav-link active" onclick="showView('dash')"><i class="fas fa-chart-pie"></i> الرئيسية</button>
-        <button class="nav-link" onclick="showView('pos')"><i class="fas fa-cash-register"></i> المبيعات والفواتير</button>
-        <button class="nav-link" onclick="showView('rx')"><i class="fas fa-eye"></i> فحص النظر Rx</button>
+        <div class="nav-label">العمليات اليومية</div>
+        <button class="nav-link active" onclick="showView('dash')"><i class="fas fa-home"></i> الرئيسية</button>
+        <button class="nav-link" onclick="showView('pos')"><i class="fas fa-cash-register"></i> المبيعات (POS)</button>
+        <button class="nav-link" onclick="showView('rx')"><i class="fas fa-file-medical"></i> الفحص الطبي</button>
+        <button class="nav-link" onclick="showView('online-rx')"><i class="fas fa-globe"></i> فحوصات الموقع</button>
+        <div class="nav-label">اللوجستيات</div>
         <button class="nav-link" onclick="showView('inv')"><i class="fas fa-boxes"></i> المخزون</button>
-        <button class="nav-link" onclick="showView('chat')"><i class="fas fa-comments"></i> دردشة الطاقم</button>
-        
-        <div class="admin-block admin-only" style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.1); padding-top:15px; display:none; flex-direction:column;">
-            <small style="color:var(--warning); margin-bottom:10px;">صلاحيات المدير (ADEL)</small>
-            <button class="nav-link" onclick="showView('cms')"><i class="fas fa-globe"></i> واجهة الموقع</button>
-            <button class="nav-link" onclick="showView('staff')"><i class="fas fa-users-cog"></i> الموظفين</button>
-            <button class="nav-link" onclick="showView('audit')"><i class="fas fa-shield-alt"></i> السجل الأمني</button>
+        <button class="nav-link" onclick="showView('lab')"><i class="fas fa-flask"></i> المختبر</button>
+        <button class="nav-link" onclick="showView('chat')"><i class="fas fa-comments"></i> شات الطاقم</button>
+        <div class="admin-only" style="display:none; flex-direction:column;">
+            <div class="nav-label" style="color:var(--warning);">الإدارة العليا (Admin)</div>
+            <button class="nav-link" onclick="showView('ext-collections')"><i class="fas fa-images"></i> تشكيلات الموقع</button>
+            <button class="nav-link" onclick="showView('cms')"><i class="fas fa-laptop-code"></i> واجهة الموقع</button>
+            <button class="nav-link" onclick="showView('accounts')"><i class="fas fa-user-shield"></i> إدارة الحسابات</button>
+            <button class="nav-link" onclick="showView('secret-monitor')"><i class="fas fa-user-secret"></i> المراقبة السرية</button>
+            <button class="nav-link" onclick="showView('recycle')"><i class="fas fa-trash-restore"></i> سلة المحذوفات</button>
         </div>
-        <button class="nav-link" id="btn-logout" style="margin-top:auto; color:var(--danger);"><i class="fas fa-power-off"></i> تسجيل خروج</button>
+        <button class="nav-link" onclick="handleLogout()" style="margin-top:auto; color:var(--danger); border: 1px solid var(--danger); justify-content: center;"><i class="fas fa-power-off"></i> خروج</button>
     </aside>
 
     <div class="main">
         <header class="header">
-            <h2 id="page-title">الرئيسية</h2>
-            <div style="display:flex; gap:15px; align-items:center;">
-                <span id="user-display" style="font-weight:bold; color:var(--primary);"></span>
-                <span id="clock" style="color:var(--text-muted); font-weight:bold;">00:00</span>
+            <div style="display: flex; gap: 20px; align-items: center;">
+                <h2 style="font-weight:900; margin:0;"><i class="fas fa-clinic-medical" style="color:var(--primary);"></i> البصريات</h2>
+                <input type="text" id="global-search" class="search-bar" placeholder="بحث شامل (اكتب اسم المراجع، المنتج، أو الموظف)..." onkeyup="performGlobalSearch()">
+            </div>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <button class="btn btn-dark" onclick="toggleDarkMode()"><i class="fas fa-moon"></i></button>
+                <div style="font-weight:bold; color:var(--primary); background: var(--light); padding: 10px 20px; border-radius: 30px; border: 1px solid var(--border);">
+                    <i class="fas fa-user-circle"></i> <span id="display-user"></span>
+                </div>
             </div>
         </header>
 
         <div class="content">
-            <section id="dash" class="view active-view">
-                <div class="grid-stats">
-                    <div class="stat-box"><h4>مبيعات اليوم</h4><h2 id="kpi-sales" style="color:var(--success);">0 JOD</h2></div>
-                    <div class="stat-box"><h4>المراجعين والطلبات</h4><p>النظام متصل وقيد العمل.</p></div>
+            <section id="dash" class="view active">
+                <div class="grid-dashboard" style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+                    <div>
+                        <div class="grid-2">
+                            <div class="card" style="border-right: 5px solid var(--success);"><h3 class="card-title">مبيعات اليوم</h3><h2 id="kpi-sales" style="color:var(--success); font-size: 2rem;">0 JOD</h2></div>
+                            <div class="card admin-only" style="border-right: 5px solid var(--primary);"><h3 class="card-title">المدفوعات (كاش)</h3><h2 id="kpi-profits" style="color:var(--primary); font-size: 2rem;">0 JOD</h2></div>
+                        </div>
+                    </div>
+                    <div class="card admin-only">
+                        <h3 class="card-title"><i class="fas fa-bolt"></i> النشاط الحي (Live)</h3>
+                        <div class="live-activity" id="live-activity-feed">جاري تحميل النشاطات...</div>
+                    </div>
                 </div>
             </section>
-
+            
             <section id="pos" class="view">
-                <div class="card">
-                    <h3>إصدار فاتورة جديدة</h3>
-                    <div class="form-grid">
-                        <select id="pos-patient"><option value="">-- اختر مراجع --</option></select>
-                        <select id="pos-product" onchange="updatePosPrice()"><option value="">-- اختر منتج --</option></select>
-                    </div>
-                    <div class="form-grid">
-                        <input type="number" id="pos-total" placeholder="الإجمالي (JOD)" onkeyup="calcDue()">
-                        <input type="number" id="pos-paid" placeholder="المدفوع (JOD)" onkeyup="calcDue()">
-                        <input type="number" id="pos-due" placeholder="المتبقي" readonly style="color:var(--danger);">
-                    </div>
-                    <button class="btn btn-success" onclick="createInvoice()"><i class="fas fa-print"></i> حفظ وطباعة الفاتورة</button>
-                </div>
-                <div class="card">
-                    <h3>سجل الفواتير والمختبر</h3>
-                    <table><thead><tr><th>الفاتورة</th><th>المراجع</th><th>القيمة</th><th>المتبقي</th><th>حالة المختبر</th></tr></thead><tbody id="tb-invc"></tbody></table>
-                </div>
+                <div class="card"><h3 class="card-title"><i class="fas fa-file-invoice-dollar"></i> إصدار فاتورة جديدة</h3><div class="grid-4"><select id="pos-patient"><option value="">-- المراجع --</option></select><select id="pos-product" onchange="updatePosPrice()"><option value="">-- المنتج --</option></select><input type="number" id="pos-total" placeholder="الإجمالي" readonly><input type="number" id="pos-paid" placeholder="المدفوع"></div><button class="btn btn-success" style="margin-top:20px; width: 100%; justify-content: center;" onclick="createInvoice()">إتمام البيع والطباعة</button></div>
+                <div class="card"><h3 class="card-title">سجل الفواتير</h3><div class="table-wrapper"><table><thead><tr><th>الفاتورة</th><th>المراجع</th><th>المنتج</th><th>القيمة</th><th>المتبقي</th></tr></thead><tbody id="tb-invc"></tbody></table></div></div>
             </section>
 
             <section id="rx" class="view">
+                <div class="card"><h3 class="card-title"><i class="fas fa-eye"></i> تسجيل فحص جديد</h3><div class="grid-2"><input type="text" id="rx-name" placeholder="الاسم"><input type="text" id="rx-phone" placeholder="الهاتف"></div><div class="rx-grid" style="margin-top:20px;"><div></div><strong>SPH</strong><strong>CYL</strong><strong>AXIS</strong><strong>ADD</strong><strong style="color:var(--primary);">OD</strong><input type="text" id="od-s"><input type="text" id="od-c"><input type="text" id="od-a"><input type="text" id="od-add"><strong style="color:var(--success);">OS</strong><input type="text" id="os-s"><input type="text" id="os-c"><input type="text" id="os-a"><input type="text" id="os-add"></div><div class="grid-2" style="margin-top:20px;"><input type="text" id="rx-pd" placeholder="PD"><input type="text" id="rx-notes" placeholder="ملاحظات"></div><button class="btn btn-primary" style="margin-top:20px;" onclick="saveRx()">حفظ الفحص</button></div>
                 <div class="card">
-                    <h3>تسجيل فحص طبي</h3>
-                    <div class="form-grid">
-                        <input type="text" id="rx-name" placeholder="الاسم الرباعي">
-                        <input type="text" id="rx-phone" placeholder="رقم الموبايل">
-                    </div>
-                    <div class="rx-grid" style="margin-top:15px;">
-                        <div></div><div>SPH</div><div>CYL</div><div>AXIS</div><div>ADD</div>
-                        <div style="color:var(--primary); font-weight:bold;">OD (يمين)</div><input type="text" id="od-s"><input type="text" id="od-c"><input type="text" id="od-a"><input type="text" id="od-add">
-                        <div style="color:var(--accent); font-weight:bold;">OS (يسار)</div><input type="text" id="os-s"><input type="text" id="os-c"><input type="text" id="os-a"><input type="text" id="os-add">
-                    </div>
-                    <div class="form-grid" style="margin-top:15px;"><input type="text" id="rx-pd" placeholder="PD (المسافة)"><input type="text" id="rx-notes" placeholder="ملاحظات"></div>
-                    <button class="btn btn-primary" onclick="saveRx()"><i class="fas fa-save"></i> حفظ الفحص</button>
-                </div>
-                <div class="card">
-                    <h3>قاعدة بيانات المراجعين</h3>
-                    <table><thead><tr><th>الاسم</th><th>الهاتف</th><th>قراءة العدسات</th><th>التاريخ</th><th>مراسلة</th></tr></thead><tbody id="tb-rx"></tbody></table>
+                    <h3 class="card-title">قاعدة المراجعين <button class="btn btn-success" onclick="exportToCSV('rx-table', 'المراجعين.csv')"><i class="fas fa-file-excel"></i> تصدير لـ Excel</button></h3>
+                    <div class="table-wrapper"><table id="rx-table"><thead><tr><th>الاسم</th><th>الهاتف</th><th>القياس</th><th>إجراءات</th></tr></thead><tbody id="tb-rx"></tbody></table></div>
                 </div>
             </section>
 
-            <section id="inv" class="view">
+            <section id="online-rx" class="view"><div class="card"><h3 class="card-title"><i class="fas fa-globe"></i> طلبات الفحص الأونلاين</h3><div class="table-wrapper"><table><thead><tr><th>الاسم</th><th>الهاتف</th><th>التاريخ</th><th>الحالة</th><th>مراجعة</th></tr></thead><tbody id="tb-online-rx"></tbody></table></div></div></section>
+
+            <section id="inv" class="view"><div class="card"><h3 class="card-title"><i class="fas fa-box-open"></i> إضافة منتج للمخزون</h3><div class="grid-3"><input type="text" id="p-name" placeholder="الاسم"><input type="number" id="p-price" placeholder="السعر"><input type="number" id="p-qty" placeholder="الكمية"></div><div class="grid-2" style="margin-top:20px;"><select id="p-type"><option value="طبي">طبي</option></select><div style="display:flex; gap:10px; align-items: center;"><strong>الصورة:</strong><input type="file" accept="image/*" onchange="compressImage(event, 'p-base64')"><input type="hidden" id="p-base64"></div></div><button class="btn btn-primary" style="margin-top:20px;" onclick="saveProduct()">حفظ للمستودع</button></div><div class="card"><h3 class="card-title">المستودع <button class="btn btn-success admin-only" onclick="exportToCSV('inv-table', 'المخزون.csv')"><i class="fas fa-file-excel"></i> تصدير</button></h3><div class="table-wrapper"><table id="inv-table"><thead><tr><th>صورة</th><th>المنتج</th><th>التصنيف</th><th>الكمية</th><th>السعر</th><th>حذف</th></tr></thead><tbody id="tb-inv"></tbody></table></div></div></section>
+
+            <section id="lab" class="view"><div class="card"><h3 class="card-title"><i class="fas fa-cogs"></i> مختبر التجهيز</h3><div class="table-wrapper"><table><thead><tr><th>الفاتورة</th><th>المراجع</th><th>التفاصيل</th><th>حالة المختبر</th></tr></thead><tbody id="tb-lab"></tbody></table></div></div></section>
+            <section id="chat" class="view"><div class="card" style="height:600px; display:flex; flex-direction:column; padding:0;"><div style="padding:20px; border-bottom:1px solid var(--border);"><h3 style="margin: 0;">الشات الداخلي</h3></div><div id="chat-box" style="flex:1; padding:20px; overflow-y:auto;"></div><div style="padding:20px; display:flex; gap:10px; border-top:1px solid var(--border);"><input type="text" id="chat-input" placeholder="رسالتك..."><button class="btn btn-primary" onclick="sendChat()">إرسال</button></div></div></section>
+
+            <section id="ext-collections" class="view admin-only">
                 <div class="card">
-                    <div style="display:flex; justify-content:space-between; align-items:center;"><h3>المخزون</h3><button class="btn btn-primary" onclick="document.getElementById('modal-product').classList.add('active')">إضافة منتج للموقع</button></div>
-                    <table style="margin-top:15px;"><thead><tr><th>صورة</th><th>الاسم</th><th>النوع</th><th>الكمية</th><th>السعر</th><th>إجراء</th></tr></thead><tbody id="tb-inv"></tbody></table>
-                </div>
-            </section>
-
-            <section id="chat" class="view">
-                <div class="card" style="height:500px; display:flex; flex-direction:column; padding:0;">
-                    <div style="padding:20px; border-bottom:1px solid var(--border);"><h3>دردشة الطاقم</h3></div>
-                    <div id="chat-box" style="flex:1; padding:20px; overflow-y:auto;"></div>
-                    <div style="padding:15px; border-top:1px solid var(--border); display:flex; gap:10px;">
-                        <input type="text" id="chat-input" placeholder="رسالتك..." style="margin:0;"><button class="btn btn-primary" onclick="sendChat()"><i class="fas fa-paper-plane"></i></button>
+                    <h3 class="card-title">إضافة/تعديل تشكيلات الموقع الخارجي</h3>
+                    <input type="hidden" id="ext-col-id">
+                    <div class="grid-2"><input type="text" id="ext-col-name" placeholder="اسم التشكيلة"><input type="text" id="ext-col-desc" placeholder="وصف التشكيلة"></div>
+                    <div style="display:flex; gap:10px; align-items: center; border: 1px dashed var(--border); padding: 10px; border-radius: 8px; margin-top:20px;">
+                        <strong>الصورة المرفوعة حالياً:</strong> <img id="ext-col-preview" src="" style="width:50px; height:50px; object-fit:cover; border-radius:5px; display:none;">
+                        <input type="file" accept="image/*" onchange="compressImage(event, 'ext-col-base64', 'ext-col-preview')">
+                        <input type="hidden" id="ext-col-base64">
                     </div>
+                    <div style="display:flex; gap:10px; margin-top:20px;"><button class="btn btn-primary" onclick="saveExtCollection()"><i class="fas fa-save"></i> حفظ ونشر</button><button class="btn btn-warning" onclick="resetExtColForm()"><i class="fas fa-times"></i> إلغاء التعديل</button></div>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">التشكيلات المرفوعة عالموقع</h3>
+                    <div class="table-wrapper"><table><thead><tr><th>صورة الواجهة</th><th>التشكيلة</th><th>الوصف</th><th>إجراءات (تعديل/حذف)</th></tr></thead><tbody id="tb-ext-collections"></tbody></table></div>
                 </div>
             </section>
 
-            <section id="cms" class="view admin-only"><div class="card"><h3>التحكم بواجهة الموقع (index.html)</h3><div class="form-grid"><input type="text" id="cms-topbar" placeholder="شريط الإعلانات"><input type="text" id="cms-phone" placeholder="هاتف التواصل"></div><div class="form-grid"><input type="text" id="cms-hero" placeholder="العنوان الرئيسي"><input type="text" id="cms-sub" placeholder="النص الفرعي"></div><button class="btn btn-success" onclick="saveCMS()"><i class="fas fa-globe"></i> نشر عالموقع</button></div></section>
+            <section id="accounts" class="view admin-only">
+                <div class="card"><h3 class="card-title"><i class="fas fa-user-plus"></i> إنشاء حساب</h3><div class="grid-2"><input type="text" id="s-name" placeholder="الاسم"><input type="text" id="s-user" placeholder="اليوزر"></div><div class="grid-2" style="margin-top:20px;"><input type="password" id="s-pass" placeholder="الباسوورد"><select id="s-role"><option value="manager">موظف</option><option value="superadmin">مدير</option></select></div><button class="btn btn-primary" style="margin-top:20px;" onclick="saveStaff()">إنشاء حساب</button></div>
+                <div class="card"><h3 class="card-title">إدارة حسابات الطاقم (تجميد وحذف)</h3><div class="table-wrapper"><table><thead><tr><th>الاسم</th><th>اليوزر</th><th>الصلاحية</th><th>الحالة</th><th>إجراءات (باسوورد/تجميد/حذف)</th></tr></thead><tbody id="tb-staff"></tbody></table></div></div>
+            </section>
+
+            <section id="cms" class="view admin-only"><div class="card"><h3 class="card-title"><i class="fas fa-laptop-code"></i> إعدادات الموقع</h3><div class="grid-2" style="margin-bottom:20px;"><input type="text" id="cms-topbar" placeholder="شريط الإعلانات"><input type="text" id="cms-phone" placeholder="رقم الهاتف"></div><div class="grid-2"><input type="text" id="cms-hero" placeholder="العنوان الرئيسي"><input type="text" id="cms-sub" placeholder="الوصف الفرعي"></div><button class="btn btn-success" style="margin-top:20px;" onclick="saveCMS()"><i class="fas fa-cloud-upload-alt"></i> تحديث</button></div></section>
             
-            <section id="staff" class="view admin-only"><div class="card"><h3>الموظفين</h3><div class="form-grid"><input type="text" id="s-name" placeholder="الاسم"><input type="text" id="s-user" placeholder="اليوزر"><input type="password" id="s-pass" placeholder="الباسوورد"><select id="s-role"><option value="manager">موظف</option><option value="superadmin">مدير</option></select></div><button class="btn btn-primary" onclick="saveStaff()">إضافة</button></div></section>
-            
-            <section id="audit" class="view admin-only"><div class="card"><h3>السجل الأمني</h3><table><thead><tr><th>المستخدم</th><th>العملية</th><th>الوقت</th></tr></thead><tbody id="tb-audit"></tbody></table></div></section>
+            <section id="secret-monitor" class="view admin-only"><div class="card" style="border-right: 5px solid var(--danger);"><h3 class="card-title" style="color:var(--danger);"><i class="fas fa-user-secret"></i> المراقبة السرية</h3><div class="table-wrapper"><table><thead><tr><th>الموظف</th><th>الجهاز</th><th>العملية</th><th>الوقت</th></tr></thead><tbody id="tb-secret-audit"></tbody></table></div></div></section>
+            <section id="recycle" class="view admin-only"><div class="card"><h3 class="card-title"><i class="fas fa-trash-restore"></i> المحذوفات</h3><div class="table-wrapper"><table><thead><tr><th>المنتج</th><th>حُذف بواسطة</th><th>استرجاع</th></tr></thead><tbody id="tb-recycle"></tbody></table></div></div></section>
         </div>
     </div>
 
-    <div id="modal-product" class="modal">
-        <div class="modal-content">
-            <h3>إضافة منتج جديد</h3>
-            <div style="text-align:center; margin-bottom:15px;"><img id="p-preview" src="https://via.placeholder.com/150" style="width:100px; height:100px; object-fit:cover; border-radius:8px;"><br><button class="btn btn-outline" onclick="document.getElementById('p-file').click()" style="margin-top:10px;">اختر صورة</button><input type="file" id="p-file" style="display:none;" accept="image/*" onchange="compressImage('p-file', 'p-preview', 'p-base64')"><input type="hidden" id="p-base64"></div>
-            <div class="form-grid"><input type="text" id="p-name" placeholder="الاسم والماركة"><input type="number" id="p-price" placeholder="السعر"></div>
-            <div class="form-grid"><select id="p-type"><option value="طبي">طبي</option><option value="شمسي">شمسي</option><option value="عدسات">عدسات</option></select><input type="number" id="p-qty" placeholder="الكمية" value="1"></div>
-            <div style="display:flex; gap:10px; margin-top:20px;"><button class="btn btn-success" style="flex:1;" onclick="saveProduct()">حفظ</button><button class="btn btn-danger" onclick="document.getElementById('modal-product').classList.remove('active')">إلغاء</button></div>
-        </div>
-    </div>
+    <div id="print-report"><div style="text-align:center; border-bottom:2px solid black; padding-bottom:15px; margin-bottom:20px;"><h1>Delta Optics Clinic</h1><h2 id="pr-title"></h2></div><div id="pr-content" style="font-size:1.2rem; line-height:1.8;"></div></div>
 
-    <div id="print-section" class="no-print">
-        <h2 style="text-align:center; border-bottom:2px solid black; padding-bottom:10px;">Delta Optics - فاتورة مبيعات</h2>
-        <p><strong>رقم الفاتورة:</strong> <span id="pr-id"></span></p><p><strong>المراجع:</strong> <span id="pr-pat"></span></p><p><strong>البيان:</strong> <span id="pr-prod"></span></p><hr>
-        <h3>الإجمالي: <span id="pr-tot"></span> JOD</h3><p>المدفوع: <span id="pr-paid"></span> JOD | المتبقي: <span id="pr-due"></span> JOD</p>
-    </div>
-
-    <script type="module">
-        import { Auth } from './auth.js';
-        import { startLiveSync } from './app.js';
-
-        // 1. منطق الـ UI والتنقل
-        window.showView = (id) => {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            document.getElementById(id).classList.add('active-view');
-            event.currentTarget.classList.add('active');
-            document.getElementById('page-title').innerText = event.currentTarget.innerText;
-        };
-
-        // 2. منطق الدخول والحماية
-        document.getElementById('btn-login').onclick = async () => {
-            const u = document.getElementById('auth-u').value, p = document.getElementById('auth-p').value;
-            if(await Auth.login(u, p)) {
-                document.getElementById('login-modal').classList.remove('active');
-                document.getElementById('user-display').innerText = Auth.user.name;
-                Auth.applyRoles(); startLiveSync();
-            } else { Swal.fire('مرفوض', 'بيانات الدخول خاطئة', 'error'); }
-        };
-
-        document.getElementById('btn-logout').onclick = () => Auth.logout();
-
-        // فحص الجلسة السابقة
-        if(Auth.checkSession()) {
-            document.getElementById('login-modal').classList.remove('active');
-            document.getElementById('user-display').innerText = Auth.user.name;
-            startLiveSync();
-        }
-
-        // الساعة
-        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString('ar-JO'); }, 1000);
-    </script>
+    <script type="module" src="./app.js"></script>
 </body>
 </html>

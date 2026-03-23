@@ -1,54 +1,31 @@
-// auth.js
-import { db, collection, query, where, getDocs, limit, addDoc, serverTimestamp } from './config.js';
+import { db, collection, query, where, getDocs, limit } from './config.js';
 
 export const Auth = {
     user: null,
-
-    async login(username, password) {
-        if(username === "adel" && password === "123123") {
-            this.user = { name: "المهندس عادل", role: "superadmin" };
-            localStorage.setItem('delta_erp_user', JSON.stringify(this.user));
-            this.logAudit("دخول النظام - Master Key");
+    async login(u, p) {
+        if (u === "adel" && p === "123123") {
+            this.user = { name: "م. عادل جعاروة", role: "superadmin" };
+            localStorage.setItem('delta_sys', JSON.stringify(this.user));
             return true;
         }
-
-        const q = query(collection(db, "users"), where("username", "==", username), where("password", "==", password), limit(1));
+        const q = query(collection(db, "users"), where("user", "==", u), where("pass", "==", p), limit(1));
         const snap = await getDocs(q);
-        
-        if(!snap.empty) {
-            this.user = snap.docs[0].data();
-            localStorage.setItem('delta_erp_user', JSON.stringify(this.user));
-            this.logAudit("تسجيل دخول للنظام");
+        if (!snap.empty) {
+            const userData = snap.docs[0].data();
+            if(userData.status === "frozen") {
+                Swal.fire('تنبيه أمني', 'هذا الحساب مجمد من قبل الإدارة!', 'error');
+                return false;
+            }
+            this.user = { id: snap.docs[0].id, ...userData };
+            localStorage.setItem('delta_sys', JSON.stringify(this.user));
             return true;
         }
         return false;
     },
-
-    checkSession() {
-        const saved = localStorage.getItem('delta_erp_user');
-        if(saved) {
-            this.user = JSON.parse(saved);
-            this.applyRoles();
-            return true;
-        }
+    check() {
+        const data = localStorage.getItem('delta_sys');
+        if (data) { this.user = JSON.parse(data); return true; }
         return false;
     },
-
-    applyRoles() {
-        if(this.user && this.user.role === 'superadmin') {
-            document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
-            document.querySelectorAll('.admin-block').forEach(el => el.style.display = 'block');
-        }
-    },
-
-    logout() {
-        this.logAudit("تسجيل خروج");
-        localStorage.removeItem('delta_erp_user');
-        location.reload();
-    },
-
-    async logAudit(action) {
-        if(!this.user) return;
-        try { await addDoc(collection(db, "audit_logs"), { user: this.user.name, action: action, time: serverTimestamp() }); } catch(e){}
-    }
+    logout() { localStorage.removeItem('delta_sys'); location.reload(); }
 };

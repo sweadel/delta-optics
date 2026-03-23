@@ -4,12 +4,12 @@ import { Auth } from './auth.js';
 
 // إعدادات قاعدة بياناتك (Firebase Config)
 const firebaseConfig = {
-    apiKey: "AIzaSyB11C4GGgAyqeThs8a9cvDNN7frvAA1nqQ",
-    authDomain: "delta-optics-system.firebaseapp.com",
-    projectId: "delta-optics-system",
-    storageBucket: "delta-optics-system.firebasestorage.app",
-    messagingSenderId: "111176219224",
-    appId: "1:111176219224:web:e0d8a5f26b84d57249a82d"
+  apiKey: "AIzaSyB11C4GGgAyqeThs8a9cvDNN7frvAA1nqQ",
+  authDomain: "delta-optics-system.firebaseapp.com",
+  projectId: "delta-optics-system",
+  storageBucket: "delta-optics-system.firebasestorage.app",
+  messagingSenderId: "111176219224",
+  appId: "1:111176219224:web:e0d8a5f26b84d57249a82d"
 };
 
 // تشغيل النظام والاتصال بالقاعدة

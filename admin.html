@@ -2,556 +2,88 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delta Optics | Enterprise Management System</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <title>Delta Optics | النظام المتكامل</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <style>
-        /* ================= 1. المتغيرات والتصميم الأساسي ================= */
-        :root {
-            --primary: #2563eb; --primary-hover: #1d4ed8; 
-            --bg-body: #f8fafc; --bg-surface: #ffffff; --bg-sidebar: #0f172a;
-            --text-main: #0f172a; --text-muted: #64748b;
-            --border: #e2e8f0; --border-dark: #1e293b;
-            --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --info: #0ea5e9;
-            --radius: 12px; --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; outline: none; }
-        body { background: var(--bg-body); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-
-        /* ================= 2. شاشة الدخول ================= */
-        #auth-screen { position: fixed; inset: 0; background: var(--bg-sidebar); z-index: 9999; display: flex; align-items: center; justify-content: center; }
-        .auth-box { background: var(--bg-surface); padding: 40px; border-radius: var(--radius); width: 100%; max-width: 400px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
-        .auth-input { width: 100%; padding: 14px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 15px; font-size: 1rem; background: var(--bg-body); }
-        .auth-btn { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 800; font-size: 1.1rem; cursor: pointer; transition: 0.3s; }
-        .auth-btn:hover { background: var(--primary-hover); }
-
-        /* ================= 3. الشريط الجانبي (Sidebar) ================= */
-        .sidebar { width: 280px; background: var(--bg-sidebar); color: white; display: flex; flex-direction: column; z-index: 100; transition: 0.3s; }
-        .brand { padding: 25px 20px; border-bottom: 1px solid var(--border-dark); display: flex; align-items: center; gap: 15px; }
-        .brand h2 { font-size: 1.5rem; font-weight: 900; margin: 0; letter-spacing: 1px; }
-        .nav-menu { flex: 1; padding: 15px; overflow-y: auto; }
-        .nav-label { font-size: 0.75rem; color: #64748b; font-weight: 800; margin: 15px 10px 5px; text-transform: uppercase; }
-        .nav-item { padding: 12px 15px; margin-bottom: 5px; border-radius: 8px; display: flex; align-items: center; gap: 12px; color: #cbd5e1; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .nav-item:hover, .nav-item.active { background: var(--primary); color: white; }
-        .admin-only { display: none; }
-
-        /* ================= 4. مساحة العمل ================= */
-        .main-layout { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .header { height: 70px; background: var(--bg-surface); padding: 0 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
-        .content { flex: 1; padding: 30px; overflow-y: auto; }
-        .panel { display: none; animation: fadeIn 0.3s; }
-        .panel.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* ================= 5. الكروت والجداول ================= */
-        .card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 25px; margin-bottom: 25px; box-shadow: var(--shadow); }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 25px; }
-        .stat-box { padding: 20px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-surface); display: flex; align-items: center; gap: 15px; }
-        
-        table { width: 100%; border-collapse: collapse; text-align: right; }
-        th { padding: 15px; background: var(--bg-body); font-weight: 800; color: var(--text-muted); border-bottom: 2px solid var(--border); font-size: 0.9rem; }
-        td { padding: 15px; border-bottom: 1px solid var(--border); font-weight: 600; font-size: 0.95rem; }
-        tr:hover td { background: var(--bg-body); }
-
-        /* ================= 6. النماذج والأزرار ================= */
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
-        .form-control { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-body); color: var(--text-main); font-family: inherit; font-weight: 600; }
-        .form-control:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px var(--primary-light); }
-        
-        .btn { padding: 10px 20px; border-radius: 8px; border: none; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-success { background: var(--success); color: white; }
-        .btn-danger { background: var(--danger); color: white; }
-        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
-
-        /* فحص النظر Rx Grid */
-        .rx-grid { display: grid; grid-template-columns: 80px repeat(4, 1fr); gap: 10px; background: var(--bg-body); padding: 15px; border-radius: 8px; border: 1px solid var(--border); align-items: center; text-align: center; margin-bottom: 15px; }
-        .rx-header { font-weight: 800; color: var(--text-muted); font-size: 0.85rem; }
-        .rx-input { text-align: center; padding: 8px; border: 1px solid var(--border); border-radius: 6px; font-weight: bold; width: 100%; }
-
-        /* رفع الصور */
-        .img-upload { border: 2px dashed var(--border); padding: 20px; text-align: center; border-radius: 12px; cursor: pointer; background: var(--bg-body); }
-        .preview-img { width: 100px; height: 100px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border); }
-        .thumb-img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); }
-
-        .badge { padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; }
-
-        /* ================= 7. النوافذ والطباعة ================= */
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 5000; }
-        .modal.active { display: flex; }
-        .modal-content { background: var(--bg-surface); padding: 30px; border-radius: var(--radius); width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; }
-
-        @media print {
-            body * { visibility: hidden; }
-            #print-area, #print-area * { visibility: visible; }
-            #print-area { position: absolute; left: 0; top: 0; width: 100%; background: white; color: black; padding: 20px; }
-            .no-print { display: none !important; }
-        }
-    </style>
 </head>
 <body>
 
-    <div id="auth-screen">
-        <div class="auth-box">
-            <i class="fas fa-fingerprint" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
-            <h2 style="margin-bottom: 25px;">Delta Optics OS</h2>
-            <input type="text" id="auth-user" class="auth-input" placeholder="اسم المستخدم" dir="ltr">
-            <input type="password" id="auth-pass" class="auth-input" placeholder="كلمة المرور" dir="ltr" onkeypress="if(event.key==='Enter') login()">
-            <button class="auth-btn" id="btn-login" onclick="login()">دخول آمن</button>
-        </div>
-    </div>
-
     <aside class="sidebar">
-        <div class="brand">
-            <i class="fas fa-infinity" style="font-size: 2rem; color: var(--primary);"></i>
-            <div>
-                <h2>DELTA</h2>
-                <span style="font-size: 0.75rem; color: #94a3b8; letter-spacing: 1px;">MANAGEMENT SYSTEM</span>
-            </div>
+        <div class="logo">
+            <h2 style="margin:0; color:var(--primary);">DELTA OPTICS</h2>
+            <small>نظام الإدارة</small>
         </div>
-        <div class="nav-menu">
-            <div class="nav-label">العمليات اليومية</div>
-            <div class="nav-item active" onclick="switchView('dashboard')"><i class="fas fa-chart-pie"></i> لوحة القيادة</div>
-            <div class="nav-item" onclick="switchView('pos')"><i class="fas fa-cash-register"></i> نقطة البيع (POS)</div>
-            <div class="nav-item" onclick="switchView('patients')"><i class="fas fa-file-prescription"></i> سجل المراجعين (Rx)</div>
-            
-            <div class="nav-label">المخزون والمختبر</div>
-            <div class="nav-item" onclick="switchView('lab')"><i class="fas fa-flask"></i> مختبر النظارات</div>
-            <div class="nav-item" onclick="switchView('inventory')"><i class="fas fa-boxes"></i> إدارة المخزون</div>
-            
-            <div class="nav-label">التواصل</div>
-            <div class="nav-item" onclick="switchView('chat')"><i class="fas fa-comments"></i> دردشة الطاقم</div>
-            
-            <div class="nav-label admin-only">أدوات المدير</div>
-            <div class="nav-item admin-only" onclick="switchView('cms')"><i class="fas fa-globe"></i> واجهة الموقع</div>
-            <div class="nav-item admin-only" onclick="switchView('staff')"><i class="fas fa-users-cog"></i> الموظفين</div>
-            <div class="nav-item admin-only" onclick="switchView('recycle')"><i class="fas fa-trash-restore"></i> سلة المحذوفات</div>
-            <div class="nav-item admin-only" onclick="switchView('audit')"><i class="fas fa-shield-alt"></i> السجل الأمني</div>
+        <button class="nav-link active" onclick="show('dash')"><i class="fas fa-home"></i> الرئيسية</button>
+        <button class="nav-link" onclick="show('rx')"><i class="fas fa-eye"></i> فحص النظر (Rx)</button>
+        <button class="nav-link" onclick="show('inv')"><i class="fas fa-box"></i> المخزون</button>
+        
+        <div class="admin-only" style="margin-top:20px; border-top:1px solid #334155; padding-top:10px;">
+            <small style="color:var(--accent)">أدوات الإدارة</small>
+            <button class="nav-link" onclick="show('staff')"><i class="fas fa-users-cog"></i> الموظفين</button>
         </div>
+        <button class="nav-link" style="margin-top:auto; color:var(--danger)" id="btn-logout"><i class="fas fa-sign-out-alt"></i> خروج</button>
     </aside>
 
-    <main class="main-layout">
-        <header class="header">
-            <div style="display: flex; gap: 15px; align-items: center;">
-                <h3 id="current-user-name" style="margin:0; font-weight: 900;">-</h3>
-                <span class="badge" id="current-user-role" style="background: var(--primary); color: white;">-</span>
+    <div class="main">
+        <section id="dash" class="view active-view">
+            <div class="card">
+                <h3>مرحباً <span id="user-name-display"></span></h3>
+                <p>حدد القسم من القائمة الجانبية للبدء.</p>
             </div>
-            <button class="btn btn-outline" style="color: var(--danger); border-color: var(--danger);" onclick="location.reload()"><i class="fas fa-power-off"></i> خروج</button>
-        </header>
+        </section>
 
-        <div class="content">
-            
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <i class="fas fa-money-bill-wave" style="font-size: 2rem; color: var(--success);"></i>
-                    <div><p style="margin:0; color:var(--text-muted); font-weight:700;">مبيعات اليوم</p><h2 id="kpi-sales" style="margin:0;">0 JOD</h2></div>
-                </div>
-                <div class="stat-box">
-                    <i class="fas fa-users" style="font-size: 2rem; color: var(--primary);"></i>
-                    <div><p style="margin:0; color:var(--text-muted); font-weight:700;">مراجعين اليوم</p><h2 id="kpi-patients" style="margin:0;">0</h2></div>
-                </div>
-                <div class="stat-box">
-                    <i class="fas fa-flask" style="font-size: 2rem; color: var(--warning);"></i>
-                    <div><p style="margin:0; color:var(--text-muted); font-weight:700;">طلبات المختبر</p><h2 id="kpi-lab" style="margin:0;">0</h2></div>
-                </div>
+        <section id="rx" class="view">
+            <div class="card">
+                <h3>فحص مراجع جديد (Rx)</h3>
+                <input type="text" id="p-name" placeholder="اسم المراجع" style="margin-bottom: 10px;">
+                <button id="btn-save-rx" class="btn btn-primary">حفظ الفحص</button>
             </div>
+        </section>
 
-            <div id="view-dashboard" class="panel active">
-                <div class="card">
-                    <h3 style="margin-top:0; border-bottom:1px solid var(--border); padding-bottom:15px;"><i class="fas fa-chart-line" style="color:var(--primary);"></i> المبيعات الأسبوعية</h3>
-                    <div style="height: 300px;"><canvas id="mainChart"></canvas></div>
-                </div>
+        <section id="inv" class="view">
+            <div class="card">
+                <h3>المخزون</h3>
+                <table>
+                    <thead><tr><th>الكود</th><th>الماركة</th><th>النوع</th><th>الكمية</th><th>السعر</th></tr></thead>
+                    <tbody id="inv-table"></tbody>
+                </table>
             </div>
-
-            <div id="view-pos" class="panel">
-                <div class="card">
-                    <h3 style="margin-top:0;"><i class="fas fa-file-invoice-dollar" style="color:var(--primary);"></i> فاتورة مبيعات جديدة</h3>
-                    <div class="form-grid">
-                        <div><label class="form-label">المراجع</label><select id="pos-patient" class="form-control"><option value="">-- اختر من السجل --</option></select></div>
-                        <div><label class="form-label">المنتج</label><select id="pos-product" class="form-control" onchange="updatePosPrice()"><option value="">-- اختر من المخزون --</option></select></div>
-                        <div><label class="form-label">العدسات (للطبي)</label><input type="text" id="pos-lenses" class="form-control" placeholder="نوع العدسات ومواصفاتها"></div>
-                    </div>
-                    <div class="form-grid">
-                        <div><label class="form-label">الإجمالي</label><input type="number" id="pos-total" class="form-control" onkeyup="calcDue()"></div>
-                        <div><label class="form-label">المدفوع</label><input type="number" id="pos-paid" class="form-control" onkeyup="calcDue()"></div>
-                        <div><label class="form-label">المتبقي</label><input type="number" id="pos-due" class="form-control" readonly style="background:var(--bg-body); color:var(--danger); font-weight:900;"></div>
-                    </div>
-                    <button class="btn btn-success" onclick="createInvoice()"><i class="fas fa-print"></i> إصدار الفاتورة</button>
-                </div>
-                <div class="card">
-                    <h3 style="margin-top:0;">سجل الفواتير</h3>
-                    <table>
-                        <thead><tr><th>رقم الفاتورة</th><th>المراجع</th><th>الإجمالي</th><th>المدفوع</th><th>المتبقي</th><th>التاريخ</th></tr></thead>
-                        <tbody id="tb-invoices"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div id="view-patients" class="panel">
-                <div class="card">
-                    <div style="display:flex; justify-content:space-between; margin-bottom: 20px;">
-                        <h3 style="margin:0;"><i class="fas fa-file-medical" style="color:var(--primary);"></i> قاعدة بيانات المراجعين</h3>
-                        <button class="btn btn-primary" onclick="openModal('modal-rx')"><i class="fas fa-plus"></i> فحص جديد</button>
-                    </div>
-                    <table>
-                        <thead><tr><th>الاسم</th><th>رقم الهاتف</th><th>تاريخ الفحص</th><th>وصفة النظر (اليمين | اليسار)</th><th>مراسلة</th></tr></thead>
-                        <tbody id="tb-patients"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div id="view-lab" class="panel">
-                <div class="card">
-                    <h3 style="margin-top:0;"><i class="fas fa-cogs" style="color:var(--warning);"></i> طلبات تجهيز النظارات</h3>
-                    <table>
-                        <thead><tr><th>الفاتورة</th><th>المراجع</th><th>الإطار والعدسات</th><th>الحالة</th><th>تحديث</th></tr></thead>
-                        <tbody id="tb-lab"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div id="view-inventory" class="panel">
-                <div class="card">
-                    <div style="display:flex; justify-content:space-between; margin-bottom: 20px;">
-                        <h3 style="margin:0;"><i class="fas fa-boxes" style="color:var(--primary);"></i> إدارة المخزون</h3>
-                        <button class="btn btn-primary" onclick="openModal('modal-product')"><i class="fas fa-plus"></i> إضافة منتج</button>
-                    </div>
-                    <table>
-                        <thead><tr><th>صورة</th><th>الموديل والماركة</th><th>التصنيف</th><th>الكمية</th><th>السعر</th><th>إجراء</th></tr></thead>
-                        <tbody id="tb-inventory"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div id="view-cms" class="panel admin-only">
-                <div class="card">
-                    <h3 style="margin-top:0;"><i class="fas fa-globe" style="color:var(--primary);"></i> التحكم بواجهة موقع الزبائن</h3>
-                    <div class="form-grid">
-                        <div><label class="form-label">شريط الإعلانات العلوي</label><input type="text" id="cms-topbar" class="form-control" placeholder="خصم 20%..."></div>
-                        <div><label class="form-label">رقم الهاتف (للتواصل)</label><input type="text" id="cms-phone" class="form-control" dir="ltr"></div>
-                    </div>
-                    <div class="form-grid">
-                        <div><label class="form-label">العنوان الرئيسي</label><input type="text" id="cms-hero" class="form-control" placeholder="دلتا للبصريات"></div>
-                        <div><label class="form-label">النص الفرعي</label><input type="text" id="cms-sub" class="form-control"></div>
-                    </div>
-                    <button class="btn btn-success" onclick="saveCMS()"><i class="fas fa-save"></i> نشر التعديلات</button>
-                </div>
-            </div>
-
-            <div id="view-staff" class="panel admin-only">
-                <div class="card">
-                    <div style="display:flex; justify-content:space-between; margin-bottom: 20px;">
-                        <h3 style="margin:0;"><i class="fas fa-users-cog" style="color:var(--primary);"></i> إدارة الموظفين والصلاحيات</h3>
-                        <button class="btn btn-primary" onclick="openModal('modal-staff')"><i class="fas fa-plus"></i> إضافة موظف</button>
-                    </div>
-                    <table>
-                        <thead><tr><th>الاسم</th><th>اسم الدخول</th><th>الصلاحية</th><th>إجراء</th></tr></thead>
-                        <tbody id="tb-staff"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div id="view-recycle" class="panel admin-only">
-                <div class="card">
-                    <h3 style="margin-top:0;"><i class="fas fa-trash-restore" style="color:var(--warning);"></i> المنتجات المحذوفة</h3>
-                    <table>
-                        <thead><tr><th>المنتج</th><th>الماركة</th><th>وقت الحذف</th><th>إجراء</th></tr></thead>
-                        <tbody id="tb-recycle"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div id="view-audit" class="panel admin-only">
-                <div class="card">
-                    <h3 style="margin-top:0;"><i class="fas fa-shield-alt" style="color:var(--danger);"></i> السجل الأمني للعمليات</h3>
-                    <table>
-                        <thead><tr><th>المستخدم</th><th>العملية</th><th>الوقت</th></tr></thead>
-                        <tbody id="tb-audit"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div id="view-chat" class="panel">
-                <div class="card" style="height: 500px; display: flex; flex-direction: column; padding: 0;">
-                    <div style="padding: 20px; border-bottom: 1px solid var(--border);"><h3 style="margin:0;"><i class="fas fa-comments"></i> تواصل الطاقم</h3></div>
-                    <div id="chat-box" style="flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: var(--bg-body);"></div>
-                    <div style="padding: 15px; border-top: 1px solid var(--border); display: flex; gap: 10px;">
-                        <input type="text" id="chat-input" class="form-control" style="margin:0;" placeholder="رسالتك..." onkeypress="if(event.key==='Enter') sendChat()">
-                        <button class="btn btn-primary" onclick="sendChat()"><i class="fas fa-paper-plane"></i></button>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </main>
-
-    <div id="modal-rx" class="modal">
-        <div class="modal-content">
-            <h2 style="margin-top:0; border-bottom:1px solid var(--border); padding-bottom:15px;">تسجيل فحص نظر جديد</h2>
-            <div class="form-grid">
-                <div><label class="form-label">الاسم</label><input type="text" id="rx-name" class="form-control"></div>
-                <div><label class="form-label">الهاتف</label><input type="text" id="rx-phone" class="form-control" dir="ltr"></div>
-            </div>
-            <div class="rx-grid">
-                <div></div><div class="rx-header">SPH</div><div class="rx-header">CYL</div><div class="rx-header">AXIS</div><div class="rx-header">ADD</div>
-                <div class="rx-header" style="color:var(--primary);">OD (يمين)</div>
-                <input type="text" id="rx-od-sph" class="rx-input"><input type="text" id="rx-od-cyl" class="rx-input"><input type="text" id="rx-od-axis" class="rx-input"><input type="text" id="rx-od-add" class="rx-input">
-                <div class="rx-header" style="color:var(--success);">OS (يسار)</div>
-                <input type="text" id="rx-os-sph" class="rx-input"><input type="text" id="rx-os-cyl" class="rx-input"><input type="text" id="rx-os-axis" class="rx-input"><input type="text" id="rx-os-add" class="rx-input">
-            </div>
-            <div><label class="form-label">PD (المسافة الحدقية)</label><input type="text" id="rx-pd" class="form-control" style="width: 50%;"></div>
-            <div><label class="form-label">ملاحظات</label><input type="text" id="rx-notes" class="form-control"></div>
-            <div style="margin-top: 20px; display:flex; gap:10px;">
-                <button class="btn btn-primary" style="flex:1;" onclick="saveRx()"><i class="fas fa-save"></i> حفظ</button>
-                <button class="btn btn-outline" onclick="closeModal('modal-rx')">إلغاء</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-product" class="modal">
-        <div class="modal-content">
-            <h2 style="margin-top:0; border-bottom:1px solid var(--border); padding-bottom:15px;">إضافة منتج للمخزون</h2>
-            <input type="hidden" id="p-id">
-            <div style="display:flex; gap:20px;">
-                <div class="img-upload" onclick="document.getElementById('p-file').click()" style="width: 150px;">
-                    <img id="p-preview" src="https://via.placeholder.com/150?text=صورة" class="preview-img">
-                    <input type="file" id="p-file" accept="image/*" style="display:none;" onchange="processImage(event)">
-                    <input type="hidden" id="p-base64">
-                    <br><small>اختر صورة</small>
-                </div>
-                <div style="flex:1;">
-                    <div class="form-grid">
-                        <div><label class="form-label">الاسم</label><input type="text" id="p-name" class="form-control"></div>
-                        <div><label class="form-label">الماركة</label><input type="text" id="p-brand" class="form-control"></div>
-                    </div>
-                    <div class="form-grid">
-                        <div><label class="form-label">النوع</label><select id="p-type" class="form-control"><option value="طبي">طبي</option><option value="شمسي">شمسي</option><option value="عدسات">عدسات</option></select></div>
-                        <div><label class="form-label">الكمية</label><input type="number" id="p-qty" class="form-control" value="1"></div>
-                        <div><label class="form-label">السعر</label><input type="number" id="p-price" class="form-control"></div>
-                    </div>
-                </div>
-            </div>
-            <div style="margin-top: 20px; display:flex; gap:10px;">
-                <button class="btn btn-primary" style="flex:1;" onclick="saveProduct()"><i class="fas fa-save"></i> حفظ</button>
-                <button class="btn btn-outline" onclick="closeModal('modal-product')">إلغاء</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-staff" class="modal">
-        <div class="modal-content" style="max-width: 400px;">
-            <h2 style="margin-top:0; border-bottom:1px solid var(--border); padding-bottom:15px;">إدارة الموظفين</h2>
-            <input type="hidden" id="u-id">
-            <div class="form-control" style="margin-bottom:10px; border:none; padding:0;"><label class="form-label">الاسم</label><input type="text" id="u-name" class="form-control"></div>
-            <div class="form-control" style="margin-bottom:10px; border:none; padding:0;"><label class="form-label">اسم الدخول</label><input type="text" id="u-user" class="form-control" dir="ltr"></div>
-            <div class="form-control" style="margin-bottom:10px; border:none; padding:0;"><label class="form-label">الرقم السري</label><input type="text" id="u-pass" class="form-control" dir="ltr"></div>
-            <div class="form-control" style="margin-bottom:20px; border:none; padding:0;"><label class="form-label">الصلاحية</label><select id="u-role" class="form-control"><option value="manager">موظف</option><option value="superadmin">مدير نظام</option></select></div>
-            <div style="display:flex; gap:10px;">
-                <button class="btn btn-primary" style="flex:1;" onclick="saveStaff()"><i class="fas fa-save"></i> حفظ</button>
-                <button class="btn btn-outline" onclick="closeModal('modal-staff')">إلغاء</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="print-area" class="no-print">
-        <div style="text-align: center; border-bottom: 2px solid black; padding-bottom: 10px; margin-bottom: 20px;">
-            <h2>Delta Optics - دلتا للبصريات</h2>
-            <p>هاتف: 0775549700</p>
-        </div>
-        <p><strong>رقم الفاتورة:</strong> <span id="pr-inv"></span></p>
-        <p><strong>المراجع:</strong> <span id="pr-pat"></span></p>
-        <hr>
-        <p><strong>البيان:</strong> <span id="pr-desc"></span></p>
-        <p><strong>الإجمالي:</strong> <span id="pr-tot"></span> JOD</p>
-        <p><strong>المدفوع:</strong> <span id="pr-pd"></span> JOD</p>
-        <p><strong>المتبقي:</strong> <span id="pr-du"></span> JOD</p>
-        <div style="text-align: center; margin-top: 40px;"><small>شكراً لثقتكم بنا!</small></div>
+        </section>
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, deleteDoc, getDocs, where, limit, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { AuthSystem } from './auth.js';
+        import { AppLogic } from './app.js';
 
-        const firebaseConfig = { apiKey: "AIzaSyB11C4GGgAyqeThs8a9cvDNN7frvAA1nqQ", authDomain: "delta-optics-system.firebaseapp.com", projectId: "delta-optics-system", storageBucket: "delta-optics-system.appspot.com", messagingSenderId: "111176219224", appId: "1:111176219224:web:e0d8a5f26b84d57249a82d" };
-        const app = initializeApp(firebaseConfig); const db = getFirestore(app);
-        let currentUser = null;
-
-        // --- أدوات عامة ---
-        window.switchView = (id) => { document.querySelectorAll('.panel').forEach(e => e.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active')); document.getElementById('view-' + id).classList.add('active'); event.currentTarget.classList.add('active'); };
-        window.openModal = (id) => { document.getElementById(id).classList.add('active'); };
-        window.closeModal = (id) => { document.getElementById(id).classList.remove('active'); };
-        const Toast = Swal.mixin({ toast: true, position: 'bottom-end', showConfirmButton: false, timer: 3000 });
-
-        async function audit(action) { try { await addDoc(collection(db, "audit"), { user: currentUser?.name||'نظام', action, time: serverTimestamp() }); } catch(e){} }
-
-        // --- الدخول ---
-        window.login = async () => {
-            const u = document.getElementById('auth-user').value.trim(), p = document.getElementById('auth-pass').value.trim();
-            if(!u || !p) return;
-            if(u === "adel" && p === "123123") { currentUser = { name: "م. عادل", role: "superadmin" }; finishLogin(); return; }
-            const snap = await getDocs(query(collection(db, "users"), where("user", "==", u), where("pass", "==", p), limit(1)));
-            if(!snap.empty) { currentUser = snap.docs[0].data(); finishLogin(); } else { Swal.fire('خطأ', 'بيانات الدخول خاطئة', 'error'); }
+        // التبديل بين الشاشات
+        window.show = (id) => {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.getElementById(id).classList.add('active-view');
+            event.currentTarget.classList.add('active');
         };
 
-        function finishLogin() {
-            document.getElementById('auth-screen').style.display = 'none';
-            document.getElementById('current-user-name').innerText = currentUser.name; document.getElementById('current-user-role').innerText = currentUser.role === 'superadmin' ? 'مدير نظام' : 'موظف';
-            if(currentUser.role === 'superadmin') document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
-            audit("تسجيل دخول"); initChart(); startSync();
-        }
-
-        // --- معالجة الصور للمخزون ---
-        window.processImage = (e) => {
-            const file = e.target.files[0]; if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                const img = new Image(); img.onload = () => {
-                    const canvas = document.createElement('canvas'); const MAX = 500; let w = img.width, h = img.height;
-                    if(w > h) { if(w > MAX) { h *= MAX / w; w = MAX; } } else { if(h > MAX) { w *= MAX / h; h = MAX; } }
-                    canvas.width = w; canvas.height = h; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, w, h);
-                    const b64 = canvas.toDataURL('image/jpeg', 0.6);
-                    document.getElementById('p-preview').src = b64; document.getElementById('p-base64').value = b64;
-                }; img.src = ev.target.result;
-            }; reader.readAsDataURL(file);
-        };
-
-        // --- عمليات الحفظ (CRUD) ---
-        window.saveProduct = async () => {
-            const id = document.getElementById('p-id').value, n = document.getElementById('p-name').value, b = document.getElementById('p-brand').value, t = document.getElementById('p-type').value, q = Number(document.getElementById('p-qty').value), pr = Number(document.getElementById('p-price').value), img = document.getElementById('p-base64').value;
-            if(!n || !pr) return;
-            const data = { name: n, brand: b, type: t, qty: q, price: pr, image: img, time: serverTimestamp() };
-            if(id) { await setDoc(doc(db, "products", id), data); audit(`تعديل منتج: ${n}`); } else { await addDoc(collection(db, "products"), data); audit(`إضافة منتج: ${n}`); }
-            closeModal('modal-product'); Toast.fire({icon: 'success', title: 'تم حفظ المنتج'});
-        };
-
-        window.deleteProduct = async (id, n, data) => {
-            if(confirm('حذف ونقل للسلة؟')) {
-                await addDoc(collection(db, "recycle"), { ...data, deletedAt: serverTimestamp(), deletedBy: currentUser.name });
-                await deleteDoc(doc(db, "products", id)); audit(`حذف منتج: ${n}`);
+        // التحقق من الجلسة عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', async () => {
+            if(!AuthSystem.checkSession()) {
+                // محاكاة تسجيل الدخول السريع للاختبار (يمكنك ربطها بشاشة لوجن منفصلة لاحقاً)
+                await AuthSystem.login('adel', '123123'); 
             }
-        };
+            document.getElementById('user-name-display').innerText = AuthSystem.currentUser.name;
+            AppLogic.init();
+        });
 
-        window.saveRx = async () => {
-            const n = document.getElementById('rx-name').value; if(!n) return;
-            const rxData = {
-                name: n, phone: document.getElementById('rx-phone').value,
-                od: { sph: document.getElementById('rx-od-sph').value, cyl: document.getElementById('rx-od-cyl').value, axis: document.getElementById('rx-od-axis').value, add: document.getElementById('rx-od-add').value },
-                os: { sph: document.getElementById('rx-os-sph').value, cyl: document.getElementById('rx-os-cyl').value, axis: document.getElementById('rx-os-axis').value, add: document.getElementById('rx-os-add').value },
-                pd: document.getElementById('rx-pd').value, notes: document.getElementById('rx-notes').value, time: serverTimestamp()
-            };
-            await addDoc(collection(db, "rx"), rxData); closeModal('modal-rx'); audit(`فحص نظر: ${n}`); Toast.fire({icon: 'success', title: 'تم حفظ الفحص'});
-        };
-
-        window.calcDue = () => { document.getElementById('pos-due').value = (Number(document.getElementById('pos-total').value||0) - Number(document.getElementById('pos-paid').value||0)).toFixed(2); };
-        window.updatePosPrice = () => { const sel = document.getElementById('pos-product'); if(sel.value) { document.getElementById('pos-total').value = sel.options[sel.selectedIndex].dataset.price; calcDue(); } };
+        // ربط الأزرار بالوظائف
+        document.getElementById('btn-logout').onclick = () => AuthSystem.logout();
         
-        window.createInvoice = async () => {
-            const pSel = document.getElementById('pos-patient'), prodSel = document.getElementById('pos-product');
-            if(!pSel.value || !prodSel.value) return;
-            const invNum = 'INV-' + Math.floor(1000 + Math.random() * 9000);
-            const data = { inv: invNum, patientName: pSel.options[pSel.selectedIndex].text, productName: prodSel.options[prodSel.selectedIndex].text, lenses: document.getElementById('pos-lenses').value, total: Number(document.getElementById('pos-total').value), paid: Number(document.getElementById('pos-paid').value), due: Number(document.getElementById('pos-due').value), labStatus: 'pending', time: serverTimestamp() };
-            
-            await addDoc(collection(db, "invoices"), data);
-            const currentQty = Number(prodSel.options[prodSel.selectedIndex].dataset.qty);
-            if(currentQty > 0) await updateDoc(doc(db, "products", prodSel.value), { qty: currentQty - 1 });
-            
-            document.getElementById('pr-inv').innerText=invNum; document.getElementById('pr-pat').innerText=data.patientName; document.getElementById('pr-desc').innerText=`${data.productName} + ${data.lenses}`; document.getElementById('pr-tot').innerText=data.total; document.getElementById('pr-pd').innerText=data.paid; document.getElementById('pr-du').innerText=data.due;
-            window.print(); audit(`إصدار فاتورة: ${invNum}`); document.getElementById('pos-total').value=""; document.getElementById('pos-paid').value=""; document.getElementById('pos-due').value="";
+        document.getElementById('btn-save-rx').onclick = async () => {
+            const name = document.getElementById('p-name').value;
+            if(!name) return Swal.fire('خطأ', 'أدخل اسم المراجع', 'error');
+            await AppLogic.saveRx({ patient: name });
+            Swal.fire('تم', 'تم حفظ الفحص بنجاح', 'success');
         };
-
-        window.updateLab = async (id, val) => { await updateDoc(doc(db, "invoices", id), { labStatus: val }); Toast.fire({icon:'success', title:'تم تحديث حالة المختبر'}); };
-        window.sendChat = async () => { const txt = document.getElementById('chat-input').value; if(txt) { await addDoc(collection(db, "chat"), { sender: currentUser.name, text: txt, time: serverTimestamp() }); document.getElementById('chat-input').value=""; } };
-        window.saveCMS = async () => { await setDoc(doc(db, "cms", "main"), { topbar: document.getElementById('cms-topbar').value, phone: document.getElementById('cms-phone').value, hero: document.getElementById('cms-hero').value, sub: document.getElementById('cms-sub').value }); Toast.fire({icon:'success', title:'تم نشر التعديلات للموقع'}); audit('تعديل الموقع (CMS)'); };
-
-        window.saveStaff = async () => {
-            const id = document.getElementById('u-id').value, n = document.getElementById('u-name').value, u = document.getElementById('u-user').value, p = document.getElementById('u-pass').value, r = document.getElementById('u-role').value;
-            if(!n || !u) return; const data = { name:n, user:u, pass:p, role:r, time: serverTimestamp() };
-            if(id) await setDoc(doc(db, "users", id), data); else await addDoc(collection(db, "users"), data);
-            closeModal('modal-staff'); audit(`حفظ موظف: ${n}`);
-        };
-
-        // --- المزامنة (Real-time DB Listeners) ---
-        function startSync() {
-            // المنتجات
-            onSnapshot(query(collection(db, "products"), orderBy("time", "desc")), (snap) => {
-                const tb = document.getElementById('tb-inventory'), pos = document.getElementById('pos-product');
-                tb.innerHTML = ""; pos.innerHTML = '<option value="">-- اختر منتج --</option>'; let low = 0;
-                snap.forEach(d => {
-                    const p = d.data(); if(p.qty < 3) low++;
-                    tb.innerHTML += `<tr><td><img src="${p.image}" class="thumb-img"></td><td>${p.name}<br><small>${p.brand}</small></td><td><span class="badge" style="background:var(--primary); color:white;">${p.type}</span></td><td>${p.qty>0?p.qty:'<span style="color:var(--danger)">نفذت</span>'}</td><td>${p.price}</td><td><button class="btn btn-danger" style="padding:5px 10px;" onclick="deleteProduct('${d.id}','${p.name}', {name:'${p.name}', brand:'${p.brand}', type:'${p.type}', price:${p.price}, image:'${p.image}'})"><i class="fas fa-trash"></i></button></td></tr>`;
-                    if(p.qty > 0) pos.innerHTML += `<option value="${d.id}" data-price="${p.price}" data-qty="${p.qty}">${p.name} (${p.price} JOD)</option>`;
-                });
-            });
-
-            // الفحوصات (المرضى)
-            onSnapshot(query(collection(db, "rx"), orderBy("time", "desc")), (snap) => {
-                const tb = document.getElementById('tb-patients'), pos = document.getElementById('pos-patient');
-                tb.innerHTML = ""; pos.innerHTML = '<option value="">-- اختر مراجع --</option>';
-                let todayC = 0;
-                snap.forEach(d => {
-                    const r = d.data(); const dateStr = r.time ? r.time.toDate().toLocaleDateString() : '';
-                    if(r.time?.toDate().toDateString() === new Date().toDateString()) todayC++;
-                    tb.innerHTML += `<tr><td>${r.name}</td><td dir="ltr">${r.phone||'-'}</td><td>${dateStr}</td><td dir="ltr" style="font-size:12px;">OD: ${r.od.sph} | OS: ${r.os.sph}</td><td><button class="btn btn-success" style="padding:5px 10px;" onclick="window.open('https://wa.me/962${(r.phone||'').replace(/^0+/,'')}')"><i class="fab fa-whatsapp"></i></button></td></tr>`;
-                    pos.innerHTML += `<option value="${d.id}">${r.name}</option>`;
-                });
-                document.getElementById('kpi-patients').innerText = todayC;
-            });
-
-            // الفواتير والمختبر
-            onSnapshot(query(collection(db, "invoices"), orderBy("time", "desc")), (snap) => {
-                const tbI = document.getElementById('tb-invoices'), tbL = document.getElementById('tb-lab');
-                tbI.innerHTML = ""; tbL.innerHTML = ""; let sales = 0, labC = 0;
-                snap.forEach(d => {
-                    const i = d.data(); const dateStr = i.time ? i.time.toDate().toLocaleDateString() : '';
-                    if(i.time?.toDate().toDateString() === new Date().toDateString()) sales += i.total;
-                    tbI.innerHTML += `<tr><td>${i.inv}</td><td>${i.patientName}</td><td>${i.total}</td><td>${i.paid}</td><td style="color:var(--danger)">${i.due}</td><td>${dateStr}</td></tr>`;
-                    if(i.labStatus !== 'delivered') {
-                        labC++; tbL.innerHTML += `<tr><td>${i.inv}</td><td>${i.patientName}</td><td>${i.productName}<br><small>${i.lenses}</small></td><td><span class="badge" style="background:var(--warning); color:black;">${i.labStatus}</span></td><td><select onchange="updateLab('${d.id}', this.value)" style="width:auto; padding:5px;"><option value="pending" ${i.labStatus==='pending'?'selected':''}>انتظار</option><option value="ready" ${i.labStatus==='ready'?'selected':''}>جاهزة</option><option value="delivered">تسليم</option></select></td></tr>`;
-                    }
-                });
-                document.getElementById('kpi-sales').innerText = sales.toFixed(2) + ' JOD'; document.getElementById('today-sales').innerText = sales.toFixed(2) + ' JOD'; document.getElementById('kpi-lab').innerText = labC; updateChart(sales);
-            });
-
-            // الشات
-            onSnapshot(query(collection(db, "chat"), orderBy("time", "asc")), (snap) => {
-                const box = document.getElementById('chat-box'); box.innerHTML = "";
-                snap.forEach(d => {
-                    const c = d.data(); const align = c.sender === currentUser.name ? 'flex-end; background:var(--primary);' : 'flex-start; background:var(--border);';
-                    box.innerHTML += `<div style="padding:10px 15px; border-radius:10px; max-width:70%; align-self:${align}"><small style="font-weight:bold; display:block; opacity:0.7;">${c.sender}</small>${c.text}</div>`;
-                }); box.scrollTop = box.scrollHeight;
-            });
-
-            // صلاحيات المدير (Admin Only Sync)
-            if(currentUser.role === 'superadmin') {
-                onSnapshot(collection(db, "users"), (snap) => {
-                    document.getElementById('tb-staff').innerHTML = snap.docs.map(d => `<tr><td>${d.data().name}</td><td>${d.data().user}</td><td>${d.data().role}</td><td><button class="btn btn-danger" style="padding:5px 10px;" onclick="deleteDoc(doc(db, 'users', '${d.id}'))"><i class="fas fa-trash"></i></button></td></tr>`).join('');
-                });
-                onSnapshot(query(collection(db, "recycle"), orderBy("deletedAt", "desc")), (snap) => {
-                    document.getElementById('tb-recycle').innerHTML = snap.docs.map(d => `<tr><td>${d.data().name}</td><td>${d.data().brand}</td><td>${d.data().deletedAt?.toDate().toLocaleDateString()}</td><td><button class="btn btn-success" style="padding:5px 10px;" onclick="restoreProduct('${d.id}')">استرجاع</button></td></tr>`).join('');
-                });
-                onSnapshot(query(collection(db, "audit"), orderBy("time", "desc")), (snap) => {
-                    document.getElementById('tb-audit').innerHTML = snap.docs.map(d => `<tr><td>${d.data().user}</td><td>${d.data().action}</td><td style="font-size:12px;">${d.data().time?.toDate().toLocaleString('ar-EG')}</td></tr>`).join('');
-                });
-                onSnapshot(doc(db, "cms", "main"), (d) => { if(d.exists()) { const c = d.data(); document.getElementById('cms-topbar').value = c.topbar||''; document.getElementById('cms-phone').value = c.phone||''; document.getElementById('cms-hero').value = c.hero||''; document.getElementById('cms-sub').value = c.sub||''; }});
-            }
-        }
-
-        window.restoreProduct = async (id) => { /* استرجاع من السلة */ };
-
-        let myChart = null;
-        function initChart() {
-            const ctx = document.getElementById('mainChart').getContext('2d');
-            myChart = new Chart(ctx, { type: 'line', data: { labels: ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'], datasets: [{ label: 'المبيعات', data: [0,0,0,0,0,0,0], borderColor: '#2563eb', fill: true, backgroundColor: 'rgba(37,99,235,0.1)' }] }, options: { responsive: true, maintainAspectRatio: false } });
-        }
-        function updateChart(sales) { if(myChart) { let d = new Date().getDay() + 1; if(d>6) d=0; myChart.data.datasets[0].data[d] = sales; myChart.update(); } }
     </script>
 </body>
 </html>

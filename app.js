@@ -1,5 +1,20 @@
-import { db, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, setDoc, deleteDoc, updateDoc } from './config.js';
-import { Auth } from './auth.js';
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, setDoc, deleteDoc, updateDoc, limit } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { Auth } from './auth.js'; 
+
+// إعدادات قاعدة بياناتك (Firebase Config)
+const firebaseConfig = {
+  apiKey: "AIzaSyB11C4GGgAyqeThs8a9cvDNN7frvAA1nqQ",
+  authDomain: "delta-optics-system.firebaseapp.com",
+  projectId: "delta-optics-system",
+  storageBucket: "delta-optics-system.firebasestorage.app",
+  messagingSenderId: "111176219224",
+  appId: "1:111176219224:web:e0d8a5f26b84d57249a82d"
+};
+
+// تشغيل النظام والاتصال بالقاعدة
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 // ================== دوال أساسية وأمان ==================
 function getDeviceInfo() { const ua = navigator.userAgent; return /Mobile|Android|iP(hone|od)|IEMobile/.test(ua) ? "هاتف محمول" : "جهاز كمبيوتر"; }
@@ -20,7 +35,7 @@ window.toggleDarkMode = () => { document.body.classList.toggle('dark-mode'); };
 
 window.performGlobalSearch = () => {
     const filter = document.getElementById('global-search').value.toUpperCase();
-    const trs = document.querySelectorAll('.active table tbody tr'); // يبحث فقط في الشاشة المفتوحة حالياً لسرعة الأداء
+    const trs = document.querySelectorAll('.active table tbody tr'); 
     trs.forEach(tr => {
         const text = tr.innerText.toUpperCase();
         tr.style.display = text.includes(filter) ? "" : "none";
@@ -32,7 +47,7 @@ window.exportToCSV = (tableId, filename) => {
     const rows = document.querySelectorAll(`#${tableId} tr`);
     for (let i = 0; i < rows.length; i++) {
         let row = [], cols = rows[i].querySelectorAll("td, th");
-        for (let j = 0; j < cols.length - 1; j++) row.push(cols[j].innerText); // نستثني عمود "الإجراءات" الأخير
+        for (let j = 0; j < cols.length - 1; j++) row.push(cols[j].innerText); 
         csv.push(row.join(","));
     }
     const csvFile = new Blob(["\uFEFF" + csv.join("\n")], {type: "text/csv;charset=utf-8;"});

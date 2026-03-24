@@ -4,97 +4,105 @@
     <meta charset="UTF-8">
     <title>Delta Optics | Enterprise ERP V5</title>
     <link rel="stylesheet" href="./style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        /* ================= الثيم الأخضر الفخم الجديد ================= */
+        /* ================= الثيم الطبي الراقي ================= */
         :root {
-            --primary: #059669; /* أخضر طبي فخم */
+            --primary: #059669; /* أخضر طبي */
             --secondary: #10b981; 
-            --bg-color: #f0fdf4;
+            --bg-color: #f4f8f7; /* خلفية أريح للعين */
             --surface: #ffffff;
-            --border: #cbd5e1;
-            --text-main: #0f172a;
+            --border: #e2e8f0;
+            --text-main: #1e293b;
             --text-muted: #64748b;
             --success: #059669;
             --danger: #ef4444;
             --warning: #f59e0b;
         }
 
+        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg-color); color: var(--text-main); }
+        
         .quick-time-btn { background: var(--surface); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.85rem; transition: 0.2s; display: flex; align-items: center; gap: 5px; justify-content: center; color: var(--text-main); }
-        .quick-time-btn:hover { background: #e2e8f0; }
+        .quick-time-btn:hover { background: #f1f5f9; }
         .quick-open { color: var(--success); border-color: var(--success); }
         .quick-close { color: var(--danger); border-color: var(--danger); }
         
-        .erp-row { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; margin-top: 15px; }
+        /* تصميم العيادة المطور */
+        .erp-row { display: flex; flex-wrap: wrap; gap: 25px; align-items: flex-start; margin-top: 15px; }
         .erp-col-main { flex: 2; min-width: 350px; display: flex; flex-direction: column; gap: 20px; }
         .erp-col-side { flex: 1.2; min-width: 300px; display: flex; flex-direction: column; gap: 20px; }
         
-        .erp-card-pro { background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; }
-        .erp-card-header { background: #f8fafc; padding: 15px 20px; font-weight: 900; color: var(--primary); border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px; font-size: 1.1rem; }
-        .erp-card-body { padding: 20px; }
+        .erp-card-pro { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 4px 6px rgba(0,0,0,0.02); overflow: hidden; }
+        .erp-card-header { background: #f8fafc; padding: 15px 20px; font-weight: 900; color: var(--primary); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; font-size: 1.1rem; }
+        .erp-card-body { padding: 25px; }
         
         .erp-input-group { margin-bottom: 15px; }
-        .erp-input-group label { display: block; font-size: 0.85rem; font-weight: bold; color: #64748b; margin-bottom: 5px; }
-        .erp-input { width: 100%; padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 10px; font-family: 'Tajawal', sans-serif; font-size: 1rem; transition: 0.3s; background: #f8fafc; color: #0f172a; outline: none; }
-        .erp-input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1); }
+        .erp-input-group label { display: block; font-size: 0.9rem; font-weight: bold; color: #475569; margin-bottom: 8px; }
+        .erp-input { width: 100%; padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: 'Tajawal', sans-serif; font-size: 1rem; transition: 0.3s; background: #fff; color: #0f172a; outline: none; }
+        .erp-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15); }
         
-        /* إجبار الأرقام تكون إنجليزي */
-        .erp-num { font-family: Arial, Helvetica, sans-serif !important; direction: ltr !important; text-align: center; font-weight: 700; }
+        /* إجبار الأرقام للغة الإنجليزية */
+        .erp-num { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important; direction: ltr !important; text-align: center; font-weight: bold; }
         
-        .rx-table-modern { width: 100%; border-collapse: separate; border-spacing: 6px; }
-        .rx-table-modern th { font-size: 0.85rem; color: #64748b; font-weight: bold; padding-bottom: 5px; text-align: center; }
+        .rx-table-modern { width: 100%; border-collapse: separate; border-spacing: 8px; }
+        .rx-table-modern th { font-size: 0.9rem; color: #64748b; font-weight: bold; padding-bottom: 5px; text-align: center; }
         .rx-table-modern td { padding: 0; }
-        .rx-table-modern .erp-input { text-align: center; padding: 10px 5px; font-size: 1.1rem; font-weight: bold; color: var(--primary); }
+        .rx-table-modern .erp-input { text-align: center; padding: 12px 5px; font-size: 1.1rem; font-weight: bold; color: var(--primary); background: #f8fafc; }
         
-        .product-row { display: flex; gap: 10px; margin-bottom: 12px; align-items: center; background: #f8fafc; padding: 10px; border-radius: 12px; border: 1px solid #e2e8f0; }
-        .product-icon { width: 40px; height: 40px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 1.2rem; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .product-row input[type="text"] { flex: 2; border: none; background: transparent; font-weight: bold; padding: 5px; outline: none; font-family: 'Tajawal', sans-serif;}
-        .product-row input[type="number"] { flex: 1; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px; background: white; }
+        .product-row { display: flex; gap: 12px; margin-bottom: 15px; align-items: center; background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0; transition: 0.2s;}
+        .product-row:hover { border-color: #cbd5e1; background: #fff; }
+        .product-icon { width: 42px; height: 42px; background: #ecfdf5; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 1.2rem; }
+        .product-row input[type="text"] { flex: 2; border: none; background: transparent; font-weight: bold; font-size: 0.95rem; outline: none; font-family: 'Tajawal', sans-serif; color: #1e293b;}
+        .product-row input[type="number"] { flex: 1; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px; background: white; font-size: 1.1rem; }
 
-        /* الآلة الحاسبة الاحترافية */
-        .calc-box { background: #0f172a; color: white; border-radius: 16px; padding: 25px; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2); }
-        .calc-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 1.1rem; }
-        .calc-label { color: #94a3b8; font-weight: bold; font-size: 0.95rem; }
-        .calc-val { background: transparent; border: none; color: white; text-align: right; font-family: Arial, sans-serif !important; font-size: 1.3rem; font-weight: bold; width: 120px; outline: none; direction: ltr !important; }
+        /* الآلة الحاسبة الراقية */
+        .calc-box { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .calc-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .calc-label { color: #475569; font-weight: 900; font-size: 1rem; }
+        .calc-val { background: transparent; border: none; color: #0f172a; text-align: left; font-family: 'Segoe UI', sans-serif !important; font-size: 1.3rem; font-weight: bold; width: 120px; outline: none; direction: ltr !important; }
         
-        .calc-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 15px 0; }
+        .calc-divider { height: 1px; background: #cbd5e1; margin: 15px 0; }
         
-        .calc-total-row { display: flex; justify-content: space-between; align-items: center; font-size: 1.5rem; font-weight: 900; color: #10b981; margin-bottom: 15px; }
-        .calc-total-val { background: transparent; border: none; color: #10b981; text-align: right; font-family: Arial, sans-serif !important; font-size: 1.8rem; width: 150px; font-weight: 900; direction: ltr !important;}
+        .calc-total-row { display: flex; justify-content: space-between; align-items: center; font-size: 1.5rem; font-weight: 900; color: var(--primary); margin-bottom: 20px; }
+        .calc-total-val { background: transparent; border: none; color: var(--primary); text-align: left; font-family: 'Segoe UI', sans-serif !important; font-size: 1.8rem; width: 150px; font-weight: 900; direction: ltr !important;}
         
-        .calc-paid-row { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1); }
-        .calc-paid-input { background: #fff; border: 2px solid var(--primary); color: var(--primary); padding: 8px; border-radius: 8px; width: 120px; font-size: 1.3rem; font-weight: 900; text-align: center; }
+        .calc-paid-row { background: #fff; padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border: 2px solid var(--primary); }
+        .calc-paid-input { background: #f0fdf4; border: 1px solid var(--primary); color: var(--primary); padding: 10px; border-radius: 6px; width: 120px; font-size: 1.3rem; font-weight: 900; text-align: center; }
         
-        .calc-due-row { display: flex; justify-content: space-between; align-items: center; font-size: 1.3rem; font-weight: 900; color: #ef4444; }
+        .calc-due-row { display: flex; justify-content: space-between; align-items: center; font-size: 1.3rem; font-weight: 900; color: var(--danger); padding: 10px 0; }
         
-        .btn-print-magic { background: var(--primary); color: white; border: none; width: 100%; padding: 20px; border-radius: 12px; font-size: 1.2rem; font-weight: 900; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(5, 150, 105, 0.3); display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 15px; }
-        .btn-print-magic:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(5, 150, 105, 0.4); background: #047857; }
+        .btn-print-magic { background: var(--primary); color: white; border: none; width: 100%; padding: 18px; border-radius: 10px; font-size: 1.2rem; font-weight: 900; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 15px; }
+        .btn-print-magic:hover { background: #047857; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3); }
 
-        /* نافذة سجل المريض */
-        #history-modal .modal-content { max-width: 800px; width: 90%; background: var(--bg-color); }
-        .history-table th { background: var(--primary); color: white; }
+        /* نافذة السجل */
+        #history-modal .modal-content { max-width: 900px; width: 95%; background: #fff; border-radius: 16px; }
+        .history-table th { background: #f1f5f9; color: #334155; font-weight: 900; }
+        .history-table td { border-bottom: 1px solid #e2e8f0; }
 
-        /* ================= تنسيق الطباعة (روشيتة A5 احترافية) ================= */
+        /* ================= تنسيق الطباعة السحري النظيف ================= */
         @media print {
-            body * { visibility: hidden; }
-            #print-report, #print-report * { visibility: visible; }
-            #print-report { position: absolute; left: 0; top: 0; width: 100%; display: flex; justify-content: center; }
+            body { background: #fff; margin: 0; padding: 0; font-family: 'Tajawal', Arial, sans-serif; }
+            .sidebar, .header, .content, .modal, .fab-area { display: none !important; }
+            #print-report { display: block !important; position: relative; width: 100%; background: #fff; }
             
             .print-card { 
-                width: 148mm; /* حجم A5 */
-                background: white; 
-                padding: 15mm; 
-                font-family: 'Tajawal', Arial, sans-serif; 
+                width: 148mm; /* A5 width */
+                margin: 0 auto; 
+                padding: 10mm; 
+                background: #fff;
                 color: #000;
             }
-            .print-card h2, .print-card p, .print-card th, .print-card td { color: #000 !important; }
+            .print-card * { color: #000 !important; }
+            
             .print-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 12px; }
-            .print-table th, .print-table td { border: 1px solid #000; padding: 6px; text-align: center; font-family: Arial, sans-serif !important; }
+            .print-table th, .print-table td { border: 1px solid #000; padding: 6px; text-align: center; }
+            .print-table th { background-color: #f0f0f0 !important; -webkit-print-color-adjust: exact; }
+            
             .print-header { display: flex; justify-content: space-between; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px; align-items: center;}
-            .print-logo { height: 50px; }
-            .en-num-print { font-family: Arial, sans-serif !important; direction: ltr !important; display: inline-block; }
+            .print-logo { height: 45px; }
+            .en-num-print { font-family: 'Segoe UI', Arial, sans-serif !important; direction: ltr !important; display: inline-block; }
         }
     </style>
 </head>
@@ -111,14 +119,17 @@
     </div>
 
     <div id="history-modal" class="modal" style="display:none; z-index: 2000;">
-        <div class="modal-content" style="padding: 30px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid var(--primary); padding-bottom: 10px;">
-                <h2 style="margin: 0; color: var(--primary);"><i class="fas fa-history"></i> سجل المراجع: <span id="history-patient-name" style="color: var(--text-main);"></span></h2>
-                <button onclick="document.getElementById('history-modal').style.display='none'" class="btn btn-danger"><i class="fas fa-times"></i> إغلاق</button>
+        <div class="modal-content" style="padding: 25px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid var(--primary); padding-bottom: 15px;">
+                <h2 style="margin: 0; color: var(--primary);"><i class="fas fa-folder-open"></i> ملف المراجع: <span id="history-patient-name" style="color: var(--text-main);"></span></h2>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="printPatientHistory()" class="btn btn-primary"><i class="fas fa-print"></i> طباعة كشف السجل</button>
+                    <button onclick="document.getElementById('history-modal').style.display='none'" class="btn btn-danger"><i class="fas fa-times"></i></button>
+                </div>
             </div>
             <div class="table-wrapper">
                 <table class="history-table">
-                    <thead><tr><th>التاريخ</th><th>رقم الملف</th><th>التفاصيل</th><th>الإجمالي</th><th>إجراءات</th></tr></thead>
+                    <thead><tr><th>التاريخ</th><th>الرقم المرجعي</th><th>تفاصيل الفاتورة</th><th>الإجمالي</th><th>خيارات</th></tr></thead>
                     <tbody id="tb-patient-history"></tbody>
                 </table>
             </div>
@@ -129,7 +140,7 @@
         <div class="logo-box"><h2 style="font-weight: 900; color: var(--primary);">DELTA</h2><small style="color: #cbd5e1;">Enterprise ERP</small></div>
         <div class="nav-label">العمليات اليومية</div>
         <button class="nav-link active" onclick="showView('dash')"><i class="fas fa-home"></i> الرئيسية</button>
-        <button class="nav-link" onclick="showView('rx')"><i class="fas fa-file-medical-alt"></i> العيادة (الملف الشامل)</button>
+        <button class="nav-link" onclick="showView('rx')"><i class="fas fa-file-medical-alt"></i> العيادة (فحص ومبيعات)</button>
         <button class="nav-link" onclick="showView('pos')"><i class="fas fa-cash-register"></i> مبيعات سريعة</button>
         <button class="nav-link" onclick="showView('online-rx')"><i class="fas fa-globe"></i> فحوصات الموقع</button>
         <div class="nav-label">اللوجستيات</div>
@@ -151,7 +162,7 @@
         <header class="header">
             <div style="display: flex; gap: 20px; align-items: center;">
                 <h2 style="font-weight:900; margin:0; color: var(--primary);"><i class="fas fa-clinic-medical"></i> البصريات</h2>
-                <input type="text" id="global-search" class="search-bar" placeholder="بحث شامل..." onkeyup="performGlobalSearch()">
+                <input type="text" id="global-search" class="search-bar" placeholder="بحث سريع..." onkeyup="performGlobalSearch()">
             </div>
             <div style="display: flex; gap: 15px; align-items: center;">
                 <button class="btn btn-dark" onclick="toggleDarkMode()"><i class="fas fa-moon"></i></button>
@@ -168,8 +179,8 @@
             </section>
             
             <section id="rx" class="view">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
-                    <h2 style="color: var(--primary); font-weight: 900; margin:0;"><i class="fas fa-file-medical-alt"></i> عيادة البصريات</h2>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+                    <h2 style="color: var(--text-main); font-weight: 900; margin:0;"><i class="fas fa-notes-medical" style="color:var(--primary);"></i> ملف المراجع الشامل</h2>
                 </div>
                 
                 <datalist id="patients-list"></datalist>
@@ -177,15 +188,15 @@
                 <div class="erp-row">
                     <div class="erp-col-main">
                         <div class="erp-card-pro">
-                            <div class="erp-card-header"><i class="fas fa-user-injured"></i> 1. بيانات المراجع</div>
+                            <div class="erp-card-header"><i class="fas fa-user"></i> 1. بيانات المراجع</div>
                             <div class="erp-card-body grid-2">
                                 <div class="erp-input-group">
-                                    <label>اسم المراجع (إلزامي)</label>
-                                    <input type="text" id="u-name" list="patients-list" class="erp-input" placeholder="ابحث أو أضف جديد...">
+                                    <label>الاسم الكامل (إلزامي)</label>
+                                    <input type="text" id="u-name" list="patients-list" class="erp-input" placeholder="ابحث في السجل أو أضف جديد...">
                                 </div>
                                 <div class="erp-input-group">
                                     <label>رقم الهاتف</label>
-                                    <input type="text" id="u-phone" class="erp-input erp-num" lang="en" placeholder="07XXXXXXXX">
+                                    <input type="text" id="u-phone" class="erp-input erp-num" placeholder="07XXXXXXXX">
                                 </div>
                             </div>
                         </div>
@@ -196,22 +207,22 @@
                                 <table class="rx-table-modern">
                                     <tr><th></th><th>SPH</th><th>CYL</th><th>AXIS</th><th>ADD</th></tr>
                                     <tr>
-                                        <td style="font-weight:900; color:var(--primary); text-align:left; padding-left:10px;">Right (OD)</td>
-                                        <td><input type="text" id="u-od-s" class="erp-input erp-num" lang="en" placeholder="0.00"></td>
-                                        <td><input type="text" id="u-od-c" class="erp-input erp-num" lang="en" placeholder="0.00"></td>
-                                        <td><input type="text" id="u-od-a" class="erp-input erp-num" lang="en" placeholder="0"></td>
-                                        <td><input type="text" id="u-od-add" class="erp-input erp-num" lang="en" placeholder="0.00"></td>
+                                        <td style="font-weight:900; color:#1e293b; text-align:left; padding-left:10px;">Right (OD)</td>
+                                        <td><input type="text" id="u-od-s" class="erp-input erp-num" placeholder="0.00"></td>
+                                        <td><input type="text" id="u-od-c" class="erp-input erp-num" placeholder="0.00"></td>
+                                        <td><input type="text" id="u-od-a" class="erp-input erp-num" placeholder="0"></td>
+                                        <td><input type="text" id="u-od-add" class="erp-input erp-num" placeholder="0.00"></td>
                                     </tr>
                                     <tr>
-                                        <td style="font-weight:900; color:var(--success); text-align:left; padding-left:10px;">Left (OS)</td>
-                                        <td><input type="text" id="u-os-s" class="erp-input erp-num" lang="en" placeholder="0.00"></td>
-                                        <td><input type="text" id="u-os-c" class="erp-input erp-num" lang="en" placeholder="0.00"></td>
-                                        <td><input type="text" id="u-os-a" class="erp-input erp-num" lang="en" placeholder="0"></td>
-                                        <td><input type="text" id="u-os-add" class="erp-input erp-num" lang="en" placeholder="0.00"></td>
+                                        <td style="font-weight:900; color:#1e293b; text-align:left; padding-left:10px;">Left (OS)</td>
+                                        <td><input type="text" id="u-os-s" class="erp-input erp-num" placeholder="0.00"></td>
+                                        <td><input type="text" id="u-os-c" class="erp-input erp-num" placeholder="0.00"></td>
+                                        <td><input type="text" id="u-os-a" class="erp-input erp-num" placeholder="0"></td>
+                                        <td><input type="text" id="u-os-add" class="erp-input erp-num" placeholder="0.00"></td>
                                     </tr>
                                 </table>
                                 <div class="grid-2" style="margin-top: 15px;">
-                                    <div class="erp-input-group" style="margin:0;"><label>المسافة الحدقية (PD)</label><input type="text" id="u-pd" class="erp-input erp-num" lang="en" placeholder="60"></div>
+                                    <div class="erp-input-group" style="margin:0;"><label>المسافة الحدقية (PD)</label><input type="text" id="u-pd" class="erp-input erp-num" placeholder="60"></div>
                                     <div class="erp-input-group" style="margin:0;"><label>ملاحظات طبية</label><input type="text" id="u-notes" class="erp-input" placeholder="اكتب ملاحظاتك..."></div>
                                 </div>
                             </div>
@@ -220,45 +231,45 @@
 
                     <div class="erp-col-side">
                         <div class="erp-card-pro">
-                            <div class="erp-card-header"><i class="fas fa-shopping-cart"></i> 3. المنتجات المباعة</div>
+                            <div class="erp-card-header"><i class="fas fa-shopping-bag"></i> 3. المنتجات المباعة</div>
                             <div class="erp-card-body" style="padding-bottom: 5px;">
-                                <div class="product-row"><div class="product-icon"><i class="fas fa-glasses"></i></div><input type="text" id="u-frame-type" placeholder="الإطار (Frame)"><input type="number" id="u-frame-price" class="erp-num" lang="en" placeholder="السعر" oninput="calcUnifiedTotal()" min="0"></div>
-                                <div class="product-row"><div class="product-icon"><i class="fas fa-eye"></i></div><input type="text" id="u-lenses-type" placeholder="العدسات (Lenses)"><input type="number" id="u-lenses-price" class="erp-num" lang="en" placeholder="السعر" oninput="calcUnifiedTotal()" min="0"></div>
-                                <div class="product-row"><div class="product-icon"><i class="fas fa-dot-circle"></i></div><input type="text" id="u-cl-type" placeholder="لاصق (Contacts)"><input type="number" id="u-cl-price" class="erp-num" lang="en" placeholder="السعر" oninput="calcUnifiedTotal()" min="0"></div>
-                                <div class="product-row"><div class="product-icon"><i class="fas fa-prescription-bottle"></i></div><input type="text" id="u-extras-type" placeholder="أخرى (Extras)"><input type="number" id="u-extras-price" class="erp-num" lang="en" placeholder="السعر" oninput="calcUnifiedTotal()" min="0"></div>
+                                <div class="product-row"><div class="product-icon"><i class="fas fa-glasses"></i></div><input type="text" id="u-frame-type" placeholder="الإطار (Frame)"><input type="number" id="u-frame-price" class="erp-num" placeholder="السعر" oninput="calcUnifiedTotal()" min="0"></div>
+                                <div class="product-row"><div class="product-icon"><i class="fas fa-eye"></i></div><input type="text" id="u-lenses-type" placeholder="العدسات (Lenses)"><input type="number" id="u-lenses-price" class="erp-num" placeholder="السعر" oninput="calcUnifiedTotal()" min="0"></div>
+                                <div class="product-row"><div class="product-icon"><i class="fas fa-dot-circle"></i></div><input type="text" id="u-cl-type" placeholder="لاصق (Contacts)"><input type="number" id="u-cl-price" class="erp-num" placeholder="السعر" oninput="calcUnifiedTotal()" min="0"></div>
+                                <div class="product-row"><div class="product-icon"><i class="fas fa-prescription-bottle"></i></div><input type="text" id="u-extras-type" placeholder="أخرى (Extras)"><input type="number" id="u-extras-price" class="erp-num" placeholder="السعر" oninput="calcUnifiedTotal()" min="0"></div>
                             </div>
                         </div>
 
                         <div class="calc-box">
-                            <div class="calc-row"><span class="calc-label">المجموع (Subtotal)</span><input type="text" id="u-subtotal" class="calc-val" lang="en" readonly value="0.00"></div>
+                            <div class="calc-row"><span class="calc-label">المجموع (Subtotal)</span><input type="text" id="u-subtotal" class="calc-val" readonly value="0.00"></div>
                             <div class="calc-row">
                                 <span class="calc-label">الخصم (Discount)</span>
-                                <select id="u-discount" class="erp-input erp-num" style="width:100px; padding:5px 10px;" onchange="calcUnifiedTotal()">
+                                <select id="u-discount" class="erp-input erp-num" style="width:100px; padding:6px 10px; font-size: 1.1rem;" onchange="calcUnifiedTotal()">
                                     <option value="0">0%</option><option value="10">10%</option><option value="20">20%</option><option value="30">30%</option><option value="40">40%</option><option value="50">50%</option><option value="60">60%</option><option value="70">70%</option><option value="80">80%</option><option value="90">90%</option><option value="100">100%</option>
                                 </select>
                             </div>
                             <div class="calc-divider"></div>
-                            <div class="calc-total-row"><span>الإجمالي (Total)</span><input type="text" id="u-total" class="calc-total-val" lang="en" readonly value="0.00"></div>
+                            <div class="calc-total-row"><span>الإجمالي (Total)</span><input type="text" id="u-total" class="calc-total-val" readonly value="0.00"></div>
                             
-                            <div class="calc-row" style="margin-bottom: 10px;">
-                                <span class="calc-label" style="color:#fff;">طريقة الدفع</span>
-                                <select id="u-payment-method" class="erp-input" style="width:120px; padding:5px 10px; font-weight:bold;">
+                            <div class="calc-row" style="margin-bottom: 15px;">
+                                <span class="calc-label" style="color:#1e293b;">طريقة الدفع</span>
+                                <select id="u-payment-method" class="erp-input" style="width:130px; padding:6px 10px; font-weight:bold;">
                                     <option value="كاش">كاش (Cash)</option><option value="فيزا">فيزا (Visa)</option><option value="كليك">كليك (CliQ)</option><option value="تأمين">تأمين (Insurance)</option>
                                 </select>
                             </div>
 
                             <div class="calc-paid-row">
-                                <span class="calc-label" style="color:#fff;">المدفوع (Paid)</span>
-                                <input type="number" id="u-paid" class="calc-paid-input erp-num" lang="en" placeholder="0.00" oninput="calcUnifiedTotal()" min="0">
+                                <span class="calc-label" style="color:#0f172a; font-size:1.1rem;">المدفوع (Paid)</span>
+                                <input type="number" id="u-paid" class="calc-paid-input erp-num" placeholder="0.00" oninput="calcUnifiedTotal()" min="0">
                             </div>
                             <div class="calc-due-row">
                                 <span>الباقي (Due)</span>
-                                <span id="u-due-display" class="erp-num">0.00 JOD</span>
+                                <div><span id="u-due-display" class="erp-num">0.00</span> <span style="font-size:0.9rem;">JOD</span></div>
                                 <input type="hidden" id="u-due" value="0">
                             </div>
                         </div>
 
-                        <button class="btn-print-magic" onclick="saveUnifiedRecord()"><i class="fas fa-print"></i> حفظ وإصدار الوصفة (Print)</button>
+                        <button class="btn-print-magic" onclick="saveUnifiedRecord()"><i class="fas fa-print"></i> حفظ وطباعة الوصفة (Print)</button>
                     </div>
                 </div>
 

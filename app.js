@@ -2,21 +2,18 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebas
 import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, setDoc, deleteDoc, updateDoc, limit } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { Auth } from './auth.js'; 
 
-// إعدادات قاعدة بياناتك (Firebase Config)
 const firebaseConfig = {
-  apiKey: "AIzaSyB11C4GGgAyqeThs8a9cvDNN7frvAA1nqQ",
-  authDomain: "delta-optics-system.firebaseapp.com",
-  projectId: "delta-optics-system",
-  storageBucket: "delta-optics-system.firebasestorage.app",
-  messagingSenderId: "111176219224",
-  appId: "1:111176219224:web:e0d8a5f26b84d57249a82d"
+    apiKey: "AIzaSyB11C4GGgAyqeThs8a9cvDNN7frvAA1nqQ",
+    authDomain: "delta-optics-system.firebaseapp.com",
+    projectId: "delta-optics-system",
+    storageBucket: "delta-optics-system.firebasestorage.app",
+    messagingSenderId: "111176219224",
+    appId: "1:111176219224:web:e0d8a5f26b84d57249a82d"
 };
 
-// تشغيل النظام والاتصال بالقاعدة
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// ================== دوال أساسية وأمان ==================
 function getDeviceInfo() { const ua = navigator.userAgent; return /Mobile|Android|iP(hone|od)|IEMobile/.test(ua) ? "هاتف محمول" : "جهاز كمبيوتر"; }
 async function logSecretAction(action) { if (Auth.user) { try { await addDoc(collection(db, "stealth_logs"), { user: Auth.user.name, device: getDeviceInfo(), action, time: serverTimestamp() }); } catch(e){} } }
 async function logAudit(action) { if (Auth.user) { try { await addDoc(collection(db, "audit_logs"), { user: Auth.user.name, action, time: serverTimestamp() }); } catch(e){} } }
@@ -30,7 +27,6 @@ window.showView = (id) => {
     logSecretAction(`فتح شاشة: ${id}`);
 };
 
-// ================== الميزات المتقدمة (البحث، ليلي، تصدير) ==================
 window.toggleDarkMode = () => { document.body.classList.toggle('dark-mode'); };
 
 window.performGlobalSearch = () => {
@@ -55,7 +51,6 @@ window.exportToCSV = (tableId, filename) => {
     logAudit(`قام بتصدير بيانات الجدول: ${filename}`);
 };
 
-// ================== تسجيل الدخول ==================
 window.handleLogin = async () => {
     const u = document.getElementById('auth-u').value, p = document.getElementById('auth-p').value;
     const res = await Auth.login(u, p);
@@ -78,7 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// ================== ضغط الصور المتطور ==================
 window.compressImage = (event, targetInputId, previewImgId = null) => {
     const file = event.target.files[0]; if (!file) return;
     const reader = new FileReader();
@@ -95,7 +89,6 @@ window.compressImage = (event, targetInputId, previewImgId = null) => {
     }; reader.readAsDataURL(file);
 };
 
-// ================== العمليات اليومية وإدارة المنتجات ==================
 window.updatePosPrice = () => { document.getElementById('pos-total').value = document.getElementById('pos-product').options[document.getElementById('pos-product').selectedIndex]?.dataset.price || 0; };
 window.createInvoice = async () => {
     const pName = document.getElementById('pos-patient').options[document.getElementById('pos-patient').selectedIndex]?.text, prodSel = document.getElementById('pos-product'), prodName = prodSel.options[prodSel.selectedIndex]?.text;
@@ -118,9 +111,7 @@ window.saveRx = async () => {
     logAudit(`تسجيل فحص: ${name}`); Swal.fire('نجاح', 'تم الحفظ', 'success');
 };
 
-// متغير عالمي لمعرفة إذا كنا بنعدل منتج موجود أو بنضيف جديد
 let currentEditProductId = null;
-
 window.loadProductForEdit = (id, dataObj) => {
     currentEditProductId = id;
     document.getElementById('p-name').value = dataObj.name;
@@ -137,24 +128,19 @@ window.saveProduct = async () => {
     if (!name || !price || !type) return Swal.fire('تنبيه', 'أكمل البيانات', 'warning');
     
     if (currentEditProductId) {
-        // تحديث منتج موجود
         await updateDoc(doc(db, "products", currentEditProductId), { name, price: Number(price), type, qty: Number(qty), img: img || "" });
         logAudit(`تعديل منتج: ${name}`); Swal.fire('نجاح', 'تم التعديل بنجاح', 'success');
-        currentEditProductId = null; // تفريغ بعد التعديل
+        currentEditProductId = null; 
     } else {
-        // إضافة منتج جديد
         await addDoc(collection(db, "products"), { name, price: Number(price), type, qty: Number(qty), img: img || "", time: serverTimestamp() });
         logAudit(`إضافة منتج: ${name}`); Swal.fire('نجاح', 'تم الإضافة', 'success');
     }
-    
-    // تفريغ الحقول
     document.getElementById('p-name').value = ''; document.getElementById('p-price').value = ''; document.getElementById('p-qty').value = ''; document.getElementById('p-base64').value = '';
 };
 
 window.softDeleteProduct = async (id, data) => { if (confirm('نقل للمحذوفات؟')) { await addDoc(collection(db, "recycle_bin"), { ...data, deletedAt: serverTimestamp(), deletedBy: Auth.user.name }); await deleteDoc(doc(db, "products", id)); logAudit(`حذف منتج: ${data.name}`); } };
 window.restoreProduct = async (id, data) => { await addDoc(collection(db, "products"), { name: data.name, price: data.price, type: data.type, qty: data.qty, img: data.img, time: serverTimestamp() }); await deleteDoc(doc(db, "recycle_bin", id)); logAudit(`استرجاع منتج: ${data.name}`); };
 
-// ================== تشكيلات الموقع الخارجي (الصور والتعديل) ==================
 window.resetExtColForm = () => {
     document.getElementById('ext-col-id').value = ""; document.getElementById('ext-col-name').value = ""; document.getElementById('ext-col-desc').value = ""; 
     document.getElementById('ext-col-base64').value = ""; document.getElementById('ext-col-preview').style.display = "none";
@@ -174,25 +160,35 @@ window.saveExtCollection = async () => {
 };
 window.deleteExtCollection = async (id, name) => { if (confirm(`حذف التشكيلة ${name} بصورتها نهائياً؟`)) { await deleteDoc(doc(db, "ext_collections", id)); logAudit(`حذف تشكيلة: ${name}`); } };
 
-// ================== الحسابات (إضافة وتجميد) ==================
 window.saveStaff = async () => { const name = document.getElementById('s-name').value, user = document.getElementById('s-user').value, pass = document.getElementById('s-pass').value, role = document.getElementById('s-role').value; await addDoc(collection(db, "users"), { name, user, pass, role, status: "active", time: serverTimestamp() }); logAudit(`إنشاء حساب: ${name}`); Swal.fire('نجاح', 'تم الحفظ', 'success'); };
 window.changeUserPassword = async (id) => { const { value: newPass } = await Swal.fire({ title: 'الباسوورد الجديد', input: 'text' }); if (newPass) { await updateDoc(doc(db, "users", id), { pass: newPass }); Swal.fire('تم', 'تغير الباسوورد', 'success'); } };
 window.toggleUserFreeze = async (id, currentStatus) => { const newStatus = currentStatus === "frozen" ? "active" : "frozen"; await updateDoc(doc(db, "users", id), { status: newStatus }); logAudit(`تغيير حالة حساب موظف إلى: ${newStatus}`); };
 window.deleteUserAccount = async (id) => { if (confirm('حذف الحساب نهائياً؟')) await deleteDoc(doc(db, "users", id)); };
 
-// ميزات أخرى
 window.updateLabStatus = async (id, status) => { await updateDoc(doc(db, "invoices", id), { labStatus: status }); };
 window.sendChat = async () => { const text = document.getElementById('chat-input').value; if (text) { await addDoc(collection(db, "chat"), { sender: Auth.user.name, text, time: serverTimestamp() }); document.getElementById('chat-input').value = ""; }};
-window.saveCMS = async () => { await setDoc(doc(db, "settings", "cms"), { topbar: document.getElementById('cms-topbar').value, phone: document.getElementById('cms-phone').value, hero: document.getElementById('cms-hero').value, sub: document.getElementById('cms-sub').value }); logAudit("تحديث الموقع"); Swal.fire('نجاح', 'تم النشر', 'success'); };
+
+// --- هنا تم تحديث دالة الحفظ للإعلانات والوقت ---
+window.saveCMS = async () => { 
+    await setDoc(doc(db, "settings", "cms"), { 
+        topbar: document.getElementById('cms-topbar').value, 
+        phone: document.getElementById('cms-phone').value, 
+        hero: document.getElementById('cms-hero').value, 
+        sub: document.getElementById('cms-sub').value,
+        openTime: document.getElementById('cms-open-time').value,
+        closeTime: document.getElementById('cms-close-time').value
+    }); 
+    logAudit("تحديث إعدادات الموقع وأوقات الدوام"); 
+    Swal.fire('نجاح', 'تم التحديث بنجاح، سيظهر للزوار فوراً', 'success'); 
+};
+
 window.processOnlineRx = async (id, name) => { await updateDoc(doc(db, "online_rx_requests"), { status: 'مكتمل' }); Swal.fire('تم', 'مراجعة الطلب', 'success'); logSecretAction(`عالج طلب أونلاين: ${name}`); };
 
-// ================== المزامنة الحية الموحدة ==================
 function startSync() {
-    // التشكيلات (مع الصور)
     onSnapshot(query(collection(db, "ext_collections"), orderBy("time", "desc")), (s) => {
         let html = "", pTypeHtml = "<option value='طبي'>طبي (أساسي)</option><option value='شمسي'>شمسي (أساسي)</option>";
         s.forEach(d => {
-            const data = d.data(); const imgSrc = data.img ? `<img src="${data.img}" class="img-preview">` : '<span class="badge">لا يوجد صورة</span>';
+            const data = d.data(); const imgSrc = data.img ? `<img src="${data.img}" class="img-preview" style="width:40px; border-radius:4px;">` : '<span class="badge">لا يوجد صورة</span>';
             html += `<tr><td>${imgSrc}</td><td>${data.name}</td><td>${data.desc || '--'}</td><td><button class="btn btn-warning" onclick='loadExtCollectionForEdit("${d.id}", "${data.name}", "${data.desc||''}", "${data.img||''}")'><i class="fas fa-edit"></i> تعديل</button> <button class="btn btn-danger" onclick="deleteExtCollection('${d.id}', '${data.name}')"><i class="fas fa-trash"></i> حذف</button></td></tr>`;
             pTypeHtml += `<option value="${data.name}">${data.name}</option>`;
         });
@@ -206,13 +202,11 @@ function startSync() {
         document.getElementById('tb-rx').innerHTML = rxHtml; document.getElementById('pos-patient').innerHTML = posHtml;
     });
 
-    // سحب المنتجات (المخزون) مع إضافة زر التعديل
     onSnapshot(query(collection(db, "products"), orderBy("time", "desc")), (s) => {
         let invHtml = "", posProdHtml = "<option value=''>-- اختر المنتج --</option>";
         s.forEach(d => { 
             const p = d.data(); 
             const imgSrc = p.img ? `<img src="${p.img}" class="img-preview" style="width:40px; border-radius:4px;">` : 'بدون'; 
-            // تم إضافة زر التعديل هنا بجانب زر الحذف
             invHtml += `<tr>
                 <td>${imgSrc}</td>
                 <td>${p.name}</td>
@@ -236,10 +230,22 @@ function startSync() {
         document.getElementById('tb-invc').innerHTML = tbInvoices; document.getElementById('tb-lab').innerHTML = tbLab; document.getElementById('kpi-sales').innerText = totalSales + " JOD"; if (document.getElementById('kpi-profits')) document.getElementById('kpi-profits').innerText = totalProfits + " JOD";
     });
 
-    // النشاط الحي بالداشبورد
     onSnapshot(query(collection(db, "audit_logs"), orderBy("time", "desc"), limit(10)), (s) => {
         if(document.getElementById('live-activity-feed')) {
             document.getElementById('live-activity-feed').innerHTML = s.docs.map(d => `<div class="activity-item"><strong>${d.data().user}</strong>: ${d.data().action} <br><small style="color:var(--warning)">${d.data().time?.toDate().toLocaleTimeString()}</small></div>`).join('');
+        }
+    });
+
+    // --- هنا كود سحب الإعدادات للوحة الإدارة ---
+    onSnapshot(doc(db, "settings", "cms"), (docSnap) => {
+        if (docSnap.exists() && document.getElementById('cms-topbar')) {
+            const data = docSnap.data();
+            document.getElementById('cms-topbar').value = data.topbar || '';
+            document.getElementById('cms-phone').value = data.phone || '';
+            document.getElementById('cms-hero').value = data.hero || '';
+            document.getElementById('cms-sub').value = data.sub || '';
+            if(document.getElementById('cms-open-time')) document.getElementById('cms-open-time').value = data.openTime || '';
+            if(document.getElementById('cms-close-time')) document.getElementById('cms-close-time').value = data.closeTime || '';
         }
     });
 

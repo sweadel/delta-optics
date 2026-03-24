@@ -29,20 +29,11 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; outline: none; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; padding-bottom: 90px; transition: 0.4s; }
 
-        /* ⭐ شريط الإعلانات المحسن والمميز */
         .announcement-bar {
-            display: none; 
-            background: linear-gradient(90deg, #f59e0b, #ea580c);
-            color: white; 
-            text-align: center; 
-            padding: 10px 15px; 
-            font-size: 0.95rem; 
-            font-weight: 800;
-            width: 100%; 
-            box-shadow: 0 4px 15px rgba(234, 88, 12, 0.3); 
-            animation: slideDown 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            z-index: 1001;
+            display: none; background: linear-gradient(90deg, #f59e0b, #ea580c); color: white; 
+            text-align: center; padding: 10px 15px; font-size: 0.95rem; font-weight: 800; width: 100%; 
+            box-shadow: 0 4px 15px rgba(234, 88, 12, 0.3); animation: slideDown 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative; z-index: 1001;
         }
         .announcement-bar i { animation: tada 1.5s infinite; margin-left: 8px; }
         @keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -141,7 +132,7 @@
                 <div id="status-dot" class="dot"></div>
                 <span id="status-text" style="font-weight: 900;">جاري التحقق...</span>
             </div>
-            <div id="countdown-msg" class="countdown-msg"></div>
+            <div id="countdown-msg" class="countdown-msg" style="display:none;"></div>
         </div>
 
         <div class="cards-grid">
@@ -199,16 +190,15 @@
     </div>
 
     <script>
-        // إعدادات افتراضية عشان الموقع ما يوقف لو صار أي تأخير بـ Firebase
         window.cmsData = {
             topbar: "",
             hero: "دلتا للبصريات",
             sub: "المقابلين - شارع الإذاعة والتلفزيون\nخبراء العناية بالعين وأحدث الماركات",
             openTime: "10:00",
-            closeTime: "23:59"
+            closeTime: "23:59",
+            statusMode: "auto" // auto, force_open, force_close
         };
 
-        // دالة آمنة لتطبيق البيانات القادمة من الفايربيس
         window.applyCmsData = function(data) {
             if (!data) return;
             
@@ -224,19 +214,39 @@
 
             if (data.openTime) window.cmsData.openTime = data.openTime;
             if (data.closeTime) window.cmsData.closeTime = data.closeTime;
+            if (data.statusMode) window.cmsData.statusMode = data.statusMode;
 
             updateStoreStatus();
         };
 
-        // --- ⏰ نظام الوقت (معالجة الأخطاء بقوة) ---
+        // --- ⏰ نظام الوقت المطور (يدعم التحكم اليدوي والتلقائي) ---
         function updateStoreStatus() {
+            const text = document.getElementById('status-text');
+            const dot = document.getElementById('status-dot');
+            const countdown = document.getElementById('countdown-msg');
+            const mode = window.cmsData.statusMode;
+
+            // إذا كان مفعل الوضع اليدوي للفتح أو الإغلاق
+            if (mode === 'force_open') {
+                text.innerText = (curLang === 'ar' ? "مفتوح الآن" : "Open Now");
+                dot.className = "dot open-dot";
+                countdown.style.display = 'none'; // نخفي العداد بالوضع اليدوي
+                return;
+            } else if (mode === 'force_close') {
+                text.innerText = (curLang === 'ar' ? "مغلق (إجازة)" : "Closed");
+                dot.className = "dot closed-dot";
+                countdown.style.display = 'none'; // نخفي العداد بالوضع اليدوي
+                return;
+            }
+
+            // إذا كان الوضع "تلقائي" (نحسب الوقت)
+            countdown.style.display = 'block';
             const now = new Date();
             const curTotalMin = (now.getHours() * 60) + now.getMinutes();
 
             let openStr = window.cmsData.openTime || "10:00";
             let closeStr = window.cmsData.closeTime || "23:59";
             
-            // حماية من القيم الفارغة أو الخاطئة
             if (!openStr.includes(':')) openStr = "10:00";
             if (!closeStr.includes(':')) closeStr = "23:59";
 
@@ -246,14 +256,11 @@
             const openTotalMin = (openH * 60) + (openM || 0);
             const closeTotalMin = (closeH * 60) + (closeM || 0);
 
-            const text = document.getElementById('status-text');
-            const dot = document.getElementById('status-dot');
-            const countdown = document.getElementById('countdown-msg');
-
             let isOpen = false;
+            // دعم المحلات اللي بتسكر بعد الساعة 12 بالليل
             if (closeTotalMin > openTotalMin) {
                 isOpen = (curTotalMin >= openTotalMin && curTotalMin < closeTotalMin);
-            } else { // لو الدوام بيخلص بعد منتصف الليل
+            } else { 
                 isOpen = (curTotalMin >= openTotalMin || curTotalMin < closeTotalMin);
             }
 
@@ -271,6 +278,8 @@
                 countdown.innerText = (curLang === 'ar' ? "يفتح بعد: " : "Opens in: ") + formatTime(timeToOpen);
             }
         }
+
+        window.triggerStatusUpdate = updateStoreStatus;
 
         function formatTime(t) {
             const h = Math.floor(t / 60); const m = t % 60;
@@ -348,7 +357,6 @@
 
         function toggleChat() { const c = document.getElementById('chat-overlay'); c.style.display = (c.style.display === 'flex') ? 'none' : 'flex'; }
 
-        // تشغيل مبدئي
         updateStoreStatus(); setInterval(updateStoreStatus, 60000); loadReviews();
     </script>
 
@@ -369,14 +377,13 @@
             const app = initializeApp(firebaseConfig);
             const db = getFirestore(app);
 
-            // الاستماع للتعديلات من لوحة التحكم
             onSnapshot(doc(db, "settings", "cms"), (docSnap) => {
                 if (docSnap.exists()) {
                     window.applyCmsData(docSnap.data());
                 }
             });
         } catch(error) {
-            console.error("مشكلة في الاتصال بقاعدة البيانات:", error);
+            console.error("مشكلة في الاتصال:", error);
         }
     </script>
 

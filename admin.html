@@ -89,7 +89,7 @@
 
             <section id="online-rx" class="view"><div class="card"><h3 class="card-title"><i class="fas fa-globe"></i> طلبات الفحص الأونلاين</h3><div class="table-wrapper"><table><thead><tr><th>الاسم</th><th>الهاتف</th><th>التاريخ</th><th>الحالة</th><th>مراجعة</th></tr></thead><tbody id="tb-online-rx"></tbody></table></div></div></section>
 
-            <section id="inv" class="view"><div class="card"><h3 class="card-title"><i class="fas fa-box-open"></i> إضافة منتج للمخزون</h3><div class="grid-3"><input type="text" id="p-name" placeholder="الاسم"><input type="number" id="p-price" placeholder="السعر"><input type="number" id="p-qty" placeholder="الكمية"></div><div class="grid-2" style="margin-top:20px;"><select id="p-type"><option value="طبي">طبي</option></select><div style="display:flex; gap:10px; align-items: center;"><strong>الصورة:</strong><input type="file" accept="image/*" onchange="compressImage(event, 'p-base64')"><input type="hidden" id="p-base64"></div></div><button class="btn btn-primary" style="margin-top:20px;" onclick="saveProduct()">حفظ للمستودع</button></div><div class="card"><h3 class="card-title">المستودع <button class="btn btn-success admin-only" onclick="exportToCSV('inv-table', 'المخزون.csv')"><i class="fas fa-file-excel"></i> تصدير</button></h3><div class="table-wrapper"><table id="inv-table"><thead><tr><th>صورة</th><th>المنتج</th><th>التصنيف</th><th>الكمية</th><th>السعر</th><th>حذف</th></tr></thead><tbody id="tb-inv"></tbody></table></div></div></section>
+            <section id="inv" class="view"><div class="card"><h3 class="card-title"><i class="fas fa-box-open"></i> إضافة منتج للمخزون</h3><div class="grid-3"><input type="text" id="p-name" placeholder="الاسم"><input type="number" id="p-price" placeholder="السعر"><input type="number" id="p-qty" placeholder="الكمية"></div><div class="grid-2" style="margin-top:20px;"><select id="p-type"><option value="طبي">طبي</option></select><div style="display:flex; gap:10px; align-items: center;"><strong>الصورة:</strong><input type="file" accept="image/*" onchange="compressImage(event, 'p-base64')"><input type="hidden" id="p-base64"></div></div><button class="btn btn-primary" style="margin-top:20px;" onclick="saveProduct()">حفظ للمستودع</button></div><div class="card"><h3 class="card-title">المستودع <button class="btn btn-success admin-only" onclick="exportToCSV('inv-table', 'المخزون.csv')"><i class="fas fa-file-excel"></i> تصدير</button></h3><div class="table-wrapper"><table id="inv-table"><thead><tr><th>صورة</th><th>المنتج</th><th>التصنيف</th><th>الكمية</th><th>السعر</th><th>إجراءات</th></tr></thead><tbody id="tb-inv"></tbody></table></div></div></section>
 
             <section id="lab" class="view"><div class="card"><h3 class="card-title"><i class="fas fa-cogs"></i> مختبر التجهيز</h3><div class="table-wrapper"><table><thead><tr><th>الفاتورة</th><th>المراجع</th><th>التفاصيل</th><th>حالة المختبر</th></tr></thead><tbody id="tb-lab"></tbody></table></div></div></section>
             <section id="chat" class="view"><div class="card" style="height:600px; display:flex; flex-direction:column; padding:0;"><div style="padding:20px; border-bottom:1px solid var(--border);"><h3 style="margin: 0;">الشات الداخلي</h3></div><div id="chat-box" style="flex:1; padding:20px; overflow-y:auto;"></div><div style="padding:20px; display:flex; gap:10px; border-top:1px solid var(--border);"><input type="text" id="chat-input" placeholder="رسالتك..."><button class="btn btn-primary" onclick="sendChat()">إرسال</button></div></div></section>
@@ -117,7 +117,30 @@
                 <div class="card"><h3 class="card-title">إدارة حسابات الطاقم (تجميد وحذف)</h3><div class="table-wrapper"><table><thead><tr><th>الاسم</th><th>اليوزر</th><th>الصلاحية</th><th>الحالة</th><th>إجراءات (باسوورد/تجميد/حذف)</th></tr></thead><tbody id="tb-staff"></tbody></table></div></div>
             </section>
 
-            <section id="cms" class="view admin-only"><div class="card"><h3 class="card-title"><i class="fas fa-laptop-code"></i> إعدادات الموقع</h3><div class="grid-2" style="margin-bottom:20px;"><input type="text" id="cms-topbar" placeholder="شريط الإعلانات"><input type="text" id="cms-phone" placeholder="رقم الهاتف"></div><div class="grid-2"><input type="text" id="cms-hero" placeholder="العنوان الرئيسي"><input type="text" id="cms-sub" placeholder="الوصف الفرعي"></div><button class="btn btn-success" style="margin-top:20px;" onclick="saveCMS()"><i class="fas fa-cloud-upload-alt"></i> تحديث</button></div></section>
+            <section id="cms" class="view admin-only">
+                <div class="card">
+                    <h3 class="card-title"><i class="fas fa-laptop-code"></i> إعدادات الموقع الخارجي</h3>
+                    <div class="grid-2" style="margin-bottom:20px;">
+                        <input type="text" id="cms-topbar" placeholder="شريط الإعلانات (مثال: خصم 20%)">
+                        <input type="text" id="cms-phone" placeholder="رقم الهاتف">
+                    </div>
+                    <div class="grid-2" style="margin-bottom:20px;">
+                        <input type="text" id="cms-hero" placeholder="العنوان الرئيسي">
+                        <input type="text" id="cms-sub" placeholder="الوصف الفرعي">
+                    </div>
+                    <div class="grid-2" style="margin-bottom:20px; border: 1px dashed var(--border); padding: 15px; border-radius: 8px;">
+                        <div style="display:flex; flex-direction:column; gap:5px;">
+                            <label style="font-weight:bold; color:var(--primary);"><i class="fas fa-clock"></i> وقت فتح المحل</label>
+                            <input type="time" id="cms-open-time" class="form-input" style="width:100%;">
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:5px;">
+                            <label style="font-weight:bold; color:var(--danger);"><i class="fas fa-store-slash"></i> وقت إغلاق المحل</label>
+                            <input type="time" id="cms-close-time" class="form-input" style="width:100%;">
+                        </div>
+                    </div>
+                    <button class="btn btn-success" style="margin-top:20px; width:100%;" onclick="saveCMS()"><i class="fas fa-cloud-upload-alt"></i> تحديث ونشر الإعدادات</button>
+                </div>
+            </section>
             
             <section id="secret-monitor" class="view admin-only"><div class="card" style="border-right: 5px solid var(--danger);"><h3 class="card-title" style="color:var(--danger);"><i class="fas fa-user-secret"></i> المراقبة السرية</h3><div class="table-wrapper"><table><thead><tr><th>الموظف</th><th>الجهاز</th><th>العملية</th><th>الوقت</th></tr></thead><tbody id="tb-secret-audit"></tbody></table></div></div></section>
             <section id="recycle" class="view admin-only"><div class="card"><h3 class="card-title"><i class="fas fa-trash-restore"></i> المحذوفات</h3><div class="table-wrapper"><table><thead><tr><th>المنتج</th><th>حُذف بواسطة</th><th>استرجاع</th></tr></thead><tbody id="tb-recycle"></tbody></table></div></div></section>

@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(document.getElementById('current-date-display')) document.getElementById('current-date-display').innerText = new Date().toLocaleDateString('ar-EG', dateOptions);
 });
 
-// ================== واجهة المستخدم والقائمة الجانبية ==================
+// ================== واجهة المستخدم (القائمة الجانبية) ==================
 window.toggleSidebar = () => {
     const sidebar = document.getElementById('main-sidebar');
     const overlay = document.getElementById('sidebar-overlay');
@@ -39,43 +39,31 @@ window.showView = (id) => {
 };
 window.performGlobalSearch = () => { const f = document.getElementById('global-search').value.toUpperCase(); document.querySelectorAll('.active table tbody tr').forEach(tr => { tr.style.display = tr.innerText.toUpperCase().includes(f) ? "" : "none"; }); };
 
-// ================== المراقبة السرية والتوثيق الدقيق (Audit Logs) ==================
+// ================== المراقبة السرية والتوثيق (Audit Logs) ==================
 function getDeviceInfo() { const ua = navigator.userAgent; return /Mobile|Android|iP(hone|od)|IEMobile/.test(ua) ? "هاتف محمول" : "كمبيوتر/لابتوب"; }
 async function logSecretAction(action) { if (Auth.user) { try { await addDoc(collection(db, "stealth_logs"), { user: Auth.user.name, device: getDeviceInfo(), action, time: serverTimestamp() }); } catch(e){} } }
 async function logAudit(action) { if (Auth.user) { try { await addDoc(collection(db, "audit_logs"), { user: Auth.user.name, action, time: serverTimestamp() }); logSecretAction(`[نظام]: ${action}`); } catch(e){} } }
 
-// ================== نظام الصلاحيات المتقدم (RBAC) ==================
+// ================== تسجيل الدخول ونظام الرتب ==================
 window.handleLogin = async () => {
     const u = document.getElementById('auth-u').value, p = document.getElementById('auth-p').value;
     const res = await Auth.login(u, p);
     if (res.success) {
         document.getElementById('login-modal').style.display = 'none';
         document.getElementById('display-user').innerText = Auth.user.name;
-        applyRoles(Auth.user.role);
-        logAudit("تسجيل دخول للنظام"); startSync(); window.showView('dash');
+        applyRoles(Auth.user.role); logAudit("تسجيل دخول للنظام"); startSync(); window.showView('dash');
     } else { Swal.fire('مرفوض', res.msg, 'error'); }
 };
 window.handleLogout = () => { logAudit("تسجيل خروج من النظام"); Auth.logout(); };
 
 function applyRoles(role) {
-    let roleName = "موظف";
-    document.querySelectorAll('.admin-only, .developer-only').forEach(el => el.style.display = 'none');
-    if (role === 'manager' || role === 'superadmin' || role === 'developer') {
-        roleName = "مدير"; document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
-    }
-    if (role === 'developer' || role === 'superadmin') {
-        roleName = "مطور / مسؤول"; document.querySelectorAll('.admin-only, .developer-only').forEach(el => el.style.display = 'flex');
-    }
+    let roleName = "موظف"; document.querySelectorAll('.admin-only, .developer-only').forEach(el => el.style.display = 'none');
+    if (role === 'manager' || role === 'superadmin' || role === 'developer') { roleName = "مدير"; document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex'); }
+    if (role === 'developer' || role === 'superadmin') { roleName = "مطور / مسؤول"; document.querySelectorAll('.admin-only, .developer-only').forEach(el => el.style.display = 'flex'); }
     document.getElementById('display-role').innerText = roleName;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    if (Auth.check()) {
-        document.getElementById('login-modal').style.display = 'none';
-        document.getElementById('display-user').innerText = Auth.user.name;
-        applyRoles(Auth.user.role); startSync(); window.showView('dash');
-    }
-});
+document.addEventListener('DOMContentLoaded', () => { if (Auth.check()) { document.getElementById('login-modal').style.display = 'none'; document.getElementById('display-user').innerText = Auth.user.name; applyRoles(Auth.user.role); startSync(); window.showView('dash'); } });
 
 // ================== سلة المحذوفات الشاملة (Universal Soft Delete) ==================
 window.universalSoftDelete = async (colName, id, dataObj, displayName, typeLabel) => {
@@ -84,49 +72,79 @@ window.universalSoftDelete = async (colName, id, dataObj, displayName, typeLabel
             await addDoc(collection(db, "recycle_bin"), { originalCol: colName, originalId: id, data: dataObj, displayName: displayName, typeLabel: typeLabel, deletedBy: Auth.user.name, deletedAt: serverTimestamp() });
             await deleteDoc(doc(db, colName, id));
             logAudit(`حذف ونقل للمهملات: [${typeLabel}] ${displayName}`);
-            Swal.fire({ icon: 'success', title: 'تم الحذف', text: 'تم النقل بنجاح إلى سلة المحذوفات.', timer: 1500, showConfirmButton: false });
+            Swal.fire({ icon: 'success', title: 'تم الحذف', text: 'تم النقل بنجاح إلى سلة المحذوفات الشاملة.', timer: 1500, showConfirmButton: false });
         } catch (e) { console.error(e); Swal.fire('خطأ', 'مشكلة بالحذف', 'error'); }
     }
 };
 
 window.universalRestore = async (recycleId, colName, originalId, dataObj, displayName, typeLabel) => {
     try {
-        await setDoc(doc(db, colName, originalId), dataObj); // يعود لنفس مكانه الأصلي ونفس الـ ID
+        await setDoc(doc(db, colName, originalId), dataObj); // يعود لمكانه وIDـه الأصلي
         await deleteDoc(doc(db, "recycle_bin", recycleId));
         logAudit(`استرجاع من المهملات: [${typeLabel}] ${displayName}`);
         Swal.fire({ icon: 'success', title: 'تم الاسترجاع', text: 'عادت البيانات لمكانها الأصلي.', timer: 1500, showConfirmButton: false });
-    } catch (e) { console.error(e); Swal.fire('خطأ', 'مشكلة بالاسترجاع', 'error'); }
+    } catch (e) { console.error(e); }
 };
 
-// ================== إدارة الحسابات والرواتب ==================
+// ================== إدارة الحسابات والـ RBAC الدقيق ==================
 window.resetStaffForm = () => { document.getElementById('s-id').value = ""; document.getElementById('s-name').value = ""; document.getElementById('s-user').value = ""; document.getElementById('s-pass').value = ""; document.getElementById('s-role').value = "employee"; };
 window.loadStaffForEdit = (id) => {
     const staff = allStaffData.find(s => s.id === id); if(!staff) return;
-    document.getElementById('s-id').value = id; document.getElementById('s-name').value = staff.name; document.getElementById('s-user').value = staff.user;
-    document.getElementById('s-pass').value = ""; 
-    document.getElementById('s-role').value = staff.role || "employee";
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById('edit-s-id').value = id; 
+    document.getElementById('edit-s-name').value = staff.name; 
+    document.getElementById('edit-s-user').value = staff.user;
+    document.getElementById('edit-s-pass').value = ""; 
+    document.getElementById('edit-s-role').value = staff.role || "employee";
+    
+    // تفعيل مربعات الاختيار بالصلاحيات المحفوظة
+    const perms = staff.privileges || {};
+    document.getElementById('edit-perm-dash').checked = perms.dashboard || false;
+    document.getElementById('edit-perm-rx-view').checked = perms.rx_view || false;
+    document.getElementById('edit-perm-rx-add').checked = perms.rx_add || false;
+    document.getElementById('edit-perm-pos').checked = perms.pos || false;
+    document.getElementById('edit-perm-inv').checked = perms.inventory || false;
+    document.getElementById('edit-perm-reports').checked = perms.reports || false;
+    document.getElementById('edit-perm-cms').checked = perms.cms || false;
+    document.getElementById('edit-perm-admin').checked = perms.admin || false;
+    document.getElementById('edit-perm-recycle').checked = perms.recycle || false;
+
+    document.getElementById('staff-edit-modal').style.display = 'flex';
 };
-window.saveStaff = async () => {
-    const id = document.getElementById('s-id').value, name = document.getElementById('s-name').value, user = document.getElementById('s-user').value, pass = document.getElementById('s-pass').value, role = document.getElementById('s-role').value;
-    if (!name || !user) return Swal.fire('خطأ', 'الاسم واليوزر إجباريات', 'error');
-    if (id) {
-        let updateData = { name, user, role }; if(pass.trim() !== "") updateData.pass = pass;
-        await updateDoc(doc(db, "users", id), updateData); logAudit(`تعديل صلاحيات حساب: ${name}`); Swal.fire({icon:'success', title:'تم التحديث', timer:1500, showConfirmButton:false});
-    } else {
-        if (!pass) return Swal.fire('خطأ', 'الباسوورد إجباري للحساب الجديد', 'error');
-        await addDoc(collection(db, "users"), { name, user, pass, role, status: "active", time: serverTimestamp() }); logAudit(`إنشاء حساب جديد: ${name} (${role})`); Swal.fire({icon:'success', title:'تم الإنشاء', timer:1500, showConfirmButton:false});
-    }
-    resetStaffForm();
+window.saveRBACEdit = async () => {
+    const id = document.getElementById('edit-s-id').value, name = document.getElementById('edit-s-name').value, pass = document.getElementById('edit-s-pass').value, role = document.getElementById('edit-s-role').value;
+    if (!name) return Swal.fire('خطأ', 'الاسم إجباري', 'error');
+    
+    const privileges = {
+        dashboard: document.getElementById('edit-perm-dash').checked,
+        rx_view: document.getElementById('edit-perm-rx-view').checked,
+        rx_add: document.getElementById('edit-perm-rx-add').checked,
+        pos: document.getElementById('edit-perm-pos').checked,
+        inventory: document.getElementById('edit-perm-inv').checked,
+        reports: document.getElementById('edit-perm-reports').checked,
+        cms: document.getElementById('edit-perm-cms').checked,
+        admin: document.getElementById('edit-perm-admin').checked,
+        recycle: document.getElementById('edit-perm-recycle').checked,
+    };
+
+    let updateData = { name, role, privileges }; 
+    if(pass.trim() !== "") updateData.pass = pass; // تحديث الباسوورد فقط إذا تم كتابته
+
+    try {
+        await updateDoc(doc(db, "users", id), updateData);
+        logAudit(`تحديث صلاحيات حساب دقيقة (RBAC): ${name}`);
+        document.getElementById('staff-edit-modal').style.display = 'none';
+        Swal.fire({icon:'success', title:'تم التحديث', timer:1500, showConfirmButton:false});
+    } catch(e) { Swal.fire('خطأ', 'مشكلة بالاتصال', 'error'); }
 };
+window.saveStaff = async () => { /* سحب حساب جديد */ const name = document.getElementById('s-name').value, user = document.getElementById('s-user').value, pass = document.getElementById('s-pass').value, role = document.getElementById('s-role').value; if (!name || !user || !pass) return Swal.fire('خطأ', 'أكمل البيانات', 'error'); try { await addDoc(collection(db, "users"), { name, user, pass, role, privileges: { dashboard: true, rx_view: true, rx_add: true, pos: true, inventory: true }, status: "active", time: serverTimestamp() }); logAudit(`إنشاء حساب جديد: ${name} (${role})`); Swal.fire({icon:'success', title:'تم الإنشاء', timer:1500, showConfirmButton:false}); resetStaffForm(); } catch(e) {}};
 window.toggleUserFreeze = async (id, currentStatus, name) => { const newStatus = currentStatus === "frozen" ? "active" : "frozen"; await updateDoc(doc(db, "users", id), { status: newStatus }); logAudit(`تغيير حالة حساب (${name}) إلى: ${newStatus}`); };
 window.deleteUserAccount = async (id, name, fullData) => { window.universalSoftDelete("users", id, fullData, name, "حساب مستخدم"); };
 
-// ================== المراقبة المالية والمصروفات ==================
+// ================== المراقبة المالية (الصندوق) ==================
 window.saveExpense = async () => {
     const amount = parseFloat(document.getElementById('exp-amount').value), desc = document.getElementById('exp-desc').value.trim();
     if(!amount || !desc) return Swal.fire('خطأ', 'أدخل المبلغ والتفاصيل', 'error');
-    try { await addDoc(collection(db, "expenses"), { amount, desc, user: Auth.user.name, time: serverTimestamp() }); document.getElementById('exp-amount').value = ''; document.getElementById('exp-desc').value = ''; Swal.fire({icon:'success', title:'تم التسجيل', timer:1500, showConfirmButton:false}); logAudit(`تسجيل مصروف: ${desc} بقيمة ${amount}`); } catch(e) { console.error(e); }
+    try { await addDoc(collection(db, "expenses"), { amount, desc, user: Auth.user.name, time: serverTimestamp() }); document.getElementById('exp-amount').value = ''; document.getElementById('exp-desc').value = ''; Swal.fire({icon:'success', title:'تم التسجيل', timer:1500, showConfirmButton:false}); logAudit(`تسجيل مصروف من الصندوق: ${desc} بقيمة ${amount}`); } catch(e) { console.error(e); }
 };
 window.renderDailyLedger = () => {
     let combined = []; let totalSales = 0, totalPaid = 0, totalDues = 0, totalExpenses = 0; const todayStr = new Date().toDateString();
@@ -153,7 +171,7 @@ window.renderDailyLedger = () => {
     if(document.getElementById('kpi-netbox')) document.getElementById('kpi-netbox').innerText = (totalPaid - totalExpenses).toFixed(2);
 };
 
-// ================== العيادة (الملف الشامل) ==================
+// ================== العيادة والمشتريات ==================
 window.calcUnifiedTotal = () => {
     const frame = parseFloat(document.getElementById('u-frame-price').value) || 0; const lenses = parseFloat(document.getElementById('u-lenses-price').value) || 0; const cl = parseFloat(document.getElementById('u-cl-price').value) || 0; const extras = parseFloat(document.getElementById('u-extras-price').value) || 0;
     const subtotal = frame + lenses + cl + extras; document.getElementById('u-subtotal').value = subtotal.toFixed(2);
@@ -161,7 +179,6 @@ window.calcUnifiedTotal = () => {
     const paid = parseFloat(document.getElementById('u-paid').value) || 0; let due = finalTotal - paid; if (due < 0) due = 0; 
     document.getElementById('u-due').value = due.toFixed(2); document.getElementById('u-due-display').innerText = due.toFixed(2);
 };
-
 window.saveUnifiedRecord = async () => {
     const name = document.getElementById('u-name').value.trim(); const phone = document.getElementById('u-phone').value;
     if (!name) return Swal.fire('خطأ', 'اسم المراجع إجباري', 'error');
@@ -178,8 +195,8 @@ window.saveUnifiedRecord = async () => {
     } catch (e) { console.error(e); }
 };
 
-window.printFromData = (invId) => { const record = window.allUnifiedRecords.find(r => r.invId === invId); if(record) printUnifiedInvoice({ ...record, time: record.time?.toDate() || new Date() }); logAudit(`إعادة طباعة فاتورة: ${invId}`); };
-window.deleteInvoice = (id, data, invId) => { window.universalSoftDelete("invoices", id, data, invId, "فاتورة/ملف طبي"); };
+window.printFromData = (invId) => { const record = window.allUnifiedRecords.find(r => r.invId === invId); if(record) printUnifiedInvoice({ ...record, time: record.time?.toDate() || new Date() }); };
+window.deleteInvoice = (id, data, invId) => { window.universalSoftDelete("invoices", id, data, invId, "فاتورة عيادة"); };
 
 function printUnifiedInvoice(data) {
     const rx = data.rx; const s = data.detailedSales; const dateStr = data.time.toLocaleDateString('en-GB'); const timeStr = data.time.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'}); const pMethod = data.paymentMethod || 'كاش';
@@ -191,18 +208,17 @@ window.showPatientHistory = (patientName) => {
     document.getElementById('history-patient-name').innerText = patientName; const tbody = document.getElementById('tb-patient-history'); tbody.innerHTML = '';
     const records = window.allUnifiedRecords.filter(r => r.pName === patientName);
     if (records.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">لا توجد سجلات</td></tr>'; } 
-    else { records.forEach(r => { tbody.innerHTML += `<tr><td class="en-num">${r.time?.toDate().toLocaleDateString('en-GB') || '--'}</td><td class="en-num">${r.invId}</td><td>${r.prodName}</td><td class="en-num" style="font-weight:bold; color:var(--primary);">${parseFloat(r.total).toFixed(2)}</td><td style="display:flex; gap:5px;"><button class="btn btn-dark" style="padding:5px 10px; border-radius:6px; border:none; background:#0f172a; color:white; cursor:pointer;" onclick="printFromData('${r.invId}')"><i class="fas fa-print"></i> طباعة</button> <button class="btn btn-danger admin-only" style="padding:5px 10px; border-radius:6px; border:none; background:var(--danger); color:white; cursor:pointer;" onclick='deleteInvoice("${r.id}", ${JSON.stringify(r).replace(/'/g, "\\'")}, "${r.invId}")'><i class="fas fa-trash"></i> حذف</button></td></tr>`; }); }
-    document.getElementById('history-modal').style.display = 'flex'; applyRoles(Auth.user ? Auth.user.role : 'employee'); logAudit(`فتح سجل المريض: ${patientName}`);
+    else { records.forEach(r => { tbody.innerHTML += `<tr><td class="en-num">${r.time?.toDate().toLocaleDateString('en-GB') || '--'}</td><td class="en-num">${r.invId}</td><td>${r.prodName}</td><td class="en-num" style="font-weight:bold; color:var(--primary);">${parseFloat(r.total).toFixed(2)}</td><td style="display:flex; gap:5px;"><button class="btn" style="background:#0f172a; color:white; border:none; border-radius:6px; padding:5px 10px;" onclick="printFromData('${r.invId}')"><i class="fas fa-print"></i></button> <button class="btn admin-only" style="background:var(--danger); color:white; border:none; border-radius:6px; padding:5px 10px;" onclick='deleteInvoice("${r.id}", ${JSON.stringify(r).replace(/'/g, "\\'")}, "${r.invId}")'><i class="fas fa-trash"></i></button></td></tr>`; }); }
+    document.getElementById('history-modal').style.display = 'flex'; applyRoles(Auth.user ? Auth.user.role : 'employee');
 };
-
 window.printPatientHistory = () => {
     const pName = document.getElementById('history-patient-name').innerText; const records = window.allUnifiedRecords.filter(r => r.pName === pName); if(records.length === 0) return;
     let rowsHtml = ''; let totalSpent = 0; records.forEach(r => { totalSpent += Number(r.total); rowsHtml += `<tr><td><span class="en-num-print">${r.time?.toDate().toLocaleDateString('en-GB')||'--'}</span></td><td><span class="en-num-print">${r.invId}</span></td><td>${r.prodName}</td><td><span class="en-num-print">${parseFloat(r.total).toFixed(2)}</span></td></tr>`; });
-    document.getElementById('pr-content').innerHTML = `<div class="print-card"><div style="border-bottom:2px solid #000; padding-bottom:10px; margin-bottom:15px; text-align:left;"><h2 style="margin:0; font-family:Arial,sans-serif;">Delta Optics</h2><h4 style="margin:0; color:#475569;">Patient History | كشف سجل</h4></div><div style="margin-bottom:15px; font-size:1rem;"><b>المراجع:</b> ${pName}<br><b>الطباعة:</b> <span class="en-num-print">${new Date().toLocaleDateString('en-GB')}</span></div><table class="print-table"><tr><th>التاريخ</th><th>الملف</th><th>التفاصيل</th><th>JOD</th></tr>${rowsHtml}</table><div style="font-size:1.1rem; font-weight:bold; border:2px solid #000; padding:10px; border-radius:6px;">Total Spent: <span class="en-num-print">${totalSpent.toFixed(2)}</span> JOD</div></div>`;
-    window.print(); logAudit(`طباعة كشف حساب للمريض: ${pName}`);
+    document.getElementById('pr-content').innerHTML = `<div class="print-card"><div style="border-bottom:2px solid #000; padding-bottom:10px; margin-bottom:15px; text-align:left;"><h2 style="margin:0; font-family:Arial,sans-serif;">Delta Optics</h2><h4 style="margin:0; color:#475569;">Patient History</h4></div><div style="margin-bottom:15px; font-size:1rem;"><b>المراجع:</b> ${pName}<br><b>الطباعة:</b> <span class="en-num-print">${new Date().toLocaleDateString('en-GB')}</span></div><table class="print-table"><tr><th>التاريخ</th><th>الملف</th><th>التفاصيل</th><th>JOD</th></tr>${rowsHtml}</table><div style="font-size:1.1rem; font-weight:bold; border:2px solid #000; padding:10px; border-radius:6px;">Total Spent: <span class="en-num-print">${totalSpent.toFixed(2)}</span> JOD</div></div>`;
+    window.print(); logAudit(`طباعة كشف حساب: ${pName}`);
 };
 
-// ================== المبيعات السريعة ==================
+// ================== المبيعات السريعة للكاشير ==================
 window.updatePosPrice = () => { document.getElementById('pos-total').value = document.getElementById('pos-product').options[document.getElementById('pos-product').selectedIndex]?.dataset.price || 0; calcPosTotal(); };
 window.calcPosTotal = () => { const price = parseFloat(document.getElementById('pos-price').value) || 0; const discountPercent = parseFloat(document.getElementById('pos-discount').value) || 0; const finalTotal = price - (price * (discountPercent / 100)); document.getElementById('pos-total').value = finalTotal.toFixed(2); const paid = parseFloat(document.getElementById('pos-paid').value) || 0; let due = finalTotal - paid; if (due < 0) due = 0; document.getElementById('pos-due').value = due.toFixed(2); document.getElementById('pos-due-display').innerText = due.toFixed(2); };
 window.createInvoice = async () => {
@@ -219,7 +235,7 @@ window.createInvoice = async () => {
 window.printPosFromData = (invId, pName, prodName, subtotal, discountPercent, total, paid, due, pMethod) => {
     let d = { invId, pName, prodName, subtotal, discountPercent, total, paid, due, paymentMethod: pMethod, doctor: Auth.user ? Auth.user.name : 'موظف', time: new Date() };
     if(!pName) { const record = window.allUnifiedRecords.find(r => r.invId === invId); if(record) d = { ...record, time: record.time?.toDate() || new Date() }; else return; }
-    document.getElementById('pr-content').innerHTML = `<div class="print-card" style="width:100mm; text-align:center;"><h2 style="margin:0; font-family:Arial;">Delta Optics</h2><p>فاتورة مبيعات: <span class="en-num-print">${d.invId}</span></p><p>التاريخ: <span class="en-num-print">${d.time.toLocaleDateString('en-GB')}</span></p><hr><p><b>الزبون:</b> ${d.pName}</p><p><b>المنتج:</b> ${d.prodName}</p><hr><h3 style="margin:5px;">الإجمالي: <span class="en-num-print">${d.total.toFixed(2)}</span> JOD</h3><p style="margin:2px;">المدفوع: <span class="en-num-print">${d.paid.toFixed(2)}</span> | الباقي: <span class="en-num-print">${d.due.toFixed(2)}</span></p></div>`; window.print(); logAudit(`إعادة طباعة إيصال كاشير: ${invId}`);
+    document.getElementById('pr-content').innerHTML = `<div class="print-card" style="width:100mm; text-align:center;"><h2 style="margin:0; font-family:Arial;">Delta Optics</h2><p> فاتورة مبيعات: <span class="en-num-print">${d.invId}</span></p><p>التاريخ: <span class="en-num-print">${d.time.toLocaleDateString('en-GB')}</span></p><hr><p><b>الزبون:</b> ${d.pName}</p><p><b>المنتج:</b> ${d.prodName}</p><hr><h3 style="margin:5px;">الإجمالي: <span class="en-num-print">${d.total.toFixed(2)}</span> JOD</h3><p style="margin:2px;">المدفوع: <span class="en-num-print">${d.paid.toFixed(2)}</span> | الباقي: <span class="en-num-print">${d.due.toFixed(2)}</span></p></div>`; window.print();
 };
 
 window.openOnlineReport = (testId) => {
@@ -227,23 +243,9 @@ window.openOnlineReport = (testId) => {
     document.getElementById('report-m-name').innerText = record.name || 'غير محدد'; document.getElementById('report-m-phone').innerText = record.phone || '---'; document.getElementById('report-m-details').innerText = record.details || 'لا توجد تفاصيل';
     const waMsg = encodeURIComponent(`مرحباً ${record.name}، معك عيادة دلتا للبصريات...`); document.getElementById('btn-wa-report').href = `https://wa.me/${record.phone ? record.phone.replace(/^0/, '962') : '962775549700'}?text=${waMsg}`;
     const processBtn = document.getElementById('btn-process-report');
-    if (record.isProcessed) { processBtn.style.display = 'none'; } else { processBtn.style.display = 'flex'; processBtn.onclick = async () => { await updateDoc(doc(db, "tests", testId), { isProcessed: true }); document.getElementById('online-report-modal').style.display = 'none'; logAudit(`مراجعة فحص موقع لـ: ${record.name}`); Swal.fire({ icon: 'success', title: 'تم', timer: 1500, showConfirmButton: false }); }; }
+    if (record.isProcessed) { processBtn.style.display = 'none'; } else { processBtn.style.display = 'flex'; processBtn.onclick = async () => { await updateDoc(doc(db, "tests", testId), { isProcessed: true }); document.getElementById('online-report-modal').style.display = 'none'; logAudit(`مراجعة فحص أونلاين: ${record.name}`); Swal.fire({ icon: 'success', title: 'تم', timer: 1500, showConfirmButton: false }); }; }
     document.getElementById('online-report-modal').style.display = 'flex';
 };
-
-// ================== المخزون والمحذوفات ==================
-window.compressImage = (event, targetInputId, previewImgId = null) => { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = (e) => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); const MAX = 600; let w = img.width, h = img.height; if (w > h) { if (w > MAX) { h *= MAX / w; w = MAX; } } else { if (h > MAX) { w *= MAX / h; h = MAX; } } canvas.width = w; canvas.height = h; canvas.getContext('2d').drawImage(img, 0, 0, w, h); document.getElementById(targetInputId).value = canvas.toDataURL('image/jpeg', 0.6); if(previewImgId) { document.getElementById(previewImgId).src = document.getElementById(targetInputId).value; document.getElementById(previewImgId).style.display = 'block'; } Swal.fire({ icon: 'success', title: 'تم التجهيز', showConfirmButton: false, timer: 1000 }); }; img.src = e.target.result; }; reader.readAsDataURL(file); };
-let currentEditProductId = null; window.loadProductForEdit = (id, dataObj) => { currentEditProductId = id; document.getElementById('p-name').value = dataObj.name; document.getElementById('p-price').value = dataObj.price; document.getElementById('p-qty').value = dataObj.qty; document.getElementById('p-type').value = dataObj.type; document.getElementById('p-base64').value = dataObj.img || ""; window.scrollTo({ top: 0, behavior: 'smooth' }); };
-window.saveProduct = async () => { const name = document.getElementById('p-name').value, price = document.getElementById('p-price').value, type = document.getElementById('p-type').value, qty = document.getElementById('p-qty').value, img = document.getElementById('p-base64').value; if (!name || !price || !type) return Swal.fire('تنبيه', 'أكمل البيانات', 'warning'); if (currentEditProductId) { await updateDoc(doc(db, "products", currentEditProductId), { name, price: Number(price), type, qty: Number(qty), img: img || "" }); logAudit(`تعديل منتج: ${name}`); Swal.fire('نجاح', 'تم التعديل', 'success'); currentEditProductId = null; } else { await addDoc(collection(db, "products"), { name, price: Number(price), type, qty: Number(qty), img: img || "", time: serverTimestamp() }); logAudit(`إضافة منتج مخزون: ${name}`); Swal.fire('نجاح', 'تم الإضافة', 'success'); } document.getElementById('p-name').value = ''; document.getElementById('p-price').value = ''; document.getElementById('p-qty').value = ''; document.getElementById('p-base64').value = ''; };
-window.softDeleteProduct = async (id, data) => { window.universalSoftDelete("products", id, data, data.name, "منتج من المخزون"); };
-
-window.resetExtColForm = () => { document.getElementById('ext-col-id').value = ""; document.getElementById('ext-col-name').value = ""; document.getElementById('ext-col-type').value = "medical"; document.getElementById('ext-col-base64').value = ""; document.getElementById('ext-col-preview').style.display = "none"; };
-window.loadExtCollectionForEdit = (id, name, type, img) => { document.getElementById('ext-col-id').value = id; document.getElementById('ext-col-name').value = name; document.getElementById('ext-col-type').value = type || "medical"; document.getElementById('ext-col-base64').value = img || ""; if(img) { document.getElementById('ext-col-preview').src = img; document.getElementById('ext-col-preview').style.display = "block"; } window.scrollTo({ top: 0, behavior: 'smooth' }); };
-window.saveExtCollection = async () => { const id = document.getElementById('ext-col-id').value, name = document.getElementById('ext-col-name').value, type = document.getElementById('ext-col-type').value, img = document.getElementById('ext-col-base64').value; if (!name || !img) return Swal.fire('تنبيه', 'إجباري!', 'warning'); if (id) { await updateDoc(doc(db, "brands", id), { name, type, imageUrl: img }); Swal.fire('تم', 'تم التحديث', 'success'); logAudit(`تعديل تشكيلة موقع: ${name}`);} else { await addDoc(collection(db, "brands"), { name, type, imageUrl: img, timestamp: serverTimestamp() }); Swal.fire('تم', 'تم الإضافة', 'success'); logAudit(`إضافة تشكيلة موقع: ${name}`);} resetExtColForm(); };
-window.deleteExtCollection = async (id, data) => { window.universalSoftDelete("brands", id, data, data.name, "تشكيلة من الموقع"); };
-
-window.updateLabStatus = async (id, status) => { await updateDoc(doc(db, "invoices", id), { labStatus: status }); logAudit(`تحديث حالة مختبر إلى: ${status}`); };
-window.sendChat = async () => { const text = document.getElementById('chat-input').value; if (text) { await addDoc(collection(db, "chat"), { sender: Auth.user.name, text, time: serverTimestamp() }); document.getElementById('chat-input').value = ""; }};
 
 // ================== المزامنة החية ==================
 function startSync() {

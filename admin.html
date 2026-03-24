@@ -3,78 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delta Optics | Smart ERP</title>
-    
+    <title>Delta Optics | Smart Clinic ERP</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Tajawal', 'sans-serif'] },
-                    colors: {
-                        primary: '#0ea5e9',
-                        darkBg: '#0f172a',
-                        darkCard: '#1e293b'
-                    }
-                }
-            }
+            theme: { extend: { fontFamily: { sans: ['Tajawal', 'sans-serif'] }, colors: { primary: '#0ea5e9', darkBg: '#0f172a', darkCard: '#1e293b' } } }
         }
     </script>
     <style>
         body { font-family: 'Tajawal', sans-serif; }
-        .view-section { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .view-section { display: none; animation: fadeIn 0.4s ease-out; }
         .view-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: #334155; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 dark:bg-darkBg dark:text-slate-200 h-screen flex overflow-hidden transition-colors duration-300">
 
-    <aside class="w-64 bg-slate-900 text-white flex flex-col transition-all duration-300 shadow-xl z-20">
+    <aside class="w-72 bg-slate-900 text-white flex flex-col transition-all shadow-2xl z-20">
         <div class="p-6 border-b border-slate-700/50 text-center">
             <h2 class="text-3xl font-black text-primary tracking-wider">DELTA</h2>
-            <p class="text-xs text-slate-400 font-bold mt-1 tracking-widest uppercase">Smart ERP v7</p>
+            <p class="text-xs text-slate-400 font-bold mt-1 tracking-widest uppercase">Smart Clinic v7</p>
         </div>
         
-        <nav class="flex-1 overflow-y-auto p-4 space-y-2">
-            <p class="text-xs font-bold text-slate-500 mb-2 mt-4 px-2">العمليات الأساسية</p>
-            <button onclick="showView('dashboard')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white font-bold transition-all">
-                <i class="fas fa-chart-pie w-5 text-center"></i> لوحة القيادة
+        <nav class="flex-1 overflow-y-auto p-4 space-y-1">
+            <p class="text-xs font-bold text-slate-500 mb-2 mt-2 px-2">العيادة والعمليات</p>
+            <button onclick="showView('dashboard')" class="nav-btn active-nav w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white font-bold transition-all">
+                <i class="fas fa-chart-line w-5"></i> لوحة المراقبة
             </button>
-            <button onclick="showView('pos')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-bold transition-all">
-                <i class="fas fa-cash-register w-5 text-center"></i> نقاط البيع الذكية
+            <button onclick="showView('rx')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-bold transition-all">
+                <i class="fas fa-eye w-5"></i> العيادة والفحص (RX)
             </button>
-            <button onclick="showView('inventory')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-bold transition-all">
-                <i class="fas fa-boxes w-5 text-center"></i> المخزون والتنبؤات
+            <button onclick="showView('lab')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-bold transition-all">
+                <i class="fas fa-tools w-5"></i> مختبر التجهيز
             </button>
+            <button onclick="showView('online-rx')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-bold transition-all">
+                <i class="fas fa-laptop-medical w-5"></i> طلبات الأونلاين
+            </button>
+            <button onclick="showView('chat')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-bold transition-all">
+                <i class="fas fa-comments w-5"></i> شات الطاقم
+            </button>
+
+            <div class="admin-only mt-6">
+                <p class="text-xs font-bold text-amber-500 mb-2 px-2">الإدارة والتحكم</p>
+                <button onclick="showView('cms')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-bold transition-all">
+                    <i class="fas fa-sliders-h w-5"></i> التحكم بالموقع (CMS)
+                </button>
+                <button onclick="showView('collections')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-bold transition-all">
+                    <i class="fas fa-images w-5"></i> تشكيلات المعرض
+                </button>
+                <button onclick="showView('audit')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-bold transition-all">
+                    <i class="fas fa-user-secret w-5"></i> المراقبة السرية
+                </button>
+            </div>
         </nav>
 
         <div class="p-4 border-t border-slate-700/50">
             <button onclick="handleLogout()" class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white font-bold transition-all">
-                <i class="fas fa-power-off"></i> تسجيل الخروج
+                <i class="fas fa-power-off"></i> تسجيل خروج
             </button>
         </div>
     </aside>
 
     <main class="flex-1 flex flex-col relative overflow-hidden">
         <header class="h-20 bg-white dark:bg-darkCard border-b border-slate-200 dark:border-slate-700/50 flex items-center justify-between px-8 shadow-sm z-10">
-            <div class="relative w-96">
-                <i class="fas fa-search absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                <input type="text" id="smart-search" placeholder="بحث ذكي (مرضى، فواتير، منتجات)..." class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-full py-2.5 pr-12 pl-4 focus:ring-2 focus:ring-primary outline-none transition-all dark:text-white">
-            </div>
-            
+            <h1 class="text-xl font-black text-slate-800 dark:text-white" id="page-title">لوحة المراقبة</h1>
             <div class="flex items-center gap-4">
                 <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-primary transition-colors">
                     <i class="fas fa-moon" id="theme-icon"></i>
                 </button>
                 <div class="flex items-center gap-3 bg-primary/10 px-4 py-2 rounded-full border border-primary/20">
                     <i class="fas fa-user-circle text-primary text-xl"></i>
-                    <span id="user-name-display" class="font-bold text-primary">المدير العام</span>
+                    <span id="user-name-display" class="font-bold text-primary">تحميل...</span>
                 </div>
             </div>
         </header>
@@ -82,61 +89,142 @@
         <div class="flex-1 overflow-y-auto p-8">
             
             <section id="dashboard" class="view-section active">
-                <div class="mb-8">
-                    <h2 class="text-2xl font-black text-slate-800 dark:text-white mb-2">مرحباً بك في النظام الذكي ⚡</h2>
-                    <p class="text-slate-500 dark:text-slate-400 font-medium">نظرة عامة على أداء اليوم وتحليلات المبيعات.</p>
-                </div>
-
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     <div class="bg-white dark:bg-darkCard p-6 rounded-2xl border border-slate-200 dark:border-slate-700/50 shadow-sm border-t-4 border-t-primary">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-slate-500 font-bold mb-1">مبيعات اليوم</p>
-                                <h3 class="text-3xl font-black text-slate-800 dark:text-white" id="today-sales">0 JOD</h3>
-                            </div>
-                            <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xl">
-                                <i class="fas fa-wallet"></i>
-                            </div>
-                        </div>
+                        <p class="text-slate-500 font-bold mb-1">فحوصات العيادة (اليوم)</p>
+                        <h3 class="text-4xl font-black text-primary mt-2" id="kpi-rx">0</h3>
+                    </div>
+                    <div class="bg-white dark:bg-darkCard p-6 rounded-2xl border border-slate-200 dark:border-slate-700/50 shadow-sm border-t-4 border-t-amber-500">
+                        <p class="text-slate-500 font-bold mb-1">تجهيزات المختبر (قيد الانتظار)</p>
+                        <h3 class="text-4xl font-black text-amber-500 mt-2" id="kpi-lab">0</h3>
+                    </div>
+                    <div class="bg-white dark:bg-darkCard p-6 rounded-2xl border border-slate-200 dark:border-slate-700/50 shadow-sm border-t-4 border-t-emerald-500">
+                        <p class="text-slate-500 font-bold mb-1">طلبات أونلاين (جديدة)</p>
+                        <h3 class="text-4xl font-black text-emerald-500 mt-2" id="kpi-online">0</h3>
                     </div>
                 </div>
             </section>
 
-            <section id="pos" class="view-section">
-                <h2 class="text-2xl font-black mb-6">نقاط البيع (POS)</h2>
-                </section>
+            <section id="rx" class="view-section">
+                <div class="bg-white dark:bg-darkCard p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm mb-8">
+                    <h3 class="text-xl font-black mb-6 text-primary"><i class="fas fa-clipboard-list"></i> تسجيل فحص بصري جديد</h3>
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <input type="text" id="rx-name" placeholder="اسم المراجع الكامل" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3 outline-none focus:border-primary dark:text-white">
+                        <input type="text" id="rx-phone" placeholder="رقم الهاتف" dir="ltr" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3 outline-none focus:border-primary dark:text-white text-right">
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-700 mb-6">
+                        <div class="grid grid-cols-5 gap-4 text-center font-bold text-slate-500 mb-4">
+                            <div>الجهة</div><div>SPH</div><div>CYL</div><div>AXIS</div><div>ADD</div>
+                        </div>
+                        <div class="grid grid-cols-5 gap-4 items-center text-center mb-4">
+                            <div class="font-black text-red-500 text-lg">R (OD)</div>
+                            <input type="text" id="od-s" class="text-center p-2 rounded bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-600 dark:text-white">
+                            <input type="text" id="od-c" class="text-center p-2 rounded bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-600 dark:text-white">
+                            <input type="text" id="od-a" class="text-center p-2 rounded bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-600 dark:text-white">
+                            <input type="text" id="od-add" class="text-center p-2 rounded bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-600 dark:text-white">
+                        </div>
+                        <div class="grid grid-cols-5 gap-4 items-center text-center">
+                            <div class="font-black text-emerald-500 text-lg">L (OS)</div>
+                            <input type="text" id="os-s" class="text-center p-2 rounded bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-600 dark:text-white">
+                            <input type="text" id="os-c" class="text-center p-2 rounded bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-600 dark:text-white">
+                            <input type="text" id="os-a" class="text-center p-2 rounded bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-600 dark:text-white">
+                            <input type="text" id="os-add" class="text-center p-2 rounded bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-600 dark:text-white">
+                        </div>
+                    </div>
+                    <button onclick="saveRx()" class="w-full bg-primary hover:bg-sky-600 text-white font-bold py-4 rounded-xl transition-all text-lg shadow-lg shadow-primary/30">
+                        <i class="fas fa-save mr-2"></i> حفظ الفحص وإرسال للمختبر
+                    </button>
+                </div>
 
-            <section id="inventory" class="view-section">
-                <h2 class="text-2xl font-black mb-6">المخزون والتنبؤات</h2>
-                </section>
+                <div class="bg-white dark:bg-darkCard p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <h3 class="text-xl font-black mb-4">أرشيف المراجعين</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-right">
+                            <thead class="bg-slate-50 dark:bg-slate-900 text-slate-500">
+                                <tr><th class="p-4 rounded-r-xl">الاسم</th><th class="p-4">الهاتف</th><th class="p-4">تاريخ الفحص</th><th class="p-4 rounded-l-xl">إجراءات</th></tr>
+                            </thead>
+                            <tbody id="tb-rx" class="dark:text-slate-300"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="lab" class="view-section">
+                <div class="bg-white dark:bg-darkCard p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <h3 class="text-xl font-black mb-6 text-amber-500"><i class="fas fa-tools"></i> شاشة المختبر الفورية</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-right">
+                            <thead class="bg-slate-50 dark:bg-slate-900 text-slate-500">
+                                <tr><th class="p-4 rounded-r-xl">المراجع</th><th class="p-4">القياسات</th><th class="p-4">الحالة</th><th class="p-4 rounded-l-xl">تحديث</th></tr>
+                            </thead>
+                            <tbody id="tb-lab" class="dark:text-slate-300"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="chat" class="view-section">
+                <div class="bg-white dark:bg-darkCard flex flex-col h-[70vh] rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+                    <div class="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
+                        <h3 class="font-black text-primary"><i class="fas fa-comments"></i> شات الطاقم الداخلي</h3>
+                    </div>
+                    <div id="chat-box" class="flex-1 p-6 overflow-y-auto space-y-4 bg-slate-50/50 dark:bg-darkBg/50"></div>
+                    <div class="p-4 border-t border-slate-200 dark:border-slate-700 flex gap-4">
+                        <input type="text" id="chat-input" placeholder="اكتب رسالتك..." class="flex-1 bg-slate-100 dark:bg-slate-800 border-none rounded-xl p-4 outline-none focus:ring-2 focus:ring-primary dark:text-white">
+                        <button onclick="sendChat()" class="bg-primary hover:bg-sky-600 text-white font-bold px-8 rounded-xl transition-all">إرسال</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="cms" class="view-section admin-only">
+                <div class="bg-white dark:bg-darkCard p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <h3 class="text-xl font-black mb-6 text-primary"><i class="fas fa-sliders-h"></i> التحكم بواجهة الموقع (CMS)</h3>
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-slate-500 font-bold mb-2">شريط الإعلانات العلوي (اتركه فارغاً للإخفاء)</label>
+                            <input type="text" id="cms-topbar" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3 outline-none dark:text-white">
+                        </div>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-emerald-500 font-bold mb-2">وقت فتح العيادة</label>
+                                <input type="time" id="cms-open" dir="ltr" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3 outline-none dark:text-white text-center">
+                            </div>
+                            <div>
+                                <label class="block text-red-500 font-bold mb-2">وقت إغلاق العيادة</label>
+                                <input type="time" id="cms-close" dir="ltr" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3 outline-none dark:text-white text-center">
+                            </div>
+                        </div>
+                        <button onclick="saveCMS()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-emerald-500/30">
+                            <i class="fas fa-sync-alt mr-2"></i> نشر التحديثات للموقع فوراً
+                        </button>
+                    </div>
+                </div>
+            </section>
 
         </div>
     </main>
 
     <script src="app.js" type="module"></script>
     <script>
-        // UI Helpers
         function showView(id) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             
-            // Update sidebar buttons
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('bg-primary', 'text-white');
                 btn.classList.add('text-slate-400', 'hover:bg-slate-800', 'hover:text-white');
             });
             event.currentTarget.classList.remove('text-slate-400', 'hover:bg-slate-800');
             event.currentTarget.classList.add('bg-primary', 'text-white');
+
+            const titles = { 'dashboard': 'لوحة المراقبة', 'rx': 'العيادة والفحص', 'lab': 'مختبر التجهيز', 'chat': 'شات الطاقم', 'cms': 'إدارة الموقع' };
+            document.getElementById('page-title').innerText = titles[id] || 'إدارة النظام';
         }
 
         function toggleTheme() {
             document.documentElement.classList.toggle('dark');
             const icon = document.getElementById('theme-icon');
-            if (document.documentElement.classList.contains('dark')) {
-                icon.classList.replace('fa-moon', 'fa-sun');
-            } else {
-                icon.classList.replace('fa-sun', 'fa-moon');
-            }
+            icon.className = document.documentElement.classList.contains('dark') ? 'fas fa-sun' : 'fas fa-moon';
         }
     </script>
 </body>

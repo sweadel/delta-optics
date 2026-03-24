@@ -29,6 +29,25 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; outline: none; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; padding-bottom: 90px; transition: 0.4s; }
 
+        /* ⭐ شريط الإعلانات المحسن والمميز */
+        .announcement-bar {
+            display: none; 
+            background: linear-gradient(90deg, #f59e0b, #ea580c);
+            color: white; 
+            text-align: center; 
+            padding: 10px 15px; 
+            font-size: 0.95rem; 
+            font-weight: 800;
+            width: 100%; 
+            box-shadow: 0 4px 15px rgba(234, 88, 12, 0.3); 
+            animation: slideDown 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            z-index: 1001;
+        }
+        .announcement-bar i { animation: tada 1.5s infinite; margin-left: 8px; }
+        @keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes tada { 0% { transform: scale(1); } 10%, 20% { transform: scale(0.9) rotate(-3deg); } 30%, 50%, 70%, 90% { transform: scale(1.1) rotate(3deg); } 40%, 60%, 80% { transform: scale(1.1) rotate(-3deg); } 100% { transform: scale(1) rotate(0); } }
+
         header { background: var(--surface); backdrop-filter: blur(15px); padding: 12px 20px; border-bottom: 1px solid var(--surface-border); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
         .header-brand { display: flex; align-items: center; gap: 10px; }
         .header-logo { width: 38px; height: 38px; object-fit: contain; border-radius: 8px; }
@@ -40,7 +59,6 @@
         main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 30px 20px; text-align: center; width: 100%; max-width: 500px; margin: 0 auto; }
         .logo-box { width: 125px; height: 125px; border-radius: 25px; background: var(--surface); padding: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--surface-border); margin-bottom: 15px; }
 
-        /* ⏰ ستايل العداد والدوام */
         .status-area { margin-bottom: 25px; display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; }
         .badge { background: var(--surface); padding: 10px 20px; border-radius: 50px; font-size: 0.9rem; font-weight: 700; display: flex; align-items: center; gap: 10px; border: 1px solid var(--surface-border); box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
         .dot { width: 10px; height: 10px; border-radius: 50%; }
@@ -66,7 +84,6 @@
         .soc-btn { flex: 1; padding: 14px; border-radius: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; color: white; font-weight: 800; font-size: 0.9rem; }
         .fb-btn { background: #1877F2; } .insta-btn { background: linear-gradient(45deg, #f09433, #bc1888); }
 
-        /* ⭐ ستايل التقييمات والنجوم */
         .reviews-box { width: 100%; text-align: right; margin-bottom: 30px; }
         .rev-head { font-size: 1rem; font-weight: 800; color: var(--text-muted); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
         .review { background: var(--surface); padding: 18px; border-radius: 20px; margin-bottom: 12px; border: 1px solid var(--surface-border); text-align: right; }
@@ -85,7 +102,6 @@
         .fab-ai { background: linear-gradient(135deg, #06b6d4, #8b5cf6); border: 2px solid white; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(6, 182, 212, 0); } 100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); } }
 
-        /* 🤖 شاشة الدردشة */
         .chat-overlay { position: fixed; bottom: 90px; right: 25px; width: 350px; max-width: calc(100vw - 40px); background: var(--surface); backdrop-filter: blur(20px); border: 1px solid var(--surface-border); border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.2); z-index: 1000; display: none; flex-direction: column; overflow: hidden; animation: scaleUp 0.3s ease; }
         @keyframes scaleUp { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
         .chat-header { background: var(--primary); color: white; padding: 15px; font-weight: 800; display: flex; justify-content: space-between; align-items: center; }
@@ -98,6 +114,11 @@
     </style>
 </head>
 <body>
+
+    <div id="dynamic-topbar" class="announcement-bar">
+        <i class="fas fa-bell"></i>
+        <span id="topbar-text"></span>
+    </div>
 
     <header>
         <div class="header-brand">
@@ -178,35 +199,76 @@
     </div>
 
     <script>
-        // --- ⏰ 1. نظام الوقت (إغلاق 12 ليلاً) ---
+        // إعدادات افتراضية عشان الموقع ما يوقف لو صار أي تأخير بـ Firebase
+        window.cmsData = {
+            topbar: "",
+            hero: "دلتا للبصريات",
+            sub: "المقابلين - شارع الإذاعة والتلفزيون\nخبراء العناية بالعين وأحدث الماركات",
+            openTime: "10:00",
+            closeTime: "23:59"
+        };
+
+        // دالة آمنة لتطبيق البيانات القادمة من الفايربيس
+        window.applyCmsData = function(data) {
+            if (!data) return;
+            
+            if (data.topbar && data.topbar.trim() !== "") {
+                document.getElementById('dynamic-topbar').style.display = 'block';
+                document.getElementById('topbar-text').innerText = data.topbar;
+            } else {
+                document.getElementById('dynamic-topbar').style.display = 'none';
+            }
+
+            if (data.hero) document.getElementById('txt-hero').innerText = data.hero;
+            if (data.sub) document.getElementById('txt-sub').innerText = data.sub;
+
+            if (data.openTime) window.cmsData.openTime = data.openTime;
+            if (data.closeTime) window.cmsData.closeTime = data.closeTime;
+
+            updateStoreStatus();
+        };
+
+        // --- ⏰ نظام الوقت (معالجة الأخطاء بقوة) ---
         function updateStoreStatus() {
             const now = new Date();
-            const day = now.getDay(); 
-            const hour = now.getHours();
-            const minute = now.getMinutes();
+            const curTotalMin = (now.getHours() * 60) + now.getMinutes();
 
-            const openH = (day === 5) ? 16 : 10;
-            const closeH = 24; 
+            let openStr = window.cmsData.openTime || "10:00";
+            let closeStr = window.cmsData.closeTime || "23:59";
+            
+            // حماية من القيم الفارغة أو الخاطئة
+            if (!openStr.includes(':')) openStr = "10:00";
+            if (!closeStr.includes(':')) closeStr = "23:59";
 
-            const curTotalMin = hour * 60 + minute;
-            const openTotalMin = openH * 60;
-            const closeTotalMin = closeH * 60;
+            let [openH, openM] = openStr.split(':').map(Number);
+            let [closeH, closeM] = closeStr.split(':').map(Number);
+
+            const openTotalMin = (openH * 60) + (openM || 0);
+            const closeTotalMin = (closeH * 60) + (closeM || 0);
 
             const text = document.getElementById('status-text');
             const dot = document.getElementById('status-dot');
             const countdown = document.getElementById('countdown-msg');
 
-            let isOpen = (hour >= openH && hour < 24);
+            let isOpen = false;
+            if (closeTotalMin > openTotalMin) {
+                isOpen = (curTotalMin >= openTotalMin && curTotalMin < closeTotalMin);
+            } else { // لو الدوام بيخلص بعد منتصف الليل
+                isOpen = (curTotalMin >= openTotalMin || curTotalMin < closeTotalMin);
+            }
 
             if (isOpen) {
                 text.innerText = (curLang === 'ar' ? "مفتوح الآن" : "Open Now");
                 dot.className = "dot open-dot";
-                countdown.innerText = (curLang === 'ar' ? "يغلق بعد: " : "Closes in: ") + formatTime(closeTotalMin - curTotalMin);
+                let timeToClose = closeTotalMin - curTotalMin;
+                if (timeToClose < 0) timeToClose += 1440;
+                countdown.innerText = (curLang === 'ar' ? "يغلق بعد: " : "Closes in: ") + formatTime(timeToClose);
             } else {
                 text.innerText = (curLang === 'ar' ? "مغلق الآن" : "Closed Now");
                 dot.className = "dot closed-dot";
-                let wait = (hour < openH) ? (openTotalMin - curTotalMin) : ((1440 - curTotalMin) + openTotalMin);
-                countdown.innerText = (curLang === 'ar' ? "يفتح بعد: " : "Opens in: ") + formatTime(wait);
+                let timeToOpen = openTotalMin - curTotalMin;
+                if (timeToOpen < 0) timeToOpen += 1440;
+                countdown.innerText = (curLang === 'ar' ? "يفتح بعد: " : "Opens in: ") + formatTime(timeToOpen);
             }
         }
 
@@ -219,7 +281,6 @@
             return res || "أقل من دقيقة";
         }
 
-        // --- ⭐ 2. نظام التقييمات والنجوم (المعاد) ---
         const reviewsData = {
             ar: [
                 { name: "محمد العلي", text: "خدمة ممتازة، الدكتور شاطر والفحص دقيق جداً." },
@@ -243,7 +304,6 @@
             });
         }
 
-        // --- 🤖 3. المساعد الذكي (كامل) ---
         async function sendChat() {
             const input = document.getElementById('chat-input');
             const body = document.getElementById('chat-body');
@@ -263,13 +323,12 @@
             } catch (e) { body.innerHTML += `<div class="msg ai-msg">تواصل معنا واتساب لخدمة أسرع! 💚</div>`; }
         }
 
-        // --- 🌍 4. لغة ومظهر ---
         let curLang = 'ar';
         function toggleLang() {
             curLang = curLang === 'ar' ? 'en' : 'ar';
             document.getElementById('lang-btn').innerText = curLang === 'ar' ? 'EN' : 'AR';
             document.documentElement.dir = curLang === 'ar' ? 'rtl' : 'ltr';
-            document.getElementById('txt-hero').innerText = curLang === 'ar' ? "دلتا للبصريات" : "Delta Optics";
+            document.getElementById('txt-hero').innerText = curLang === 'ar' ? window.cmsData.hero : "Delta Optics";
             updateStoreStatus(); loadReviews();
         }
 
@@ -279,7 +338,6 @@
             document.getElementById('theme-btn').innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
         }
 
-        // --- 🖱️ 5. تأثيرات حركية ---
         document.querySelectorAll('.tilt-card').forEach(card => {
             card.addEventListener('mousemove', e => {
                 let r = card.getBoundingClientRect();
@@ -290,7 +348,37 @@
 
         function toggleChat() { const c = document.getElementById('chat-overlay'); c.style.display = (c.style.display === 'flex') ? 'none' : 'flex'; }
 
+        // تشغيل مبدئي
         updateStoreStatus(); setInterval(updateStoreStatus, 60000); loadReviews();
     </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB11C4GGgAyqeThs8a9cvDNN7frvAA1nqQ",
+            authDomain: "delta-optics-system.firebaseapp.com",
+            projectId: "delta-optics-system",
+            storageBucket: "delta-optics-system.firebasestorage.app",
+            messagingSenderId: "111176219224",
+            appId: "1:111176219224:web:e0d8a5f26b84d57249a82d"
+        };
+
+        try {
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+
+            // الاستماع للتعديلات من لوحة التحكم
+            onSnapshot(doc(db, "settings", "cms"), (docSnap) => {
+                if (docSnap.exists()) {
+                    window.applyCmsData(docSnap.data());
+                }
+            });
+        } catch(error) {
+            console.error("مشكلة في الاتصال بقاعدة البيانات:", error);
+        }
+    </script>
+
 </body>
 </html>

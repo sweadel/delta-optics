@@ -121,24 +121,39 @@
                 <div class="card">
                     <h3 class="card-title"><i class="fas fa-laptop-code"></i> إعدادات الموقع الخارجي</h3>
                     <div class="grid-2" style="margin-bottom:20px;">
-                        <input type="text" id="cms-topbar" placeholder="شريط الإعلانات (مثال: خصم 20%)">
-                        <input type="text" id="cms-phone" placeholder="رقم الهاتف">
+                        <input type="text" id="cms-topbar" placeholder="شريط الإعلانات (مثال: خصم 20%)" style="padding:10px; border-radius:8px; border:1px solid var(--border);">
+                        <input type="text" id="cms-phone" placeholder="رقم الهاتف" style="padding:10px; border-radius:8px; border:1px solid var(--border);">
                     </div>
                     <div class="grid-2" style="margin-bottom:20px;">
-                        <input type="text" id="cms-hero" placeholder="العنوان الرئيسي">
-                        <input type="text" id="cms-sub" placeholder="الوصف الفرعي">
+                        <input type="text" id="cms-hero" placeholder="العنوان الرئيسي" style="padding:10px; border-radius:8px; border:1px solid var(--border);">
+                        <input type="text" id="cms-sub" placeholder="الوصف الفرعي" style="padding:10px; border-radius:8px; border:1px solid var(--border);">
                     </div>
-                    <div class="grid-2" style="margin-bottom:20px; border: 1px dashed var(--border); padding: 15px; border-radius: 8px;">
-                        <div style="display:flex; flex-direction:column; gap:5px;">
-                            <label style="font-weight:bold; color:var(--primary);"><i class="fas fa-clock"></i> وقت فتح المحل</label>
-                            <input type="time" id="cms-open-time" class="form-input" style="width:100%;">
-                        </div>
-                        <div style="display:flex; flex-direction:column; gap:5px;">
-                            <label style="font-weight:bold; color:var(--danger);"><i class="fas fa-store-slash"></i> وقت إغلاق المحل</label>
-                            <input type="time" id="cms-close-time" class="form-input" style="width:100%;">
+                    
+                    <div style="background: rgba(14, 116, 144, 0.05); padding: 20px; border-radius: 15px; border: 1px solid var(--border); margin-bottom: 20px;">
+                        <h4 style="margin-bottom: 15px; color: var(--primary);"><i class="fas fa-clock"></i> التحكم بأوقات الدوام</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                            <div style="display:flex; flex-direction:column; gap:5px;">
+                                <label style="font-weight:bold; font-size:14px;">وضع المحل</label>
+                                <select id="cms-status-mode" style="padding:10px; border-radius:8px; border:1px solid var(--border); outline:none;">
+                                    <option value="auto">تلقائي (حسب الوقت)</option>
+                                    <option value="force_open">مفتوح دائماً (يدوي)</option>
+                                    <option value="force_close">مغلق دائماً (إجازة/طوارئ)</option>
+                                </select>
+                            </div>
+                            <div style="display:flex; flex-direction:column; gap:5px;">
+                                <label style="font-weight:bold; font-size:14px; color:var(--success);">يفتح الساعة</label>
+                                <input type="time" id="cms-open-time" style="padding:10px; border-radius:8px; border:1px solid var(--border); outline:none;">
+                            </div>
+                            <div style="display:flex; flex-direction:column; gap:5px;">
+                                <label style="font-weight:bold; font-size:14px; color:var(--danger);">يغلق الساعة</label>
+                                <input type="time" id="cms-close-time" style="padding:10px; border-radius:8px; border:1px solid var(--border); outline:none;">
+                            </div>
                         </div>
                     </div>
-                    <button class="btn btn-success" style="margin-top:20px; width:100%;" onclick="saveCMS()"><i class="fas fa-cloud-upload-alt"></i> تحديث ونشر الإعدادات</button>
+                    
+                    <button class="btn btn-success" style="margin-top:10px; width:100%; padding:15px; font-size:1.1rem; justify-content:center;" onclick="saveCMS()">
+                        <i class="fas fa-cloud-upload-alt"></i> تحديث ونشر الإعدادات
+                    </button>
                 </div>
             </section>
             

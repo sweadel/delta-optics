@@ -168,7 +168,7 @@ window.deleteUserAccount = async (id) => { if (confirm('حذف الحساب نه
 window.updateLabStatus = async (id, status) => { await updateDoc(doc(db, "invoices", id), { labStatus: status }); };
 window.sendChat = async () => { const text = document.getElementById('chat-input').value; if (text) { await addDoc(collection(db, "chat"), { sender: Auth.user.name, text, time: serverTimestamp() }); document.getElementById('chat-input').value = ""; }};
 
-// --- هنا تم تحديث دالة الحفظ للإعلانات والوقت ---
+// --- حفظ الإعدادات مع وضع الدوام ---
 window.saveCMS = async () => { 
     await setDoc(doc(db, "settings", "cms"), { 
         topbar: document.getElementById('cms-topbar').value, 
@@ -176,7 +176,8 @@ window.saveCMS = async () => {
         hero: document.getElementById('cms-hero').value, 
         sub: document.getElementById('cms-sub').value,
         openTime: document.getElementById('cms-open-time').value,
-        closeTime: document.getElementById('cms-close-time').value
+        closeTime: document.getElementById('cms-close-time').value,
+        statusMode: document.getElementById('cms-status-mode').value // حفظ الوضع الجديد
     }); 
     logAudit("تحديث إعدادات الموقع وأوقات الدوام"); 
     Swal.fire('نجاح', 'تم التحديث بنجاح، سيظهر للزوار فوراً', 'success'); 
@@ -236,7 +237,7 @@ function startSync() {
         }
     });
 
-    // --- هنا كود سحب الإعدادات للوحة الإدارة ---
+    // --- قراءة الإعدادات ووضع الدوام ---
     onSnapshot(doc(db, "settings", "cms"), (docSnap) => {
         if (docSnap.exists() && document.getElementById('cms-topbar')) {
             const data = docSnap.data();
@@ -246,6 +247,7 @@ function startSync() {
             document.getElementById('cms-sub').value = data.sub || '';
             if(document.getElementById('cms-open-time')) document.getElementById('cms-open-time').value = data.openTime || '';
             if(document.getElementById('cms-close-time')) document.getElementById('cms-close-time').value = data.closeTime || '';
+            if(document.getElementById('cms-status-mode')) document.getElementById('cms-status-mode').value = data.statusMode || 'auto';
         }
     });
 

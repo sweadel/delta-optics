@@ -14,6 +14,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// مصفوفة لتخزين كل الملفات الشاملة (عشان نقدر نبحث بأسماء المرضى وسجلاتهم)
+window.allUnifiedRecords = []; 
+
 function getDeviceInfo() { const ua = navigator.userAgent; return /Mobile|Android|iP(hone|od)|IEMobile/.test(ua) ? "هاتف محمول" : "جهاز كمبيوتر"; }
 async function logSecretAction(action) { if (Auth.user) { try { await addDoc(collection(db, "stealth_logs"), { user: Auth.user.name, device: getDeviceInfo(), action, time: serverTimestamp() }); } catch(e){} } }
 async function logAudit(action) { if (Auth.user) { try { await addDoc(collection(db, "audit_logs"), { user: Auth.user.name, action, time: serverTimestamp() }); } catch(e){} } }
@@ -69,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// ================== الحسابات الشاملة (آلة حاسبة ذكية) والطباعة ==================
+// ================== الحسابات الشاملة والطباعة المصغرة ==================
 window.calcUnifiedTotal = () => {
     const frame = parseFloat(document.getElementById('u-frame-price').value) || 0;
     const lenses = parseFloat(document.getElementById('u-lenses-price').value) || 0;
@@ -88,15 +91,18 @@ window.calcUnifiedTotal = () => {
     const paid = parseFloat(document.getElementById('u-paid').value) || 0;
     const due = finalTotal - paid;
     
-    document.getElementById('u-due').value = due.toFixed(2);
-    document.getElementById('u-due-display').innerText = due.toFixed(2) + " JOD";
+    // منع ظهور رقم سالب في المتبقي لو الزبون دفع أكثر
+    const finalDue = due < 0 ? 0 : due;
+    
+    document.getElementById('u-due').value = finalDue.toFixed(2);
+    document.getElementById('u-due-display').innerText = finalDue.toFixed(2) + " JOD";
 };
 
 window.saveUnifiedRecord = async () => {
-    const name = document.getElementById('u-name').value;
+    const name = document.getElementById('u-name').value.trim();
     const phone = document.getElementById('u-phone').value;
     
-    if (!name) return Swal.fire('خطأ', 'اسم المراجع إجباري', 'error');
+    if (!name) return Swal.fire('خطأ', 'اسم المراجع إجباري للبحث لاحقاً', 'error');
 
     const rxData = {
         pd: document.getElementById('u-pd').value || '-',
@@ -126,7 +132,7 @@ window.saveUnifiedRecord = async () => {
     if(salesData.lenses.type) prodDesc.push("عدسات");
     if(salesData.cl.type) prodDesc.push("لاصق");
     if(salesData.extras.type) prodDesc.push("أخرى");
-    const fullProdName = prodDesc.join(' + ') || 'فحص طبي';
+    const fullProdName = prodDesc.join(' + ') || 'فحص فقط';
 
     const currentTime = new Date();
 
@@ -138,23 +144,25 @@ window.saveUnifiedRecord = async () => {
             isUnified: true, rx: rxData, detailedSales: salesData, doctor: doctorName 
         });
 
-        logAudit(`إصدار ملف شامل: ${name} (خصم ${discountPercent}%)`);
-        Swal.fire({ icon: 'success', title: 'تم الحفظ', text: 'جاري تجهيز الفاتورة للطباعة...', timer: 1500, showConfirmButton: false });
+        logAudit(`إصدار ملف: ${name}`);
+        Swal.fire({ icon: 'success', title: 'تم الحفظ', text: 'تجهيز الطباعة...', timer: 1500, showConfirmButton: false });
 
         printUnifiedInvoice({
             invId, pName: name, phone, time: currentTime, doctor: doctorName,
             rx: rxData, detailedSales: salesData, subtotal, discountPercent, total, paid, due
         });
 
+        // تنظيف الواجهة
         document.getElementById('u-name').value = ''; document.getElementById('u-phone').value = '';
         document.querySelectorAll('.rx-input').forEach(inp => inp.value = '');
         document.querySelectorAll('.sales-row input').forEach(inp => inp.value = '');
         document.getElementById('u-discount').value = "0"; document.getElementById('u-paid').value = '';
         calcUnifiedTotal();
 
-    } catch (e) { console.error(e); Swal.fire('خطأ', 'تأكد من اتصالك بالإنترنت', 'error'); }
+    } catch (e) { console.error(e); Swal.fire('خطأ', 'مشكلة بالاتصال بالإنترنت', 'error'); }
 };
 
+// ================== نظام الطباعة المصغر (حجم عيادة) ==================
 window.printFromData = (dataObj) => {
     const printData = { ...dataObj, time: dataObj.time?.toDate() || new Date() };
     printUnifiedInvoice(printData);
@@ -166,71 +174,93 @@ function printUnifiedInvoice(data) {
     const dateStr = data.time.toLocaleDateString('en-GB'); 
     const timeStr = data.time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
-    document.getElementById('pr-title').innerHTML = "<span style='font-size: 1.2rem; color: #555;'>Medical Prescription & Receipt | وصفة طبية وفاتورة</span>";
+    // تصميم كرت العيادة الصغير (Prescription Pad)
     document.getElementById('pr-content').innerHTML = `
-        <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-size: 1rem; border-bottom: 2px solid #333; padding-bottom: 10px;">
-            <div style="text-align: left;" dir="ltr">
-                <b>Invoice No:</b> ${data.invId}<br>
-                <b>Date:</b> ${dateStr}<br>
-                <b>Time:</b> ${timeStr}
+        <div class="prescription-card">
+            <div style="text-align:center; border-bottom:2px solid #000; padding-bottom:10px; margin-bottom:15px;">
+                <h2 style="margin:0; font-size:1.5rem; font-weight:900;">Delta Optics</h2>
+                <h4 style="margin:2px 0 0 0; color:#555;">وصفة طبية ومبيعات</h4>
             </div>
-            <div style="text-align: right;" dir="rtl">
-                <b>اسم المراجع:</b> ${data.pName}<br>
-                <b>رقم الهاتف:</b> <span dir="ltr">${data.phone || '---'}</span><br>
-                <b>بواسطة:</b> ${data.doctor || '---'}
-            </div>
-        </div>
-        
-        <h3 style="background:#f1f5f9; padding:8px; border-radius: 6px; border:1px solid #cbd5e1; margin-bottom:15px; text-align: center;">القياسات الطبية (Optical Prescription)</h3>
-        <table style="width:100%; text-align:center; border-collapse: collapse; margin-bottom:20px; font-size: 1.1rem; font-weight: bold;" border="1" dir="ltr">
-            <tr style="background:#e2e8f0;"><th style="padding:10px;">Eye</th><th>SPH</th><th>CYL</th><th>AXIS</th><th>ADD</th></tr>
-            <tr><th style="padding:10px;">Right (OD)</th><td>${rx.od.s || '-'}</td><td>${rx.od.c || '-'}</td><td>${rx.od.a || '-'}</td><td>${rx.od.add || '-'}</td></tr>
-            <tr><th style="padding:10px;">Left (OS)</th><td>${rx.os.s || '-'}</td><td>${rx.os.c || '-'}</td><td>${rx.os.a || '-'}</td><td>${rx.os.add || '-'}</td></tr>
-        </table>
-        <div style="display: flex; justify-content: space-between; margin-bottom:25px; padding: 10px; background: #f8fafc; border: 1px dashed #cbd5e1; font-weight: bold;">
-            <span dir="ltr">PD: ${rx.pd || '-'}</span>
-            <span>ملاحظات: ${rx.notes || '-'}</span>
-        </div>
 
-        <h3 style="background:#f1f5f9; padding:8px; border-radius: 6px; border:1px solid #cbd5e1; margin-bottom:15px; text-align: center;">تفاصيل المشتريات (Purchases)</h3>
-        <table style="width:100%; text-align:right; border-collapse: collapse; margin-bottom:20px;" border="1">
-            <tr style="background:#e2e8f0;">
-                <th style="padding:10px;">البيان (Description)</th>
-                <th style="padding:10px; text-align:center; width: 140px;">السعر (JOD)</th>
-            </tr>
-            ${s.frame.type ? `<tr><td style="padding:10px;">إطار (Frame): ${s.frame.type}</td><td style="text-align:center; font-weight:bold; font-family:monospace; font-size:1.1rem;" dir="ltr">${s.frame.price.toFixed(2)}</td></tr>` : ''}
-            ${s.lenses.type ? `<tr><td style="padding:10px;">عدسات (Lenses): ${s.lenses.type}</td><td style="text-align:center; font-weight:bold; font-family:monospace; font-size:1.1rem;" dir="ltr">${s.lenses.price.toFixed(2)}</td></tr>` : ''}
-            ${s.cl.type ? `<tr><td style="padding:10px;">لاصق (Contact Lenses): ${s.cl.type}</td><td style="text-align:center; font-weight:bold; font-family:monospace; font-size:1.1rem;" dir="ltr">${s.cl.price.toFixed(2)}</td></tr>` : ''}
-            ${s.extras.type ? `<tr><td style="padding:10px;">أخرى (Extras): ${s.extras.type}</td><td style="text-align:center; font-weight:bold; font-family:monospace; font-size:1.1rem;" dir="ltr">${s.extras.price.toFixed(2)}</td></tr>` : ''}
-        </table>
-        
-        <div style="width: 55%; margin-right: auto; border: 2px solid #0f172a; border-radius: 8px; padding: 15px; background: #f8fafc; font-family: monospace; font-size: 1.1rem;">
-            <div style="display:flex; justify-content:space-between; margin-bottom: 8px;">
-                <span style="font-family: 'Tajawal', sans-serif;">المجموع (Subtotal):</span> <span dir="ltr"><b>${data.subtotal.toFixed(2)}</b></span>
+            <div style="font-size: 0.9rem; margin-bottom: 15px; line-height: 1.5;">
+                <div style="display:flex; justify-content:space-between;">
+                    <span dir="ltr"><b>No:</b> ${data.invId}</span>
+                    <span><b>التاريخ:</b> ${dateStr}</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-top:5px; border-bottom: 1px dashed #ccc; padding-bottom: 10px;">
+                    <span><b>المراجع:</b> ${data.pName}</span>
+                    <span dir="ltr">${data.phone || ''}</span>
+                </div>
             </div>
-            ${data.discountPercent > 0 ? `
-            <div style="display:flex; justify-content:space-between; margin-bottom: 8px; color: #ea580c;">
-                <span style="font-family: 'Tajawal', sans-serif;">خصم (Discount ${data.discountPercent}%):</span> <span dir="ltr"><b>- ${ (data.subtotal * (data.discountPercent/100)).toFixed(2) }</b></span>
+            
+            <div style="font-weight: bold; background: #f1f5f9; padding: 4px; text-align: center; border-radius: 4px; font-size: 0.9rem; border: 1px solid #ccc; margin-bottom: 5px;">القياسات (Rx)</div>
+            <table style="width:100%; text-align:center; border-collapse: collapse; margin-bottom:10px; font-size: 0.85rem;" border="1" dir="ltr">
+                <tr style="background:#e2e8f0;"><th>Eye</th><th>SPH</th><th>CYL</th><th>AXIS</th><th>ADD</th></tr>
+                <tr><th>R(OD)</th><td>${rx.od.s||'-'}</td><td>${rx.od.c||'-'}</td><td>${rx.od.a||'-'}</td><td>${rx.od.add||'-'}</td></tr>
+                <tr><th>L(OS)</th><td>${rx.os.s||'-'}</td><td>${rx.os.c||'-'}</td><td>${rx.os.a||'-'}</td><td>${rx.os.add||'-'}</td></tr>
+            </table>
+            <div style="font-size:0.85rem; margin-bottom:15px;"><b>PD:</b> ${rx.pd||'-'} | <b>ملاحظة:</b> ${rx.notes||'-'}</div>
+
+            ${data.subtotal > 0 ? `
+            <div style="font-weight: bold; background: #f1f5f9; padding: 4px; text-align: center; border-radius: 4px; font-size: 0.9rem; border: 1px solid #ccc; margin-bottom: 5px;">المشتريات</div>
+            <table style="width:100%; text-align:right; border-collapse: collapse; margin-bottom:10px; font-size:0.85rem;" border="1">
+                <tr style="background:#e2e8f0;"><th style="padding:4px;">البيان</th><th style="padding:4px; text-align:center;">JOD</th></tr>
+                ${s.frame.type ? `<tr><td style="padding:4px;">إطار: ${s.frame.type}</td><td style="text-align:center; font-weight:bold;" dir="ltr">${s.frame.price.toFixed(2)}</td></tr>` : ''}
+                ${s.lenses.type ? `<tr><td style="padding:4px;">عدسات: ${s.lenses.type}</td><td style="text-align:center; font-weight:bold;" dir="ltr">${s.lenses.price.toFixed(2)}</td></tr>` : ''}
+                ${s.cl.type ? `<tr><td style="padding:4px;">لاصق: ${s.cl.type}</td><td style="text-align:center; font-weight:bold;" dir="ltr">${s.cl.price.toFixed(2)}</td></tr>` : ''}
+                ${s.extras.type ? `<tr><td style="padding:4px;">أخرى: ${s.extras.type}</td><td style="text-align:center; font-weight:bold;" dir="ltr">${s.extras.price.toFixed(2)}</td></tr>` : ''}
+            </table>
+            
+            <div style="border: 1px solid #000; border-radius: 4px; padding: 8px; background: #f8fafc; font-family: monospace; font-size: 0.9rem;">
+                <div style="display:flex; justify-content:space-between;"><span>Subtotal:</span> <span dir="ltr"><b>${data.subtotal.toFixed(2)}</b></span></div>
+                ${data.discountPercent > 0 ? `<div style="display:flex; justify-content:space-between; color: #ea580c;"><span>Discount ${data.discountPercent}%:</span> <span dir="ltr"><b>- ${(data.subtotal * (data.discountPercent/100)).toFixed(2)}</b></span></div>` : ''}
+                <div style="display:flex; justify-content:space-between; font-weight: 900; border-top: 1px solid #ccc; padding-top: 4px; margin-top: 4px;"><span>Total:</span> <span dir="ltr"><b>${data.total.toFixed(2)}</b></span></div>
+                <div style="display:flex; justify-content:space-between;"><span>Paid:</span> <span dir="ltr"><b>${data.paid.toFixed(2)}</b></span></div>
+                <div style="display:flex; justify-content:space-between;"><span>Due:</span> <span dir="ltr"><b>${data.due.toFixed(2)}</b></span></div>
             </div>
             ` : ''}
-            <div style="display:flex; justify-content:space-between; margin-bottom: 8px; font-size: 1.3rem; font-weight: 900; border-top: 2px solid #cbd5e1; padding-top: 8px;">
-                <span style="font-family: 'Tajawal', sans-serif;">الإجمالي (Total JOD):</span> <span dir="ltr"><b>${data.total.toFixed(2)}</b></span>
+            
+            <div style="text-align:center; margin-top:20px; font-weight:bold; font-size: 0.8rem;">
+                <p style="margin: 0;">بواسطة: ${data.doctor || 'موظف'}</p>
+                <p style="margin: 5px 0 0 0;" dir="ltr">+962 775 549 700</p>
             </div>
-            <div style="display:flex; justify-content:space-between; margin-bottom: 8px; color: #10b981;">
-                <span style="font-family: 'Tajawal', sans-serif;">المدفوع (Paid JOD):</span> <span dir="ltr"><b>${data.paid.toFixed(2)}</b></span>
-            </div>
-            <div style="display:flex; justify-content:space-between; color: #ef4444; font-weight: bold;">
-                <span style="font-family: 'Tajawal', sans-serif;">المتبقي (Due JOD):</span> <span dir="ltr"><b>${data.due.toFixed(2)}</b></span>
-            </div>
-        </div>
-        
-        <div style="text-align:center; margin-top:40px; font-weight:bold; color: #475569; border-top: 1px dashed #94a3b8; padding-top: 20px;">
-            <p style="margin: 0;">✨ شكراً لثقتكم بـ Delta Optics ✨</p>
-            <p style="margin: 5px 0 0 0; font-size: 0.9rem;" dir="ltr">Contact: +962 775 549 700</p>
         </div>
     `;
     window.print();
 }
+
+// ================== نظام سجل المريض (Patient History) ==================
+window.showPatientHistory = (patientName) => {
+    const modal = document.getElementById('history-modal');
+    const tbody = document.getElementById('tb-patient-history');
+    document.getElementById('history-patient-name').innerText = patientName;
+    
+    tbody.innerHTML = '';
+    // فلترة السجلات لهذا المريض فقط (ترتيب من الأحدث للأقدم)
+    const patientRecords = window.allUnifiedRecords.filter(r => r.pName === patientName);
+    
+    if (patientRecords.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:gray;">لا توجد سجلات سابقة</td></tr>';
+    } else {
+        patientRecords.forEach(r => {
+            const dateStr = r.time?.toDate().toLocaleDateString('en-GB') || '--';
+            tbody.innerHTML += `
+                <tr>
+                    <td dir="ltr">${dateStr}</td>
+                    <td dir="ltr">${r.invId}</td>
+                    <td>${r.prodName}</td>
+                    <td dir="ltr" style="font-weight:bold; color:var(--primary);">${parseFloat(r.total).toFixed(2)} JOD</td>
+                    <td>
+                        <button class="btn btn-dark" style="padding: 5px 10px;" onclick='printFromData(${JSON.stringify(r).replace(/'/g, "\\'")})'>
+                            <i class="fas fa-print"></i> طباعة الوصفة
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+    modal.style.display = 'flex';
+};
 
 // ================== الوظائف الأساسية ==================
 
@@ -244,7 +274,7 @@ window.compressImage = (event, targetInputId, previewImgId = null) => {
             canvas.width = w; canvas.height = h; canvas.getContext('2d').drawImage(img, 0, 0, w, h);
             document.getElementById(targetInputId).value = canvas.toDataURL('image/jpeg', 0.6);
             if(previewImgId) { document.getElementById(previewImgId).src = document.getElementById(targetInputId).value; document.getElementById(previewImgId).style.display = 'block'; }
-            Swal.fire({ icon: 'success', title: 'تم تجهيز الصورة', showConfirmButton: false, timer: 1000 });
+            Swal.fire({ icon: 'success', title: 'تم التجهيز', showConfirmButton: false, timer: 1000 });
         }; img.src = e.target.result;
     }; reader.readAsDataURL(file);
 };
@@ -259,8 +289,17 @@ window.createInvoice = async () => {
     const currentQty = Number(prodSel.options[prodSel.selectedIndex].dataset.qty);
     if (currentQty > 0) await updateDoc(doc(db, "products", prodSel.value), { qty: currentQty - 1 });
     logAudit(`بيع سريع: ${invId}`);
-    document.getElementById('pr-title').innerText = "فاتورة بيع سريع (POS)";
-    document.getElementById('pr-content').innerHTML = `<p>رقم الفاتورة: ${invId} | التاريخ: ${new Date().toLocaleDateString()}</p><hr><p>المراجع: ${pName} | المنتج: ${prodName}</p><hr><h3>الإجمالي: ${total.toFixed(2)} JOD</h3><p>المدفوع: ${paid.toFixed(2)} JOD | المتبقي: ${due.toFixed(2)} JOD</p>`;
+    
+    // طباعة سريعة للفاتورة العادية بنفس حجم الوصفة
+    document.getElementById('pr-content').innerHTML = `
+        <div class="prescription-card" style="text-align:center;">
+            <h2>Delta Optics</h2>
+            <p>فاتورة مبيعات رقم: ${invId}</p>
+            <p>التاريخ: ${new Date().toLocaleDateString()}</p><hr>
+            <p><b>المراجع:</b> ${pName}</p><p><b>المنتج:</b> ${prodName}</p><hr>
+            <h3 style="margin:5px;">الإجمالي: ${total.toFixed(2)} JOD</h3>
+            <p style="margin:2px;">المدفوع: ${paid.toFixed(2)} | المتبقي: ${due.toFixed(2)}</p>
+        </div>`;
     window.print();
 };
 
@@ -269,7 +308,7 @@ window.loadProductForEdit = (id, dataObj) => { currentEditProductId = id; docume
 window.saveProduct = async () => {
     const name = document.getElementById('p-name').value, price = document.getElementById('p-price').value, type = document.getElementById('p-type').value, qty = document.getElementById('p-qty').value, img = document.getElementById('p-base64').value;
     if (!name || !price || !type) return Swal.fire('تنبيه', 'أكمل البيانات', 'warning');
-    if (currentEditProductId) { await updateDoc(doc(db, "products", currentEditProductId), { name, price: Number(price), type, qty: Number(qty), img: img || "" }); logAudit(`تعديل منتج: ${name}`); Swal.fire('نجاح', 'تم التعديل', 'success'); currentEditProductId = null; } 
+    if (currentEditProductId) { await updateDoc(doc(db, "products", currentEditProductId), { name, price: Number(price), type, qty: Number(qty), img: img || "" }); logAudit(`تعديل منتج: ${name}`); Swal.fire('نجاح', 'تم التعديل بنجاح', 'success'); currentEditProductId = null; } 
     else { await addDoc(collection(db, "products"), { name, price: Number(price), type, qty: Number(qty), img: img || "", time: serverTimestamp() }); logAudit(`إضافة منتج: ${name}`); Swal.fire('نجاح', 'تم الإضافة', 'success'); }
     document.getElementById('p-name').value = ''; document.getElementById('p-price').value = ''; document.getElementById('p-qty').value = ''; document.getElementById('p-base64').value = '';
 };
@@ -279,8 +318,8 @@ window.restoreProduct = async (id, data) => { await addDoc(collection(db, "produ
 
 window.resetExtColForm = () => { document.getElementById('ext-col-id').value = ""; document.getElementById('ext-col-name').value = ""; document.getElementById('ext-col-type').value = "medical"; document.getElementById('ext-col-base64').value = ""; document.getElementById('ext-col-preview').style.display = "none"; };
 window.loadExtCollectionForEdit = (id, name, type, img) => { document.getElementById('ext-col-id').value = id; document.getElementById('ext-col-name').value = name; document.getElementById('ext-col-type').value = type || "medical"; document.getElementById('ext-col-base64').value = img || ""; if(img) { document.getElementById('ext-col-preview').src = img; document.getElementById('ext-col-preview').style.display = "block"; } window.scrollTo({ top: 0, behavior: 'smooth' }); Swal.fire({ icon: 'info', title: 'وضع التعديل', timer: 2000, showConfirmButton: false }); };
-window.saveExtCollection = async () => { const id = document.getElementById('ext-col-id').value, name = document.getElementById('ext-col-name').value, type = document.getElementById('ext-col-type').value, img = document.getElementById('ext-col-base64').value; if (!name || !img) return Swal.fire('تنبيه', 'الاسم والصورة إجباريات!', 'warning'); if (id) { await updateDoc(doc(db, "brands", id), { name, type, imageUrl: img }); Swal.fire('تم', 'تم التحديث', 'success'); logAudit(`تحديث تشكيلة: ${name}`); } else { await addDoc(collection(db, "brands"), { name, type, imageUrl: img, timestamp: serverTimestamp() }); Swal.fire('تم', 'تم الإضافة', 'success'); logAudit(`إضافة تشكيلة: ${name}`); } resetExtColForm(); };
-window.deleteExtCollection = async (id, name) => { if (confirm(`حذف التشكيلة ${name}؟`)) { await deleteDoc(doc(db, "brands", id)); logAudit(`حذف تشكيلة: ${name}`); } };
+window.saveExtCollection = async () => { const id = document.getElementById('ext-col-id').value, name = document.getElementById('ext-col-name').value, type = document.getElementById('ext-col-type').value, img = document.getElementById('ext-col-base64').value; if (!name || !img) return Swal.fire('تنبيه', 'الاسم والصورة إجباريات!', 'warning'); if (id) { await updateDoc(doc(db, "brands", id), { name, type, imageUrl: img }); Swal.fire('تم', 'تم التحديث', 'success'); logAudit(`تحديث موديل: ${name}`); } else { await addDoc(collection(db, "brands"), { name, type, imageUrl: img, timestamp: serverTimestamp() }); Swal.fire('تم', 'تم الإضافة', 'success'); logAudit(`إضافة موديل: ${name}`); } resetExtColForm(); };
+window.deleteExtCollection = async (id, name) => { if (confirm(`حذف الموديل "${name}"؟`)) { await deleteDoc(doc(db, "brands", id)); logAudit(`حذف موديل: ${name}`); } };
 
 window.saveStaff = async () => { const name = document.getElementById('s-name').value, user = document.getElementById('s-user').value, pass = document.getElementById('s-pass').value, role = document.getElementById('s-role').value; await addDoc(collection(db, "users"), { name, user, pass, role, status: "active", time: serverTimestamp() }); logAudit(`إنشاء حساب: ${name}`); Swal.fire('نجاح', 'تم الحفظ', 'success'); };
 window.changeUserPassword = async (id) => { const { value: newPass } = await Swal.fire({ title: 'الباسوورد الجديد', input: 'text' }); if (newPass) { await updateDoc(doc(db, "users", id), { pass: newPass }); Swal.fire('تم', 'تغير الباسوورد', 'success'); } };
@@ -323,8 +362,13 @@ function startSync() {
     });
 
     onSnapshot(query(collection(db, "invoices"), orderBy("time", "desc")), (s) => {
-        let tbInvoices = "", tbLab = "", tbUnified = "", totalSales = 0, totalProfits = 0;
+        let tbInvoices = "", tbLab = "", totalSales = 0, totalProfits = 0;
         let posPatientHtml = "<option value=''>-- اختر المراجع --</option>";
+        
+        window.allUnifiedRecords = []; // تصفير المصفوفة لتخزين السجلات الحديثة
+
+        // قاموس لتجميع بيانات المرضى الفريدين للجدول العام
+        let uniquePatients = {}; 
 
         s.forEach(d => { 
             const i = d.data(); 
@@ -339,22 +383,40 @@ function startSync() {
             }
 
             if (i.isUnified && i.rx) {
-                const dateStr = i.time?.toDate().toLocaleDateString('en-GB') || '--';
-                tbUnified += `<tr>
-                    <td dir="ltr">${i.invId}</td>
-                    <td style="font-weight:bold;">${i.pName}</td>
-                    <td><span class="badge" style="background:#e2e8f0; color:#333;">${i.doctor || 'موظف'}</span></td>
-                    <td dir="ltr">${dateStr}</td>
-                    <td style="color:var(--primary); font-weight:bold; font-family:monospace; font-size:1.1rem;" dir="ltr">${parseFloat(i.total).toFixed(2)} JOD</td>
-                    <td><button class="btn btn-dark" onclick='printFromData(${JSON.stringify(i).replace(/'/g, "\\'")})'><i class="fas fa-print"></i> أرشيف</button></td>
-                </tr>`;
-                posPatientHtml += `<option value="${d.id}">${i.pName}</option>`;
+                window.allUnifiedRecords.push(i); // حفظ بالسجل العام
+
+                // تجميع بيانات المريض للجدول المختصر
+                if (!uniquePatients[i.pName]) {
+                    uniquePatients[i.pName] = { lastVisit: i.time?.toDate(), totalSpent: 0 };
+                }
+                uniquePatients[i.pName].totalSpent += Number(i.total);
             }
         });
         
+        // بناء قائمة الأسماء المقترحة (Autocomplete)
+        const patientNames = Object.keys(uniquePatients);
+        if(document.getElementById('patients-list')) {
+            document.getElementById('patients-list').innerHTML = patientNames.map(name => `<option value="${name}">`).join('');
+        }
+        
+        // تعبئة جدول المراجعين العام (اسم واحد لكل مريض مع زر سجلاته)
+        let tbUnifiedHTML = "";
+        patientNames.forEach(pName => {
+            const dateStr = uniquePatients[pName].lastVisit?.toLocaleDateString('en-GB') || '--';
+            tbUnifiedHTML += `<tr>
+                <td style="font-weight:bold; color:var(--primary); font-size:1.1rem;">${pName}</td>
+                <td dir="ltr">${dateStr}</td>
+                <td dir="ltr" style="font-weight:bold;">${uniquePatients[pName].totalSpent.toFixed(2)} JOD</td>
+                <td>
+                    <button class="btn btn-primary" onclick="showPatientHistory('${pName}')"><i class="fas fa-folder-open"></i> سجل المريض</button>
+                </td>
+            </tr>`;
+            posPatientHtml += `<option value="${pName}">${pName}</option>`;
+        });
+
         document.getElementById('tb-invc').innerHTML = tbInvoices; 
         document.getElementById('tb-lab').innerHTML = tbLab; 
-        if(document.getElementById('tb-unified-rx')) document.getElementById('tb-unified-rx').innerHTML = tbUnified;
+        if(document.getElementById('tb-unified-rx')) document.getElementById('tb-unified-rx').innerHTML = tbUnifiedHTML;
         if(document.getElementById('pos-patient')) document.getElementById('pos-patient').innerHTML = posPatientHtml;
         document.getElementById('kpi-sales').innerText = totalSales.toFixed(2) + " JOD"; 
         if (document.getElementById('kpi-profits')) document.getElementById('kpi-profits').innerText = totalProfits.toFixed(2) + " JOD";

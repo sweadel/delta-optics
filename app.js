@@ -14,6 +14,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 window.allUnifiedRecords = []; 
+window.allOnlineTests = []; // لتخزين تقارير الفحص الذكي
 
 function getDeviceInfo() { const ua = navigator.userAgent; return /Mobile|Android|iP(hone|od)|IEMobile/.test(ua) ? "هاتف محمول" : "جهاز كمبيوتر"; }
 async function logSecretAction(action) { if (Auth.user) { try { await addDoc(collection(db, "stealth_logs"), { user: Auth.user.name, device: getDeviceInfo(), action, time: serverTimestamp() }); } catch(e){} } }
@@ -152,7 +153,7 @@ window.saveUnifiedRecord = async () => {
     } catch (e) { console.error(e); Swal.fire('خطأ', 'مشكلة بالاتصال', 'error'); }
 };
 
-// ================== الطباعة ==================
+// ================== الطباعة الاحترافية ==================
 window.printFromData = (invId) => {
     const record = window.allUnifiedRecords.find(r => r.invId === invId);
     if(record) {
@@ -170,9 +171,11 @@ window.printPatientHistory = () => {
     let totalSpent = 0;
     records.forEach(r => {
         totalSpent += Number(r.total);
+        const dObj = r.time?.toDate();
+        const dateStr = dObj ? dObj.toLocaleDateString('en-GB') : '--';
         rowsHtml += `
             <tr>
-                <td><span class="en-num-print">${r.time?.toDate().toLocaleDateString('en-GB') || '--'}</span></td>
+                <td><span class="en-num-print">${dateStr}</span></td>
                 <td><span class="en-num-print">${r.invId}</span></td>
                 <td style="font-family: 'Tajawal', sans-serif;">${r.prodName}</td>
                 <td><span class="en-num-print">${parseFloat(r.total).toFixed(2)}</span></td>
@@ -190,7 +193,7 @@ window.printPatientHistory = () => {
             </div>
             <div style="margin-bottom: 20px; font-size: 1rem; border-bottom: 1px dashed #000; padding-bottom: 10px;">
                 <b>اسم المراجع:</b> ${pName}<br>
-                <div style="margin-top: 5px;"><b>تاريخ الطباعة:</b> <span class="en-num-print">${new Date().toLocaleDateString('en-GB')}</span></div>
+                <div style="margin-top: 5px;"><b>تاريخ الطباعة:</b> <span class="en-num-print">${new Date().toLocaleDateString('en-GB')}</span> &nbsp; <span class="en-num-print">${new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'})}</span></div>
             </div>
             <table class="print-table">
                 <tr><th>التاريخ (Date)</th><th>الملف (Record No)</th><th>التفاصيل (Details)</th><th>القيمة (JOD)</th></tr>
@@ -204,10 +207,10 @@ window.printPatientHistory = () => {
     window.print();
 };
 
-// --- تصميم وصفة العيادة (A5 صغير ومرتب جداً) ---
 function printUnifiedInvoice(data) {
     const rx = data.rx; const s = data.detailedSales;
     const dateStr = data.time.toLocaleDateString('en-GB'); 
+    const timeStr = data.time.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'});
     const pMethod = data.paymentMethod || 'كاش';
 
     document.getElementById('pr-content').innerHTML = `
@@ -222,7 +225,7 @@ function printUnifiedInvoice(data) {
             <div style="font-size: 0.9rem; margin-bottom: 12px; line-height: 1.5; border-bottom: 1px dashed #000; padding-bottom: 8px;">
                 <div style="display:flex; justify-content:space-between; margin-bottom: 4px;">
                     <span><b>No:</b> <span class="en-num-print">${data.invId}</span></span>
-                    <span><b>Date:</b> <span class="en-num-print">${dateStr}</span></span>
+                    <span><b>Date:</b> <span class="en-num-print">${dateStr} ${timeStr}</span></span>
                 </div>
                 <div style="display:flex; justify-content:space-between;">
                     <span><b>المراجع:</b> ${data.pName}</span>
@@ -265,25 +268,8 @@ function printUnifiedInvoice(data) {
     window.print();
 }
 
-window.showPatientHistory = (patientName) => {
-    const modal = document.getElementById('history-modal');
-    const tbody = document.getElementById('tb-patient-history');
-    document.getElementById('history-patient-name').innerText = patientName;
-    tbody.innerHTML = '';
-    const records = window.allUnifiedRecords.filter(r => r.pName === patientName);
-    
-    if (records.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:gray;">لا توجد سجلات</td></tr>';
-    } else {
-        records.forEach(r => {
-            const dateStr = r.time?.toDate().toLocaleDateString('en-GB') || '--';
-            tbody.innerHTML += `<tr><td class="en-num">${dateStr}</td><td class="en-num">${r.invId}</td><td>${r.prodName}</td><td class="en-num" style="font-weight:bold; color:var(--primary);">${parseFloat(r.total).toFixed(2)}</td><td><button class="btn btn-dark" style="padding: 5px 10px;" onclick="printFromData('${r.invId}')"><i class="fas fa-print"></i> طباعة</button></td></tr>`;
-        });
-    }
-    modal.style.display = 'flex';
-};
-
 // ================== باقي الوظائف ==================
+
 window.compressImage = (event, targetInputId, previewImgId = null) => {
     const file = event.target.files[0]; if (!file) return; const reader = new FileReader();
     reader.onload = (e) => {
@@ -344,9 +330,68 @@ window.saveCMS = async () => {
     }); 
     Swal.fire('نجاح', 'تم التحديث', 'success'); 
 };
-window.processOnlineRx = async (id, name) => { await updateDoc(doc(db, "online_rx_requests"), { status: 'مكتمل' }); Swal.fire('تم', 'مراجعة الطلب', 'success'); };
+
+// الدالة الخاصة بفتح نافذة تقرير الفحص الذكي (الأونلاين)
+window.openOnlineReport = (testId) => {
+    const record = window.allOnlineTests.find(t => t.id === testId);
+    if (!record) return;
+
+    document.getElementById('report-m-name').innerText = record.name || 'غير محدد';
+    document.getElementById('report-m-phone').innerText = record.phone || '---';
+    document.getElementById('report-m-details').innerText = record.details || 'لا توجد تفاصيل إضافية.';
+    
+    const waMsg = encodeURIComponent(`مرحباً ${record.name}، معك عيادة دلتا للبصريات. بخصوص فحص النظر اللي عملته على موقعنا...`);
+    const cleanPhone = record.phone ? record.phone.replace(/^0/, '962') : '962775549700'; 
+    document.getElementById('btn-wa-report').href = `https://wa.me/${cleanPhone}?text=${waMsg}`;
+
+    const processBtn = document.getElementById('btn-process-report');
+    if (record.isProcessed) {
+        processBtn.style.display = 'none'; 
+    } else {
+        processBtn.style.display = 'flex';
+        processBtn.onclick = async () => {
+            await updateDoc(doc(db, "tests", testId), { isProcessed: true });
+            document.getElementById('online-report-modal').style.display = 'none';
+            Swal.fire({ icon: 'success', title: 'تمت المراجعة', timer: 1500, showConfirmButton: false });
+        };
+    }
+
+    document.getElementById('online-report-modal').style.display = 'flex';
+};
 
 function startSync() {
+    // ================== سحب تقارير الفحص الذكي (الأونلاين) ==================
+    onSnapshot(query(collection(db, "tests"), orderBy("timestamp", "desc")), (s) => {
+        let tbOnlineHtml = "";
+        window.allOnlineTests = [];
+
+        s.forEach(d => {
+            const data = d.data();
+            const testRecord = { id: d.id, ...data };
+            window.allOnlineTests.push(testRecord);
+
+            const dateObj = data.timestamp?.toDate();
+            const dateStr = dateObj ? dateObj.toLocaleDateString('en-GB') : '--';
+            const timeStr = dateObj ? dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '--';
+            
+            const statusLabel = data.isProcessed ? '<span class="badge" style="background:#10b981; color:white;">مكتمل</span>' : '<span class="badge" style="background:#f59e0b; color:white;">جديد</span>';
+            const actionBtnClass = data.isProcessed ? 'btn-dark' : 'btn-primary';
+
+            tbOnlineHtml += `
+                <tr>
+                    <td style="font-weight:bold; color:var(--text-main);">${data.name || '---'}</td>
+                    <td class="en-num" style="color:var(--primary); font-weight:bold;">${data.phone || '---'}</td>
+                    <td class="en-num">${dateStr} <small style="color:var(--text-muted);">${timeStr}</small></td>
+                    <td>${statusLabel}</td>
+                    <td>
+                        <button class="btn ${actionBtnClass}" onclick="openOnlineReport('${d.id}')" style="padding: 5px 10px;"><i class="fas fa-microscope"></i> عرض</button>
+                    </td>
+                </tr>
+            `;
+        });
+        if(document.getElementById('tb-online-rx')) document.getElementById('tb-online-rx').innerHTML = tbOnlineHtml;
+    });
+
     onSnapshot(query(collection(db, "brands"), orderBy("timestamp", "desc")), (s) => {
         let html = "";
         s.forEach(d => {

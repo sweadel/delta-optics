@@ -141,24 +141,54 @@ window.saveProduct = async () => {
 window.softDeleteProduct = async (id, data) => { if (confirm('نقل للمحذوفات؟')) { await addDoc(collection(db, "recycle_bin"), { ...data, deletedAt: serverTimestamp(), deletedBy: Auth.user.name }); await deleteDoc(doc(db, "products", id)); logAudit(`حذف منتج: ${data.name}`); } };
 window.restoreProduct = async (id, data) => { await addDoc(collection(db, "products"), { name: data.name, price: data.price, type: data.type, qty: data.qty, img: data.img, time: serverTimestamp() }); await deleteDoc(doc(db, "recycle_bin", id)); logAudit(`استرجاع منتج: ${data.name}`); };
 
+// ================== تشكيلات الموقع الخارجي (المعرض) المحدثة ==================
 window.resetExtColForm = () => {
-    document.getElementById('ext-col-id').value = ""; document.getElementById('ext-col-name').value = ""; document.getElementById('ext-col-desc').value = ""; 
-    document.getElementById('ext-col-base64').value = ""; document.getElementById('ext-col-preview').style.display = "none";
+    document.getElementById('ext-col-id').value = ""; 
+    document.getElementById('ext-col-name').value = ""; 
+    document.getElementById('ext-col-type').value = "medical"; // افتراضي
+    document.getElementById('ext-col-base64').value = ""; 
+    document.getElementById('ext-col-preview').style.display = "none";
 };
-window.loadExtCollectionForEdit = (id, name, desc, img) => {
-    document.getElementById('ext-col-id').value = id; document.getElementById('ext-col-name').value = name; document.getElementById('ext-col-desc').value = desc || ""; 
+
+window.loadExtCollectionForEdit = (id, name, type, img) => {
+    document.getElementById('ext-col-id').value = id; 
+    document.getElementById('ext-col-name').value = name; 
+    document.getElementById('ext-col-type').value = type || "medical"; 
     document.getElementById('ext-col-base64').value = img || ""; 
-    if(img) { document.getElementById('ext-col-preview').src = img; document.getElementById('ext-col-preview').style.display = "block"; }
-    window.scrollTo({ top: 0, behavior: 'smooth' }); Swal.fire({ icon: 'info', title: 'وضع التعديل', text: 'قم بتغيير الصورة أو البيانات ثم اضغط حفظ', timer: 2000, showConfirmButton: false });
+    if(img) { 
+        document.getElementById('ext-col-preview').src = img; 
+        document.getElementById('ext-col-preview').style.display = "block"; 
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' }); 
+    Swal.fire({ icon: 'info', title: 'وضع التعديل', text: 'قم بتغيير الصورة أو البيانات ثم اضغط حفظ', timer: 2000, showConfirmButton: false });
 };
+
 window.saveExtCollection = async () => {
-    const id = document.getElementById('ext-col-id').value, name = document.getElementById('ext-col-name').value, desc = document.getElementById('ext-col-desc').value, img = document.getElementById('ext-col-base64').value;
-    if (!name) return Swal.fire('تنبيه', 'الاسم إجباري', 'warning');
-    if (id) { await updateDoc(doc(db, "ext_collections", id), { name, desc, img }); Swal.fire('تم', 'تم تحديث بيانات التشكيلة والصورة', 'success'); logAudit(`تحديث تشكيلة: ${name}`); } 
-    else { await addDoc(collection(db, "ext_collections"), { name, desc, img, time: serverTimestamp() }); Swal.fire('تم', 'تم إضافة التشكيلة للموقع', 'success'); logAudit(`إضافة تشكيلة: ${name}`); }
+    const id = document.getElementById('ext-col-id').value;
+    const name = document.getElementById('ext-col-name').value;
+    const type = document.getElementById('ext-col-type').value;
+    const img = document.getElementById('ext-col-base64').value;
+    
+    if (!name || !img) return Swal.fire('تنبيه', 'الاسم والصورة إجباريات!', 'warning');
+
+    if (id) { 
+        await updateDoc(doc(db, "brands", id), { name, type, imageUrl: img }); 
+        Swal.fire('تم', 'تم تحديث الموديل والصورة', 'success'); 
+        logAudit(`تحديث موديل في المعرض: ${name}`); 
+    } else { 
+        await addDoc(collection(db, "brands"), { name, type, imageUrl: img, timestamp: serverTimestamp() }); 
+        Swal.fire('تم', 'تم إضافة الموديل للمعرض', 'success'); 
+        logAudit(`إضافة موديل للمعرض: ${name}`); 
+    }
     resetExtColForm();
 };
-window.deleteExtCollection = async (id, name) => { if (confirm(`حذف التشكيلة ${name} بصورتها نهائياً؟`)) { await deleteDoc(doc(db, "ext_collections", id)); logAudit(`حذف تشكيلة: ${name}`); } };
+
+window.deleteExtCollection = async (id, name) => { 
+    if (confirm(`هل أنت متأكد من حذف الموديل "${name}" نهائياً من المعرض؟`)) { 
+        await deleteDoc(doc(db, "brands", id)); 
+        logAudit(`حذف موديل من المعرض: ${name}`); 
+    } 
+};
 
 window.saveStaff = async () => { const name = document.getElementById('s-name').value, user = document.getElementById('s-user').value, pass = document.getElementById('s-pass').value, role = document.getElementById('s-role').value; await addDoc(collection(db, "users"), { name, user, pass, role, status: "active", time: serverTimestamp() }); logAudit(`إنشاء حساب: ${name}`); Swal.fire('نجاح', 'تم الحفظ', 'success'); };
 window.changeUserPassword = async (id) => { const { value: newPass } = await Swal.fire({ title: 'الباسوورد الجديد', input: 'text' }); if (newPass) { await updateDoc(doc(db, "users", id), { pass: newPass }); Swal.fire('تم', 'تغير الباسوورد', 'success'); } };
@@ -186,15 +216,25 @@ window.saveCMS = async () => {
 window.processOnlineRx = async (id, name) => { await updateDoc(doc(db, "online_rx_requests"), { status: 'مكتمل' }); Swal.fire('تم', 'مراجعة الطلب', 'success'); logSecretAction(`عالج طلب أونلاين: ${name}`); };
 
 function startSync() {
-    onSnapshot(query(collection(db, "ext_collections"), orderBy("time", "desc")), (s) => {
-        let html = "", pTypeHtml = "<option value='طبي'>طبي (أساسي)</option><option value='شمسي'>شمسي (أساسي)</option>";
+    // مزامنة تشكيلات المعرض (Brands) للادمن
+    onSnapshot(query(collection(db, "brands"), orderBy("timestamp", "desc")), (s) => {
+        let html = "";
         s.forEach(d => {
-            const data = d.data(); const imgSrc = data.img ? `<img src="${data.img}" class="img-preview" style="width:40px; border-radius:4px;">` : '<span class="badge">لا يوجد صورة</span>';
-            html += `<tr><td>${imgSrc}</td><td>${data.name}</td><td>${data.desc || '--'}</td><td><button class="btn btn-warning" onclick='loadExtCollectionForEdit("${d.id}", "${data.name}", "${data.desc||''}", "${data.img||''}")'><i class="fas fa-edit"></i> تعديل</button> <button class="btn btn-danger" onclick="deleteExtCollection('${d.id}', '${data.name}')"><i class="fas fa-trash"></i> حذف</button></td></tr>`;
-            pTypeHtml += `<option value="${data.name}">${data.name}</option>`;
+            const data = d.data(); 
+            const imgSrc = data.imageUrl ? `<img src="${data.imageUrl}" class="img-preview" style="width:40px; border-radius:4px;">` : '<span class="badge">لا يوجد صورة</span>';
+            const typeLabel = data.type === 'sun' ? '<span class="badge" style="background:#f59e0b; color:white;">شمسي</span>' : '<span class="badge" style="background:#0e7490; color:white;">طبي</span>';
+            
+            html += `<tr>
+                <td>${imgSrc}</td>
+                <td>${data.name}</td>
+                <td>${typeLabel}</td>
+                <td>
+                    <button class="btn btn-warning" onclick='loadExtCollectionForEdit("${d.id}", "${data.name}", "${data.type}", "${data.imageUrl||''}")'><i class="fas fa-edit"></i> تعديل</button> 
+                    <button class="btn btn-danger" onclick="deleteExtCollection('${d.id}', '${data.name}')"><i class="fas fa-trash"></i> حذف</button>
+                </td>
+            </tr>`;
         });
         if(document.getElementById('tb-ext-collections')) document.getElementById('tb-ext-collections').innerHTML = html;
-        if(document.getElementById('p-type')) document.getElementById('p-type').innerHTML = pTypeHtml;
     });
 
     onSnapshot(query(collection(db, "rx_records"), orderBy("time", "desc")), (s) => {

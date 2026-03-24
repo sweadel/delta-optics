@@ -8,22 +8,61 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        /* تحسينات الواجهة والأزرار السريعة */
-        .quick-time-btn { background: var(--surface); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.85rem; transition: 0.2s; display: flex; align-items: center; gap: 5px; justify-content: center; }
-        .quick-time-btn:hover { background: var(--light); }
-        .quick-open { color: var(--success); border-color: var(--success); }
-        .quick-close { color: var(--danger); border-color: var(--danger); }
+        /* ================= تصميم العيادة الاحترافي الجديد ================= */
+        .erp-row { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; margin-top: 15px; }
+        .erp-col-main { flex: 2; min-width: 350px; display: flex; flex-direction: column; gap: 20px; }
+        .erp-col-side { flex: 1.2; min-width: 300px; display: flex; flex-direction: column; gap: 20px; }
         
-        .unified-section { background: rgba(14, 116, 144, 0.02); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; transition: 0.3s; }
-        .unified-section:hover { border-color: var(--primary); box-shadow: 0 4px 15px rgba(14, 116, 144, 0.05); }
-        .unified-title { color: var(--primary); font-weight: 900; margin-bottom: 15px; border-bottom: 2px solid var(--primary); padding-bottom: 5px; display: inline-block; }
-        .rx-input { padding: 10px; border-radius: 8px; border: 1px solid var(--border); text-align: center; width: 100%; font-weight: bold; font-family: monospace; font-size: 1.1rem; }
-        .rx-input:focus { border-color: var(--primary); outline: none; }
-        .sales-row { display: flex; gap: 10px; margin-bottom: 12px; align-items: center; }
-        .sales-row input[type="text"] { flex: 2; padding: 10px; border-radius: 8px; border: 1px solid var(--border); }
-        .sales-row input[type="number"] { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--border); text-align: center; font-weight: bold; color: var(--primary); font-family: monospace; font-size: 1.1rem; }
+        .erp-card-pro { background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; }
+        .erp-card-header { background: #f8fafc; padding: 15px 20px; font-weight: 900; color: var(--primary); border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px; font-size: 1.1rem; }
+        .erp-card-body { padding: 20px; }
         
-        /* نافذة سجل المريض */
+        .erp-input-group { margin-bottom: 15px; }
+        .erp-input-group label { display: block; font-size: 0.85rem; font-weight: bold; color: #64748b; margin-bottom: 5px; }
+        .erp-input { width: 100%; padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 10px; font-family: 'Tajawal', sans-serif; font-size: 1rem; transition: 0.3s; background: #f8fafc; color: #0f172a; outline: none; }
+        .erp-input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(14, 116, 144, 0.1); }
+        
+        /* إجبار الأرقام تكون إنجليزي زي الآلة الحاسبة */
+        .erp-num { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important; direction: ltr !important; text-align: center; font-weight: 700; }
+        
+        .rx-table-modern { width: 100%; border-collapse: separate; border-spacing: 6px; }
+        .rx-table-modern th { font-size: 0.85rem; color: #64748b; font-weight: bold; padding-bottom: 5px; text-align: center; }
+        .rx-table-modern td { padding: 0; }
+        .rx-table-modern .erp-input { text-align: center; padding: 10px 5px; font-size: 1.1rem; font-weight: bold; color: var(--primary); }
+        
+        .product-row { display: flex; gap: 10px; margin-bottom: 12px; align-items: center; background: #f8fafc; padding: 10px; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .product-icon { width: 40px; height: 40px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 1.2rem; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .product-row input[type="text"] { flex: 2; border: none; background: transparent; font-weight: bold; padding: 5px; outline: none; font-family: 'Tajawal', sans-serif;}
+        .product-row input[type="number"] { flex: 1; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px; background: white; }
+
+        /* الآلة الحاسبة الاحترافية (Dark Mode) */
+        .calc-box { background: #0f172a; color: white; border-radius: 16px; padding: 25px; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2); }
+        .calc-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 1.1rem; }
+        .calc-label { color: #94a3b8; font-weight: bold; font-size: 0.95rem; }
+        .calc-val { background: transparent; border: none; color: white; text-align: right; font-family: monospace; font-size: 1.3rem; font-weight: bold; width: 120px; outline: none; direction: ltr; }
+        
+        .calc-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 15px 0; }
+        
+        .calc-total-row { display: flex; justify-content: space-between; align-items: center; font-size: 1.5rem; font-weight: 900; color: #10b981; margin-bottom: 15px; }
+        .calc-total-val { background: transparent; border: none; color: #10b981; text-align: right; font-family: monospace; font-size: 1.8rem; width: 150px; font-weight: 900; direction: ltr;}
+        
+        .calc-paid-row { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1); }
+        .calc-paid-input { background: #fff; border: 2px solid var(--primary); color: var(--primary); padding: 8px; border-radius: 8px; width: 120px; font-size: 1.3rem; font-weight: 900; text-align: center; }
+        
+        .calc-due-row { display: flex; justify-content: space-between; align-items: center; font-size: 1.3rem; font-weight: 900; color: #ef4444; }
+        
+        .btn-print-magic { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white; border: none; width: 100%; padding: 20px; border-radius: 12px; font-size: 1.2rem; font-weight: 900; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(14, 165, 233, 0.3); display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 15px; }
+        .btn-print-magic:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(14, 165, 233, 0.4); }
+
+        /* تنسيق الطباعة لورقة العيادة A5 */
+        @media print {
+            body * { visibility: hidden; }
+            #print-report, #print-report * { visibility: visible; }
+            #print-report { position: absolute; left: 0; top: 0; width: 100%; display: flex; justify-content: center; }
+            .prescription-card { width: 14cm; padding: 20px; font-family: 'Tajawal', sans-serif; border: 1px solid #ddd; background: white; }
+            .prescription-card th, .prescription-card td { padding: 8px; font-size: 0.95rem; }
+        }
+
         #history-modal .modal-content { max-width: 800px; width: 90%; background: var(--bg-color); }
         .history-table th { background: var(--primary); color: white; }
     </style>
@@ -48,15 +87,7 @@
             </div>
             <div class="table-wrapper">
                 <table class="history-table">
-                    <thead>
-                        <tr>
-                            <th>التاريخ</th>
-                            <th>رقم الملف</th>
-                            <th>تفاصيل المشتريات</th>
-                            <th>الإجمالي</th>
-                            <th>إجراءات</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>التاريخ</th><th>رقم الملف</th><th>التفاصيل</th><th>الإجمالي</th><th>إجراءات</th></tr></thead>
                     <tbody id="tb-patient-history"></tbody>
                 </table>
             </div>
@@ -67,8 +98,8 @@
         <div class="logo-box"><h2 style="font-weight: 900; color: var(--primary);">DELTA</h2><small style="color: #cbd5e1;">Enterprise ERP</small></div>
         <div class="nav-label">العمليات اليومية</div>
         <button class="nav-link active" onclick="showView('dash')"><i class="fas fa-home"></i> الرئيسية</button>
-        <button class="nav-link" onclick="showView('rx')"><i class="fas fa-file-medical-alt"></i> الملف الشامل (العيادة)</button>
-        <button class="nav-link" onclick="showView('pos')"><i class="fas fa-cash-register"></i> مبيعات سريعة (POS)</button>
+        <button class="nav-link" onclick="showView('rx')"><i class="fas fa-file-medical-alt"></i> العيادة (الملف الشامل)</button>
+        <button class="nav-link" onclick="showView('pos')"><i class="fas fa-cash-register"></i> مبيعات سريعة</button>
         <button class="nav-link" onclick="showView('online-rx')"><i class="fas fa-globe"></i> فحوصات الموقع</button>
         <div class="nav-label">اللوجستيات</div>
         <button class="nav-link" onclick="showView('inv')"><i class="fas fa-boxes"></i> المخزون</button>
@@ -105,118 +136,142 @@
                 </div>
             </section>
             
-            <section id="pos" class="view">
-                <div class="card"><h3 class="card-title"><i class="fas fa-file-invoice-dollar"></i> بيع سريع (بدون فحص)</h3><div class="grid-4"><select id="pos-patient"><option value="">-- المراجع --</option></select><select id="pos-product" onchange="updatePosPrice()"><option value="">-- المنتج --</option></select><input type="number" id="pos-total" placeholder="الإجمالي" readonly dir="ltr"><input type="number" id="pos-paid" placeholder="المدفوع" dir="ltr"></div><button class="btn btn-success" style="margin-top:20px; width: 100%; justify-content: center;" onclick="createInvoice()">إتمام البيع والطباعة</button></div>
-                <div class="card"><h3 class="card-title">سجل الفواتير السريعة</h3><div class="table-wrapper"><table><thead><tr><th>الفاتورة</th><th>المراجع</th><th>المنتج</th><th>القيمة</th><th>المتبقي</th></tr></thead><tbody id="tb-invc"></tbody></table></div></div>
-            </section>
-
             <section id="rx" class="view">
-                <div class="card" style="border-top: 5px solid var(--primary);">
-                    <h3 class="card-title" style="font-size: 1.5rem;"><i class="fas fa-clipboard-list"></i> عيادة البصريات (ملف فحص ومبيعات)</h3>
-                    
-                    <datalist id="patients-list"></datalist>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+                    <h2 style="color: var(--primary); font-weight: 900; margin:0;"><i class="fas fa-file-medical-alt"></i> لوحة العيادة (الملف الشامل)</h2>
+                </div>
+                
+                <datalist id="patients-list"></datalist> <div class="erp-row">
+                    <div class="erp-col-main">
+                        <div class="erp-card-pro">
+                            <div class="erp-card-header"><i class="fas fa-user-injured"></i> 1. بيانات المراجع</div>
+                            <div class="erp-card-body grid-2">
+                                <div class="erp-input-group">
+                                    <label>اسم المراجع (إلزامي للبحث)</label>
+                                    <input type="text" id="u-name" list="patients-list" class="erp-input" placeholder="ابحث أو أضف اسم جديد...">
+                                </div>
+                                <div class="erp-input-group">
+                                    <label>رقم الهاتف (اختياري)</label>
+                                    <input type="text" id="u-phone" class="erp-input erp-num" placeholder="07XXXXXXXX">
+                                </div>
+                            </div>
+                        </div>
 
-                    <div class="unified-section">
-                        <h4 class="unified-title"><i class="fas fa-user"></i> بيانات المراجع</h4>
-                        <div class="grid-2">
-                            <input type="text" id="u-name" list="patients-list" placeholder="اسم المراجع (إجباري - ابحث أو أضف جديد)" class="rx-input" style="text-align: right; font-family: 'Tajawal', sans-serif;">
-                            <input type="text" id="u-phone" placeholder="رقم الهاتف (اختياري)" class="rx-input" style="text-align: right;" dir="ltr">
+                        <div class="erp-card-pro">
+                            <div class="erp-card-header"><i class="fas fa-eye"></i> 2. القياسات الطبية (Rx)</div>
+                            <div class="erp-card-body">
+                                <table class="rx-table-modern">
+                                    <tr><th></th><th>SPH</th><th>CYL</th><th>AXIS</th><th>ADD</th></tr>
+                                    <tr>
+                                        <td style="font-weight:900; color:var(--primary); text-align:left; padding-left:10px;">Right (OD)</td>
+                                        <td><input type="text" id="u-od-s" class="erp-input erp-num" placeholder="0.00"></td>
+                                        <td><input type="text" id="u-od-c" class="erp-input erp-num" placeholder="0.00"></td>
+                                        <td><input type="text" id="u-od-a" class="erp-input erp-num" placeholder="0"></td>
+                                        <td><input type="text" id="u-od-add" class="erp-input erp-num" placeholder="0.00"></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight:900; color:var(--success); text-align:left; padding-left:10px;">Left (OS)</td>
+                                        <td><input type="text" id="u-os-s" class="erp-input erp-num" placeholder="0.00"></td>
+                                        <td><input type="text" id="u-os-c" class="erp-input erp-num" placeholder="0.00"></td>
+                                        <td><input type="text" id="u-os-a" class="erp-input erp-num" placeholder="0"></td>
+                                        <td><input type="text" id="u-os-add" class="erp-input erp-num" placeholder="0.00"></td>
+                                    </tr>
+                                </table>
+                                <div class="grid-2" style="margin-top: 15px;">
+                                    <div class="erp-input-group" style="margin:0;"><label>المسافة الحدقية (PD)</label><input type="text" id="u-pd" class="erp-input erp-num" placeholder="60"></div>
+                                    <div class="erp-input-group" style="margin:0;"><label>ملاحظات طبية</label><input type="text" id="u-notes" class="erp-input" placeholder="اكتب ملاحظاتك هنا..."></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="unified-section">
-                        <h4 class="unified-title"><i class="fas fa-eye"></i> القياسات الطبية (Rx)</h4>
-                        <div class="rx-grid" style="grid-template-columns: 50px 1fr 1fr 1fr 1fr; text-align: center; gap: 10px;">
-                            <div></div><strong>SPH</strong><strong>CYL</strong><strong>AXIS</strong><strong>ADD</strong>
-                            <strong style="color:var(--primary); display:flex; align-items:center; justify-content:center;">OD</strong>
-                            <input type="text" id="u-od-s" class="rx-input" dir="ltr"><input type="text" id="u-od-c" class="rx-input" dir="ltr"><input type="text" id="u-od-a" class="rx-input" dir="ltr"><input type="text" id="u-od-add" class="rx-input" dir="ltr">
-                            <strong style="color:var(--success); display:flex; align-items:center; justify-content:center;">OS</strong>
-                            <input type="text" id="u-os-s" class="rx-input" dir="ltr"><input type="text" id="u-os-c" class="rx-input" dir="ltr"><input type="text" id="u-os-a" class="rx-input" dir="ltr"><input type="text" id="u-os-add" class="rx-input" dir="ltr">
+                    <div class="erp-col-side">
+                        <div class="erp-card-pro">
+                            <div class="erp-card-header"><i class="fas fa-shopping-cart"></i> 3. المنتجات المباعة</div>
+                            <div class="erp-card-body" style="padding-bottom: 5px;">
+                                <div class="product-row">
+                                    <div class="product-icon"><i class="fas fa-glasses"></i></div>
+                                    <input type="text" id="u-frame-type" placeholder="نوع وماركة الإطار">
+                                    <input type="number" id="u-frame-price" class="erp-num" placeholder="السعر" oninput="calcUnifiedTotal()" min="0">
+                                </div>
+                                <div class="product-row">
+                                    <div class="product-icon"><i class="fas fa-eye"></i></div>
+                                    <input type="text" id="u-lenses-type" placeholder="العدسات الطبية">
+                                    <input type="number" id="u-lenses-price" class="erp-num" placeholder="السعر" oninput="calcUnifiedTotal()" min="0">
+                                </div>
+                                <div class="product-row">
+                                    <div class="product-icon"><i class="fas fa-dot-circle"></i></div>
+                                    <input type="text" id="u-cl-type" placeholder="عدسات لاصقة">
+                                    <input type="number" id="u-cl-price" class="erp-num" placeholder="السعر" oninput="calcUnifiedTotal()" min="0">
+                                </div>
+                                <div class="product-row">
+                                    <div class="product-icon"><i class="fas fa-prescription-bottle"></i></div>
+                                    <input type="text" id="u-extras-type" placeholder="أخرى (قطرات، اكسسوارات)">
+                                    <input type="number" id="u-extras-price" class="erp-num" placeholder="السعر" oninput="calcUnifiedTotal()" min="0">
+                                </div>
+                            </div>
                         </div>
-                        <div class="grid-2" style="margin-top: 15px;">
-                            <input type="text" id="u-pd" placeholder="المسافة الحدقية (PD)" class="rx-input" dir="ltr">
-                            <input type="text" id="u-notes" placeholder="ملاحظات طبية إضافية..." class="rx-input" style="font-family: 'Tajawal', sans-serif;">
-                        </div>
-                    </div>
 
-                    <div class="unified-section">
-                        <h4 class="unified-title"><i class="fas fa-shopping-bag"></i> تفاصيل المشتريات (إن وجدت)</h4>
-                        <div class="sales-row"><i class="fas fa-glasses" style="width:25px; color:var(--text-muted);"></i><input type="text" id="u-frame-type" placeholder="نوع وماركة الإطار"><input type="number" step="any" id="u-frame-price" placeholder="السعر" dir="ltr" oninput="calcUnifiedTotal()" min="0"></div>
-                        <div class="sales-row"><i class="fas fa-eye" style="width:25px; color:var(--text-muted);"></i><input type="text" id="u-lenses-type" placeholder="نوع العدسات الطبية"><input type="number" step="any" id="u-lenses-price" placeholder="السعر" dir="ltr" oninput="calcUnifiedTotal()" min="0"></div>
-                        <div class="sales-row"><i class="fas fa-dot-circle" style="width:25px; color:var(--text-muted);"></i><input type="text" id="u-cl-type" placeholder="عدسات لاصقة"><input type="number" step="any" id="u-cl-price" placeholder="السعر" dir="ltr" oninput="calcUnifiedTotal()" min="0"></div>
-                        <div class="sales-row"><i class="fas fa-prescription-bottle" style="width:25px; color:var(--text-muted);"></i><input type="text" id="u-extras-type" placeholder="أخرى (محلول، قطرات)"><input type="number" step="any" id="u-extras-price" placeholder="السعر" dir="ltr" oninput="calcUnifiedTotal()" min="0"></div>
-                    </div>
-
-                    <div class="unified-section" style="background: var(--surface); border: 2px solid var(--border); box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
-                        <div class="grid-4" style="gap: 15px; align-items: end;">
-                            <div style="text-align:center;"><label style="font-weight:900; color:var(--text-muted); font-size: 0.9rem;">المجموع</label><input type="number" id="u-subtotal" readonly style="font-weight:900; color:var(--text-main); font-size:1.5rem; text-align:center; width:100%; border:none; background:transparent; font-family: monospace;" dir="ltr" value="0"></div>
-                            
-                            <div style="text-align:center;">
-                                <label style="font-weight:900; color:var(--warning); font-size: 0.9rem;">الخصم %</label>
-                                <select id="u-discount" style="width:100%; padding:10px; border-radius:8px; border:1px solid var(--border); font-weight:bold; text-align:center; background: white; font-family: monospace;" onchange="calcUnifiedTotal()" dir="ltr">
+                        <div class="calc-box">
+                            <div class="calc-row">
+                                <span class="calc-label">المجموع (Subtotal)</span>
+                                <input type="text" id="u-subtotal" class="calc-val" readonly value="0.00">
+                            </div>
+                            <div class="calc-row">
+                                <span class="calc-label">نسبة الخصم (Discount)</span>
+                                <select id="u-discount" class="erp-input erp-num" style="width:100px; padding:5px 10px;" onchange="calcUnifiedTotal()">
                                     <option value="0">0%</option><option value="10">10%</option><option value="20">20%</option><option value="30">30%</option><option value="40">40%</option><option value="50">50%</option><option value="60">60%</option><option value="70">70%</option><option value="80">80%</option><option value="90">90%</option><option value="100">100%</option>
                                 </select>
                             </div>
-
-                            <div style="text-align:center; background: rgba(16, 185, 129, 0.1); padding: 10px; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.3);"><label style="font-weight:900; color:var(--success); font-size: 0.9rem;">النهائي</label><input type="number" id="u-total" readonly style="font-weight:900; color:var(--success); font-size:1.8rem; text-align:center; width:100%; border:none; background:transparent; font-family: monospace;" dir="ltr" value="0"></div>
-
-                            <div style="text-align:center;"><label style="font-weight:900; color:var(--primary); font-size: 0.9rem;">المدفوع</label><input type="number" step="any" id="u-paid" style="font-weight:900; color:var(--primary); font-size:1.5rem; text-align:center; width:100%; border-bottom: 2px solid var(--primary); background:transparent; font-family: monospace;" dir="ltr" oninput="calcUnifiedTotal()" min="0"></div>
+                            <div class="calc-divider"></div>
+                            <div class="calc-total-row">
+                                <span>الإجمالي (Total)</span>
+                                <input type="text" id="u-total" class="calc-total-val" readonly value="0.00">
+                            </div>
+                            <div class="calc-paid-row">
+                                <span class="calc-label" style="color:#fff;">المدفوع نقداً (Paid)</span>
+                                <input type="number" id="u-paid" class="calc-paid-input erp-num" placeholder="0.00" oninput="calcUnifiedTotal()" min="0">
+                            </div>
+                            <div class="calc-due-row">
+                                <span>المتبقي (Due)</span>
+                                <span id="u-due-display" dir="ltr">0.00 JOD</span>
+                                <input type="hidden" id="u-due" value="0">
+                            </div>
                         </div>
-                        <div style="text-align:center; margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--border);"><label style="font-weight:900; color:var(--danger); font-size: 1rem;">المتبقي للدفع:</label> <span id="u-due-display" style="font-weight:900; color:var(--danger); font-size:2rem; font-family: monospace;" dir="ltr">0.00 JOD</span><input type="hidden" id="u-due" value="0"></div>
-                    </div>
 
-                    <button class="btn btn-primary" style="width:100%; padding:18px; font-size:1.2rem; justify-content:center; border-radius: 12px; margin-top: 20px;" onclick="saveUnifiedRecord()"><i class="fas fa-print"></i> حفظ وإصدار وصفة العيادة</button>
+                        <button class="btn-print-magic" onclick="saveUnifiedRecord()">
+                            <i class="fas fa-print"></i> حفظ وإصدار الوصفة (Print)
+                        </button>
+                    </div>
                 </div>
 
-                <div class="card">
-                    <h3 class="card-title">سجل المراجعين العام</h3>
+                <div class="card" style="margin-top: 30px;">
+                    <h3 class="card-title"><i class="fas fa-users"></i> أرشيف مراجعي العيادة (انقر لفتح السجل)</h3>
                     <div class="table-wrapper">
                         <table>
-                            <thead><tr><th>اسم المراجع</th><th>أحدث زيارة</th><th>إجمالي المشتريات</th><th>إجراءات</th></tr></thead>
+                            <thead><tr><th>اسم المراجع</th><th>أحدث زيارة</th><th>إجمالي إنفاقه</th><th>إجراءات</th></tr></thead>
                             <tbody id="tb-unified-rx"></tbody>
                         </table>
                     </div>
                 </div>
             </section>
 
-            <section id="online-rx" class="view"><div class="card"><h3 class="card-title"><i class="fas fa-globe"></i> طلبات الفحص الأونلاين</h3><div class="table-wrapper"><table><thead><tr><th>الاسم</th><th>الهاتف</th><th>التاريخ</th><th>الحالة</th><th>مراجعة</th></tr></thead><tbody id="tb-online-rx"></tbody></table></div></div></section>
-            <section id="inv" class="view"><div class="card"><h3 class="card-title"><i class="fas fa-box-open"></i> إضافة منتج للمخزون</h3><div class="grid-3"><input type="text" id="p-name" placeholder="الاسم"><input type="number" id="p-price" placeholder="السعر" dir="ltr"><input type="number" id="p-qty" placeholder="الكمية" dir="ltr"></div><div class="grid-2" style="margin-top:20px;"><select id="p-type"><option value="طبي">طبي</option></select><div style="display:flex; gap:10px; align-items: center;"><strong>الصورة:</strong><input type="file" accept="image/*" onchange="compressImage(event, 'p-base64')"><input type="hidden" id="p-base64"></div></div><button class="btn btn-primary" style="margin-top:20px;" onclick="saveProduct()">حفظ للمستودع</button></div><div class="card"><h3 class="card-title">المستودع <button class="btn btn-success admin-only" onclick="exportToCSV('inv-table', 'المخزون.csv')"><i class="fas fa-file-excel"></i> تصدير</button></h3><div class="table-wrapper"><table id="inv-table"><thead><tr><th>صورة</th><th>المنتج</th><th>التصنيف</th><th>الكمية</th><th>السعر</th><th>إجراءات</th></tr></thead><tbody id="tb-inv"></tbody></table></div></div></section>
-            <section id="lab" class="view"><div class="card"><h3 class="card-title"><i class="fas fa-cogs"></i> مختبر التجهيز</h3><div class="table-wrapper"><table><thead><tr><th>الفاتورة</th><th>المراجع</th><th>التفاصيل</th><th>حالة المختبر</th></tr></thead><tbody id="tb-lab"></tbody></table></div></div></section>
+            <section id="pos" class="view"><div class="card"><h3 class="card-title">بيع سريع</h3><div class="grid-4"><select id="pos-patient"><option value="">-- المراجع --</option></select><select id="pos-product" onchange="updatePosPrice()"><option value="">-- المنتج --</option></select><input type="number" id="pos-total" placeholder="الإجمالي" readonly dir="ltr"><input type="number" id="pos-paid" placeholder="المدفوع" dir="ltr"></div><button class="btn btn-success" style="margin-top:20px; width: 100%; justify-content: center;" onclick="createInvoice()">إتمام البيع</button></div><div class="card"><h3 class="card-title">سجل الفواتير السريعة</h3><div class="table-wrapper"><table><thead><tr><th>الفاتورة</th><th>المراجع</th><th>المنتج</th><th>القيمة</th><th>المتبقي</th></tr></thead><tbody id="tb-invc"></tbody></table></div></div></section>
+            <section id="online-rx" class="view"><div class="card"><h3 class="card-title">طلبات الفحص الأونلاين</h3><div class="table-wrapper"><table><thead><tr><th>الاسم</th><th>الهاتف</th><th>التاريخ</th><th>الحالة</th><th>مراجعة</th></tr></thead><tbody id="tb-online-rx"></tbody></table></div></div></section>
+            <section id="inv" class="view"><div class="card"><h3 class="card-title">إضافة منتج للمخزون</h3><div class="grid-3"><input type="text" id="p-name" placeholder="الاسم"><input type="number" id="p-price" placeholder="السعر" dir="ltr"><input type="number" id="p-qty" placeholder="الكمية" dir="ltr"></div><div class="grid-2" style="margin-top:20px;"><select id="p-type"><option value="طبي">طبي</option></select><div style="display:flex; gap:10px; align-items: center;"><strong>الصورة:</strong><input type="file" accept="image/*" onchange="compressImage(event, 'p-base64')"><input type="hidden" id="p-base64"></div></div><button class="btn btn-primary" style="margin-top:20px;" onclick="saveProduct()">حفظ للمستودع</button></div><div class="card"><h3 class="card-title">المستودع</h3><div class="table-wrapper"><table id="inv-table"><thead><tr><th>صورة</th><th>المنتج</th><th>التصنيف</th><th>الكمية</th><th>السعر</th><th>إجراءات</th></tr></thead><tbody id="tb-inv"></tbody></table></div></div></section>
+            <section id="lab" class="view"><div class="card"><h3 class="card-title">مختبر التجهيز</h3><div class="table-wrapper"><table><thead><tr><th>الفاتورة</th><th>المراجع</th><th>التفاصيل</th><th>حالة المختبر</th></tr></thead><tbody id="tb-lab"></tbody></table></div></div></section>
             <section id="chat" class="view"><div class="card" style="height:600px; display:flex; flex-direction:column; padding:0;"><div style="padding:20px; border-bottom:1px solid var(--border);"><h3 style="margin: 0;">الشات الداخلي</h3></div><div id="chat-box" style="flex:1; padding:20px; overflow-y:auto;"></div><div style="padding:20px; display:flex; gap:10px; border-top:1px solid var(--border);"><input type="text" id="chat-input" placeholder="رسالتك..."><button class="btn btn-primary" onclick="sendChat()">إرسال</button></div></div></section>
-            <section id="ext-collections" class="view admin-only"><div class="card"><h3 class="card-title"><i class="fas fa-images"></i> إدارة معرض التشكيلات</h3><input type="hidden" id="ext-col-id"><div class="grid-2" style="margin-bottom: 20px;"><input type="text" id="ext-col-name" placeholder="اسم الموديل" style="padding:10px; border-radius:8px; border:1px solid var(--border);"><select id="ext-col-type" style="padding:10px; border-radius:8px; border:1px solid var(--border); outline:none;"><option value="medical">طبي</option><option value="sun">شمسي</option></select></div><div style="display:flex; flex-direction:column; gap:10px; border: 1px dashed var(--border); padding: 15px; border-radius: 8px; margin-top:10px; background: rgba(14, 116, 144, 0.03);"><label style="font-weight:bold; color:var(--primary);">صورة الموديل (إجباري):</label><div style="display:flex; align-items:center; gap:15px;"><input type="file" accept="image/*" onchange="compressImage(event, 'ext-col-base64', 'ext-col-preview')"><input type="hidden" id="ext-col-base64"><img id="ext-col-preview" src="" style="width:70px; height:70px; object-fit:cover; border-radius:8px; display:none; border:2px solid var(--primary);"></div></div><div style="display:flex; gap:10px; margin-top:20px;"><button class="btn btn-primary" style="flex:1; padding:12px; font-size:1.1rem; justify-content:center;" onclick="saveExtCollection()"><i class="fas fa-save"></i> حفظ في المعرض</button><button class="btn btn-warning" style="padding:12px;" onclick="resetExtColForm()"><i class="fas fa-times"></i> إلغاء</button></div></div><div class="card"><h3 class="card-title">الموديلات المرفوعة على الموقع</h3><div class="table-wrapper"><table><thead><tr><th>الصورة</th><th>اسم الموديل</th><th>النوع</th><th>إجراءات (تعديل/حذف)</th></tr></thead><tbody id="tb-ext-collections"></tbody></table></div></div></section>
-            <section id="accounts" class="view admin-only"><div class="card"><h3 class="card-title"><i class="fas fa-user-plus"></i> إنشاء حساب</h3><div class="grid-2"><input type="text" id="s-name" placeholder="الاسم"><input type="text" id="s-user" placeholder="اليوزر" dir="ltr"></div><div class="grid-2" style="margin-top:20px;"><input type="password" id="s-pass" placeholder="الباسوورد" dir="ltr"><select id="s-role"><option value="manager">موظف</option><option value="superadmin">مدير</option></select></div><button class="btn btn-primary" style="margin-top:20px;" onclick="saveStaff()">إنشاء حساب</button></div><div class="card"><h3 class="card-title">إدارة حسابات الطاقم</h3><div class="table-wrapper"><table><thead><tr><th>الاسم</th><th>اليوزر</th><th>الصلاحية</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody id="tb-staff"></tbody></table></div></div></section>
-            <section id="cms" class="view admin-only"><div class="card"><h3 class="card-title"><i class="fas fa-laptop-code"></i> التحكم بالواجهة الخارجية</h3><div style="background: rgba(245, 158, 11, 0.1); border-right: 4px solid var(--gold); padding: 15px; border-radius: 8px; margin-bottom: 20px;"><label style="font-weight:bold; margin-bottom: 8px; display: block;"><i class="fas fa-bullhorn" style="color:var(--gold);"></i> شريط الإعلانات الأخضر</label><input type="text" id="cms-topbar" placeholder="مثال: خصم 50%!" style="padding:12px; border-radius:8px; border:1px solid var(--border); width: 100%;"></div><div style="background: rgba(14, 116, 144, 0.05); padding: 20px; border-radius: 15px; border: 1px solid var(--border); margin-bottom: 20px;"><h4 style="margin-bottom: 15px; color: var(--primary); display: flex; justify-content: space-between; align-items: center;"><span><i class="fas fa-clock"></i> أوقات الدوام</span><div style="display: flex; gap: 10px;"><button class="quick-time-btn quick-open" type="button" onclick="setQuickTime('force_open')">فتح الآن</button><button class="quick-time-btn quick-close" type="button" onclick="setQuickTime('force_close')">إغلاق الآن</button><button class="quick-time-btn" style="color:var(--text-muted); border-color:var(--border);" type="button" onclick="setQuickTime('auto')">تلقائي</button></div></h4><div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;"><div style="display:flex; flex-direction:column; gap:5px;"><label style="font-weight:bold; font-size:14px;">وضع المحل</label><select id="cms-status-mode" style="padding:10px; border-radius:8px; border:1px solid var(--border);"><option value="auto">تلقائي</option><option value="force_open">مفتوح دائماً</option><option value="force_close">مغلق دائماً</option></select></div><div style="display:flex; flex-direction:column; gap:5px;"><label style="font-weight:bold; font-size:14px; color:var(--success);">يفتح</label><input type="time" id="cms-open-time" style="padding:10px; border-radius:8px; border:1px solid var(--border);"></div><div style="display:flex; flex-direction:column; gap:5px;"><label style="font-weight:bold; font-size:14px; color:var(--danger);">يغلق</label><input type="time" id="cms-close-time" style="padding:10px; border-radius:8px; border:1px solid var(--border);"></div></div></div><button class="btn btn-success" style="margin-top:10px; width:100%; padding:15px; justify-content:center;" onclick="saveCMS()">تحديث ونشر</button></div></section>
-            <section id="secret-monitor" class="view admin-only"><div class="card" style="border-right: 5px solid var(--danger);"><h3 class="card-title" style="color:var(--danger);"><i class="fas fa-user-secret"></i> المراقبة السرية</h3><div class="table-wrapper"><table><thead><tr><th>الموظف</th><th>الجهاز</th><th>العملية</th><th>الوقت</th></tr></thead><tbody id="tb-secret-audit"></tbody></table></div></div></section>
-            <section id="recycle" class="view admin-only"><div class="card"><h3 class="card-title"><i class="fas fa-trash-restore"></i> المحذوفات</h3><div class="table-wrapper"><table><thead><tr><th>المنتج</th><th>حُذف بواسطة</th><th>استرجاع</th></tr></thead><tbody id="tb-recycle"></tbody></table></div></div></section>
+            <section id="ext-collections" class="view admin-only"><div class="card"><h3 class="card-title">إدارة معرض التشكيلات</h3><input type="hidden" id="ext-col-id"><div class="grid-2" style="margin-bottom: 20px;"><input type="text" id="ext-col-name" placeholder="اسم الموديل" class="erp-input"><select id="ext-col-type" class="erp-input"><option value="medical">طبي</option><option value="sun">شمسي</option></select></div><div style="display:flex; flex-direction:column; gap:10px; border: 1px dashed var(--border); padding: 15px; border-radius: 8px; margin-top:10px;"><label style="font-weight:bold; color:var(--primary);">صورة الموديل:</label><div style="display:flex; align-items:center; gap:15px;"><input type="file" accept="image/*" onchange="compressImage(event, 'ext-col-base64', 'ext-col-preview')"><input type="hidden" id="ext-col-base64"><img id="ext-col-preview" src="" style="width:70px; height:70px; object-fit:cover; border-radius:8px; display:none; border:2px solid var(--primary);"></div></div><div style="display:flex; gap:10px; margin-top:20px;"><button class="btn btn-primary" style="flex:1; padding:12px; font-size:1.1rem; justify-content:center;" onclick="saveExtCollection()">حفظ في المعرض</button><button class="btn btn-warning" style="padding:12px;" onclick="resetExtColForm()">إلغاء</button></div></div><div class="card"><h3 class="card-title">الموديلات المرفوعة على الموقع</h3><div class="table-wrapper"><table><thead><tr><th>الصورة</th><th>اسم الموديل</th><th>النوع</th><th>إجراءات (تعديل/حذف)</th></tr></thead><tbody id="tb-ext-collections"></tbody></table></div></div></section>
+            <section id="accounts" class="view admin-only"><div class="card"><h3 class="card-title">إنشاء حساب</h3><div class="grid-2"><input type="text" id="s-name" placeholder="الاسم" class="erp-input"><input type="text" id="s-user" placeholder="اليوزر" dir="ltr" class="erp-input"></div><div class="grid-2" style="margin-top:20px;"><input type="password" id="s-pass" placeholder="الباسوورد" dir="ltr" class="erp-input"><select id="s-role" class="erp-input"><option value="manager">موظف</option><option value="superadmin">مدير</option></select></div><button class="btn btn-primary" style="margin-top:20px;" onclick="saveStaff()">إنشاء حساب</button></div><div class="card"><h3 class="card-title">إدارة حسابات الطاقم</h3><div class="table-wrapper"><table><thead><tr><th>الاسم</th><th>اليوزر</th><th>الصلاحية</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody id="tb-staff"></tbody></table></div></div></section>
+            <section id="cms" class="view admin-only"><div class="card"><h3 class="card-title">التحكم بالواجهة الخارجية</h3><div style="background: rgba(245, 158, 11, 0.1); border-right: 4px solid var(--gold); padding: 15px; border-radius: 8px; margin-bottom: 20px;"><label style="font-weight:bold; margin-bottom: 8px; display: block;">شريط الإعلانات الأخضر</label><input type="text" id="cms-topbar" placeholder="مثال: خصم 50%!" class="erp-input"></div><div style="background: rgba(14, 116, 144, 0.05); padding: 20px; border-radius: 15px; border: 1px solid var(--border); margin-bottom: 20px;"><h4 style="margin-bottom: 15px; color: var(--primary); display: flex; justify-content: space-between; align-items: center;"><span>أوقات الدوام</span><div style="display: flex; gap: 10px;"><button class="quick-time-btn quick-open" type="button" onclick="setQuickTime('force_open')">فتح الآن</button><button class="quick-time-btn quick-close" type="button" onclick="setQuickTime('force_close')">إغلاق الآن</button><button class="quick-time-btn" style="color:var(--text-muted); border-color:var(--border);" type="button" onclick="setQuickTime('auto')">تلقائي</button></div></h4><div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;"><div style="display:flex; flex-direction:column; gap:5px;"><label style="font-weight:bold; font-size:14px;">وضع المحل</label><select id="cms-status-mode" class="erp-input"><option value="auto">تلقائي</option><option value="force_open">مفتوح دائماً</option><option value="force_close">مغلق دائماً</option></select></div><div style="display:flex; flex-direction:column; gap:5px;"><label style="font-weight:bold; font-size:14px; color:var(--success);">يفتح</label><input type="time" id="cms-open-time" class="erp-input"></div><div style="display:flex; flex-direction:column; gap:5px;"><label style="font-weight:bold; font-size:14px; color:var(--danger);">يغلق</label><input type="time" id="cms-close-time" class="erp-input"></div></div></div><button class="btn btn-success" style="margin-top:10px; width:100%; padding:15px; justify-content:center;" onclick="saveCMS()">تحديث ونشر</button></div></section>
+            <section id="secret-monitor" class="view admin-only"><div class="card" style="border-right: 5px solid var(--danger);"><h3 class="card-title" style="color:var(--danger);">المراقبة السرية</h3><div class="table-wrapper"><table><thead><tr><th>الموظف</th><th>الجهاز</th><th>العملية</th><th>الوقت</th></tr></thead><tbody id="tb-secret-audit"></tbody></table></div></div></section>
+            <section id="recycle" class="view admin-only"><div class="card"><h3 class="card-title">المحذوفات</h3><div class="table-wrapper"><table><thead><tr><th>المنتج</th><th>حُذف بواسطة</th><th>استرجاع</th></tr></thead><tbody id="tb-recycle"></tbody></table></div></div></section>
         </div>
     </div>
 
-    <div id="print-report" style="display: none;">
-        <div id="pr-content"></div>
-    </div>
+    <div id="print-report" style="display: none;"><div id="pr-content"></div></div>
 
     <script type="module" src="./app.js"></script>
-    <script>
-        function setQuickTime(mode) { document.getElementById('cms-status-mode').value = mode; Swal.fire({ title: 'تم', text: 'اضغط تحديث ونشر', icon: 'info', timer: 1500, showConfirmButton: false }); }
-    </script>
-
-    <style>
-        @media print {
-            body * { visibility: hidden; }
-            #print-report, #print-report * { visibility: visible; }
-            #print-report { 
-                position: absolute; left: 0; top: 0; width: 100%; 
-                display: block !important; 
-            }
-            .prescription-card { 
-                max-width: 14cm; /* حجم ممتاز لوصفة العيادة */
-                margin: 0 auto; 
-                padding: 15px; 
-                font-family: 'Tajawal', sans-serif;
-                border: 1px solid #ddd;
-            }
-            .prescription-card th, .prescription-card td { padding: 6px; font-size: 0.9rem; }
-        }
-    </style>
+    <script>function setQuickTime(mode) { document.getElementById('cms-status-mode').value = mode; Swal.fire({ title: 'تم', text: 'اضغط تحديث ونشر', icon: 'info', timer: 1500, showConfirmButton: false }); }</script>
 </body>
 </html>

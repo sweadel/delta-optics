@@ -2,286 +2,346 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>Delta Optics | Enterprise ERP V5</title>
-    <link rel="stylesheet" href="./style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <title>Delta Optics | Enterprise ERP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        /* ================= الثيم العالمي (Enterprise Tactile 3D) ================= */
+        /* ================= القنبلة الهندسية (Enterprise Soft UI) ================= */
         :root {
-            --primary: #059669; /* أخضر زمردي فخم */
-            --primary-dark: #047857;
-            --primary-shadow: #064e3b;
-            --secondary: #1e293b; /* كحلي داكن */
-            --secondary-light: #334155;
-            --secondary-shadow: #0f172a;
-            --bg-color: #f8fafc; /* رمادي فاتح جداً ليعطي عمق للبطاقات */
+            --primary: #059669; 
+            --primary-hover: #047857;
+            --primary-glow: rgba(5, 150, 105, 0.15);
+            --secondary: #0f172a; 
+            --bg-main: #f4f7f9; 
             --surface: #ffffff;
-            --border: #e2e8f0;
-            --text-main: #111827;
+            --text-main: #1e293b;
             --text-muted: #64748b;
-            --success: #10b981;
+            --border-soft: rgba(0, 0, 0, 0.05);
             --danger: #ef4444;
-            --danger-dark: #b91c1c;
             --warning: #f59e0b;
-            --gold: #d97706; /* لون ذهبي للمقاييس */
             
-            /* ظلال 3D لمسية (Tactile) */
-            --shadow-tactile: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-float: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --shadow-inset: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
-            --btn-3d-shadow: 0 4px 0 0 var(--primary-shadow), 0 5px 10px rgba(0,0,0,0.1);
-            --btn-gold-3d-shadow: 0 4px 0 0 #b45309, 0 5px 10px rgba(0,0,0,0.1);
-            --btn-crimson-3d-shadow: 0 4px 0 0 #9f1239, 0 5px 10px rgba(0,0,0,0.1);
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.02);
+            --shadow-md: 0 10px 20px -5px rgba(0,0,0,0.05);
+            --shadow-hover: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
         }
 
-        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; overflow-x: hidden; }
-        .en-num { font-family: 'Segoe UI', Arial, sans-serif !important; direction: ltr !important; display: inline-block; font-weight: 800; }
+        /* إعدادات عامة وشريط التمرير */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg-main); color: var(--text-main); overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         
-        /* ================= القائمة الجانبية (الأوضح والأكبر) ================= */
+        .en-num { font-family: 'Inter', 'Segoe UI', sans-serif !important; direction: ltr !important; display: inline-block; font-weight: 800; letter-spacing: 0.5px; }
+
+        /* ================= القائمة الجانبية (Glass & Dark) ================= */
         .sidebar {
-            position: fixed; right: -280px; top: 0; width: 280px; height: 100vh;
-            background: var(--secondary); z-index: 3000; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: -10px 0 30px rgba(0,0,0,0.1); overflow-y: auto; display: flex; flex-direction: column;
-            border-left: 1px solid var(--secondary-shadow);
+            position: fixed; right: -300px; top: 0; width: 280px; height: 100vh;
+            background: var(--secondary); z-index: 3000; transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow: -10px 0 40px rgba(0,0,0,0.15); display: flex; flex-direction: column;
+            border-left: 1px solid rgba(255,255,255,0.05);
         }
         .sidebar.active { right: 0; }
-        
-        .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 2999; display: none; backdrop-filter: blur(2px); }
+        .sidebar-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); z-index: 2999; display: none; backdrop-filter: blur(3px); animation: fadeIn 0.3s ease; }
         .sidebar-overlay.active { display: block; }
+        @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
 
-        .main { margin-right: 0 !important; width: 100%; transition: 0.4s; }
+        .logo-area { padding: 30px 25px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;}
+        .logo-area h2 { color: #fff; font-weight: 900; font-size: 1.8rem; margin:0; letter-spacing: 1px; }
+        .logo-area small { color: var(--primary); font-weight: 700; letter-spacing: 2px; font-size: 0.75rem; }
+
+        .nav-label { padding: 25px 25px 10px; font-size: 0.75rem; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 1px; }
+        .nav-link { 
+            display: flex; align-items: center; gap: 15px; width: calc(100% - 30px); margin: 0 auto 5px; 
+            padding: 12px 20px; border-radius: var(--radius-md); background: transparent; border: none; 
+            color: #94a3b8; font-family: inherit; font-size: 1rem; font-weight: 600; cursor: pointer; 
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); text-align: right;
+        }
+        .nav-link i { font-size: 1.2rem; width: 25px; text-align: center; transition: 0.3s; }
+        .nav-link:hover { background: rgba(255,255,255,0.05); color: #fff; transform: translateX(-5px); }
+        .nav-link.active { background: var(--primary); color: #fff; box-shadow: 0 10px 15px -3px var(--primary-glow); font-weight: 700; }
+        .nav-link.active i { color: #fff; }
+
+        /* ================= Header (Floating & Glass) ================= */
+        .main { width: 100%; min-height: 100vh; display: flex; flex-direction: column; }
+        .header { 
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; 
+            position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--border-soft);
+        }
+        .menu-btn { background: #fff; border: 1px solid var(--border-soft); box-shadow: var(--shadow-sm); width: 45px; height: 45px; border-radius: var(--radius-md); color: var(--text-main); font-size: 1.2rem; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center;}
+        .menu-btn:active { transform: scale(0.9); }
         
-        /* Header عائم */
-        .header {
-            background: var(--surface); backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-            position: sticky; top: 0; z-index: 1000;
+        .search-bar { 
+            padding: 12px 20px; border: 2px solid transparent; border-radius: 50px; background: #f1f5f9; 
+            width: 280px; font-family: inherit; font-size: 0.95rem; font-weight: 600; transition: all 0.3s ease; color: var(--text-main);
         }
+        .search-bar:focus { background: #fff; border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-glow); outline: none; width: 320px; }
 
-        .menu-toggle-btn { background: transparent; border: none; color: var(--primary); font-size: 1.8rem; cursor: pointer; padding: 5px; transition: 0.2s; }
-        .menu-toggle-btn:hover { transform: scale(1.1); }
-
-        /* البطاقات الأساسية (Cards) بتقنية الـ 3D العائمة */
-        .clean-card, .clinic-card { 
-            background: var(--surface); border-radius: 12px; border: 1px solid var(--border); 
-            box-shadow: var(--shadow-tactile); margin-bottom: 20px; overflow: hidden; 
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .clean-card:hover, .clinic-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-float); }
+        /* ================= البطاقات (Soft UI Cards) ================= */
+        .content { padding: 30px; max-width: 1600px; margin: 0 auto; width: 100%; flex: 1; }
         
-        .clean-card-header, .clinic-card-header { 
-            padding: 15px 20px; background: #fcfcfc; border-bottom: 1px solid var(--border); font-weight: 900; 
-            font-size: 1.2rem; color: var(--primary-dark); display: flex; align-items: center; gap: 10px; 
+        .premium-card { 
+            background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--border-soft); 
+            box-shadow: var(--shadow-md); margin-bottom: 30px; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); 
         }
-        .clean-card-body, .clinic-card-body { padding: 20px; }
-
-        /* ================= الحقول بنظام الـ Inset 3D ================= */
-        .input-group { margin-bottom: 15px; }
-        .input-label { display: block; font-weight: 800; color: var(--text-main); margin-bottom: 8px; font-size: 0.95rem; }
-        .clean-input, .form-input-pro, .rx-input { 
-            width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 8px; 
-            font-family: 'Tajawal', sans-serif; font-size: 1rem; background: #f9fafb; 
-            box-shadow: var(--shadow-inset); transition: 0.2s; outline: none; color: var(--text-main); font-weight: bold;
-        }
-        .clean-input:focus, .form-input-pro:focus, .rx-input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1), var(--shadow-inset); }
-
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .premium-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-3px); }
         
-        .kpi-card { background: #fff; padding: 20px; border-radius: 12px; border: 1px solid var(--border); text-align: center; box-shadow: var(--shadow-tactile); position: relative; overflow: hidden; }
-        .kpi-title { font-size: 1rem; font-weight: 900; color: var(--text-muted); margin-bottom: 10px; z-index: 2; position: relative;}
-        .kpi-val { font-size: 2rem; font-weight: 900; z-index: 2; position: relative;}
+        .card-header { 
+            padding: 20px 25px; border-bottom: 1px solid var(--border-soft); 
+            display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 1.2rem; color: var(--text-main); 
+        }
+        .card-header i { color: var(--primary); font-size: 1.4rem; }
+        .card-body { padding: 25px; }
 
-        /* جدول الفحص الطبي */
-        .rx-table { width: 100%; border-collapse: separate; border-spacing: 5px; text-align: center; margin-bottom: 10px; }
-        .rx-table th { background: #f8fafc; padding: 10px; border-radius: 6px; color: var(--text-muted); font-weight: 900;}
-        .rx-table td { padding: 5px; }
-        .rx-input { width: 100%; padding: 10px; border: none; text-align: center; font-size: 1.1rem; font-weight: bold; color: var(--text-main); background: transparent; outline: none; }
+        /* ================= الحقول (Inputs) والتفاعل ================= */
+        .input-group { margin-bottom: 20px; position: relative; }
+        .input-label { display: block; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; font-size: 0.9rem; }
+        .pro-input { 
+            width: 100%; padding: 14px 18px; border: 2px solid transparent; border-radius: var(--radius-md); 
+            font-family: inherit; font-size: 1.05rem; font-weight: 700; color: var(--text-main); 
+            background: #f1f5f9; transition: all 0.3s ease; outline: none; 
+        }
+        .pro-input:hover { background: #e2e8f0; }
+        .pro-input:focus { background: #fff; border-color: var(--primary); box-shadow: 0 10px 15px -3px var(--primary-glow); }
+
+        /* ================= الأزرار (Tactile 3D Buttons) ================= */
+        .btn-pro { 
+            width: 100%; padding: 16px; border: none; border-radius: var(--radius-md); 
+            font-family: inherit; font-size: 1.15rem; font-weight: 900; cursor: pointer; 
+            display: flex; justify-content: center; align-items: center; gap: 10px; 
+            transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1); position: relative; overflow: hidden;
+        }
+        .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 4px 14px 0 var(--primary-glow); }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(5, 150, 105, 0.23); }
+        .btn-primary:active { transform: translateY(1px) scale(0.98); box-shadow: none; }
+        
+        .btn-danger { background: #fef2f2; color: var(--danger); border: 1px solid #fca5a5; }
+        .btn-danger:hover { background: var(--danger); color: white; }
+
+        /* ================= الجداول والعيادة ================= */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
+        
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .kpi-box { background: var(--surface); padding: 25px; border-radius: var(--radius-lg); border: 1px solid var(--border-soft); box-shadow: var(--shadow-md); display: flex; flex-direction: column; position: relative; overflow: hidden; transition: 0.3s; }
+        .kpi-box:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+        .kpi-title { font-size: 1rem; font-weight: 800; color: var(--text-muted); margin-bottom: 10px; }
+        .kpi-val { font-size: 2.2rem; font-weight: 900; letter-spacing: -1px; }
+
+        /* جدول الفحص */
+        .rx-table { width: 100%; border-collapse: separate; border-spacing: 8px; margin-bottom: 15px; }
+        .rx-table th { font-size: 0.9rem; color: var(--text-muted); font-weight: 800; padding-bottom: 5px; }
+        .rx-input { width: 100%; padding: 12px; border: 2px solid transparent; border-radius: var(--radius-md); text-align: center; font-size: 1.2rem; font-weight: 900; background: #f1f5f9; transition: 0.3s; outline: none; color: var(--text-main);}
+        .rx-input:focus { background: #fff; border-color: var(--primary); box-shadow: 0 4px 10px var(--primary-glow); }
         
         /* المشتريات */
-        .sales-row { display: flex; gap: 15px; margin-bottom: 15px; align-items: center; background: #f8fafc; padding: 10px; border-radius: 10px; border: 1px solid var(--border); box-shadow: var(--shadow-inset);}
-        .sales-row .clean-input { flex: 1; }
-        .sales-row .price-input { width: 150px; text-align: center; font-weight: 900; color: var(--primary); font-size: 1.1rem; }
+        .product-row { display: flex; gap: 15px; margin-bottom: 15px; align-items: center; background: #f8fafc; padding: 10px; border-radius: var(--radius-md); border: 1px solid var(--border-soft); transition: 0.3s;}
+        .product-row:focus-within { background: #fff; border-color: var(--primary); box-shadow: 0 4px 12px var(--primary-glow); }
+        .product-row .pro-input { background: transparent; border: none; box-shadow: none; padding: 10px; }
+        .product-row .price-input { max-width: 140px; background: #fff; border: 1px solid #e2e8f0; color: var(--primary); font-size: 1.2rem; }
 
-        /* الحاسبة المالية الـ Tactile 3D */
-        .calc-wrapper { background: #1e293b; color: white; border-radius: 12px; padding: 25px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), 0 5px 15px rgba(0,0,0,0.1); }
-        .calc-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); font-size: 1.1rem; font-weight: bold; }
-        .calc-item:last-child { border-bottom: none; }
-        .calc-val { background: transparent; border: none; color: white; text-align: right; font-family: 'Segoe UI', sans-serif !important; font-size: 1.3rem; font-weight: 900; width: 120px; outline: none; direction: ltr !important; }
+        /* الحاسبة المالية الفخمة (Dark Neon) */
+        .calc-panel { background: var(--secondary); color: white; border-radius: var(--radius-lg); padding: 30px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); position: relative; overflow: hidden; }
+        .calc-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); font-size: 1.1rem; font-weight: 700; }
+        .calc-row:last-child { border-bottom: none; }
+        .calc-val { background: transparent; border: none; color: white; text-align: right; font-size: 1.5rem; font-weight: 900; width: 120px; outline: none; }
         
-        .calc-total-row { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 15px; border-top: 2px solid rgba(255,255,255,0.2); }
-        .calc-total-val { background: transparent; border: none; color: #10b981; text-align: right; font-family: 'Segoe UI', sans-serif !important; font-size: 2rem; width: 150px; font-weight: 900; direction: ltr !important;}
+        .calc-total-box { margin-top: 20px; padding-top: 20px; border-top: 2px solid rgba(255,255,255,0.1); }
+        .calc-total-val { font-size: 2.5rem; color: #10b981; font-weight: 900; background: transparent; border: none; text-align: right; width: 100%; outline: none; text-shadow: 0 0 20px rgba(16,185,129,0.4); }
 
-        .fin-paid-box { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); }
-        .fin-paid-input { background: #fff; border: 3px solid var(--primary); color: var(--primary-dark); padding: 10px; border-radius: 8px; width: 100%; font-size: 1.5rem; font-weight: 900; text-align: center; margin-top: 10px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+        .paid-input-box { background: rgba(0,0,0,0.3); padding: 20px; border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.05); margin-top: 20px; }
+        .paid-input { width: 100%; padding: 15px; border-radius: var(--radius-md); border: 2px solid var(--primary); background: #fff; color: var(--secondary); font-size: 1.8rem; font-weight: 900; text-align: center; margin-top: 10px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); outline: none;}
+        .due-box { background: rgba(239,68,68,0.1); padding: 15px 20px; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; margin-top: 15px; color: #f87171; font-size: 1.4rem; font-weight: 900;}
 
-        /* ================= الأزرار البارزة (3D Tactile Buttons) ================= */
-        .btn-massive { 
-            width: 100%; padding: 18px; font-size: 1.2rem; font-weight: 900; 
-            background: linear-gradient(180deg, #10b981 0%, #059669 100%); 
-            color: white; border: none; border-radius: 10px; cursor: pointer; 
-            transition: all 0.1s ease; display: flex; justify-content: center; align-items: center; gap: 10px; 
-            box-shadow: var(--btn-3d-shadow);
-        }
-        .btn-massive:active { 
-            transform: translateY(4px); box-shadow: 0 0 0 0 var(--primary-shadow), 0 2px 5px rgba(0,0,0,0.1); 
-        }
+        /* الجداول (Data Tables) */
+        .modern-table { width: 100%; border-collapse: separate; border-spacing: 0; text-align: right; }
+        .modern-table th { background: #f8fafc; padding: 18px 20px; font-weight: 800; color: var(--text-muted); font-size: 0.95rem; border-bottom: 2px solid #e2e8f0; }
+        .modern-table td { padding: 18px 20px; border-bottom: 1px solid #f1f5f9; font-size: 1.05rem; font-weight: 600; color: var(--text-main); transition: 0.2s; }
+        .modern-table tr:hover td { background: #f8fafc; }
 
-        /* الجداول العامة (Data Grids) */
-        .data-table { width: 100%; border-collapse: collapse; text-align: right; border-radius: 8px; overflow: hidden; }
-        .data-table th { background: #f8fafc; padding: 15px; border-bottom: 2px solid var(--border); font-weight: 900; color: var(--text-muted); }
-        .data-table td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 1rem; background: #fff; }
-        .data-table tr:hover td { background: #f1f5f9; }
-
-        .role-badge { padding: 5px 10px; border-radius: 6px; font-weight: 900; font-size: 0.85rem; }
-        .role-dev { background: #0f172a; color: white; }
-        .role-mgr { background: var(--primary); color: white; }
-        .role-emp { background: #e2e8f0; color: #475569; }
+        /* نافذة الصلاحيات الدقيقة */
+        .permissions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; background: #f8fafc; padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border-soft); margin-top: 15px; }
+        .perm-item { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--secondary); font-size: 1.05rem; cursor: pointer; }
+        .perm-item input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; }
 
         /* الطباعة */
         @media print {
-            body { background: #fff; margin: 0; font-family: 'Tajawal', Arial, sans-serif; }
+            body { background: #fff; margin: 0; padding: 0; }
             .sidebar, .header, .content, .modal, .sidebar-overlay { display: none !important; }
             #print-report { display: block !important; width: 100%; }
             .print-card { width: 148mm; margin: 0 auto; padding: 10mm; font-family: 'Tajawal', sans-serif; color: #000; }
             .print-card * { color: #000 !important; }
             .print-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 13px; }
             .print-table th, .print-table td { border: 1px solid #000; padding: 6px; text-align: center; font-weight: bold;}
-            .en-num-print { font-family: Arial, sans-serif !important; direction: ltr !important; display: inline-block; font-weight: bold;}
+            .en-num-print { font-family: 'Inter', Arial, sans-serif !important; direction: ltr !important; display: inline-block; font-weight: 900;}
         }
+        @media (max-width: 900px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
 
-    <div id="login-modal" class="modal">
-        <div class="modal-content" style="max-width: 420px; padding: 40px; border-radius: 20px; box-shadow: var(--shadow-float);">
-            <i class="fas fa-fingerprint" style="font-size: 3.5rem; color: var(--primary); margin-bottom: 20px;"></i>
-            <h2 style="font-weight: 900; margin-bottom: 30px; font-size: 1.6rem; color: var(--text-main);">نظام دلتا المركزي</h2>
-            <input type="text" id="auth-u" placeholder="اسم المستخدم" dir="ltr" class="clean-input" style="margin-bottom: 15px; text-align:center; padding: 15px;">
-            <input type="password" id="auth-p" placeholder="كلمة المرور" dir="ltr" class="clean-input" style="margin-bottom: 25px; text-align:center; padding: 15px;">
-            <button class="btn-massive" onclick="handleLogin()">تسجيل الدخول للنظام</button>
+    <div id="login-modal" class="modal" style="position:fixed; inset:0; background:rgba(15,23,42,0.8); backdrop-filter:blur(10px); z-index:9999; display:flex; align-items:center; justify-content:center;">
+        <div style="background:#fff; padding:50px 40px; border-radius:24px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.25); width:100%; max-width:420px; text-align:center;">
+            <div style="width:80px; height:80px; background:var(--primary-glow); color:var(--primary); border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:2.5rem; margin:0 auto 20px;"><i class="fas fa-fingerprint"></i></div>
+            <h2 style="font-weight:900; font-size:1.8rem; margin-bottom:30px; color:var(--secondary);">تسجيل الدخول</h2>
+            <div class="input-group"><input type="text" id="auth-u" placeholder="اسم المستخدم" dir="ltr" class="pro-input en-num" style="text-align:center;"></div>
+            <div class="input-group"><input type="password" id="auth-p" placeholder="كلمة المرور" dir="ltr" class="pro-input en-num" style="text-align:center; margin-bottom:10px;"></div>
+            <button class="btn-pro btn-primary" onclick="handleLogin()">دخول للنظام <i class="fas fa-arrow-left" style="margin-right:5px;"></i></button>
         </div>
     </div>
 
-    <div id="history-modal" class="modal" style="display:none; z-index: 4000;">
-        <div class="modal-content" style="padding: 25px; border-radius: 16px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid var(--primary); padding-bottom: 15px;">
-                <h2 style="margin: 0; color: var(--primary);"><i class="fas fa-folder-open"></i> سجل المراجع: <span id="history-patient-name" style="color: var(--text-main);"></span></h2>
+    <div id="staff-edit-modal" class="modal" style="position:fixed; inset:0; background:rgba(15,23,42,0.5); backdrop-filter:blur(5px); z-index:4100; display:none; align-items:center; justify-content:center;">
+        <div style="background:#fff; padding:35px; border-radius:24px; width:95%; max-width:700px; box-shadow:var(--shadow-hover);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; border-bottom:2px solid var(--border-soft); padding-bottom:15px;">
+                <h2 style="margin:0; color:var(--secondary); font-weight:900;"><i class="fas fa-user-shield" style="color:var(--primary);"></i> تخصيص صلاحيات المستخدم</h2>
+                <button onclick="document.getElementById('staff-edit-modal').style.display='none'" style="background:var(--bg-main); border:none; width:40px; height:40px; border-radius:12px; cursor:pointer; font-size:1.2rem; color:var(--text-muted);"><i class="fas fa-times"></i></button>
+            </div>
+            <input type="hidden" id="edit-s-id">
+            <div class="grid-2">
+                <div class="input-group"><label class="input-label">الاسم للظهور</label><input type="text" id="edit-s-name" class="pro-input"></div>
+                <div class="input-group"><label class="input-label">اسم المستخدم (للدخول)</label><input type="text" id="edit-s-user" class="pro-input en-num" readonly style="background:#e2e8f0; color:#64748b;"></div>
+            </div>
+            <div class="grid-2">
+                <div class="input-group"><label class="input-label">كلمة مرور جديدة (اتركه فارغاً لعدم التغيير)</label><input type="password" id="edit-s-pass" class="pro-input en-num"></div>
+                <div class="input-group"><label class="input-label">الرتبة العامة</label><select id="edit-s-role" class="pro-input"><option value="employee">موظف (Employee)</option><option value="manager">مدير (Manager)</option><option value="developer">مسؤول النظام (Admin)</option></select></div>
+            </div>
+            
+            <div class="permissions-grid">
+                <label class="perm-item"><input type="checkbox" id="edit-perm-dash" value="dashboard"> عرض الداشبورد والمالية</label>
+                <label class="perm-item"><input type="checkbox" id="edit-perm-rx-view" value="rx_view"> سجلات المرضى (عرض)</label>
+                <label class="perm-item"><input type="checkbox" id="edit-perm-rx-add" value="rx_add"> العيادة (فحص ومبيعات)</label>
+                <label class="perm-item"><input type="checkbox" id="edit-perm-pos" value="pos"> مبيعات الكاشير السريعة</label>
+                <label class="perm-item"><input type="checkbox" id="edit-perm-inv" value="inventory"> إدارة المخزون والمختبر</label>
+                <label class="perm-item"><input type="checkbox" id="edit-perm-reports" value="reports"> التقارير والتحليلات</label>
+                <label class="perm-item"><input type="checkbox" id="edit-perm-cms" value="cms"> إعدادات الموقع الخارجي</label>
+                <label class="perm-item"><input type="checkbox" id="edit-perm-admin" value="admin"> إدارة الحسابات (إضافة/حذف)</label>
+                <label class="perm-item"><input type="checkbox" id="edit-perm-recycle" value="recycle"> سلة المحذوفات الشاملة</label>
+            </div>
+            
+            <button class="btn-pro btn-primary" style="margin-top:25px;" onclick="saveRBACEdit()"><i class="fas fa-check-circle"></i> حفظ التعديلات بدقة</button>
+        </div>
+    </div>
+
+    <div id="history-modal" class="modal" style="display:none; z-index: 4000; position:fixed; inset:0; background:rgba(15,23,42,0.5); backdrop-filter:blur(5px); align-items:center; justify-content:center;">
+        <div style="background:#fff; padding:30px; border-radius:24px; width:95%; max-width:850px; box-shadow:var(--shadow-hover);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid var(--border-soft); padding-bottom: 15px;">
+                <h2 style="margin: 0; color: var(--secondary); font-weight:900;"><i class="fas fa-folder-open" style="color:var(--primary);"></i> ملف المراجع: <span id="history-patient-name"></span></h2>
                 <div style="display: flex; gap: 10px;">
-                    <button onclick="printPatientHistory()" class="btn" style="background:var(--secondary); color:white; border:none; border-radius: 8px; padding: 10px 20px; font-weight:bold; cursor:pointer;"><i class="fas fa-print"></i> طباعة الكشف</button>
-                    <button onclick="document.getElementById('history-modal').style.display='none'" class="btn" style="background:var(--danger); color:white; border:none; border-radius: 8px; padding: 10px 20px; font-weight:bold; cursor:pointer;"><i class="fas fa-times"></i> إغلاق</button>
+                    <button onclick="printPatientHistory()" class="btn-pro" style="padding:10px 20px; font-size:1rem; background:#f1f5f9; color:var(--secondary);"><i class="fas fa-print"></i> كشف</button>
+                    <button onclick="document.getElementById('history-modal').style.display='none'" class="btn-pro" style="padding:10px 20px; font-size:1rem; background:#fef2f2; color:var(--danger);"><i class="fas fa-times"></i> إغلاق</button>
                 </div>
             </div>
-            <div style="overflow-x: auto;">
-                <table class="data-table">
-                    <thead><tr><th>التاريخ</th><th>الرقم المرجعي</th><th>التفاصيل</th><th>القيمة (JOD)</th><th>خيارات</th></tr></thead>
+            <div style="overflow-x: auto; max-height: 400px;">
+                <table class="modern-table">
+                    <thead><tr><th>التاريخ</th><th>الملف</th><th>التفاصيل</th><th>القيمة (JOD)</th><th>خيارات</th></tr></thead>
                     <tbody id="tb-patient-history"></tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <div id="online-report-modal" class="modal" style="display:none; z-index: 4000;">
-        <div class="modal-content" style="padding: 25px; border-radius: 16px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid var(--primary); padding-bottom: 15px;">
-                <h2 style="margin: 0; color: var(--primary);"><i class="fas fa-microscope"></i> تقرير الفحص الذكي</h2>
-                <button onclick="document.getElementById('online-report-modal').style.display='none'" class="btn" style="background:var(--danger); color:white; border:none; border-radius: 8px; padding: 10px 20px; font-weight:bold; cursor:pointer;"><i class="fas fa-times"></i></button>
+    <div id="online-report-modal" class="modal" style="display:none; z-index: 4000; position:fixed; inset:0; background:rgba(15,23,42,0.5); backdrop-filter:blur(5px); align-items:center; justify-content:center;">
+        <div style="background:#fff; padding:35px; border-radius:24px; width:95%; max-width:650px; box-shadow:var(--shadow-hover);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid var(--border-soft); padding-bottom: 15px;">
+                <h2 style="margin: 0; color: var(--secondary); font-weight:900;"><i class="fas fa-globe" style="color:var(--primary);"></i> تقرير الفحص الذكي</h2>
+                <button onclick="document.getElementById('online-report-modal').style.display='none'" style="background:var(--bg-main); border:none; width:40px; height:40px; border-radius:12px; cursor:pointer; font-size:1.2rem; color:var(--text-muted);"><i class="fas fa-times"></i></button>
             </div>
-            <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 20px; box-shadow: var(--shadow-inset);">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><span style="font-weight: bold; color: var(--text-muted);">اسم المراجع:</span><span id="report-m-name" style="font-weight: 900; font-size:1.1rem;"></span></div>
-                <div style="display: flex; justify-content: space-between;"><span style="font-weight: bold; color: var(--text-muted);">رقم الهاتف:</span><span id="report-m-phone" class="en-num" style="font-weight: 900; color: var(--primary); font-size:1.1rem;"></span></div>
+            <div style="background: #f8fafc; padding: 20px; border-radius: 16px; border: 1px solid var(--border-soft); margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size:1.1rem;"><span style="color: var(--text-muted); font-weight:bold;">الاسم:</span><span id="report-m-name" style="font-weight: 900; color:var(--secondary);"></span></div>
+                <div style="display: flex; justify-content: space-between; font-size:1.1rem;"><span style="color: var(--text-muted); font-weight:bold;">الهاتف:</span><span id="report-m-phone" class="en-num" style="font-weight: 900; color: var(--primary);"></span></div>
             </div>
-            <div id="report-m-details" style="background: white; border: 1px solid var(--border); border-radius: 8px; padding: 15px; font-size: 1rem; line-height: 1.8; text-align: right; white-space: pre-wrap; font-weight: bold; box-shadow: var(--shadow-sm);"></div>
-            <div style="margin-top: 20px; display: flex; gap: 10px;">
-                <button id="btn-process-report" class="btn" style="background:var(--success); color:white; border:none; border-radius: 10px; padding: 15px; font-size: 1.1rem; font-weight:900; flex:1; cursor:pointer; display:flex; justify-content:center; gap:5px;"><i class="fas fa-check-double"></i> تأكيد كـ "تمت المراجعة"</button>
-                <a id="btn-wa-report" href="#" target="_blank" class="btn" style="background: #25D366; color: white; padding: 15px; font-size: 1.1rem; font-weight:900; text-decoration: none; display: flex; align-items: center; justify-content:center; gap: 5px; border-radius: 10px; box-shadow: 0 4px 0 0 #16a34a;"><i class="fab fa-whatsapp"></i> واتساب</a>
+            <div id="report-m-details" style="background: white; border: 1px solid var(--border-soft); border-radius: 16px; padding: 25px; font-size: 1.1rem; line-height: 1.8; text-align: right; white-space: pre-wrap; font-weight: 700; color: var(--text-main);"></div>
+            <div style="margin-top: 25px; display: flex; gap: 15px;">
+                <button id="btn-process-report" class="btn-pro btn-primary" style="flex: 1;"><i class="fas fa-check-double"></i> تمت المراجعة</button>
+                <a id="btn-wa-report" href="#" target="_blank" class="btn-pro" style="background: #25D366; color: white; text-decoration: none; flex:1;"><i class="fab fa-whatsapp"></i> تواصل واتساب</a>
             </div>
         </div>
     </div>
 
     <aside class="sidebar" id="main-sidebar">
-        <div style="display:flex; justify-content:space-between; align-items:center; padding: 15px 20px; border-bottom: 1px solid var(--secondary-shadow);">
-            <div style="display:flex; flex-direction:column;">
-                <h2 style="font-weight: 900; color: var(--primary); margin:0; font-size: 1.6rem; letter-spacing: 1px;">DELTA</h2>
-                <small style="color: var(--text-muted); font-weight:bold; letter-spacing: 2px;">Enterprise ERP</small>
-            </div>
-            <button onclick="toggleSidebar()" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.1); color:white; font-size:1.2rem; cursor:pointer; padding: 5px 10px; border-radius: 6px;"><i class="fas fa-times"></i></button>
+        <div class="logo-area">
+            <div><h2>DELTA</h2><small>ENTERPRISE ERP</small></div>
+            <button onclick="toggleSidebar()" style="background:rgba(255,255,255,0.1); border:none; color:white; width:35px; height:35px; border-radius:10px; cursor:pointer; font-size:1.2rem;"><i class="fas fa-times"></i></button>
         </div>
-        
         <div style="padding: 10px 0; overflow-y:auto; flex:1;">
-            <div style="padding: 10px 20px; font-weight: 900; color: rgba(255,255,255,0.4); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">العمليات اليومية</div>
-            <button class="nav-link active" onclick="showView('dash'); toggleSidebar()"><i class="fas fa-chart-pie"></i> الرئيسية والمراقبة (الداشبورد)</button>
-            <button class="nav-link" onclick="showView('rx'); toggleSidebar()"><i class="fas fa-notes-medical"></i> عيادة البصريات (ملف شامل للمراجع)</button>
-            <button class="nav-link" onclick="showView('pos'); toggleSidebar()"><i class="fas fa-cash-register"></i> مبيعات الكاشير السريعة</button>
+            <div class="nav-label">العمليات اليومية</div>
+            <button class="nav-link active" onclick="showView('dash'); toggleSidebar()"><i class="fas fa-chart-pie"></i> لوحة المراقبة (Dashboard)</button>
+            <button class="nav-link" onclick="showView('rx'); toggleSidebar()"><i class="fas fa-notes-medical"></i> العيادة (ملف المراجع)</button>
+            <button class="nav-link" onclick="showView('pos'); toggleSidebar()"><i class="fas fa-cash-register"></i> الكاشير (بيع سريع)</button>
             <button class="nav-link" onclick="showView('online-rx'); toggleSidebar()"><i class="fas fa-globe"></i> فحوصات الموقع</button>
             
-            <div style="padding: 15px 20px 10px; font-weight: 900; color: rgba(255,255,255,0.4); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">إدارة اللوجستيات</div>
+            <div class="nav-label">اللوجستيات</div>
             <button class="nav-link" onclick="showView('inv'); toggleSidebar()"><i class="fas fa-boxes"></i> المخزون</button>
             <button class="nav-link" onclick="showView('lab'); toggleSidebar()"><i class="fas fa-flask"></i> المختبر</button>
-            <button class="nav-link" onclick="showView('chat'); toggleSidebar()"><i class="fas fa-comments"></i> شات الطاقم</button>
             
             <div class="admin-only" style="display:none; flex-direction:column;">
-                <div style="padding: 15px 20px 10px; font-weight: 900; color: var(--gold); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">الإدارة العليا (Admin)</div>
-                <button class="nav-link" onclick="showView('ext-collections'); toggleSidebar()"><i class="fas fa-images"></i> إدارة معرض الموقع</button>
-                <button class="nav-link" onclick="showView('cms'); toggleSidebar()"><i class="fas fa-laptop-code"></i> إعدادات الواجهة (CMS)</button>
+                <div class="nav-label" style="color:var(--warning);">الإدارة العليا</div>
+                <button class="nav-link" onclick="showView('ext-collections'); toggleSidebar()"><i class="fas fa-images"></i> معرض الموقع</button>
+                <button class="nav-link" onclick="showView('cms'); toggleSidebar()"><i class="fas fa-laptop-code"></i> إعدادات الموقع</button>
                 
                 <div class="developer-only" style="display:none; flex-direction:column;">
-                    <div style="padding: 15px 20px 10px; font-weight: 900; color: var(--danger); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">صلاحيات المطور</div>
-                    <button class="nav-link" onclick="showView('accounts'); toggleSidebar()"><i class="fas fa-user-shield"></i> إدارة الحسابات والرواتب</button>
-                    <button class="nav-link" onclick="showView('secret-monitor'); toggleSidebar()"><i class="fas fa-user-secret"></i> المراقبة السرية</button>
-                    <button class="nav-link" onclick="showView('recycle'); toggleSidebar()"><i class="fas fa-trash-restore"></i> سجل المحذوفات الشامل</button>
+                    <div class="nav-label" style="color:#f87171;">صلاحيات النظام</div>
+                    <button class="nav-link" onclick="showView('accounts'); toggleSidebar()"><i class="fas fa-user-shield"></i> الحسابات والصلاحيات</button>
+                    <button class="nav-link" onclick="showView('secret-monitor'); toggleSidebar()"><i class="fas fa-user-secret"></i> المراقبة الدقيقة</button>
+                    <button class="nav-link" onclick="showView('recycle'); toggleSidebar()"><i class="fas fa-trash-restore"></i> سلة المحذوفات</button>
                 </div>
             </div>
         </div>
-        <button class="nav-link" onclick="handleLogout()" style="color:white; justify-content: center; border-top: 1px solid var(--secondary-shadow); padding: 20px; background: rgba(239, 68, 68, 0.2); font-weight: 900; letter-spacing: 1px; margin-top: auto;"><i class="fas fa-power-off"></i> تسجيل خروج (آمن)</button>
+        <button class="nav-link" onclick="handleLogout()" style="color:#fca5a5; justify-content:center; border-top:1px solid rgba(255,255,255,0.05); padding:25px; font-weight:900; letter-spacing:1px; margin-top:auto; background:rgba(239,68,68,0.1);"><i class="fas fa-power-off"></i> تسجيل خروج</button>
     </aside>
 
     <div class="main">
         <header class="header">
-            <div style="display: flex; gap: 15px; align-items: center;">
-                <button class="menu-toggle-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-                <h2 style="font-weight:900; margin:0; color: var(--text-main); font-size: 1.4rem; letter-spacing: 0.5px;">المركز الطبي</h2>
-                <input type="text" id="global-search" class="search-bar" placeholder="بحث سريع..." onkeyup="performGlobalSearch()">
+            <div style="display: flex; gap: 20px; align-items: center;">
+                <button class="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h2 style="font-weight:900; margin:0; color: var(--secondary); font-size: 1.5rem; display:flex; align-items:center; gap:10px;"><i class="fas fa-clinic-medical" style="color:var(--primary);"></i> المركز الطبي</h2>
             </div>
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <span id="current-date-display" style="font-weight: bold; color: var(--text-muted);"></span>
-                <div style="font-weight:bold; color:white; background: var(--primary); padding: 8px 15px; border-radius: 8px; border-bottom: 3px solid var(--primary-shadow);"><i class="fas fa-user-circle"></i> <span id="display-user"></span> <small id="display-role" style="background: rgba(255,255,255,0.2); padding: 2px 5px; border-radius: 4px; margin-right: 5px;"></small></div>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <input type="text" id="global-search" class="search-bar" placeholder="بحث سريع في الجدول الحالي..." onkeyup="performGlobalSearch()">
+                <div style="font-weight:bold; color:var(--secondary); background:#fff; padding:8px 16px; border-radius:50px; border:1px solid var(--border-soft); display:flex; align-items:center; gap:10px; box-shadow:var(--shadow-sm);">
+                    <i class="fas fa-user-circle" style="font-size: 1.4rem; color:var(--primary);"></i> 
+                    <span id="display-user"></span> 
+                    <small id="display-role" style="background:var(--primary-glow); color:var(--primary); padding:4px 8px; border-radius:8px; font-size:0.75rem; font-weight:900;"></small>
+                </div>
             </div>
         </header>
 
-        <div class="content" style="padding: 25px;">
+        <div class="content">
             <section id="dash" class="view active">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
-                    <h2 style="color: var(--text-main); font-weight: 900; margin:0; font-size: 1.6rem;">لوحة القيادة والمراقبة المالية</h2>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 30px;">
+                    <h2 style="color: var(--secondary); font-weight: 900; margin:0; font-size: 1.8rem;">لوحة القيادة والمراقبة المالية</h2>
+                    <div style="font-weight: 900; color: var(--text-muted); background: var(--surface); padding: 12px 20px; border-radius: 12px; border: 1px solid var(--border-soft); box-shadow: var(--shadow-sm);" id="current-date-display"></div>
                 </div>
 
                 <div class="kpi-grid">
-                    <div class="kpi-card" style="border-right: 4px solid var(--primary);"><div class="kpi-title">المبيعات (الفواتير)</div><div id="kpi-sales" class="kpi-val en-num" style="color: var(--primary);">0.00</div></div>
-                    <div class="kpi-card admin-only" style="border-right: 4px solid #3b82f6;"><div class="kpi-title">المقبوضات (الصندوق +)</div><div id="kpi-profits" class="kpi-val en-num" style="color: #3b82f6;">0.00</div></div>
-                    <div class="kpi-card admin-only" style="border-right: 4px solid var(--danger);"><div class="kpi-title">المصروفات (الصندوق -)</div><div id="kpi-expenses" class="kpi-val en-num" style="color: var(--danger);">0.00</div></div>
-                    <div class="kpi-card admin-only" style="border-right: 4px solid var(--success); background: #f0fdf4;"><div class="kpi-title" style="color: var(--success);">صافي الصندوق</div><div id="kpi-netbox" class="kpi-val en-num" style="color: var(--success);">0.00</div></div>
-                    <div class="kpi-card admin-only" style="border-right: 4px solid #8b5cf6;"><div class="kpi-title">ديون اليوم (الذمم)</div><div id="kpi-dues" class="kpi-val en-num" style="color: #8b5cf6;">0.00</div></div>
+                    <div class="kpi-box" style="border-bottom: 4px solid var(--primary);"><div class="kpi-title">المبيعات الإجمالية</div><div id="kpi-sales" class="kpi-val en-num" style="color: var(--primary);">0.00</div></div>
+                    <div class="kpi-box admin-only" style="border-bottom: 4px solid #3b82f6;"><div class="kpi-title">مقبوضات الصندوق</div><div id="kpi-profits" class="kpi-val en-num" style="color: #3b82f6;">0.00</div></div>
+                    <div class="kpi-box admin-only" style="border-bottom: 4px solid var(--danger);"><div class="kpi-title">مصروفات الصندوق</div><div id="kpi-expenses" class="kpi-val en-num" style="color: var(--danger);">0.00</div></div>
+                    <div class="kpi-box admin-only" style="border-bottom: 4px solid var(--primary); background: var(--primary-glow);"><div class="kpi-title" style="color: var(--primary-hover);">صافي الصندوق</div><div id="kpi-netbox" class="kpi-val en-num" style="color: var(--primary-hover);">0.00</div></div>
+                    <div class="kpi-box admin-only" style="border-bottom: 4px solid #8b5cf6;"><div class="kpi-title">ديون اليوم (الذمم)</div><div id="kpi-dues" class="kpi-val en-num" style="color: #8b5cf6;">0.00</div></div>
                 </div>
 
                 <div class="grid-2">
-                    <div class="clean-card admin-only">
-                        <div class="clean-card-header" style="color: var(--danger);"><i class="fas fa-money-bill-wave"></i> سحب مصروف من الصندوق</div>
-                        <div class="clean-card-body">
-                            <div class="input-group"><label class="input-label">مبلغ المصروف (JOD)</label><input type="number" id="exp-amount" class="clean-input en-num" placeholder="0.00" style="font-size: 1.4rem; text-align: center;"></div>
-                            <div class="input-group"><label class="input-label">تفاصيل المصروف</label><input type="text" id="exp-desc" class="clean-input" placeholder="مثال: ضيافة، فاتورة كهرباء..."></div>
-                            <button class="btn" style="background: linear-gradient(180deg, #ef4444 0%, #b91c1c 100%); color:white; border:none; width:100%; padding:18px; font-size:1.1rem; font-weight:900; border-radius:10px; cursor:pointer; box-shadow: 0 4px 0 0 #7f1d1d;" onclick="saveExpense()"><i class="fas fa-minus-circle"></i> تسجيل المصروف</button>
+                    <div class="premium-card admin-only">
+                        <div class="card-header" style="color: var(--danger); background: #fef2f2;"><i class="fas fa-money-bill-wave"></i> سحب مصروف</div>
+                        <div class="card-body">
+                            <div class="input-group"><label class="input-label">المبلغ (JOD)</label><input type="number" id="exp-amount" class="pro-input en-num" placeholder="0.00" style="font-size: 1.5rem; text-align: center;"></div>
+                            <div class="input-group"><label class="input-label">التفاصيل</label><input type="text" id="exp-desc" class="pro-input" placeholder="مثال: ضيافة، كهرباء..."></div>
+                            <button class="btn-pro btn-danger" style="margin-top: 15px;" onclick="saveExpense()"><i class="fas fa-minus-circle"></i> اعتماد المصروف</button>
                         </div>
                     </div>
-                    <div class="clean-card admin-only">
-                        <div class="clean-card-header"><i class="fas fa-list-alt"></i> حركة الصندوق اليومية (Ledger)</div>
-                        <div style="max-height: 280px; overflow-y: auto;">
-                            <table class="data-table"><thead><tr><th>الوقت</th><th>البيان</th><th>المبلغ</th></tr></thead><tbody id="tb-daily-ledger"></tbody></table>
+                    <div class="premium-card admin-only">
+                        <div class="card-header"><i class="fas fa-list-alt"></i> حركة الصندوق اليومية</div>
+                        <div style="max-height: 330px; overflow-y: auto;">
+                            <table class="modern-table"><thead><tr><th>الوقت</th><th>البيان</th><th>المبلغ</th></tr></thead><tbody id="tb-daily-ledger"></tbody></table>
                         </div>
                     </div>
                 </div>
@@ -290,103 +350,98 @@
             <section id="rx" class="view">
                 <datalist id="patients-list"></datalist>
 
-                <div class="clean-card">
-                    <div class="clean-card-header"><i class="fas fa-user-circle"></i> 1. بيانات المراجع</div>
-                    <div class="clean-card-body grid-2"><div class="input-group" style="margin:0;"><label class="input-label">الاسم الكامل (للبحث والحفظ)</label><input type="text" id="u-name" list="patients-list" class="clean-input" placeholder="اكتب اسم المراجع..."></div><div class="input-group" style="margin:0;"><label class="input-label">رقم الهاتف</label><input type="text" id="u-phone" class="clean-input en-num" placeholder="07XXXXXXXX"></div></div>
+                <div class="premium-card">
+                    <div class="card-header"><i class="fas fa-user"></i> 1. بيانات المراجع</div>
+                    <div class="card-body grid-2"><div class="input-group" style="margin:0;"><label class="input-label">الاسم الكامل</label><input type="text" id="u-name" list="patients-list" class="pro-input" placeholder="اكتب للاختيار أو لإضافة جديد..."></div><div class="input-group" style="margin:0;"><label class="input-label">رقم الهاتف</label><input type="text" id="u-phone" class="pro-input en-num" placeholder="07XXXXXXXX"></div></div>
                 </div>
 
-                <div class="clean-card">
-                    <div class="clean-card-header"><i class="fas fa-eye"></i> 2. القياسات الطبية (Rx)</div>
-                    <div class="clean-card-body">
+                <div class="premium-card">
+                    <div class="card-header"><i class="fas fa-eye"></i> 2. القياسات الطبية (Rx)</div>
+                    <div class="card-body">
                         <table class="rx-table">
-                            <thead><tr><th>العين</th><th>SPH</th><th>CYL</th><th>AXIS</th><th>ADD</th></tr></thead>
-                            <tbody><tr><td style="font-weight:900; color:var(--primary);">Right (OD)</td><td><input type="text" id="u-od-s" class="rx-input en-num" placeholder="0.00"></td><td><input type="text" id="u-od-c" class="rx-input en-num" placeholder="0.00"></td><td><input type="text" id="u-od-a" class="rx-input en-num" placeholder="0"></td><td><input type="text" id="u-od-add" class="rx-input en-num" placeholder="0.00"></td></tr><tr><td style="font-weight:900; color:var(--success);">Left (OS)</td><td><input type="text" id="u-os-s" class="rx-input en-num" placeholder="0.00"></td><td><input type="text" id="u-os-c" class="rx-input en-num" placeholder="0.00"></td><td><input type="text" id="u-os-a" class="rx-input en-num" placeholder="0"></td><td><input type="text" id="u-os-add" class="rx-input en-num" placeholder="0.00"></td></tr></tbody>
+                            <thead><tr><th>Eye</th><th>SPH</th><th>CYL</th><th>AXIS</th><th>ADD</th></tr></thead>
+                            <tbody>
+                                <tr><td style="font-weight:900; color:var(--primary); font-size: 1.1rem; text-align:left; padding-left:15px;">R (OD)</td><td><input type="text" id="u-od-s" class="rx-input en-num" placeholder="0.00"></td><td><input type="text" id="u-od-c" class="rx-input en-num" placeholder="0.00"></td><td><input type="text" id="u-od-a" class="rx-input en-num" placeholder="0"></td><td><input type="text" id="u-od-add" class="rx-input en-num" placeholder="0.00"></td></tr>
+                                <tr><td style="font-weight:900; color:var(--text-main); font-size: 1.1rem; text-align:left; padding-left:15px;">L (OS)</td><td><input type="text" id="u-os-s" class="rx-input en-num" placeholder="0.00"></td><td><input type="text" id="u-os-c" class="rx-input en-num" placeholder="0.00"></td><td><input type="text" id="u-os-a" class="rx-input en-num" placeholder="0"></td><td><input type="text" id="u-os-add" class="rx-input en-num" placeholder="0.00"></td></tr>
+                            </tbody>
                         </table>
-                        <div class="grid-2" style="margin-top: 15px;"><div><label class="input-label">المسافة الحدقية (PD)</label><input type="text" id="u-pd" class="clean-input en-num" placeholder="60"></div><div><label class="input-label">ملاحظات طبية</label><input type="text" id="u-notes" class="clean-input" placeholder="اكتب أي ملاحظات..."></div></div>
+                        <div class="grid-2" style="margin-top: 20px;"><div><label class="input-label">المسافة الحدقية (PD)</label><input type="text" id="u-pd" class="pro-input en-num" placeholder="60"></div><div><label class="input-label">ملاحظات طبية</label><input type="text" id="u-notes" class="pro-input" placeholder="اكتب الملاحظات الطبية..."></div></div>
                     </div>
                 </div>
 
                 <div class="grid-2">
-                    <div class="clean-card"><div class="clean-card-header"><i class="fas fa-shopping-bag"></i> 3. المنتجات المباعة</div><div class="clean-card-body"><div class="sales-row"><input type="text" id="u-frame-type" class="clean-input" placeholder="نوع الإطار"><input type="number" id="u-frame-price" class="clean-input price-input en-num" placeholder="سعر الإطار" oninput="calcUnifiedTotal()"></div><div class="sales-row"><input type="text" id="u-lenses-type" class="clean-input" placeholder="العدسات"><input type="number" id="u-lenses-price" class="clean-input price-input en-num" placeholder="سعر العدسات" oninput="calcUnifiedTotal()"></div><div class="sales-row"><input type="text" id="u-cl-type" class="clean-input" placeholder="لاصق"><input type="number" id="u-cl-price" class="clean-input price-input en-num" placeholder="سعر اللاصق" oninput="calcUnifiedTotal()"></div><div class="sales-row"><input type="text" id="u-extras-type" class="clean-input" placeholder="أخرى"><input type="number" id="u-extras-price" class="clean-input price-input en-num" placeholder="سعر أخرى" oninput="calcUnifiedTotal()"></div></div></div>
-                    <div class="clean-card"><div class="clean-card-header"><i class="fas fa-calculator"></i> 4. الحساب المالي</div><div class="clean-card-body"><div class="calc-wrapper"><div class="calc-item"><span>المجموع:</span> <input type="text" id="u-subtotal" class="en-num calc-val" readonly value="0.00"></div><div class="calc-item"><span>الخصم:</span> <select id="u-discount" class="clean-input en-num" style="width:100px; padding:5px; font-size:1rem; color:#000;" onchange="calcUnifiedTotal()"><option value="0">0%</option><option value="10">10%</option><option value="20">20%</option><option value="30">30%</option><option value="40">40%</option><option value="50">50%</option><option value="100">100%</option></select></div><div class="calc-total-row"><span>الإجمالي (Total JOD):</span> <input type="text" id="u-total" class="en-num calc-total-val" readonly value="0.00"></div><div class="calc-item" style="margin-top: 15px;"><span>طريقة الدفع:</span> <select id="u-payment-method" class="clean-input" style="width:120px; padding:5px; font-weight:bold; color:#000;"><option value="كاش">كاش (Cash)</option><option value="فيزا">فيزا (Visa)</option><option value="كليك">كليك (CliQ)</option><option value="تأمين">تأمين (Insurance)</option></select></div><div class="fin-paid-box"><label style="color:#cbd5e1; font-weight:bold; font-size:0.9rem;">المدفوع نقداً</label><input type="number" id="u-paid" class="fin-paid-input en-num" placeholder="0.00" oninput="calcUnifiedTotal()"></div><div class="calc-item calc-due"><span>الباقي (Due):</span> <div><span id="u-due-display" class="en-num">0.00</span> JOD</div><input type="hidden" id="u-due" value="0"></div></div><button class="btn-massive" style="margin-top: 20px;" onclick="saveUnifiedRecord()"><i class="fas fa-print"></i> حفظ الفاتورة وطباعة الوصفة</button></div></div>
-                </div>
+                    <div class="premium-card"><div class="card-header"><i class="fas fa-shopping-bag"></i> 3. المشتريات</div><div class="card-body"><div class="product-row"><input type="text" id="u-frame-type" class="pro-input" placeholder="الإطار (الماركة/اللون)" style="background:transparent; border:none; box-shadow:none;"><input type="number" id="u-frame-price" class="pro-input price-input en-num" placeholder="السعر" oninput="calcUnifiedTotal()"></div><div class="product-row"><input type="text" id="u-lenses-type" class="pro-input" placeholder="العدسات (النوع)" style="background:transparent; border:none; box-shadow:none;"><input type="number" id="u-lenses-price" class="pro-input price-input en-num" placeholder="السعر" oninput="calcUnifiedTotal()"></div><div class="product-row"><input type="text" id="u-cl-type" class="pro-input" placeholder="لاصق (النوع)" style="background:transparent; border:none; box-shadow:none;"><input type="number" id="u-cl-price" class="pro-input price-input en-num" placeholder="السعر" oninput="calcUnifiedTotal()"></div><div class="product-row"><input type="text" id="u-extras-type" class="pro-input" placeholder="أخرى (قطرات...)" style="background:transparent; border:none; box-shadow:none;"><input type="number" id="u-extras-price" class="pro-input price-input en-num" placeholder="السعر" oninput="calcUnifiedTotal()"></div></div></div>
 
-                <div class="clean-card">
-                    <div class="clean-card-header"><i class="fas fa-users"></i> أرشيف المراجعين الشامل</div>
-                    <div style="overflow-x: auto;"><table class="data-table"><thead><tr><th>اسم المراجع</th><th>أحدث زيارة</th><th>الإنفاق الكلي</th><th>السجل الطبي</th></tr></thead><tbody id="tb-unified-rx"></tbody></table></div>
-                </div>
-            </section>
-
-            <section id="pos" class="view"><div class="clean-card"><div class="clean-card-header">بيع سريع</div><div class="clean-card-body"><div class="grid-2" style="margin-bottom: 20px;"><div><label class="input-label">الزبون</label><input type="text" id="pos-patient" list="patients-list" class="clean-input" placeholder="اسم الزبون..."></div><div><label class="input-label">المنتج</label><select id="pos-product" class="clean-input" onchange="updatePosPrice()"><option value="">-- اختر من المخزون --</option></select></div></div><div class="calc-wrapper"><div class="calc-item"><span>السعر:</span><input type="text" id="pos-price" class="en-num calc-val" readonly value="0.00"></div><div class="calc-item"><span>الخصم:</span><select id="pos-discount" class="clean-input en-num" style="width:100px; padding:5px; font-size:1rem; color:#000;" onchange="calcPosTotal()"><option value="0">0%</option><option value="10">10%</option><option value="20">20%</option><option value="50">50%</option><option value="100">100%</option></select></div><div class="calc-total-row"><span>الإجمالي:</span><input type="text" id="pos-total" class="en-num calc-total-val" readonly value="0.00"></div><div class="calc-item" style="margin-top:15px;"><span>طريقة الدفع:</span><select id="pos-payment-method" class="clean-input" style="width:120px; padding:5px; font-weight:bold; color:#000;"><option value="كاش">كاش</option><option value="فيزا">فيزا</option><option value="كليك">كليك</option></select></div><div class="fin-paid-box"><label style="color:#cbd5e1; font-weight:bold; font-size:0.9rem;">المدفوع نقداً</label><input type="number" id="pos-paid" class="fin-paid-input en-num" placeholder="0.00" oninput="calcPosTotal()"></div><div class="calc-item calc-due"><span>الباقي:</span><div><span id="pos-due-display" class="en-num">0.00</span> JOD</div><input type="hidden" id="pos-due" value="0"></div></div><button class="btn-massive" style="margin-top: 20px;" onclick="createInvoice()">اعتماد وطباعة إيصال المبيعات</button></div></div><div class="clean-card"><div class="clean-card-header">سجل الفواتير السريعة</div><table class="data-table"><thead><tr><th>الفاتورة</th><th>الزبون</th><th>المنتج</th><th>الإجمالي</th><th>الباقي</th><th>إجراءات</th></tr></thead><tbody id="tb-invc"></tbody></table></div></section>
-            
-            <section id="online-rx" class="view"><div class="clean-card"><div class="clean-card-header"><i class="fas fa-globe"></i> طلبات الفحص الذكي (الموقع)</div><table class="data-table"><thead><tr><th>اسم المراجع</th><th> الهواتف</th><th>التاريخ والوقت</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody id="tb-online-rx"></tbody></table></div></section>
-            <section id="inv" class="view"><div class="clean-card"><div class="clean-card-header">إضافة للمخزون</div><div class="clean-card-body"><div class="grid-3"><div class="input-group"><label class="input-label">الاسم</label><input type="text" id="p-name" class="clean-input"></div><div class="input-group"><label class="input-label">السعر</label><input type="number" id="p-price" class="clean-input en-num"></div><div class="input-group"><label class="input-label">الكمية</label><input type="number" id="p-qty" class="clean-input en-num"></div></div><div class="grid-2" style="margin-top:20px;"><div class="input-group"><label class="input-label">التصنيف</label><select id="p-type" class="clean-input"><option value="طبي">طبي</option></select></div><div class="input-group"><label class="input-label">الصورة</label><input type="file" accept="image/*" onchange="compressImage(event, 'p-base64')" style="padding:10px;"><input type="hidden" id="p-base64"></div></div><button class="btn-massive" style="margin-top:20px;" onclick="saveProduct()">حفظ في المستودع</button></div></div><div class="clean-card"><div class="clean-card-header">المستودع</div><table class="data-table"><thead><tr><th>المنتج</th><th>التصنيف</th><th>الكمية</th><th>السعر</th><th>إجراءات</th></tr></thead><tbody id="tb-inv"></tbody></table></div></section>
-            <section id="lab" class="view"><div class="clean-card"><div class="clean-card-header">المختبر</div><table class="data-table"><thead><tr><th>الفاتورة</th><th>المراجع</th><th>التفاصيل</th><th>حالة المختبر</th></tr></thead><tbody id="tb-lab"></tbody></table></div></section>
-            <section id="chat" class="view"><div class="clean-card"><div class="clean-card-header">الشات الداخلي</div></div></section>
-            <section id="ext-collections" class="view admin-only"><div class="clean-card"><div class="clean-card-header">إدارة المعرض</div><div class="clean-card-body"><input type="hidden" id="ext-col-id"><div class="grid-2"><div class="input-group"><label class="input-label">اسم الموديل</label><input type="text" id="ext-col-name" class="clean-input"></div><div class="input-group"><label class="input-label">النوع</label><select id="ext-col-type" class="clean-input"><option value="medical">طبي</option><option value="sun">شمسي</option></select></div></div><div class="input-group"><label class="input-label">الصورة</label><input type="file" accept="image/*" onchange="compressImage(event, 'ext-col-base64')" style="margin-top:10px;"><input type="hidden" id="ext-col-base64"></div><button class="btn-massive" style="margin-top:15px;" onclick="saveExtCollection()">حفظ ونشر الموديل</button></div></div><div class="clean-card"><div class="clean-card-header">الموديلات المرفوعة</div><table class="data-table"><thead><tr><th>الاسم</th><th>النوع</th><th>إجراءات</th></tr></thead><tbody id="tb-ext-collections"></tbody></table></div></section>
-            
-            <section id="accounts" class="view developer-only">
-                <div class="clean-card">
-                    <div class="clean-card-header"><i class="fas fa-user-shield"></i> لوحة تحكم الحسابات (RBAC)</div>
-                    <div class="clean-card-body">
-                        <input type="hidden" id="s-id">
-                        <div class="grid-2"><div class="input-group"><label class="input-label">الاسم الكامل (للعرض)</label><input type="text" id="s-name" class="clean-input"></div><div class="input-group"><label class="input-label">اسم المستخدم (للدخول)</label><input type="text" id="s-user" class="clean-input en-num"></div></div>
-                        <div class="grid-2" style="margin-top:15px;"><div class="input-group"><label class="input-label">كلمة المرور (اتركه فارغاً لعدم التغيير)</label><input type="password" id="s-pass" class="clean-input en-num"></div>
-                            <div class="input-group">
-                                <label class="input-label">الرتبة / الصلاحية</label>
-                                <select id="s-role" class="clean-input"><option value="employee">موظف (Employee)</option><option value="manager">مدير (Manager)</option><option value="developer">مطور / مسؤول النظام (Developer)</option></select>
+                    <div class="premium-card" style="overflow: visible;">
+                        <div class="card-header" style="background: var(--secondary); color: white;"><i class="fas fa-calculator" style="color:var(--primary);"></i> 4. الحاسبة والاعتماد</div>
+                        <div class="card-body calc-panel">
+                            <div class="calc-row"><span style="color:#94a3b8;">المجموع (Subtotal)</span> <input type="text" id="u-subtotal" class="en-num calc-val" readonly value="0.00"></div>
+                            <div class="calc-row"><span style="color:#94a3b8;">الخصم (Discount)</span> <select id="u-discount" class="pro-input en-num" style="width:120px; padding:8px; font-size:1.1rem; color: #0f172a;" onchange="calcUnifiedTotal()"><option value="0">0%</option><option value="10">10%</option><option value="20">20%</option><option value="30">30%</option><option value="40">40%</option><option value="50">50%</option><option value="100">100%</option></select></div>
+                            <div class="calc-total-box calc-row"><span style="color: #10b981; font-size: 1.6rem;">الإجمالي (Total)</span> <input type="text" id="u-total" class="en-num calc-total-val" readonly value="0.00"></div>
+                            
+                            <div class="paid-input-box">
+                                <div class="calc-row" style="border:none; padding:0 0 10px 0;"><span style="color:#e2e8f0;">طريقة الدفع</span> <select id="u-payment-method" class="pro-input" style="width:150px; padding:10px; font-weight: 800; color: #0f172a;"><option value="كاش">كاش (Cash)</option><option value="فيزا">فيزا (Visa)</option><option value="كليك">كليك (CliQ)</option><option value="تأمين">تأمين (Ins)</option></select></div>
+                                <div class="calc-row" style="border:none; padding:0;"><span style="color:#e2e8f0;">المدفوع نقداً</span> <input type="number" id="u-paid" class="paid-input en-num" placeholder="0.00" oninput="calcUnifiedTotal()"></div>
                             </div>
+                            
+                            <div class="due-box"><span>الباقي (Due)</span> <div><span id="u-due-display" class="en-num">0.00</span> <span style="font-size:1rem;">JOD</span></div><input type="hidden" id="u-due" value="0"></div>
+                            <button class="btn-pro btn-primary" style="margin-top: 25px; padding: 20px; font-size: 1.3rem;" onclick="saveUnifiedRecord()"><i class="fas fa-print"></i> حفظ واعتماد الوصفة</button>
                         </div>
-                        <button class="btn-massive" style="margin-top:20px;" onclick="saveStaff()"><i class="fas fa-save"></i> حفظ الحساب</button>
                     </div>
                 </div>
-                <div class="clean-card"><div class="clean-card-header">جدول حسابات النظام</div><table class="data-table"><thead><tr><th>الاسم</th><th>المستخدم</th><th>الصلاحية</th><th>الحالة</th><th>تعديل / تجميد / حذف</th></tr></thead><tbody id="tb-staff"></tbody></table></div>
+
+                <div class="premium-card"><div class="card-header"><i class="fas fa-users"></i> أرشيف المراجعين الشامل</div><div class="table-wrapper"><table class="modern-table"><thead><tr><th>الاسم</th><th>أحدث زيارة</th><th>الإنفاق الكلي</th><th>السجل</th></tr></thead><tbody id="tb-unified-rx"></tbody></table></div></div>
+            </section>
+
+            <section id="pos" class="view"><div class="premium-card"><div class="card-header"><i class="fas fa-shopping-cart"></i> مبيعات الكاشير السريعة</div><div class="card-body"><div class="grid-2" style="margin-bottom: 25px;"><div><label class="input-label">الزبون</label><input type="text" id="pos-patient" list="patients-list" class="pro-input" placeholder="اسم الزبون..."></div><div><label class="input-label">المنتج</label><select id="pos-product" class="pro-input" onchange="updatePosPrice()" style="font-size: 1.1rem;"><option value="">-- اختر من المخزون --</option></select></div></div><div class="calc-panel"><div class="calc-row"><span style="color:#9ca3af;">السعر:</span><input type="text" id="pos-price" class="en-num calc-val" readonly value="0.00"></div><div class="calc-row"><span style="color:#9ca3af;">الخصم:</span><select id="pos-discount" class="pro-input en-num" style="width:120px; padding:8px; font-size:1.1rem; color:#000;" onchange="calcPosTotal()"><option value="0">0%</option><option value="10">10%</option><option value="20">20%</option><option value="50">50%</option><option value="100">100%</option></select></div><div class="calc-total-box calc-row"><span style="color:#10b981; font-size:1.6rem;">الإجمالي:</span><input type="text" id="pos-total" class="en-num calc-total-val" readonly value="0.00"></div><div class="paid-input-box"><div class="calc-row" style="border:none; padding:0 0 15px 0;"><span style="color:#fff;">الدفع:</span><select id="pos-payment-method" class="pro-input" style="width:150px; padding:10px; font-weight:bold; color:#000;"><option value="كاش">كاش</option><option value="فيزا">فيزا</option><option value="كليك">كليك</option></select></div><div class="calc-row" style="border:none; padding:0;"><span style="color:#fff;">المدفوع:</span><input type="number" id="pos-paid" class="paid-input en-num" placeholder="0.00" oninput="calcPosTotal()"></div></div><div class="due-box"><span>الباقي:</span><div><span id="pos-due-display" class="en-num">0.00</span> <span style="font-size:1rem;">JOD</span></div><input type="hidden" id="pos-due" value="0"></div><button class="btn-pro btn-primary" style="margin-top: 25px; padding: 20px; font-size:1.3rem;" onclick="createInvoice()"><i class="fas fa-print"></i> طباعة إيصال الكاشير</button></div></div></div><div class="premium-card"><div class="card-header">سجل مبيعات الكاشير</div><table class="modern-table"><thead><tr><th>الفاتورة</th><th>الزبون</th><th>المنتج</th><th>الإجمالي</th><th>الباقي</th><th>إجراءات</th></tr></thead><tbody id="tb-invc"></tbody></table></div></section>
+            
+            <section id="online-rx" class="view"><div class="premium-card"><div class="card-header"><i class="fas fa-globe"></i> طلبات الفحص الذكي</div><table class="modern-table"><thead><tr><th>الاسم</th><th>الهاتف</th><th>التاريخ والوقت</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody id="tb-online-rx"></tbody></table></div></section>
+            <section id="inv" class="view"><div class="premium-card"><div class="card-header">إضافة للمخزون</div><div class="card-body"><div class="grid-3"><div class="input-group"><label class="input-label">الاسم</label><input type="text" id="p-name" class="pro-input"></div><div class="input-group"><label class="input-label">السعر</label><input type="number" id="p-price" class="pro-input en-num"></div><div class="input-group"><label class="input-label">الكمية</label><input type="number" id="p-qty" class="pro-input en-num"></div></div><div class="grid-2" style="margin-top:10px;"><div class="input-group"><label class="input-label">التصنيف</label><select id="p-type" class="pro-input"><option value="طبي">طبي</option></select></div><div class="input-group"><label class="input-label">الصورة</label><input type="file" accept="image/*" onchange="compressImage(event, 'p-base64')" style="padding:10px;"><input type="hidden" id="p-base64"></div></div><button class="btn-pro btn-primary" style="margin-top:15px;" onclick="saveProduct()">حفظ في المستودع</button></div></div><div class="premium-card"><div class="card-header">المستودع</div><table class="modern-table"><thead><tr><th>المنتج</th><th>التصنيف</th><th>الكمية</th><th>السعر</th><th>إجراءات</th></tr></thead><tbody id="tb-inv"></tbody></table></div></section>
+            <section id="lab" class="view"><div class="premium-card"><div class="card-header">المختبر</div><table class="modern-table"><thead><tr><th>الفاتورة</th><th>المراجع</th><th>التفاصيل</th><th>الحالة</th></tr></thead><tbody id="tb-lab"></tbody></table></div></section>
+            <section id="ext-collections" class="view admin-only"><div class="premium-card"><div class="card-header">إدارة المعرض</div><div class="card-body"><input type="hidden" id="ext-col-id"><div class="grid-2"><div class="input-group"><label class="input-label">الاسم</label><input type="text" id="ext-col-name" class="pro-input"></div><div class="input-group"><label class="input-label">النوع</label><select id="ext-col-type" class="pro-input"><option value="medical">طبي</option><option value="sun">شمسي</option></select></div></div><div class="input-group"><label class="input-label">الصورة</label><input type="file" accept="image/*" onchange="compressImage(event, 'ext-col-base64')"><input type="hidden" id="ext-col-base64"></div><button class="btn-pro btn-primary" style="margin-top:15px;" onclick="saveExtCollection()">حفظ ونشر الموديل</button></div></div><div class="premium-card"><div class="card-header">الموديلات المرفوعة</div><table class="modern-table"><thead><tr><th>الاسم</th><th>النوع</th><th>إجراءات</th></tr></thead><tbody id="tb-ext-collections"></tbody></table></div></section>
+            
+            <section id="accounts" class="view developer-only">
+                <div class="premium-card">
+                    <div class="card-header"><i class="fas fa-user-shield"></i> لوحة تحكم الحسابات (RBAC)</div>
+                    <div class="card-body">
+                        <div class="grid-2"><div class="input-group"><label class="input-label">الاسم الكامل</label><input type="text" id="s-name" class="pro-input"></div><div class="input-group"><label class="input-label">اسم المستخدم</label><input type="text" id="s-user" class="pro-input en-num"></div></div>
+                        <div class="grid-2" style="margin-top:15px;"><div class="input-group"><label class="input-label">كلمة المرور</label><input type="password" id="s-pass" class="pro-input en-num"></div>
+                            <div class="input-group">
+                                <label class="input-label">الرتبة / الصلاحية</label>
+                                <select id="s-role" class="pro-input"><option value="employee">موظف (Employee)</option><option value="manager">مدير (Manager)</option><option value="developer">مسؤول النظام (Admin)</option></select>
+                            </div>
+                        </div>
+                        <button class="btn-pro btn-primary" style="margin-top:20px;" onclick="saveStaff()"><i class="fas fa-save"></i> إنشاء حساب جديد</button>
+                    </div>
+                </div>
+                <div class="premium-card"><div class="card-header">جدول الحسابات</div><table class="modern-table"><thead><tr><th>الاسم</th><th>المستخدم</th><th>الصلاحية</th><th>الحالة</th><th>تعديل / إجراءات</th></tr></thead><tbody id="tb-staff"></tbody></table></div>
             </section>
             
             <section id="secret-monitor" class="view developer-only">
-                <div class="clean-card" style="border: 1px solid var(--danger);"><div class="clean-card-header" style="color:var(--danger); background: #fef2f2; border-bottom-color: #fca5a5;"><i class="fas fa-user-secret"></i> المراقبة السرية (Audit Log)</div><div style="padding: 15px 20px; font-size: 0.95rem; font-weight: bold; color: var(--text-main); background: #f8fafc; border-bottom: 1px solid var(--border);">يتم هنا تسجيل كل حركة إدخال، تعديل، طباعة، أو حذف مع اسم الموظف والتوقيت الدقيق.</div><div style="max-height: 500px; overflow-y: auto;"><table class="data-table"><thead><tr><th>الموظف</th><th>الجهاز</th><th>تفاصيل الحركة</th><th>الوقت الدقيق</th></tr></thead><tbody id="tb-secret-audit"></tbody></table></div></div>
+                <div class="premium-card" style="border-color: var(--primary);">
+                    <div class="card-header" style="color:var(--primary);"><i class="fas fa-user-secret"></i> المراقبة السرية (Audit Log)</div>
+                    <div style="padding: 20px; font-weight: 700; color: var(--text-muted); background: #f8fafc; border-bottom: 1px solid var(--border-soft);">تسجيل دقيق لكل حركة إدخال، تعديل، طباعة، أو حذف.</div>
+                    <div style="max-height: 500px; overflow-y: auto;">
+                        <table class="modern-table"><thead><tr><th>الموظف</th><th>الجهاز</th><th>الحركة</th><th>الوقت الدقيق</th></tr></thead><tbody id="tb-secret-audit"></tbody></table>
+                    </div>
+                </div>
             </section>
 
             <section id="recycle" class="view developer-only">
-                <div class="clean-card" style="border: 1px solid var(--danger);"><div class="clean-card-header" style="color:var(--danger); background: #fef2f2; border-bottom-color: #fca5a5;"><i class="fas fa-trash-restore"></i> سلة المحذوفات الشاملة (Soft Delete)</div><div style="padding: 15px 20px; font-size: 0.95rem; font-weight: bold; color: var(--text-main); background: #f8fafc; border-bottom: 1px solid var(--border);">عندما يقوم أي موظف بحذف فاتورة أو منتج، لا تُحذف نهائياً، بل تنتقل إلى هنا، ويمكن للمسؤول استرجاعها بضغطة زر.</div><div style="max-height: 500px; overflow-y: auto;"><table class="data-table"><thead><tr><th>نوع العنصر</th><th>البيان / التفاصيل</th><th>حُذف بواسطة</th><th>وقت الحذف</th><th>استرجاع البيانات</th></tr></thead><tbody id="tb-recycle"></tbody></table></div></div>
+                <div class="premium-card" style="border-color: var(--danger);">
+                    <div class="card-header" style="color:var(--danger);"><i class="fas fa-trash-restore"></i> سلة المحذوفات الشاملة</div>
+                    <div style="padding: 20px; font-weight: 700; color: var(--text-muted); background: #f8fafc; border-bottom: 1px solid var(--border-soft);">استرجاع البيانات المحذوفة بضغطة زر.</div>
+                    <div style="max-height: 500px; overflow-y: auto;">
+                        <table class="modern-table"><thead><tr><th>العنصر</th><th>التفاصيل</th><th>حُذف بواسطة</th><th>الوقت</th><th>استرجاع</th></tr></thead><tbody id="tb-recycle"></tbody></table>
+                    </div>
+                </div>
             </section>
 
-            <section id="cms" class="view admin-only"><div class="clean-card"><div class="clean-card-header"><i class="fas fa-laptop-code"></i> إعدادات الواجهة الخارجية</div><div class="clean-card-body"><div class="input-group"><label class="input-label">شريط الإعلانات الأخضر (اتركه فارغاً لإخفائه)</label><input type="text" id="cms-topbar" placeholder="مثال: خصم 50%!" class="clean-input"></div><div style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-top: 20px; margin-bottom: 20px;"><h4 style="margin-top: 0; color: var(--primary);">أوقات الدوام</h4><div class="grid-3"><div class="input-group"><label class="input-label">وضع المحل</label><select id="cms-status-mode" class="clean-input"><option value="auto">تلقائي</option><option value="force_open">مفتوح دائماً</option><option value="force_close">مغلق دائماً</option></select></div><div class="input-group"><label class="input-label">يفتح الساعة</label><input type="time" id="cms-open-time" class="clean-input"></div><div class="input-group"><label class="input-label">يغلق الساعة</label><input type="time" id="cms-close-time" class="clean-input"></div></div></div><button class="btn-massive" onclick="saveCMS()">تحديث ونشر الإعدادات للموقع</button></div></div></section>
-        </div>
-    </div>
-
-    <div id="staff-edit-modal" class="modal" style="display:none; z-index: 4100;">
-        <div class="modal-content" style="padding: 30px; border-radius: 16px; max-width: 600px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 2px solid var(--gold); padding-bottom: 15px;">
-                <h2 style="margin: 0; color: var(--gold);"><i class="fas fa-user-edit"></i> تعديل صلاحيات الحساب الدقيقة (RBAC)</h2>
-                <button onclick="document.getElementById('staff-edit-modal').style.display='none'" class="btn" style="background:var(--danger); color:white; border:none; border-radius: 8px; padding: 10px 20px; font-weight:bold; cursor:pointer;"><i class="fas fa-times"></i></button>
-            </div>
-            <input type="hidden" id="edit-s-id">
-            <div class="grid-2"><div class="input-group"><label class="input-label">الاسم الكامل</label><input type="text" id="edit-s-name" class="clean-input"></div><div class="input-group"><label class="input-label">اسم المستخدم</label><input type="text" id="edit-s-user" class="clean-input en-num" readonly style="background:#f1f5f9;"></div></div>
-            <div class="input-group" style="margin-top:10px;"><label class="input-label">كلمة المرور الجديدة (اتركه فارغاً لعدم التغيير)</label><input type="password" id="edit-s-pass" class="clean-input en-num"></div>
-            <div class="input-group"><label class="input-label">الرتبة العامة</label><select id="edit-s-role" class="clean-input" style="font-weight:bold; color:#000;"><option value="employee">موظف (Employee)</option><option value="manager">مدير (Manager)</option><option value="developer">مطور / مسؤول النظام (Developer)</option></select></div>
-            
-            <div style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-top: 20px; margin-bottom: 20px;">
-                <h4 style="margin-top: 0; color: var(--gold);">صلاحيات الوصول الدقيقة (التخصيص)</h4>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-weight: bold; color: var(--secondary);">
-                    <div><input type="checkbox" id="edit-perm-dash" value="dashboard"> عرض الداشبورد المالي</div>
-                    <div><input type="checkbox" id="edit-perm-rx-view" value="rx_view"> عرض ملفات العيادة</div>
-                    <div><input type="checkbox" id="edit-perm-rx-add" value="rx_add"> إضافة/تعديل ملفات العيادة</div>
-                    <div><input type="checkbox" id="edit-perm-pos" value="pos"> الوصول للكاشير/المبيعات</div>
-                    <div><input type="checkbox" id="edit-perm-inv" value="inventory"> إدارة المخزون</div>
-                    <div><input type="checkbox" id="edit-perm-reports" value="reports"> عرض التقارير المالية</div>
-                    <div><input type="checkbox" id="edit-perm-cms" value="cms"> إعدادات الموقع الخارجي</div>
-                    <div><input type="checkbox" id="edit-perm-admin" value="admin"> إدارة الحسابات (Admin)</div>
-                    <div><input type="checkbox" id="edit-perm-recycle" value="recycle"> الوصول لسلة المحذوفات</div>
-                </div>
-            </div>
-            
-            <button class="btn" style="background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%); color:white; border:none; width:100%; padding:18px; font-size:1.1rem; font-weight:900; border-radius:10px; cursor:pointer; box-shadow: var(--btn-gold-3d-shadow);" onclick="saveRBACEdit()"><i class="fas fa-save"></i> حفظ الصلاحيات الدقيقة</button>
+            <section id="cms" class="view admin-only"><div class="premium-card"><div class="card-header"><i class="fas fa-laptop-code"></i> إعدادات الواجهة الخارجية</div><div class="card-body"><div class="input-group"><label class="input-label">شريط الإعلانات الأخضر (فارغ للإخفاء)</label><input type="text" id="cms-topbar" class="pro-input"></div><div style="background: #f8fafc; padding: 25px; border-radius: var(--radius-md); border: 1px solid var(--border-soft); margin-top: 20px; margin-bottom: 20px;"><h4 style="margin-top: 0; color: var(--secondary); margin-bottom: 15px;">أوقات الدوام</h4><div class="grid-3"><div class="input-group"><label class="input-label">الوضع</label><select id="cms-status-mode" class="pro-input"><option value="auto">تلقائي</option><option value="force_open">مفتوح دائماً</option><option value="force_close">مغلق دائماً</option></select></div><div class="input-group"><label class="input-label">يفتح الساعة</label><input type="time" id="cms-open-time" class="pro-input"></div><div class="input-group"><label class="input-label">يغلق الساعة</label><input type="time" id="cms-close-time" class="pro-input"></div></div></div><button class="btn-pro btn-primary" onclick="saveCMS()">تحديث ونشر</button></div></div></section>
         </div>
     </div>
 
     <div id="print-report" style="display: none;"><div id="pr-content"></div></div>
-
     <script type="module" src="./app.js"></script>
 </body>
 </html>

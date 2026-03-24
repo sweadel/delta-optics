@@ -3,373 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delta Optics | Enterprise ERP V6</title>
+    <title>Delta Optics | Smart ERP</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Tajawal', 'sans-serif'] },
+                    colors: {
+                        primary: '#0ea5e9',
+                        darkBg: '#0f172a',
+                        darkCard: '#1e293b'
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root { 
-            --primary: #0ea5e9; --primary-dark: #0284c7; --bg-main: #f8fafc; 
-            --bg-card: #ffffff; --sidebar-bg: #0f172a; --text-main: #1e293b; 
-            --text-muted: #64748b; --border-color: #e2e8f0; --success: #10b981; 
-            --danger: #ef4444; --warning: #f59e0b; --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        }
-        body.dark-mode {
-            --bg-main: #0f172a; --bg-card: #1e293b; --sidebar-bg: #020617; 
-            --text-main: #f8fafc; --text-muted: #94a3b8; --border-color: #334155;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; outline: none; }
-        body { background-color: var(--bg-main); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; transition: 0.3s; }
-
-        /* Sidebar */
-        .sidebar { width: 280px; background: var(--sidebar-bg); display: flex; flex-direction: column; color: #fff; padding: 20px; overflow-y: auto; transition: 0.3s; }
-        .logo-box { padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; text-align: center; }
-        .logo-box h2 { font-weight: 900; color: var(--primary); font-size: 1.8rem; letter-spacing: 1px; }
-        .nav-label { font-size: 0.75rem; color: #94a3b8; font-weight: 900; margin: 15px 0 10px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .nav-link { width: 100%; padding: 12px 15px; margin-bottom: 5px; border-radius: 10px; background: transparent; color: #cbd5e1; border: none; text-align: right; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
-        .nav-link:hover, .nav-link.active { background: var(--primary); color: #fff; }
-
-        /* Main Content */
-        .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .header { height: 80px; background: var(--bg-card); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; padding: 0 30px; }
-        .search-bar { padding: 12px 20px; border-radius: 20px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-main); width: 350px; font-weight: 500; transition: 0.3s; }
-        .search-bar:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2); }
-        .header-actions { display: flex; gap: 15px; align-items: center; }
-        .user-badge { font-weight: 700; color: var(--primary); background: rgba(14, 165, 233, 0.1); padding: 8px 16px; border-radius: 20px; display: flex; align-items: center; gap: 8px; }
-        
-        .content { flex: 1; padding: 30px; overflow-y: auto; }
-        .view { display: none; animation: fadeIn 0.4s ease; }
-        .view.active { display: block; }
+        body { font-family: 'Tajawal', sans-serif; }
+        .view-section { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .view-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Cards & Grids */
-        .card { background: var(--bg-card); border-radius: 16px; padding: 25px; border: 1px solid var(--border-color); box-shadow: var(--shadow); margin-bottom: 25px; }
-        .card-title { margin-bottom: 20px; font-weight: 900; color: var(--text-main); display: flex; align-items: center; gap: 10px; font-size: 1.2rem; }
-        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-
-        /* Inputs & Buttons */
-        input[type="text"], input[type="number"], input[type="password"], input[type="time"], select { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-main); font-weight: 500; transition: 0.2s; }
-        input:focus, select:focus { border-color: var(--primary); }
-        .btn { padding: 12px 20px; border-radius: 10px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; border: none; transition: 0.2s; justify-content: center; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
-        .btn-success { background: var(--success); color: white; }
-        .btn-danger { background: var(--danger); color: white; }
-        .btn-warning { background: var(--warning); color: white; }
-        .btn-dark { background: var(--text-muted); color: white; }
-
-        /* Tables */
-        .table-wrapper { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border-color); }
-        table { width: 100%; border-collapse: collapse; text-align: right; }
-        th { background: var(--bg-main); padding: 15px; color: var(--text-muted); font-weight: 900; font-size: 0.85rem; text-transform: uppercase; border-bottom: 1px solid var(--border-color); }
-        td { padding: 15px; border-bottom: 1px solid var(--border-color); font-weight: 500; color: var(--text-main); }
-        tr:hover td { background: var(--bg-main); }
-
-        /* Custom Elements */
-        .rx-grid { display: grid; grid-template-columns: 80px repeat(4, 1fr); gap: 15px; background: var(--bg-main); padding: 20px; border-radius: 12px; align-items: center; text-align: center; border: 1px solid var(--border-color); }
-        .rx-grid input { text-align: center; font-family: monospace; font-size: 1.1rem; background: var(--bg-card); padding: 10px; }
-        .admin-only { display: none; }
-        
-        /* Modal */
-        .modal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.8); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        .modal-content { background: var(--bg-card); padding: 40px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
-        
-        #print-report { display: none; }
-        @media print { body * { visibility: hidden; } #print-report, #print-report * { visibility: visible; } #print-report { display: block; position: absolute; left: 0; top: 0; width: 100%; padding: 40px; background: white; color: black; } }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 dark:bg-darkBg dark:text-slate-200 h-screen flex overflow-hidden transition-colors duration-300">
 
-    <div id="login-modal" class="modal">
-        <div class="modal-content">
-            <div style="background: rgba(14, 165, 233, 0.1); width: 80px; height: 80px; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
-                <i class="fas fa-fingerprint" style="font-size: 2.5rem; color: var(--primary);"></i>
-            </div>
-            <h2 style="font-weight: 900; margin-bottom: 5px;">نظام دلتا المركزي</h2>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 25px;">الرجاء إدخال بيانات الدخول للوصول للنظام</p>
-            <input type="text" id="auth-u" placeholder="اسم المستخدم" dir="ltr" style="margin-bottom: 15px; text-align:center;">
-            <input type="password" id="auth-p" placeholder="كلمة المرور" dir="ltr" style="margin-bottom: 20px; text-align:center;">
-            <button class="btn btn-primary" style="width:100%; padding:15px; font-size: 1.1rem;" onclick="handleLogin()">دخول للنظام</button>
+    <aside class="w-64 bg-slate-900 text-white flex flex-col transition-all duration-300 shadow-xl z-20">
+        <div class="p-6 border-b border-slate-700/50 text-center">
+            <h2 class="text-3xl font-black text-primary tracking-wider">DELTA</h2>
+            <p class="text-xs text-slate-400 font-bold mt-1 tracking-widest uppercase">Smart ERP v7</p>
         </div>
-    </div>
+        
+        <nav class="flex-1 overflow-y-auto p-4 space-y-2">
+            <p class="text-xs font-bold text-slate-500 mb-2 mt-4 px-2">العمليات الأساسية</p>
+            <button onclick="showView('dashboard')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white font-bold transition-all">
+                <i class="fas fa-chart-pie w-5 text-center"></i> لوحة القيادة
+            </button>
+            <button onclick="showView('pos')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-bold transition-all">
+                <i class="fas fa-cash-register w-5 text-center"></i> نقاط البيع الذكية
+            </button>
+            <button onclick="showView('inventory')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-bold transition-all">
+                <i class="fas fa-boxes w-5 text-center"></i> المخزون والتنبؤات
+            </button>
+        </nav>
 
-    <aside class="sidebar">
-        <div class="logo-box">
-            <h2>DELTA</h2>
-            <small style="color: #cbd5e1; font-weight: 500;">Enterprise ERP</small>
+        <div class="p-4 border-t border-slate-700/50">
+            <button onclick="handleLogout()" class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white font-bold transition-all">
+                <i class="fas fa-power-off"></i> تسجيل الخروج
+            </button>
         </div>
-        <div class="nav-label">العمليات اليومية</div>
-        <button class="nav-link active" onclick="showView('dash')"><i class="fas fa-chart-pie w-5"></i> لوحة المراقبة</button>
-        <button class="nav-link" onclick="showView('pos')"><i class="fas fa-cash-register w-5"></i> المبيعات (POS)</button>
-        <button class="nav-link" onclick="showView('rx')"><i class="fas fa-file-medical w-5"></i> العيادة والفحص</button>
-        <button class="nav-link" onclick="showView('online-rx')"><i class="fas fa-globe w-5"></i> فحوصات الموقع</button>
-        
-        <div class="nav-label">اللوجستيات</div>
-        <button class="nav-link" onclick="showView('inv')"><i class="fas fa-boxes w-5"></i> المخزون</button>
-        <button class="nav-link" onclick="showView('lab')"><i class="fas fa-flask w-5"></i> المختبر والتجهيز</button>
-        <button class="nav-link" onclick="showView('chat')"><i class="fas fa-comments w-5"></i> شات الطاقم</button>
-        
-        <div class="admin-only" style="display:none; flex-direction:column;">
-            <div class="nav-label" style="color:var(--warning);">الإدارة العليا</div>
-            <button class="nav-link" onclick="showView('ext-collections')"><i class="fas fa-images w-5"></i> تشكيلات الموقع</button>
-            <button class="nav-link" onclick="showView('cms')"><i class="fas fa-laptop-code w-5"></i> إعدادات الواجهة</button>
-            <button class="nav-link" onclick="showView('accounts')"><i class="fas fa-user-shield w-5"></i> إدارة الحسابات</button>
-            <button class="nav-link" onclick="showView('secret-monitor')"><i class="fas fa-user-secret w-5"></i> المراقبة السرية</button>
-            <button class="nav-link" onclick="showView('recycle')"><i class="fas fa-trash-restore w-5"></i> المحذوفات</button>
-        </div>
-        
-        <button class="nav-link" onclick="handleLogout()" style="margin-top:auto; background: rgba(239,68,68,0.1); color:var(--danger); justify-content: center;"><i class="fas fa-power-off"></i> تسجيل خروج</button>
     </aside>
 
-    <div class="main">
-        <header class="header">
-            <div style="display: flex; gap: 20px; align-items: center;">
-                <input type="text" id="global-search" class="search-bar" placeholder="بحث شامل (مراجع، منتج، فاتورة)..." onkeyup="performGlobalSearch()">
+    <main class="flex-1 flex flex-col relative overflow-hidden">
+        <header class="h-20 bg-white dark:bg-darkCard border-b border-slate-200 dark:border-slate-700/50 flex items-center justify-between px-8 shadow-sm z-10">
+            <div class="relative w-96">
+                <i class="fas fa-search absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" id="smart-search" placeholder="بحث ذكي (مرضى، فواتير، منتجات)..." class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-full py-2.5 pr-12 pl-4 focus:ring-2 focus:ring-primary outline-none transition-all dark:text-white">
             </div>
-            <div class="header-actions">
-                <button class="btn btn-dark" style="padding: 10px; border-radius: 50%; width: 40px; height: 40px;" onclick="toggleDarkMode()"><i class="fas fa-moon"></i></button>
-                <div class="user-badge">
-                    <i class="fas fa-user-circle" style="font-size: 1.2rem;"></i> <span id="display-user"></span>
+            
+            <div class="flex items-center gap-4">
+                <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-primary transition-colors">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </button>
+                <div class="flex items-center gap-3 bg-primary/10 px-4 py-2 rounded-full border border-primary/20">
+                    <i class="fas fa-user-circle text-primary text-xl"></i>
+                    <span id="user-name-display" class="font-bold text-primary">المدير العام</span>
                 </div>
             </div>
         </header>
 
-        <div class="content">
-            <section id="dash" class="view active">
-                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 25px;">
-                    <div>
-                        <div class="grid-2">
-                            <div class="card" style="border-top: 4px solid var(--success); padding: 30px;">
-                                <h3 class="card-title" style="color: var(--text-muted); font-size: 1rem;"><i class="fas fa-chart-line"></i> إجمالي المبيعات</h3>
-                                <h2 id="kpi-sales" style="color:var(--success); font-size: 2.5rem; font-weight: 900; margin-top: 10px;">0 JOD</h2>
-                            </div>
-                            <div class="card admin-only" style="border-top: 4px solid var(--primary); padding: 30px;">
-                                <h3 class="card-title" style="color: var(--text-muted); font-size: 1rem;"><i class="fas fa-wallet"></i> المقبوضات (كاش)</h3>
-                                <h2 id="kpi-profits" style="color:var(--primary); font-size: 2.5rem; font-weight: 900; margin-top: 10px;">0 JOD</h2>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card admin-only" style="padding: 0; overflow: hidden; display: flex; flex-direction: column;">
-                        <h3 class="card-title" style="padding: 20px; border-bottom: 1px solid var(--border-color); margin: 0; background: var(--bg-main);"><i class="fas fa-bolt text-warning"></i> النشاط الحي (Live)</h3>
-                        <div class="live-activity" id="live-activity-feed" style="padding: 20px; overflow-y: auto; flex: 1;">جاري تحميل النشاطات...</div>
-                    </div>
-                </div>
-            </section>
+        <div class="flex-1 overflow-y-auto p-8">
             
-            <section id="pos" class="view">
-                <div class="grid-2">
-                    <div class="card">
-                        <h3 class="card-title"><i class="fas fa-shopping-cart"></i> إصدار فاتورة جديدة</h3>
-                        <div style="display: flex; flex-direction: column; gap: 15px;">
-                            <select id="pos-patient"><option value="">-- المراجع (اختياري) --</option></select>
-                            <select id="pos-product" onchange="updatePosPrice()"><option value="">-- اختر المنتج من المخزون --</option></select>
-                            <div class="grid-2">
-                                <div><label style="font-size:0.85rem; color:var(--text-muted); font-weight:bold; margin-bottom:5px; display:block;">الإجمالي (JOD)</label><input type="number" id="pos-total" placeholder="0.00" readonly style="background:var(--bg-main); font-weight:bold; color:var(--primary); font-size:1.2rem;"></div>
-                                <div><label style="font-size:0.85rem; color:var(--text-muted); font-weight:bold; margin-bottom:5px; display:block;">المدفوع نقداً</label><input type="number" id="pos-paid" placeholder="0.00"></div>
-                            </div>
-                            <button class="btn btn-success" style="padding: 15px; font-size: 1.1rem;" onclick="createInvoice()"><i class="fas fa-check-circle"></i> إتمام البيع والطباعة</button>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <h3 class="card-title"><i class="fas fa-history"></i> سجل فواتير الكاشير</h3>
-                        <div class="table-wrapper" style="max-height: 350px; overflow-y: auto;">
-                            <table><thead><tr><th>الفاتورة</th><th>المراجع</th><th>المنتج</th><th>القيمة</th><th>المتبقي</th></tr></thead><tbody id="tb-invc"></tbody></table>
-                        </div>
-                    </div>
+            <section id="dashboard" class="view-section active">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-black text-slate-800 dark:text-white mb-2">مرحباً بك في النظام الذكي ⚡</h2>
+                    <p class="text-slate-500 dark:text-slate-400 font-medium">نظرة عامة على أداء اليوم وتحليلات المبيعات.</p>
                 </div>
-            </section>
 
-            <section id="rx" class="view">
-                <div class="card">
-                    <h3 class="card-title"><i class="fas fa-clipboard-list"></i> تسجيل فحص جديد</h3>
-                    <div class="grid-2" style="margin-bottom: 20px;">
-                        <input type="text" id="rx-name" placeholder="اسم المراجع الكامل">
-                        <input type="text" id="rx-phone" placeholder="رقم الهاتف للتواصل" dir="ltr">
-                    </div>
-                    <div class="rx-grid">
-                        <div></div>
-                        <strong style="color:var(--text-muted);">SPH</strong><strong style="color:var(--text-muted);">CYL</strong><strong style="color:var(--text-muted);">AXIS</strong><strong style="color:var(--text-muted);">ADD</strong>
-                        <strong style="color:var(--primary); font-size:1.2rem;">R (OD)</strong>
-                        <input type="text" id="od-s" placeholder="0.00"><input type="text" id="od-c" placeholder="0.00"><input type="text" id="od-a" placeholder="0"><input type="text" id="od-add" placeholder="0.00">
-                        <strong style="color:var(--success); font-size:1.2rem;">L (OS)</strong>
-                        <input type="text" id="os-s" placeholder="0.00"><input type="text" id="os-c" placeholder="0.00"><input type="text" id="os-a" placeholder="0"><input type="text" id="os-add" placeholder="0.00">
-                    </div>
-                    <div class="grid-2" style="margin-top:20px;">
-                        <input type="text" id="rx-pd" placeholder="المسافة الحدقية (PD)">
-                        <input type="text" id="rx-notes" placeholder="ملاحظات الوصفة الطبية">
-                    </div>
-                    <button class="btn btn-primary" style="margin-top:20px; width: 100%; padding: 15px; font-size: 1.1rem;" onclick="saveRx()"><i class="fas fa-save"></i> حفظ الفحص في السجل</button>
-                </div>
-                <div class="card">
-                    <h3 class="card-title" style="justify-content: space-between;">قاعدة المراجعين السابقة <button class="btn btn-success" style="font-size: 0.9rem;" onclick="exportToCSV('rx-table', 'المراجعين.csv')"><i class="fas fa-file-excel"></i> تصدير لـ Excel</button></h3>
-                    <div class="table-wrapper"><table id="rx-table"><thead><tr><th>الاسم</th><th>الهاتف</th><th>القياس المختصر</th><th>إجراءات</th></tr></thead><tbody id="tb-rx"></tbody></table></div>
-                </div>
-            </section>
-
-            <section id="online-rx" class="view">
-                <div class="card">
-                    <h3 class="card-title"><i class="fas fa-laptop-medical"></i> طلبات الفحص الأونلاين (الذكية)</h3>
-                    <div class="table-wrapper"><table><thead><tr><th>الاسم</th><th>الهاتف</th><th>التاريخ</th><th>الحالة</th><th>مراجعة</th></tr></thead><tbody id="tb-online-rx"></tbody></table></div>
-                </div>
-            </section>
-
-            <section id="inv" class="view">
-                <div class="card">
-                    <h3 class="card-title"><i class="fas fa-plus-circle"></i> إضافة صنف للمخزون</h3>
-                    <div class="grid-3">
-                        <input type="text" id="p-name" placeholder="اسم المنتج / الماركة">
-                        <input type="number" id="p-price" placeholder="سعر البيع (JOD)">
-                        <input type="number" id="p-qty" placeholder="الكمية المتوفرة">
-                    </div>
-                    <div class="grid-2" style="margin-top:20px;">
-                        <select id="p-type"><option value="طبي">إطار طبي</option><option value="شمسي">نظارة شمسية</option><option value="عدسات">عدسات لاصقة</option><option value="أخرى">أخرى</option></select>
-                        <div style="display:flex; gap:15px; align-items: center; background: var(--bg-main); padding: 10px; border-radius: 10px; border: 1px solid var(--border-color);">
-                            <label style="font-weight:bold; color:var(--text-muted); font-size:0.9rem;">صورة المنتج:</label>
-                            <input type="file" accept="image/*" onchange="compressImage(event, 'p-base64')" style="border:none; padding:0; background:transparent;">
-                            <input type="hidden" id="p-base64">
-                        </div>
-                    </div>
-                    <button class="btn btn-primary" style="margin-top:20px;" onclick="saveProduct()"><i class="fas fa-download"></i> إدخال للمستودع</button>
-                </div>
-                <div class="card">
-                    <h3 class="card-title" style="justify-content: space-between;">المستودع الحالي <button class="btn btn-success admin-only" style="font-size: 0.9rem;" onclick="exportToCSV('inv-table', 'المخزون.csv')"><i class="fas fa-file-excel"></i> تصدير البيانات</button></h3>
-                    <div class="table-wrapper"><table id="inv-table"><thead><tr><th>صورة</th><th>المنتج</th><th>التصنيف</th><th>الكمية</th><th>السعر</th><th>إجراءات</th></tr></thead><tbody id="tb-inv"></tbody></table></div>
-                </div>
-            </section>
-
-            <section id="lab" class="view">
-                <div class="card">
-                    <h3 class="card-title"><i class="fas fa-tools"></i> مختبر التجهيز والقص</h3>
-                    <div class="table-wrapper"><table><thead><tr><th>رقم الفاتورة</th><th>المراجع</th><th>التفاصيل المطلوبة</th><th>حالة المختبر (تحديث)</th></tr></thead><tbody id="tb-lab"></tbody></table></div>
-                </div>
-            </section>
-
-            <section id="chat" class="view">
-                <div class="card" style="height:600px; display:flex; flex-direction:column; padding:0; overflow: hidden;">
-                    <div style="padding:20px; border-bottom:1px solid var(--border-color); background: var(--bg-main);">
-                        <h3 style="margin: 0; font-weight: 900;"><i class="fas fa-comments text-primary"></i> الشات الداخلي للطاقم</h3>
-                    </div>
-                    <div id="chat-box" style="flex:1; padding:20px; overflow-y:auto; background: var(--bg-card);"></div>
-                    <div style="padding:20px; display:flex; gap:15px; border-top:1px solid var(--border-color); background: var(--bg-main);">
-                        <input type="text" id="chat-input" placeholder="اكتب رسالتك للموظفين هنا..." style="flex:1;">
-                        <button class="btn btn-primary" style="padding: 0 30px;" onclick="sendChat()"><i class="fas fa-paper-plane"></i> إرسال</button>
-                    </div>
-                </div>
-            </section>
-
-            <section id="ext-collections" class="view admin-only">
-                <div class="card">
-                    <h3 class="card-title"><i class="fas fa-store"></i> إدارة معرض التشكيلات الخارجي</h3>
-                    <input type="hidden" id="ext-col-id">
-                    <div class="grid-2" style="margin-bottom: 20px;">
-                        <input type="text" id="ext-col-name" placeholder="اسم الموديل/الماركة (مثال: Ray-Ban)">
-                        <select id="ext-col-type"><option value="medical">نظارات طبية</option><option value="sun">نظارات شمسية</option></select>
-                    </div>
-                    <div style="display:flex; flex-direction:column; gap:10px; border: 2px dashed var(--border-color); padding: 20px; border-radius: 12px; margin-top:10px; background: var(--bg-main);">
-                        <label style="font-weight:bold; color:var(--text-muted); font-size: 0.9rem;">صورة الموديل العالية الجودة:</label>
-                        <div style="display:flex; align-items:center; gap:20px;">
-                            <input type="file" accept="image/*" onchange="compressImage(event, 'ext-col-base64', 'ext-col-preview')" style="border:none; background:transparent; padding:0;">
-                            <input type="hidden" id="ext-col-base64">
-                            <img id="ext-col-preview" src="" style="width:80px; height:80px; object-fit:cover; border-radius:10px; display:none; border:2px solid var(--primary); box-shadow: var(--shadow);">
-                        </div>
-                    </div>
-                    <div style="display:flex; gap:15px; margin-top:25px;">
-                        <button class="btn btn-primary" style="flex:1; padding:15px; font-size:1.1rem;" onclick="saveExtCollection()"><i class="fas fa-cloud-upload-alt"></i> حفظ ونشر على الموقع</button>
-                        <button class="btn btn-outline" style="padding:15px 30px; border:1px solid var(--border-color);" onclick="resetExtColForm()"><i class="fas fa-times"></i> إلغاء والتفريغ</button>
-                    </div>
-                </div>
-                <div class="card">
-                    <h3 class="card-title">الموديلات المرفوعة حالياً</h3>
-                    <div class="table-wrapper"><table><thead><tr><th>الصورة</th><th>الاسم</th><th>النوع</th><th>إجراءات</th></tr></thead><tbody id="tb-ext-collections"></tbody></table></div>
-                </div>
-            </section>
-
-            <section id="accounts" class="view admin-only">
-                <div class="card">
-                    <h3 class="card-title"><i class="fas fa-user-shield"></i> إنشاء وإدارة الحسابات (RBAC)</h3>
-                    <div class="grid-2">
-                        <input type="text" id="s-name" placeholder="الاسم الكامل للموظف">
-                        <input type="text" id="s-user" placeholder="اسم المستخدم للدخول (Username)">
-                    </div>
-                    <div class="grid-2" style="margin-top:20px;">
-                        <input type="password" id="s-pass" placeholder="كلمة المرور الدائمة">
-                        <select id="s-role"><option value="employee">موظف (صلاحيات محدودة)</option><option value="manager">مدير فرع</option><option value="superadmin">مسؤول نظام (وصول كامل)</option></select>
-                    </div>
-                    <button class="btn btn-primary" style="margin-top:20px;" onclick="saveStaff()"><i class="fas fa-check"></i> اعتماد الحساب</button>
-                </div>
-                <div class="card">
-                    <h3 class="card-title">الحسابات الفعالة والمجمدة</h3>
-                    <div class="table-wrapper"><table><thead><tr><th>الاسم</th><th>اليوزر</th><th>الصلاحية</th><th>الحالة</th><th>إجراءات الإدارة</th></tr></thead><tbody id="tb-staff"></tbody></table></div>
-                </div>
-            </section>
-
-            <section id="cms" class="view admin-only">
-                <div class="card">
-                    <h3 class="card-title"><i class="fas fa-sliders-h"></i> التحكم بالواجهة الخارجية للزوار (CMS)</h3>
-                    <div style="background: rgba(245, 158, 11, 0.05); border-right: 4px solid var(--warning); padding: 20px; border-radius: 12px; margin-bottom: 25px;">
-                        <label style="font-weight:bold; color:var(--text-main); margin-bottom: 10px; display: block;"><i class="fas fa-bullhorn" style="color:var(--warning);"></i> شريط الإعلانات العلوي (اتركه فارغاً للإخفاء)</label>
-                        <input type="text" id="cms-topbar" placeholder="مثال: احجز موعدك اليوم واحصل على خصم 20% على إطارات Ray-Ban!">
-                    </div>
-                    <input type="hidden" id="cms-phone"><input type="hidden" id="cms-hero"><input type="hidden" id="cms-sub"> 
-                    <div style="background: var(--bg-main); padding: 25px; border-radius: 15px; border: 1px solid var(--border-color); margin-bottom: 25px;">
-                        <h4 style="margin-bottom: 20px; color: var(--primary); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
-                            <span><i class="fas fa-door-open"></i> إدارة أوقات العمل (العداد التنازلي)</span>
-                            <div style="display: flex; gap: 10px;">
-                                <button class="btn" style="background: rgba(16, 185, 129, 0.1); color: var(--success); font-size: 0.85rem;" onclick="setQuickTime('force_open')"><i class="fas fa-lock-open"></i> إجبار الفتح</button>
-                                <button class="btn" style="background: rgba(239, 68, 68, 0.1); color: var(--danger); font-size: 0.85rem;" onclick="setQuickTime('force_close')"><i class="fas fa-lock"></i> إجبار الإغلاق</button>
-                                <button class="btn" style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); font-size: 0.85rem;" onclick="setQuickTime('auto')"><i class="fas fa-cogs"></i> دوام مبرمج</button>
-                            </div>
-                        </h4>
-                        <div class="grid-3">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white dark:bg-darkCard p-6 rounded-2xl border border-slate-200 dark:border-slate-700/50 shadow-sm border-t-4 border-t-primary">
+                        <div class="flex justify-between items-start">
                             <div>
-                                <label style="font-weight:bold; font-size:0.85rem; color:var(--text-muted); margin-bottom: 8px; display: block;">الوضع النشط حالياً</label>
-                                <select id="cms-status-mode">
-                                    <option value="auto">تلقائي (حسب الأوقات المحددة)</option>
-                                    <option value="force_open">مفتوح دائماً للزوار</option>
-                                    <option value="force_close">مغلق دائماً للزوار</option>
-                                </select>
+                                <p class="text-slate-500 font-bold mb-1">مبيعات اليوم</p>
+                                <h3 class="text-3xl font-black text-slate-800 dark:text-white" id="today-sales">0 JOD</h3>
                             </div>
-                            <div>
-                                <label style="font-weight:bold; font-size:0.85rem; color:var(--success); margin-bottom: 8px; display: block;">وقت الافتتاح التلقائي</label>
-                                <input type="time" id="cms-open-time" dir="ltr">
-                            </div>
-                            <div>
-                                <label style="font-weight:bold; font-size:0.85rem; color:var(--danger); margin-bottom: 8px; display: block;">وقت الإغلاق التلقائي</label>
-                                <input type="time" id="cms-close-time" dir="ltr">
+                            <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xl">
+                                <i class="fas fa-wallet"></i>
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-primary" style="width:100%; padding:15px; font-size:1.1rem;" onclick="saveCMS()">
-                        <i class="fas fa-sync-alt"></i> اعتماد التحديثات ونشرها فوراً
-                    </button>
                 </div>
             </section>
 
-            <section id="secret-monitor" class="view admin-only">
-                <div class="card" style="border-top: 4px solid var(--danger);">
-                    <h3 class="card-title" style="color:var(--danger);"><i class="fas fa-eye"></i> سجل المراقبة الدقيقة للعمليات</h3>
-                    <div class="table-wrapper"><table><thead><tr><th>الموظف</th><th>نوع الجهاز</th><th>تفاصيل العملية</th><th>الوقت والتاريخ</th></tr></thead><tbody id="tb-secret-audit"></tbody></table></div>
-                </div>
-            </section>
+            <section id="pos" class="view-section">
+                <h2 class="text-2xl font-black mb-6">نقاط البيع (POS)</h2>
+                </section>
 
-            <section id="recycle" class="view admin-only">
-                <div class="card" style="border-top: 4px solid var(--warning);">
-                    <h3 class="card-title"><i class="fas fa-trash-restore"></i> سلة المهملات واسترجاع البيانات</h3>
-                    <div class="table-wrapper"><table><thead><tr><th>اسم العنصر</th><th>الموظف المسؤول (الحذف)</th><th>إجراء</th></tr></thead><tbody id="tb-recycle"></tbody></table></div>
-                </div>
-            </section>
+            <section id="inventory" class="view-section">
+                <h2 class="text-2xl font-black mb-6">المخزون والتنبؤات</h2>
+                </section>
+
         </div>
-    </div>
+    </main>
 
-    <div id="print-report"><div style="text-align:center; border-bottom:2px solid black; padding-bottom:15px; margin-bottom:20px;"><h1>Delta Optics Clinic</h1><h2 id="pr-title"></h2></div><div id="pr-content" style="font-size:1.2rem; line-height:1.8;"></div></div>
-
-    <script type="module" src="./app.js"></script>
+    <script src="app.js" type="module"></script>
     <script>
-        function setQuickTime(mode) {
-            document.getElementById('cms-status-mode').value = mode;
-            Swal.fire({ title: 'تم اختيار الوضع', text: 'اضغط على زر "اعتماد التحديثات" بالأسفل لتطبيقه على الموقع.', icon: 'info', timer: 2500, showConfirmButton: false });
+        // UI Helpers
+        function showView(id) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            
+            // Update sidebar buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-primary', 'text-white');
+                btn.classList.add('text-slate-400', 'hover:bg-slate-800', 'hover:text-white');
+            });
+            event.currentTarget.classList.remove('text-slate-400', 'hover:bg-slate-800');
+            event.currentTarget.classList.add('bg-primary', 'text-white');
+        }
+
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            const icon = document.getElementById('theme-icon');
+            if (document.documentElement.classList.contains('dark')) {
+                icon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                icon.classList.replace('fa-sun', 'fa-moon');
+            }
         }
     </script>
 </body>

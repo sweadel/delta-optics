@@ -29,11 +29,20 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; outline: none; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; padding-bottom: 90px; transition: 0.4s; }
 
+        /* ⭐ شريط الإعلانات الأخضر */
         .announcement-bar {
-            display: none; background: linear-gradient(90deg, #f59e0b, #ea580c); color: white; 
-            text-align: center; padding: 10px 15px; font-size: 0.95rem; font-weight: 800; width: 100%; 
-            box-shadow: 0 4px 15px rgba(234, 88, 12, 0.3); animation: slideDown 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative; z-index: 1001;
+            display: none; 
+            background: linear-gradient(90deg, #10b981, #059669); /* لون أخضر جذاب */
+            color: white; 
+            text-align: center; 
+            padding: 10px 15px; 
+            font-size: 0.95rem; 
+            font-weight: 800;
+            width: 100%; 
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); 
+            animation: slideDown 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            z-index: 1001;
         }
         .announcement-bar i { animation: tada 1.5s infinite; margin-left: 8px; }
         @keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -107,7 +116,7 @@
 <body>
 
     <div id="dynamic-topbar" class="announcement-bar">
-        <i class="fas fa-bell"></i>
+        <i class="fas fa-tags"></i>
         <span id="topbar-text"></span>
     </div>
 
@@ -192,25 +201,21 @@
     <script>
         window.cmsData = {
             topbar: "",
-            hero: "دلتا للبصريات",
-            sub: "المقابلين - شارع الإذاعة والتلفزيون\nخبراء العناية بالعين وأحدث الماركات",
             openTime: "10:00",
             closeTime: "23:59",
-            statusMode: "auto" // auto, force_open, force_close
+            statusMode: "auto" 
         };
 
         window.applyCmsData = function(data) {
             if (!data) return;
             
+            // تفعيل وتغيير نص شريط الإعلانات فقط
             if (data.topbar && data.topbar.trim() !== "") {
                 document.getElementById('dynamic-topbar').style.display = 'block';
                 document.getElementById('topbar-text').innerText = data.topbar;
             } else {
                 document.getElementById('dynamic-topbar').style.display = 'none';
             }
-
-            if (data.hero) document.getElementById('txt-hero').innerText = data.hero;
-            if (data.sub) document.getElementById('txt-sub').innerText = data.sub;
 
             if (data.openTime) window.cmsData.openTime = data.openTime;
             if (data.closeTime) window.cmsData.closeTime = data.closeTime;
@@ -219,27 +224,24 @@
             updateStoreStatus();
         };
 
-        // --- ⏰ نظام الوقت المطور (يدعم التحكم اليدوي والتلقائي) ---
         function updateStoreStatus() {
             const text = document.getElementById('status-text');
             const dot = document.getElementById('status-dot');
             const countdown = document.getElementById('countdown-msg');
             const mode = window.cmsData.statusMode;
 
-            // إذا كان مفعل الوضع اليدوي للفتح أو الإغلاق
             if (mode === 'force_open') {
                 text.innerText = (curLang === 'ar' ? "مفتوح الآن" : "Open Now");
                 dot.className = "dot open-dot";
-                countdown.style.display = 'none'; // نخفي العداد بالوضع اليدوي
+                countdown.style.display = 'none'; 
                 return;
             } else if (mode === 'force_close') {
                 text.innerText = (curLang === 'ar' ? "مغلق (إجازة)" : "Closed");
                 dot.className = "dot closed-dot";
-                countdown.style.display = 'none'; // نخفي العداد بالوضع اليدوي
+                countdown.style.display = 'none'; 
                 return;
             }
 
-            // إذا كان الوضع "تلقائي" (نحسب الوقت)
             countdown.style.display = 'block';
             const now = new Date();
             const curTotalMin = (now.getHours() * 60) + now.getMinutes();
@@ -257,7 +259,6 @@
             const closeTotalMin = (closeH * 60) + (closeM || 0);
 
             let isOpen = false;
-            // دعم المحلات اللي بتسكر بعد الساعة 12 بالليل
             if (closeTotalMin > openTotalMin) {
                 isOpen = (curTotalMin >= openTotalMin && curTotalMin < closeTotalMin);
             } else { 
@@ -337,7 +338,6 @@
             curLang = curLang === 'ar' ? 'en' : 'ar';
             document.getElementById('lang-btn').innerText = curLang === 'ar' ? 'EN' : 'AR';
             document.documentElement.dir = curLang === 'ar' ? 'rtl' : 'ltr';
-            document.getElementById('txt-hero').innerText = curLang === 'ar' ? window.cmsData.hero : "Delta Optics";
             updateStoreStatus(); loadReviews();
         }
 

@@ -10,26 +10,16 @@
     <style>
         /* ================= الثيم الطبي الراقي (Emerald EMR) ================= */
         :root {
-            --primary: #059669; /* أخضر طبي فخم */
-            --secondary: #10b981; 
-            --bg-color: #f1f5f9;
-            --surface: #ffffff;
-            --border: #cbd5e1;
-            --text-main: #0f172a;
-            --text-muted: #475569;
-            --success: #059669;
-            --danger: #ef4444;
-            --warning: #f59e0b;
+            --primary: #059669; --secondary: #10b981; --bg-color: #f1f5f9;
+            --surface: #ffffff; --border: #cbd5e1; --text-main: #0f172a;
+            --text-muted: #475569; --success: #059669; --danger: #ef4444; --warning: #f59e0b;
         }
-
         body { font-family: 'Tajawal', sans-serif; background-color: var(--bg-color); color: var(--text-main); }
-        
         .quick-time-btn { background: var(--surface); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.85rem; transition: 0.2s; display: flex; align-items: center; gap: 5px; justify-content: center; color: var(--text-main); }
         .quick-time-btn:hover { background: #e2e8f0; }
         .quick-open { color: var(--success); border-color: var(--success); }
         .quick-close { color: var(--danger); border-color: var(--danger); }
         
-        /* ================= تصميم العيادة ================= */
         .clinic-layout { display: flex; flex-direction: column; gap: 25px; margin-top: 15px; }
         .clinic-card { background: var(--surface); border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); overflow: hidden; }
         .clinic-card-header { background: #f8fafc; padding: 15px 25px; font-weight: 900; color: var(--primary); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; font-size: 1.2rem; }
@@ -80,7 +70,10 @@
         .history-table th { background: #f8fafc; color: #334155; font-weight: 900; border-bottom: 2px solid var(--border);}
         .history-table td { border-bottom: 1px solid #f1f5f9; padding: 15px; }
 
-        /* ================= تنسيق الطباعة ================= */
+        /* ستايل المراقبة المالية بالرئيسية */
+        .ledger-table th { background: #1e293b; color: white; font-weight: bold; padding: 10px; }
+        .ledger-table td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 1.05rem; }
+
         @media print {
             body { background: #fff; margin: 0; padding: 0; font-family: 'Tajawal', Arial, sans-serif; }
             .sidebar, .header, .content, .modal, .fab-area { display: none !important; }
@@ -133,22 +126,12 @@
                 <h2 style="margin: 0; color: var(--primary);"><i class="fas fa-microscope"></i> التقرير الطبي المبدئي (Online)</h2>
                 <button onclick="document.getElementById('online-report-modal').style.display='none'" class="btn btn-danger"><i class="fas fa-times"></i></button>
             </div>
-            
             <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 20px;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                    <span style="font-weight: bold; color: var(--text-muted);">اسم المراجع:</span>
-                    <span id="report-m-name" style="font-weight: 900; color: var(--text-main);"></span>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span style="font-weight: bold; color: var(--text-muted);">رقم الهاتف:</span>
-                    <span id="report-m-phone" class="en-num" style="font-weight: 900; color: var(--primary);"></span>
-                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><span style="font-weight: bold; color: var(--text-muted);">اسم المراجع:</span><span id="report-m-name" style="font-weight: 900; color: var(--text-main);"></span></div>
+                <div style="display: flex; justify-content: space-between;"><span style="font-weight: bold; color: var(--text-muted);">رقم الهاتف:</span><span id="report-m-phone" class="en-num" style="font-weight: 900; color: var(--primary);"></span></div>
             </div>
-
             <h4 style="color: var(--text-main); margin-bottom: 10px;">نتائج الفحص الذكي:</h4>
-            <div id="report-m-details" style="background: white; border: 1px solid var(--border); border-radius: 8px; padding: 15px; max-height: 300px; overflow-y: auto; font-family: 'Tajawal', sans-serif; font-size: 1rem; line-height: 1.8; text-align: right; white-space: pre-wrap; color: var(--text-main); font-weight: bold;">
-            </div>
-            
+            <div id="report-m-details" style="background: white; border: 1px solid var(--border); border-radius: 8px; padding: 15px; max-height: 300px; overflow-y: auto; font-family: 'Tajawal', sans-serif; font-size: 1rem; line-height: 1.8; text-align: right; white-space: pre-wrap; color: var(--text-main); font-weight: bold;"></div>
             <div style="margin-top: 20px; display: flex; gap: 10px;">
                 <button id="btn-process-report" class="btn btn-success" style="flex: 1; padding: 12px; font-size: 1.1rem; justify-content: center;"><i class="fas fa-check-double"></i> تأكيد كـ "تمت المراجعة"</button>
                 <a id="btn-wa-report" href="#" target="_blank" class="btn" style="background: #25D366; color: white; padding: 12px; font-size: 1.1rem; text-decoration: none; display: flex; align-items: center; gap: 5px; border-radius: 8px;"><i class="fab fa-whatsapp"></i> تواصل</a>
@@ -159,7 +142,7 @@
     <aside class="sidebar">
         <div class="logo-box"><h2 style="font-weight: 900; color: var(--primary);">DELTA</h2><small style="color: #cbd5e1;">Enterprise ERP</small></div>
         <div class="nav-label">العمليات اليومية</div>
-        <button class="nav-link active" onclick="showView('dash')"><i class="fas fa-home"></i> الرئيسية</button>
+        <button class="nav-link active" onclick="showView('dash')"><i class="fas fa-home"></i> الرئيسية والمراقبة</button>
         <button class="nav-link" onclick="showView('rx')"><i class="fas fa-notes-medical"></i> العيادة (ملف شامل)</button>
         <button class="nav-link" onclick="showView('pos')"><i class="fas fa-cash-register"></i> مبيعات سريعة</button>
         <button class="nav-link" onclick="showView('online-rx')"><i class="fas fa-globe"></i> فحوصات الموقع</button>
@@ -192,118 +175,84 @@
 
         <div class="content">
             <section id="dash" class="view active">
-                <div class="grid-dashboard" style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
-                    <div><div class="grid-2"><div class="card" style="border-right: 5px solid var(--success);"><h3 class="card-title">مبيعات اليوم</h3><h2 id="kpi-sales" style="color:var(--success); font-size: 2.5rem;" class="en-num">0 JOD</h2></div><div class="card admin-only" style="border-right: 5px solid var(--primary);"><h3 class="card-title">المدفوعات</h3><h2 id="kpi-profits" style="color:var(--primary); font-size: 2.5rem;" class="en-num">0 JOD</h2></div></div></div>
-                    <div class="card admin-only"><h3 class="card-title"><i class="fas fa-bolt"></i> النشاط الحي</h3><div class="live-activity" id="live-activity-feed"></div></div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
+                    <h2 style="color: var(--primary); font-weight: 900; margin:0; font-size: 1.8rem;"><i class="fas fa-chart-pie"></i> ملخص المالي والإداري (اليوم)</h2>
+                    <div style="font-weight: 900; color: var(--text-main); background: #fff; padding: 10px 20px; border-radius: 8px; border: 1px solid var(--border); box-shadow: 0 2px 5px rgba(0,0,0,0.05);" id="current-date-display"></div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px;">
+                    <div class="clinic-card" style="border-bottom: 4px solid var(--primary);">
+                        <div class="clinic-card-body" style="padding: 20px;">
+                            <p style="margin:0; color:var(--text-muted); font-weight:bold;">المبيعات (الفواتير)</p>
+                            <h2 id="kpi-sales" class="en-num" style="margin:10px 0 0 0; color:var(--text-main); font-size:2rem;">0.00</h2>
+                        </div>
+                    </div>
+                    <div class="clinic-card admin-only" style="border-bottom: 4px solid #3b82f6;">
+                        <div class="clinic-card-body" style="padding: 20px;">
+                            <p style="margin:0; color:var(--text-muted); font-weight:bold;">المقبوضات (الدرج +)</p>
+                            <h2 id="kpi-profits" class="en-num" style="margin:10px 0 0 0; color:#3b82f6; font-size:2rem;">0.00</h2>
+                        </div>
+                    </div>
+                    <div class="clinic-card admin-only" style="border-bottom: 4px solid var(--danger);">
+                        <div class="clinic-card-body" style="padding: 20px;">
+                            <p style="margin:0; color:var(--text-muted); font-weight:bold;">المصروفات (الدرج -)</p>
+                            <h2 id="kpi-expenses" class="en-num" style="margin:10px 0 0 0; color:var(--danger); font-size:2rem;">0.00</h2>
+                        </div>
+                    </div>
+                    <div class="clinic-card admin-only" style="border-bottom: 4px solid var(--success); background: #f0fdf4;">
+                        <div class="clinic-card-body" style="padding: 20px;">
+                            <p style="margin:0; color:var(--success); font-weight:bold;">صافي الصندوق</p>
+                            <h2 id="kpi-netbox" class="en-num" style="margin:10px 0 0 0; color:var(--success); font-size:2.2rem; font-weight:900;">0.00</h2>
+                        </div>
+                    </div>
+                    <div class="clinic-card admin-only" style="border-bottom: 4px solid #8b5cf6;">
+                        <div class="clinic-card-body" style="padding: 20px;">
+                            <p style="margin:0; color:var(--text-muted); font-weight:bold;">الذمم (ديون اليوم)</p>
+                            <h2 id="kpi-dues" class="en-num" style="margin:10px 0 0 0; color:#8b5cf6; font-size:2rem;">0.00</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bottom-grid">
+                    <div class="clinic-card admin-only" style="border: 1px solid var(--danger);">
+                        <div class="clinic-card-header" style="color: var(--danger); background: #fef2f2;"><i class="fas fa-money-bill-wave"></i> سحب مصروف من الصندوق</div>
+                        <div class="clinic-card-body">
+                            <div class="erp-input-group">
+                                <label>مبلغ المصروف (JOD)</label>
+                                <input type="number" id="exp-amount" class="form-input-pro en-num" placeholder="0.00" min="0">
+                            </div>
+                            <div class="erp-input-group">
+                                <label>تفاصيل / بيان المصروف</label>
+                                <input type="text" id="exp-desc" class="form-input-pro" placeholder="مثال: فاتورة كهرباء، ضيافة، مشتريات...">
+                            </div>
+                            <button class="btn" style="background: var(--danger); color: white; width: 100%; padding: 15px; font-size: 1.1rem; border-radius: 8px; border:none; cursor:pointer;" onclick="saveExpense()">
+                                <i class="fas fa-minus-circle"></i> تسجيل المصروف
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="clinic-card admin-only">
+                        <div class="clinic-card-header"><i class="fas fa-list-alt"></i> حركة الصندوق اليومية (Ledger)</div>
+                        <div class="table-wrapper" style="max-height: 350px; overflow-y: auto;">
+                            <table class="ledger-table" style="width: 100%; text-align: right;">
+                                <thead><tr><th>الوقت</th><th>الحركة</th><th>التفاصيل</th><th>الموظف</th><th>مقبوض (+)</th><th>مصروف (-)</th></tr></thead>
+                                <tbody id="tb-daily-ledger"></tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </section>
             
             <section id="rx" class="view">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 5px;">
-                    <h2 style="color: var(--text-main); font-weight: 900; margin:0; font-size: 1.8rem;"><i class="fas fa-file-medical-alt" style="color:var(--primary);"></i> ملف العيادة الشامل</h2>
-                </div>
-                <p style="color: var(--text-muted); margin-bottom: 20px; font-weight: bold;">أدخل بيانات المريض، الفحص، والمشتريات لإصدار الفاتورة.</p>
-                
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 5px;"><h2 style="color: var(--text-main); font-weight: 900; margin:0; font-size: 1.8rem;"><i class="fas fa-file-medical-alt" style="color:var(--primary);"></i> ملف العيادة الشامل</h2></div><p style="color: var(--text-muted); margin-bottom: 20px; font-weight: bold;">أدخل بيانات المريض، الفحص، والمشتريات لإصدار الفاتورة.</p>
                 <datalist id="patients-list"></datalist>
-
-                <div class="clinic-layout">
-                    <div class="clinic-card">
-                        <div class="clinic-card-header"><i class="fas fa-user-circle"></i> 1. بيانات المراجع</div>
-                        <div class="clinic-card-body grid-2">
-                            <div><label class="input-label">الاسم الكامل (إلزامي للبحث)</label><input type="text" id="u-name" list="patients-list" class="form-input-pro" placeholder="ابحث في السجل أو أضف اسم جديد..."></div>
-                            <div><label class="input-label">رقم الهاتف (اختياري)</label><input type="text" id="u-phone" class="form-input-pro en-num" placeholder="07XXXXXXXX"></div>
-                        </div>
-                    </div>
-
-                    <div class="clinic-card">
-                        <div class="clinic-card-header"><i class="fas fa-eye"></i> 2. القياسات الطبية (Optical Rx)</div>
-                        <div class="clinic-card-body">
-                            <table class="clinical-table">
-                                <thead><tr><th>العين (Eye)</th><th>SPH</th><th>CYL</th><th>AXIS</th><th>ADD</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td><div class="eye-label" style="color:var(--primary);">Right (OD)</div></td>
-                                        <td><input type="text" id="u-od-s" class="clinical-input en-num" placeholder="0.00"></td><td><input type="text" id="u-od-c" class="clinical-input en-num" placeholder="0.00"></td><td><input type="text" id="u-od-a" class="clinical-input en-num" placeholder="0"></td><td><input type="text" id="u-od-add" class="clinical-input en-num" placeholder="0.00"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><div class="eye-label" style="color:var(--success);">Left (OS)</div></td>
-                                        <td><input type="text" id="u-os-s" class="clinical-input en-num" placeholder="0.00"></td><td><input type="text" id="u-os-c" class="clinical-input en-num" placeholder="0.00"></td><td><input type="text" id="u-os-a" class="clinical-input en-num" placeholder="0"></td><td><input type="text" id="u-os-add" class="clinical-input en-num" placeholder="0.00"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="grid-2" style="margin-top: 20px;">
-                                <div><label class="input-label">المسافة الحدقية (PD)</label><input type="text" id="u-pd" class="form-input-pro en-num" placeholder="60"></div>
-                                <div><label class="input-label">ملاحظات طبية إضافية</label><input type="text" id="u-notes" class="form-input-pro" placeholder="اكتب ملاحظاتك..."></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bottom-grid">
-                        <div class="clinic-card">
-                            <div class="clinic-card-header"><i class="fas fa-shopping-bag"></i> 3. المنتجات المباعة</div>
-                            <div class="clinic-card-body">
-                                <div class="product-item"><div class="product-icon"><i class="fas fa-glasses"></i></div><input type="text" id="u-frame-type" placeholder="الإطار (Frame)"><input type="number" id="u-frame-price" class="en-num" placeholder="السعر" oninput="calcUnifiedTotal()" min="0"></div>
-                                <div class="product-item"><div class="product-icon"><i class="fas fa-eye"></i></div><input type="text" id="u-lenses-type" placeholder="العدسات (Lenses)"><input type="number" id="u-lenses-price" class="en-num" placeholder="السعر" oninput="calcUnifiedTotal()" min="0"></div>
-                                <div class="product-item"><div class="product-icon"><i class="fas fa-dot-circle"></i></div><input type="text" id="u-cl-type" placeholder="لاصق (Contacts)"><input type="number" id="u-cl-price" class="en-num" placeholder="السعر" oninput="calcUnifiedTotal()" min="0"></div>
-                                <div class="product-item"><div class="product-icon"><i class="fas fa-prescription-bottle"></i></div><input type="text" id="u-extras-type" placeholder="أخرى (Extras)"><input type="number" id="u-extras-price" class="en-num" placeholder="السعر" oninput="calcUnifiedTotal()" min="0"></div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="financial-box">
-                                <div class="fin-row"><span class="fin-label">المجموع (Subtotal)</span><input type="text" id="u-subtotal" class="fin-val" readonly value="0.00"></div>
-                                <div class="fin-row">
-                                    <span class="fin-label">الخصم (Discount)</span>
-                                    <select id="u-discount" class="form-input-pro en-num" style="width:110px; padding:8px; font-size: 1.1rem; background: #fff; color:#0f172a;" onchange="calcUnifiedTotal()">
-                                        <option value="0">0%</option><option value="10">10%</option><option value="20">20%</option><option value="30">30%</option><option value="40">40%</option><option value="50">50%</option><option value="60">60%</option><option value="70">70%</option><option value="80">80%</option><option value="90">90%</option><option value="100">100%</option>
-                                    </select>
-                                </div>
-                                <div class="fin-divider"></div>
-                                <div class="fin-total-row"><span style="font-size: 1.3rem; color: #fff;">الإجمالي (Total JOD)</span><input type="text" id="u-total" class="fin-total-val" readonly value="0.00"></div>
-                                <div class="fin-paid-box">
-                                    <div class="fin-row" style="margin-bottom: 10px;"><span class="fin-label" style="color:#f8fafc;">طريقة الدفع</span><select id="u-payment-method" class="form-input-pro" style="width:140px; padding:8px; font-weight:bold; background:#fff; color:#0f172a;"><option value="كاش">كاش (Cash)</option><option value="فيزا">فيزا (Visa)</option><option value="كليك">كليك (CliQ)</option><option value="تأمين">تأمين (Insurance)</option></select></div>
-                                    <label style="color:#94a3b8; font-weight:bold; font-size:0.9rem; display:block; margin-bottom:5px;">المبلغ المدفوع (Paid)</label>
-                                    <input type="number" id="u-paid" class="fin-paid-input en-num" placeholder="0.00" oninput="calcUnifiedTotal()" min="0">
-                                </div>
-                                <div class="fin-due-row"><span>الباقي (Due)</span><div><span id="u-due-display" class="en-num">0.00</span> <span style="font-size:1rem;">JOD</span></div><input type="hidden" id="u-due" value="0"></div>
-                            </div>
-                            <button class="btn-print-magic" onclick="saveUnifiedRecord()"><i class="fas fa-print"></i> حفظ واعتماد الوصفة (Print)</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="clinic-card" style="margin-top: 35px;">
-                    <div class="clinic-card-header"><i class="fas fa-users"></i> أرشيف المراجعين (انقر لفتح السجل)</div>
-                    <div class="table-wrapper">
-                        <table>
-                            <thead><tr><th>اسم المراجع</th><th>أحدث زيارة</th><th>إجمالي إنفاقه</th><th>إجراءات</th></tr></thead>
-                            <tbody id="tb-unified-rx"></tbody>
-                        </table>
-                    </div>
-                </div>
+                <div class="clinic-layout"><div class="clinic-card"><div class="clinic-card-header"><i class="fas fa-user-circle"></i> 1. بيانات المراجع</div><div class="clinic-card-body grid-2"><div><label class="input-label">الاسم الكامل (إلزامي للبحث)</label><input type="text" id="u-name" list="patients-list" class="form-input-pro" placeholder="ابحث في السجل أو أضف اسم جديد..."></div><div><label class="input-label">رقم الهاتف (اختياري)</label><input type="text" id="u-phone" class="form-input-pro en-num" placeholder="07XXXXXXXX"></div></div></div><div class="clinic-card"><div class="clinic-card-header"><i class="fas fa-eye"></i> 2. القياسات الطبية (Optical Rx)</div><div class="clinic-card-body"><table class="clinical-table"><thead><tr><th>العين (Eye)</th><th>SPH</th><th>CYL</th><th>AXIS</th><th>ADD</th></tr></thead><tbody><tr><td><div class="eye-label" style="color:var(--primary);">Right (OD)</div></td><td><input type="text" id="u-od-s" class="clinical-input en-num" placeholder="0.00"></td><td><input type="text" id="u-od-c" class="clinical-input en-num" placeholder="0.00"></td><td><input type="text" id="u-od-a" class="clinical-input en-num" placeholder="0"></td><td><input type="text" id="u-od-add" class="clinical-input en-num" placeholder="0.00"></td></tr><tr><td><div class="eye-label" style="color:var(--success);">Left (OS)</div></td><td><input type="text" id="u-os-s" class="clinical-input en-num" placeholder="0.00"></td><td><input type="text" id="u-os-c" class="clinical-input en-num" placeholder="0.00"></td><td><input type="text" id="u-os-a" class="clinical-input en-num" placeholder="0"></td><td><input type="text" id="u-os-add" class="clinical-input en-num" placeholder="0.00"></td></tr></tbody></table><div class="grid-2" style="margin-top: 20px;"><div><label class="input-label">المسافة الحدقية (PD)</label><input type="text" id="u-pd" class="form-input-pro en-num" placeholder="60"></div><div><label class="input-label">ملاحظات طبية إضافية</label><input type="text" id="u-notes" class="form-input-pro" placeholder="اكتب ملاحظاتك..."></div></div></div></div><div class="bottom-grid"><div class="clinic-card"><div class="clinic-card-header"><i class="fas fa-shopping-bag"></i> 3. المنتجات المباعة</div><div class="clinic-card-body"><div class="product-item"><div class="product-icon"><i class="fas fa-glasses"></i></div><input type="text" id="u-frame-type" placeholder="الإطار (Frame)"><input type="number" id="u-frame-price" class="en-num" placeholder="السعر" oninput="calcUnifiedTotal()" min="0"></div><div class="product-item"><div class="product-icon"><i class="fas fa-eye"></i></div><input type="text" id="u-lenses-type" placeholder="العدسات (Lenses)"><input type="number" id="u-lenses-price" class="en-num" placeholder="السعر" oninput="calcUnifiedTotal()" min="0"></div><div class="product-item"><div class="product-icon"><i class="fas fa-dot-circle"></i></div><input type="text" id="u-cl-type" placeholder="لاصق (Contacts)"><input type="number" id="u-cl-price" class="en-num" placeholder="السعر" oninput="calcUnifiedTotal()" min="0"></div><div class="product-item"><div class="product-icon"><i class="fas fa-prescription-bottle"></i></div><input type="text" id="u-extras-type" placeholder="أخرى (Extras)"><input type="number" id="u-extras-price" class="en-num" placeholder="السعر" oninput="calcUnifiedTotal()" min="0"></div></div></div><div><div class="financial-box"><div class="fin-row"><span class="fin-label">المجموع (Subtotal)</span><input type="text" id="u-subtotal" class="fin-val" readonly value="0.00"></div><div class="fin-row"><span class="fin-label">الخصم (Discount)</span><select id="u-discount" class="form-input-pro en-num" style="width:110px; padding:8px; font-size: 1.1rem; background: #fff; color:#0f172a;" onchange="calcUnifiedTotal()"><option value="0">0%</option><option value="10">10%</option><option value="20">20%</option><option value="30">30%</option><option value="40">40%</option><option value="50">50%</option><option value="60">60%</option><option value="70">70%</option><option value="80">80%</option><option value="90">90%</option><option value="100">100%</option></select></div><div class="fin-divider"></div><div class="fin-total-row"><span style="font-size: 1.3rem; color: #fff;">الإجمالي (Total JOD)</span><input type="text" id="u-total" class="fin-total-val" readonly value="0.00"></div><div class="fin-paid-box"><div class="fin-row" style="margin-bottom: 10px;"><span class="fin-label" style="color:#f8fafc;">طريقة الدفع</span><select id="u-payment-method" class="form-input-pro" style="width:140px; padding:8px; font-weight:bold; background:#fff; color:#0f172a;"><option value="كاش">كاش (Cash)</option><option value="فيزا">فيزا (Visa)</option><option value="كليك">كليك (CliQ)</option><option value="تأمين">تأمين (Insurance)</option></select></div><label style="color:#94a3b8; font-weight:bold; font-size:0.9rem; display:block; margin-bottom:5px;">المبلغ المدفوع (Paid)</label><input type="number" id="u-paid" class="fin-paid-input en-num" placeholder="0.00" oninput="calcUnifiedTotal()" min="0"></div><div class="fin-due-row"><span>الباقي (Due)</span><div><span id="u-due-display" class="en-num">0.00</span> <span style="font-size:1rem;">JOD</span></div><input type="hidden" id="u-due" value="0"></div></div><button class="btn-print-magic" onclick="saveUnifiedRecord()"><i class="fas fa-print"></i> حفظ واعتماد الوصفة</button></div></div></div>
+                <div class="clinic-card" style="margin-top: 35px;"><div class="clinic-card-header"><i class="fas fa-users"></i> أرشيف المراجعين (انقر لفتح السجل)</div><div class="table-wrapper"><table><thead><tr><th>اسم المراجع</th><th>أحدث زيارة</th><th>إجمالي إنفاقه</th><th>إجراءات</th></tr></thead><tbody id="tb-unified-rx"></tbody></table></div></div>
             </section>
 
-            <section id="pos" class="view"><div class="card"><h3 class="card-title">بيع سريع</h3><div class="grid-4"><select id="pos-patient"><option value="">-- المراجع --</option></select><select id="pos-product" onchange="updatePosPrice()"><option value="">-- المنتج --</option></select><input type="number" id="pos-total" placeholder="الإجمالي" readonly class="en-num"><input type="number" id="pos-paid" placeholder="المدفوع" class="en-num"></div><button class="btn btn-success" style="margin-top:20px; width: 100%; justify-content: center;" onclick="createInvoice()">إتمام البيع</button></div><div class="card"><h3 class="card-title">سجل الفواتير السريعة</h3><div class="table-wrapper"><table><thead><tr><th>الفاتورة</th><th>المراجع</th><th>المنتج</th><th>القيمة</th><th>الباقي</th></tr></thead><tbody id="tb-invc"></tbody></table></div></div></section>
+            <section id="pos" class="view"><div class="clinic-card"><div class="clinic-card-header"><i class="fas fa-shopping-cart"></i> بيع سريع (بدون ملف)</div><div class="clinic-card-body"><div class="grid-2" style="margin-bottom: 20px;"><div><label class="input-label">الزبون</label><input type="text" id="pos-patient" list="patients-list" class="form-input-pro" placeholder="ابحث أو اكتب اسماً..."></div><div><label class="input-label">المنتج المباع</label><select id="pos-product" class="form-input-pro" onchange="updatePosPrice()" style="font-weight: bold;"><option value="">-- اختر من المخزون --</option></select></div></div><div class="financial-box" style="padding: 20px;"><div class="grid-2"><div style="border-left: 1px solid rgba(255,255,255,0.1); padding-left: 20px;"><div class="fin-row"><span class="fin-label">السعر</span><input type="text" id="pos-price" class="fin-val" readonly value="0.00"></div><div class="fin-row"><span class="fin-label">الخصم</span><select id="pos-discount" class="form-input-pro en-num" style="width:100px; padding:5px; font-size: 1rem; background: #fff; color:#0f172a;" onchange="calcPosTotal()"><option value="0">0%</option><option value="10">10%</option><option value="20">20%</option><option value="30">30%</option><option value="40">40%</option><option value="50">50%</option><option value="100">100%</option></select></div><div class="fin-total-row" style="margin-top:15px; margin-bottom: 0; border-top: 1px dashed rgba(255,255,255,0.2); padding-top:15px;"><span style="font-size:1.2rem; color:#fff;">الإجمالي</span><input type="text" id="pos-total" class="fin-total-val" readonly value="0.00"></div></div><div style="padding-right: 20px;"><div class="fin-row" style="margin-bottom: 10px;"><span class="fin-label" style="color:#f8fafc;">طريقة الدفع</span><select id="pos-payment-method" class="form-input-pro" style="padding:6px; font-weight:bold; background:#fff; color:#0f172a;"><option value="كاش">كاش (Cash)</option><option value="فيزا">فيزا (Visa)</option><option value="كليك">كليك (CliQ)</option></select></div><div class="fin-paid-box" style="padding:10px; margin-bottom:10px;"><span class="fin-label" style="color:#0f172a;">المدفوع نقداً</span><input type="number" id="pos-paid" class="fin-paid-input en-num" placeholder="0.00" oninput="calcPosTotal()" min="0"></div><div class="fin-due-row" style="padding:10px;"><span>الباقي</span><div><span id="pos-due-display" class="en-num">0.00</span> <span style="font-size:0.9rem;">JOD</span></div><input type="hidden" id="pos-due" value="0"></div></div></div><button class="btn-print-magic" onclick="createInvoice()" style="margin-top: 20px; padding: 15px;"><i class="fas fa-print"></i> اعتماد الفاتورة والطباعة</button></div></div></div><div class="clinic-card" style="margin-top: 20px;"><div class="clinic-card-header"><i class="fas fa-list"></i> سجل الفواتير السريعة</div><div class="table-wrapper"><table><thead><tr><th>الفاتورة</th><th>الزبون</th><th>المنتج</th><th>الإجمالي</th><th>الباقي</th><th>إجراءات</th></tr></thead><tbody id="tb-invc"></tbody></table></div></div></section>
             
-            <section id="online-rx" class="view">
-                <div class="card" style="border-top: 5px solid var(--primary);">
-                    <h3 class="card-title" style="font-size: 1.5rem;"><i class="fas fa-globe"></i> طلبات الفحص الذكي (الموقع)</h3>
-                    <div class="table-wrapper">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>اسم المراجع</th>
-                                    <th>الهاتف</th>
-                                    <th>التاريخ والوقت</th>
-                                    <th>الحالة</th>
-                                    <th>إجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tb-online-rx"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
+            <section id="online-rx" class="view"><div class="clinic-card" style="border-top: 5px solid var(--primary);"><div class="clinic-card-header" style="font-size: 1.5rem;"><i class="fas fa-globe"></i> طلبات الفحص الذكي (الموقع)</div><div class="table-wrapper"><table><thead><tr><th>اسم المراجع</th><th>الهاتف</th><th>التاريخ والوقت</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody id="tb-online-rx"></tbody></table></div></div></section>
 
             <section id="inv" class="view"><div class="card"><h3 class="card-title">إضافة منتج للمخزون</h3><div class="grid-3"><input type="text" id="p-name" placeholder="الاسم"><input type="number" id="p-price" placeholder="السعر" class="en-num"><input type="number" id="p-qty" placeholder="الكمية" class="en-num"></div><div class="grid-2" style="margin-top:20px;"><select id="p-type"><option value="طبي">طبي</option></select><div style="display:flex; gap:10px; align-items: center;"><strong>الصورة:</strong><input type="file" accept="image/*" onchange="compressImage(event, 'p-base64')"><input type="hidden" id="p-base64"></div></div><button class="btn btn-primary" style="margin-top:20px;" onclick="saveProduct()">حفظ للمستودع</button></div><div class="card"><h3 class="card-title">المستودع</h3><div class="table-wrapper"><table id="inv-table"><thead><tr><th>صورة</th><th>المنتج</th><th>التصنيف</th><th>الكمية</th><th>السعر</th><th>إجراءات</th></tr></thead><tbody id="tb-inv"></tbody></table></div></div></section>
             <section id="lab" class="view"><div class="card"><h3 class="card-title">مختبر التجهيز</h3><div class="table-wrapper"><table><thead><tr><th>الفاتورة</th><th>المراجع</th><th>التفاصيل</th><th>حالة المختبر</th></tr></thead><tbody id="tb-lab"></tbody></table></div></div></section>

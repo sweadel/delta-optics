@@ -1,302 +1,734 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, setDoc, deleteDoc, updateDoc, limit } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-import { Auth } from './auth.js'; 
+/* ==========================================================================
+   Delta Optics - Enterprise SaaS Theme (Clean & Minimalist)
+   ========================================================================== */
 
-const firebaseConfig = {
-    apiKey: "AIzaSyB11C4GGgAyqeThs8a9cvDNN7frvAA1nqQ",
-    authDomain: "delta-optics-system.firebaseapp.com",
-    projectId: "delta-optics-system",
-    storageBucket: "delta-optics-system.firebasestorage.app",
-    messagingSenderId: "111176219224",
-    appId: "1:111176219224:web:e0d8a5f26b84d57249a82d"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-window.allUnifiedRecords = []; window.allOnlineTests = []; let todayInvoicesData = []; let todayExpensesData = []; let allStaffData = [];
-
-document.addEventListener('DOMContentLoaded', () => {
-    const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    if(document.getElementById('current-date-display')) document.getElementById('current-date-display').innerText = new Date().toLocaleDateString('ar-EG', dateOptions);
-});
-
-// ================== واجهة المستخدم (القائمة الجانبية) ==================
-window.toggleSidebar = () => {
-    const sidebar = document.getElementById('main-sidebar');
-    const overlay = document.getElementById('sidebar-overlay');
-    if(sidebar) sidebar.classList.toggle('active');
-    if(overlay) overlay.classList.toggle('active');
-};
-
-window.showView = (id) => {
-    document.querySelectorAll('.view').forEach(v => { v.classList.remove('active'); v.style.display = 'none'; });
-    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-    const target = document.getElementById(id);
-    if(target) { target.classList.add('active'); target.style.display = 'block'; }
-    if(event && event.currentTarget) event.currentTarget.classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-};
-window.performGlobalSearch = () => { const f = document.getElementById('global-search').value.toUpperCase(); document.querySelectorAll('.active table tbody tr').forEach(tr => { tr.style.display = tr.innerText.toUpperCase().includes(f) ? "" : "none"; }); };
-
-// ================== المراقبة السرية والتوثيق (Audit Logs) ==================
-function getDeviceInfo() { const ua = navigator.userAgent; return /Mobile|Android|iP(hone|od)|IEMobile/.test(ua) ? "هاتف محمول" : "كمبيوتر/لابتوب"; }
-async function logSecretAction(action) { if (Auth.user) { try { await addDoc(collection(db, "stealth_logs"), { user: Auth.user.name, device: getDeviceInfo(), action, time: serverTimestamp() }); } catch(e){} } }
-async function logAudit(action) { if (Auth.user) { try { await addDoc(collection(db, "audit_logs"), { user: Auth.user.name, action, time: serverTimestamp() }); logSecretAction(`[نظام]: ${action}`); } catch(e){} } }
-
-// ================== تسجيل الدخول ونظام الرتب ==================
-window.handleLogin = async () => {
-    const u = document.getElementById('auth-u').value, p = document.getElementById('auth-p').value;
-    const res = await Auth.login(u, p);
-    if (res.success) {
-        document.getElementById('login-modal').style.display = 'none';
-        document.getElementById('display-user').innerText = Auth.user.name;
-        applyRoles(Auth.user.role); logAudit("تسجيل دخول للنظام"); startSync(); window.showView('dash');
-    } else { Swal.fire('مرفوض', res.msg, 'error'); }
-};
-window.handleLogout = () => { logAudit("تسجيل خروج من النظام"); Auth.logout(); };
-
-function applyRoles(role) {
-    let roleName = "موظف"; document.querySelectorAll('.admin-only, .developer-only').forEach(el => el.style.display = 'none');
-    if (role === 'manager' || role === 'superadmin' || role === 'developer') { roleName = "مدير"; document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex'); }
-    if (role === 'developer' || role === 'superadmin') { roleName = "مطور / مسؤول"; document.querySelectorAll('.admin-only, .developer-only').forEach(el => el.style.display = 'flex'); }
-    document.getElementById('display-role').innerText = roleName;
+/* --- الألوان الأساسية والمتغيرات (Palette) --- */
+:root {
+    --primary: #10b981; /* أخضر زمردي أنيق وهادئ */
+    --primary-hover: #059669;
+    --primary-light: #d1fae5;
+    
+    --bg-main: #f8fafc; /* خلفية الصفحة - رمادي فاتح جداً مائل للأزرق */
+    --bg-card: #ffffff; /* خلفية البطاقات - أبيض ناصع */
+    
+    --text-strong: #0f172a; /* نصوص العناوين - كحلي غامق جداً (قريب للأسود) */
+    --text-body: #334155; /* نصوص عادية */
+    --text-muted: #64748b; /* نصوص ثانوية وملاحظات */
+    
+    --border-light: #e2e8f0; /* حدود ناعمة للبطاقات والجداول */
+    --border-focus: #cbd5e1;
+    
+    --danger: #ef4444; /* أحمر للتنبيهات والمصروفات */
+    --danger-light: #fee2e2;
+    --warning: #f59e0b; /* برتقالي للمختبر والملاحظات */
+    
+    /* ظلال ناعمة (Soft Shadows) تعطي عمق بدون إزعاج */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+    
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
 }
 
-document.addEventListener('DOMContentLoaded', () => { if (Auth.check()) { document.getElementById('login-modal').style.display = 'none'; document.getElementById('display-user').innerText = Auth.user.name; applyRoles(Auth.user.role); startSync(); window.showView('dash'); } });
+/* --- إعدادات عامة (Base) --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-// ================== سلة المحذوفات الشاملة (Universal Soft Delete) ==================
-window.universalSoftDelete = async (colName, id, dataObj, displayName, typeLabel) => {
-    if (confirm(`هل أنت متأكد من حذف (${displayName})؟ سيتم نقله لسلة المحذوفات ولن يختفي نهائياً.`)) {
-        try {
-            await addDoc(collection(db, "recycle_bin"), { originalCol: colName, originalId: id, data: dataObj, displayName: displayName, typeLabel: typeLabel, deletedBy: Auth.user.name, deletedAt: serverTimestamp() });
-            await deleteDoc(doc(db, colName, id));
-            logAudit(`حذف ونقل للمهملات: [${typeLabel}] ${displayName}`);
-            Swal.fire({ icon: 'success', title: 'تم الحذف', text: 'تم النقل بنجاح إلى سلة المحذوفات الشاملة.', timer: 1500, showConfirmButton: false });
-        } catch (e) { console.error(e); Swal.fire('خطأ', 'مشكلة بالحذف', 'error'); }
+body {
+    font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-body);
+    line-height: 1.5;
+    font-size: 14px; /* حجم خط أساسي أصغر وأرتب */
+    overflow-x: hidden;
+}
+
+/* الأرقام الإنجليزية الإجبارية */
+.en-num, input[type="number"] {
+    font-family: 'Inter', -apple-system, sans-serif !important;
+    direction: ltr !important;
+    text-align: center; /* توسيط الأرقام */
+}
+
+/* --- الهيكل الرئيسي (Layout) --- */
+.main {
+    transition: all 0.3s ease;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    padding: 24px;
+    flex: 1;
+    max-width: 1400px; /* تحديد عرض أقصى لعدم تشتت العين بالشاشات الكبيرة */
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* --- الترويسة العلوية (Header) --- */
+.header {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border-light);
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-strong);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* شريط البحث */
+.search-bar {
+    padding: 10px 16px;
+    border: 1px solid var(--border-light);
+    border-radius: 50px; /* دائري بالكامل لأناقة أكثر */
+    background: var(--bg-main);
+    width: 250px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    color: var(--text-body);
+}
+
+.search-bar:focus {
+    width: 300px;
+    background: var(--bg-card);
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(226, 232, 240, 0.5);
+    outline: none;
+}
+
+/* أيقونة المستخدم بالهيدر */
+.user-profile-badge {
+    background: var(--primary-light);
+    color: var(--primary-hover);
+    padding: 6px 12px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* --- القائمة الجانبية (Sidebar) --- */
+.sidebar {
+    position: fixed;
+    right: -280px; /* عرض مناسب */
+    top: 0;
+    width: 280px;
+    height: 100vh;
+    background: var(--bg-card);
+    border-left: 1px solid var(--border-light);
+    z-index: 1000;
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar.active {
+    right: 0;
+}
+
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.3);
+    backdrop-filter: blur(2px);
+    z-index: 999;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+.menu-toggle-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: var(--radius-sm);
+    transition: background 0.2s;
+}
+
+.menu-toggle-btn:hover {
+    background: var(--bg-main);
+    color: var(--text-strong);
+}
+
+/* أزرار القائمة الجانبية */
+.nav-label {
+    padding: 20px 24px 8px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 24px;
+    background: transparent;
+    border: none;
+    text-align: right;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-body);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.nav-link i {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    width: 20px;
+    text-align: center;
+    transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+    background: var(--bg-main);
+    color: var(--text-strong);
+}
+
+.nav-link:hover i {
+    color: var(--primary);
+}
+
+.nav-link.active {
+    background: var(--primary-light);
+    color: var(--primary-hover);
+    font-weight: 700;
+}
+
+.nav-link.active i {
+    color: var(--primary-hover);
+}
+
+/* مؤشر جانبي للزر النشط */
+.nav-link.active::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--primary);
+    border-radius: 4px 0 0 4px;
+}
+
+/* --- البطاقات (Cards) --- */
+.clean-card, .clinic-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 24px;
+    overflow: hidden; /* لاحتواء الـ Header */
+}
+
+/* ترويسة البطاقة */
+.clean-card-header, .clinic-card-header {
+    padding: 16px 24px;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border-light);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-strong);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.clean-card-header i, .clinic-card-header i {
+    color: var(--text-muted);
+}
+
+.clean-card-body, .clinic-card-body {
+    padding: 24px;
+}
+
+/* --- مؤشرات الأداء (KPIs) في الرئيسية --- */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.kpi-card {
+    background: var(--bg-card);
+    padding: 20px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-sm);
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.kpi-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.kpi-val {
+    font-size: 1.75rem; /* حجم مناسب غير مبالغ فيه */
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+/* ألوان مخصصة لأرقام الـ KPI */
+#kpi-sales { color: var(--text-strong); }
+#kpi-profits { color: var(--primary); }
+#kpi-expenses { color: var(--danger); }
+#kpi-netbox { color: var(--primary); }
+#kpi-dues { color: var(--warning); }
+
+/* --- الحقول والنماذج (Forms & Inputs) --- */
+.input-group {
+    margin-bottom: 16px;
+}
+
+.input-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-body);
+    margin-bottom: 6px;
+}
+
+.clean-input, .form-input-pro {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    background: var(--bg-card);
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text-strong);
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.clean-input:hover, .form-input-pro:hover {
+    border-color: var(--border-focus);
+}
+
+.clean-input:focus, .form-input-pro:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.clean-input::placeholder, .form-input-pro::placeholder {
+    color: #94a3b8;
+    font-weight: 400;
+}
+
+/* تنسيق خاص للقوائم المنسدلة (Select) */
+select.clean-input, select.form-input-pro {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2364748b%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.4-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: left 12px top 50%;
+    background-size: 10px auto;
+    padding-left: 30px; /* مساحة للسهم */
+}
+
+/* --- الأزرار (Buttons) --- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+}
+
+.btn-danger {
+    background-color: #fff;
+    color: var(--danger);
+    border-color: var(--danger-light);
+}
+
+.btn-danger:hover {
+    background-color: var(--danger-light);
+}
+
+/* الزر الكبير للحفظ (تخفيف حجمه ليكون أنيق) */
+.btn-massive {
+    width: 100%;
+    padding: 14px;
+    font-size: 1rem;
+    font-weight: 700;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-massive:hover {
+    background-color: var(--primary-hover);
+}
+
+/* --- جدول القياسات الطبية (Rx Table) --- */
+.rx-table, .clinical-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+}
+
+.rx-table th, .clinical-table th {
+    background-color: var(--bg-main);
+    padding: 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-align: center;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.rx-table td, .clinical-table td {
+    padding: 4px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.rx-input, .clinical-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    text-align: center;
+    font-size: 1rem;
+    color: var(--text-strong);
+    background: transparent;
+    transition: all 0.2s;
+}
+
+.rx-input:hover, .clinical-input:hover {
+    background: var(--bg-main);
+}
+
+.rx-input:focus, .clinical-input:focus {
+    background: #fff;
+    border-color: var(--border-focus);
+    outline: none;
+}
+
+.eye-label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-align: left;
+    padding-left: 8px;
+}
+
+/* --- المشتريات (Sales Rows) --- */
+.sales-row, .product-item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    align-items: center;
+}
+
+.sales-row .clean-input, .product-item .clean-input {
+    flex: 2;
+}
+
+.sales-row .price-input, .product-item .price-input {
+    flex: 1;
+    max-width: 120px;
+    color: var(--text-strong);
+}
+
+/* --- الحاسبة المالية (Calc Wrapper) --- */
+.calc-wrapper, .financial-box {
+    background: var(--bg-main);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    border: 1px solid var(--border-light);
+}
+
+.calc-item, .fin-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--border-light);
+    font-size: 0.95rem;
+    color: var(--text-body);
+}
+
+.calc-item:last-child, .fin-row:last-child {
+    border-bottom: none;
+}
+
+.calc-item span:first-child, .fin-row span:first-child {
+    font-weight: 600;
+}
+
+.calc-val, .fin-val {
+    background: transparent;
+    border: none;
+    color: var(--text-strong);
+    text-align: left;
+    font-size: 1.1rem;
+    font-weight: 700;
+    width: 100px;
+    outline: none;
+}
+
+/* تنسيق الإجمالي */
+.calc-total-row, .fin-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 16px 0;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-focus);
+}
+
+.calc-total-row span:first-child, .fin-total-row span:first-child {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--text-strong);
+}
+
+.calc-total-val, .fin-total-val {
+    background: transparent;
+    border: none;
+    color: var(--text-strong);
+    text-align: left;
+    font-size: 1.5rem;
+    font-weight: 800;
+    width: 120px;
+}
+
+/* تنسيق المدفوع والباقي */
+.fin-paid-box {
+    background: #fff;
+    padding: 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-light);
+    margin-bottom: 12px;
+}
+
+.fin-paid-input {
+    border: 1px solid var(--border-focus);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary);
+    text-align: center;
+    padding: 8px;
+    margin-top: 8px;
+    background: #fff;
+}
+
+.calc-due, .fin-due-row {
+    color: var(--danger);
+    background: var(--danger-light);
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    border: none;
+}
+
+.calc-due span:first-child, .fin-due-row span:first-child {
+    color: var(--danger);
+}
+
+#u-due-display, #pos-due-display {
+    font-size: 1.4rem;
+}
+
+/* --- الجداول العامة (Data Grids) --- */
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: right;
+    font-size: 0.9rem;
+}
+
+.data-table th {
+    background: var(--bg-main);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-focus);
+    font-weight: 600;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.data-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text-body);
+    vertical-align: middle;
+}
+
+.data-table tr:hover td {
+    background: var(--bg-main);
+}
+
+/* --- النوافذ المنبثقة (Modals) --- */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 4000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: translateY(10px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* شبكات التخطيط */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+@media (max-width: 768px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .content { padding: 16px; }
+}
+
+/* --- تنسيق الطباعة الأنيق (A5) --- */
+@media print {
+    body { background: #fff; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; font-size: 11pt; color: #000; }
+    .sidebar, .header, .content, .modal, .sidebar-overlay { display: none !important; }
+    #print-report { display: block !important; width: 100%; }
+    
+    .print-card { 
+        width: 148mm; /* عرض A5 */
+        margin: 0 auto; 
+        padding: 10mm; 
     }
-};
-
-window.universalRestore = async (recycleId, colName, originalId, dataObj, displayName, typeLabel) => {
-    try {
-        await setDoc(doc(db, colName, originalId), dataObj); // يعود لمكانه وIDـه الأصلي
-        await deleteDoc(doc(db, "recycle_bin", recycleId));
-        logAudit(`استرجاع من المهملات: [${typeLabel}] ${displayName}`);
-        Swal.fire({ icon: 'success', title: 'تم الاسترجاع', text: 'عادت البيانات لمكانها الأصلي.', timer: 1500, showConfirmButton: false });
-    } catch (e) { console.error(e); }
-};
-
-// ================== إدارة الحسابات والـ RBAC الدقيق ==================
-window.resetStaffForm = () => { document.getElementById('s-id').value = ""; document.getElementById('s-name').value = ""; document.getElementById('s-user').value = ""; document.getElementById('s-pass').value = ""; document.getElementById('s-role').value = "employee"; };
-window.loadStaffForEdit = (id) => {
-    const staff = allStaffData.find(s => s.id === id); if(!staff) return;
-    document.getElementById('edit-s-id').value = id; 
-    document.getElementById('edit-s-name').value = staff.name; 
-    document.getElementById('edit-s-user').value = staff.user;
-    document.getElementById('edit-s-pass').value = ""; 
-    document.getElementById('edit-s-role').value = staff.role || "employee";
     
-    // تفعيل مربعات الاختيار بالصلاحيات المحفوظة
-    const perms = staff.privileges || {};
-    document.getElementById('edit-perm-dash').checked = perms.dashboard || false;
-    document.getElementById('edit-perm-rx-view').checked = perms.rx_view || false;
-    document.getElementById('edit-perm-rx-add').checked = perms.rx_add || false;
-    document.getElementById('edit-perm-pos').checked = perms.pos || false;
-    document.getElementById('edit-perm-inv').checked = perms.inventory || false;
-    document.getElementById('edit-perm-reports').checked = perms.reports || false;
-    document.getElementById('edit-perm-cms').checked = perms.cms || false;
-    document.getElementById('edit-perm-admin').checked = perms.admin || false;
-    document.getElementById('edit-perm-recycle').checked = perms.recycle || false;
-
-    document.getElementById('staff-edit-modal').style.display = 'flex';
-};
-window.saveRBACEdit = async () => {
-    const id = document.getElementById('edit-s-id').value, name = document.getElementById('edit-s-name').value, pass = document.getElementById('edit-s-pass').value, role = document.getElementById('edit-s-role').value;
-    if (!name) return Swal.fire('خطأ', 'الاسم إجباري', 'error');
+    .print-header {
+        border-bottom: 1.5px solid #000;
+        padding-bottom: 8px;
+        margin-bottom: 12px;
+        text-align: left;
+    }
     
-    const privileges = {
-        dashboard: document.getElementById('edit-perm-dash').checked,
-        rx_view: document.getElementById('edit-perm-rx-view').checked,
-        rx_add: document.getElementById('edit-perm-rx-add').checked,
-        pos: document.getElementById('edit-perm-pos').checked,
-        inventory: document.getElementById('edit-perm-inv').checked,
-        reports: document.getElementById('edit-perm-reports').checked,
-        cms: document.getElementById('edit-perm-cms').checked,
-        admin: document.getElementById('edit-perm-admin').checked,
-        recycle: document.getElementById('edit-perm-recycle').checked,
-    };
-
-    let updateData = { name, role, privileges }; 
-    if(pass.trim() !== "") updateData.pass = pass; // تحديث الباسوورد فقط إذا تم كتابته
-
-    try {
-        await updateDoc(doc(db, "users", id), updateData);
-        logAudit(`تحديث صلاحيات حساب دقيقة (RBAC): ${name}`);
-        document.getElementById('staff-edit-modal').style.display = 'none';
-        Swal.fire({icon:'success', title:'تم التحديث', timer:1500, showConfirmButton:false});
-    } catch(e) { Swal.fire('خطأ', 'مشكلة بالاتصال', 'error'); }
-};
-window.saveStaff = async () => { /* سحب حساب جديد */ const name = document.getElementById('s-name').value, user = document.getElementById('s-user').value, pass = document.getElementById('s-pass').value, role = document.getElementById('s-role').value; if (!name || !user || !pass) return Swal.fire('خطأ', 'أكمل البيانات', 'error'); try { await addDoc(collection(db, "users"), { name, user, pass, role, privileges: { dashboard: true, rx_view: true, rx_add: true, pos: true, inventory: true }, status: "active", time: serverTimestamp() }); logAudit(`إنشاء حساب جديد: ${name} (${role})`); Swal.fire({icon:'success', title:'تم الإنشاء', timer:1500, showConfirmButton:false}); resetStaffForm(); } catch(e) {}};
-window.toggleUserFreeze = async (id, currentStatus, name) => { const newStatus = currentStatus === "frozen" ? "active" : "frozen"; await updateDoc(doc(db, "users", id), { status: newStatus }); logAudit(`تغيير حالة حساب (${name}) إلى: ${newStatus}`); };
-window.deleteUserAccount = async (id, name, fullData) => { window.universalSoftDelete("users", id, fullData, name, "حساب مستخدم"); };
-
-// ================== المراقبة المالية (الصندوق) ==================
-window.saveExpense = async () => {
-    const amount = parseFloat(document.getElementById('exp-amount').value), desc = document.getElementById('exp-desc').value.trim();
-    if(!amount || !desc) return Swal.fire('خطأ', 'أدخل المبلغ والتفاصيل', 'error');
-    try { await addDoc(collection(db, "expenses"), { amount, desc, user: Auth.user.name, time: serverTimestamp() }); document.getElementById('exp-amount').value = ''; document.getElementById('exp-desc').value = ''; Swal.fire({icon:'success', title:'تم التسجيل', timer:1500, showConfirmButton:false}); logAudit(`تسجيل مصروف من الصندوق: ${desc} بقيمة ${amount}`); } catch(e) { console.error(e); }
-};
-window.renderDailyLedger = () => {
-    let combined = []; let totalSales = 0, totalPaid = 0, totalDues = 0, totalExpenses = 0; const todayStr = new Date().toDateString();
-    todayInvoicesData.forEach(i => {
-        if (i.time?.toDate().toDateString() === todayStr) {
-            totalSales += Number(i.total || 0); totalPaid += Number(i.paid || 0); totalDues += Number(i.due || 0);
-            combined.push({ timeObj: i.time?.toDate(), timeStr: i.time?.toDate().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'}) || '--', desc: i.isUnified ? `ملف: ${i.pName} (${i.doctor||'--'})` : `بيع: ${i.pName} (${i.doctor||'--'})`, val: `<span class="en-num" style="color:var(--success); font-weight:bold;">+ ${Number(i.paid||0).toFixed(2)}</span>` });
-        }
-    });
-    todayExpensesData.forEach(e => {
-        if (e.time?.toDate().toDateString() === todayStr) {
-            totalExpenses += Number(e.amount || 0);
-            combined.push({ timeObj: e.time?.toDate(), timeStr: e.time?.toDate().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'}) || '--', desc: `مصروف: ${e.desc} (${e.user})`, val: `<span class="en-num" style="color:var(--danger); font-weight:bold;">- ${Number(e.amount||0).toFixed(2)}</span>` });
-        }
-    });
-    combined.sort((a,b) => (b.timeObj?.getTime() || 0) - (a.timeObj?.getTime() || 0));
-    let html = ''; combined.forEach(r => { html += `<tr><td class="en-num">${r.timeStr}</td><td>${r.desc}</td><td>${r.val}</td></tr>`; });
-    if(combined.length === 0) html = '<tr><td colspan="3" style="text-align:center; color:gray;">لا يوجد حركات اليوم</td></tr>';
-    if(document.getElementById('tb-daily-ledger')) document.getElementById('tb-daily-ledger').innerHTML = html;
-    if(document.getElementById('kpi-sales')) document.getElementById('kpi-sales').innerText = totalSales.toFixed(2);
-    if(document.getElementById('kpi-profits')) document.getElementById('kpi-profits').innerText = totalPaid.toFixed(2);
-    if(document.getElementById('kpi-dues')) document.getElementById('kpi-dues').innerText = totalDues.toFixed(2);
-    if(document.getElementById('kpi-expenses')) document.getElementById('kpi-expenses').innerText = totalExpenses.toFixed(2);
-    if(document.getElementById('kpi-netbox')) document.getElementById('kpi-netbox').innerText = (totalPaid - totalExpenses).toFixed(2);
-};
-
-// ================== العيادة والمشتريات ==================
-window.calcUnifiedTotal = () => {
-    const frame = parseFloat(document.getElementById('u-frame-price').value) || 0; const lenses = parseFloat(document.getElementById('u-lenses-price').value) || 0; const cl = parseFloat(document.getElementById('u-cl-price').value) || 0; const extras = parseFloat(document.getElementById('u-extras-price').value) || 0;
-    const subtotal = frame + lenses + cl + extras; document.getElementById('u-subtotal').value = subtotal.toFixed(2);
-    const discountPercent = parseFloat(document.getElementById('u-discount').value) || 0; const finalTotal = subtotal - (subtotal * (discountPercent / 100)); document.getElementById('u-total').value = finalTotal.toFixed(2);
-    const paid = parseFloat(document.getElementById('u-paid').value) || 0; let due = finalTotal - paid; if (due < 0) due = 0; 
-    document.getElementById('u-due').value = due.toFixed(2); document.getElementById('u-due-display').innerText = due.toFixed(2);
-};
-window.saveUnifiedRecord = async () => {
-    const name = document.getElementById('u-name').value.trim(); const phone = document.getElementById('u-phone').value;
-    if (!name) return Swal.fire('خطأ', 'اسم المراجع إجباري', 'error');
-    const rxData = { pd: document.getElementById('u-pd').value || '-', notes: document.getElementById('u-notes').value || '-', od: { s: document.getElementById('u-od-s').value, c: document.getElementById('u-od-c').value, a: document.getElementById('u-od-a').value, add: document.getElementById('u-od-add').value }, os: { s: document.getElementById('u-os-s').value, c: document.getElementById('u-os-c').value, a: document.getElementById('u-os-a').value, add: document.getElementById('u-os-add').value } };
-    const salesData = { frame: { type: document.getElementById('u-frame-type').value, price: parseFloat(document.getElementById('u-frame-price').value) || 0 }, lenses: { type: document.getElementById('u-lenses-type').value, price: parseFloat(document.getElementById('u-lenses-price').value) || 0 }, cl: { type: document.getElementById('u-cl-type').value, price: parseFloat(document.getElementById('u-cl-price').value) || 0 }, extras: { type: document.getElementById('u-extras-type').value, price: parseFloat(document.getElementById('u-extras-price').value) || 0 } };
-    const subtotal = parseFloat(document.getElementById('u-subtotal').value) || 0, discountPercent = parseFloat(document.getElementById('u-discount').value) || 0, total = parseFloat(document.getElementById('u-total').value) || 0, paid = parseFloat(document.getElementById('u-paid').value) || 0, due = parseFloat(document.getElementById('u-due').value) || 0, paymentMethod = document.getElementById('u-payment-method').value || 'كاش';
-    const invId = 'DLT-' + Math.floor(Math.random() * 90000 + 10000); const doctorName = Auth.user ? Auth.user.name : 'موظف';
-    let prodDesc = []; if(salesData.frame.type) prodDesc.push("إطار"); if(salesData.lenses.type) prodDesc.push("عدسات"); if(salesData.cl.type) prodDesc.push("لاصق"); if(salesData.extras.type) prodDesc.push("أخرى"); const fullProdName = prodDesc.join(' + ') || 'فحص طبي';
-    try {
-        await addDoc(collection(db, "invoices"), { invId, pName: name, phone: phone, prodName: fullProdName, subtotal, discountPercent, total, paid, due, paymentMethod, labStatus: 'انتظار', time: serverTimestamp(), isUnified: true, rx: rxData, detailedSales: salesData, doctor: doctorName });
-        logAudit(`إصدار ملف عيادة: ${name} (${invId})`); Swal.fire({ icon: 'success', title: 'تم الحفظ', timer: 1500, showConfirmButton: false });
-        printUnifiedInvoice({ invId, pName: name, phone, time: new Date(), doctor: doctorName, rx: rxData, detailedSales: salesData, subtotal, discountPercent, total, paid, due, paymentMethod });
-        document.getElementById('u-name').value = ''; document.getElementById('u-phone').value = ''; document.querySelectorAll('.rx-table input, .grid-2 input, .sales-row input').forEach(inp => inp.value = ''); document.getElementById('u-discount').value = "0"; document.getElementById('u-paid').value = ''; calcUnifiedTotal();
-    } catch (e) { console.error(e); }
-};
-
-window.printFromData = (invId) => { const record = window.allUnifiedRecords.find(r => r.invId === invId); if(record) printUnifiedInvoice({ ...record, time: record.time?.toDate() || new Date() }); };
-window.deleteInvoice = (id, data, invId) => { window.universalSoftDelete("invoices", id, data, invId, "فاتورة عيادة"); };
-
-function printUnifiedInvoice(data) {
-    const rx = data.rx; const s = data.detailedSales; const dateStr = data.time.toLocaleDateString('en-GB'); const timeStr = data.time.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'}); const pMethod = data.paymentMethod || 'كاش';
-    document.getElementById('pr-content').innerHTML = `<div class="print-card"><div style="border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px; text-align:left;"><h2 style="margin:0; font-size:1.4rem; font-weight:900; font-family:Arial,sans-serif;">Delta Optics</h2><h4 style="margin:0; font-size:0.85rem; color:#475569;">Medical Rx & Receipt</h4></div><div style="font-size:0.9rem; margin-bottom:15px; border-bottom:1px dashed #000; padding-bottom:10px;"><div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span><b>No:</b> <span class="en-num-print">${data.invId}</span></span><span><span class="en-num-print">${dateStr} ${timeStr}</span></span></div><div style="display:flex; justify-content:space-between;"><span><b>المراجع:</b> ${data.pName}</span><span class="en-num-print">${data.phone || '---'}</span></div></div><div style="font-weight:bold; text-align:center; font-size:0.85rem; border:1px solid #000; background:#f0f0f0 !important; -webkit-print-color-adjust:exact; margin-bottom:5px;">القياسات (Optical Rx)</div><table class="print-table"><tr><th>Eye</th><th>SPH</th><th>CYL</th><th>AXIS</th><th>ADD</th></tr><tr><th>R (OD)</th><td><span class="en-num-print">${rx.od.s||'-'}</span></td><td><span class="en-num-print">${rx.od.c||'-'}</span></td><td><span class="en-num-print">${rx.od.a||'-'}</span></td><td><span class="en-num-print">${rx.od.add||'-'}</span></td></tr><tr><th>L (OS)</th><td><span class="en-num-print">${rx.os.s||'-'}</span></td><td><span class="en-num-print">${rx.os.c||'-'}</span></td><td><span class="en-num-print">${rx.os.a||'-'}</span></td><td><span class="en-num-print">${rx.os.add||'-'}</span></td></tr></table><div style="font-size:0.85rem; margin-bottom:15px;"><b>PD:</b> <span class="en-num-print">${rx.pd||'-'}</span> | <b>ملاحظة:</b> ${rx.notes||'-'}</div>${data.subtotal > 0 ? `<div style="font-weight:bold; text-align:center; font-size:0.85rem; border:1px solid #000; background:#f0f0f0 !important; -webkit-print-color-adjust:exact; margin-bottom:5px;">المشتريات (Purchases)</div><table class="print-table"><tr><th>البيان</th><th style="width:70px;">JOD</th></tr>${s.frame.type ? `<tr><td>إطار: ${s.frame.type}</td><td><span class="en-num-print">${s.frame.price.toFixed(2)}</span></td></tr>` : ''}${s.lenses.type ? `<tr><td>عدسات: ${s.lenses.type}</td><td><span class="en-num-print">${s.lenses.price.toFixed(2)}</span></td></tr>` : ''}${s.cl.type ? `<tr><td>لاصق: ${s.cl.type}</td><td><span class="en-num-print">${s.cl.price.toFixed(2)}</span></td></tr>` : ''}${s.extras.type ? `<tr><td>أخرى: ${s.extras.type}</td><td><span class="en-num-print">${s.extras.price.toFixed(2)}</span></td></tr>` : ''}</table><div style="border:2px solid #000; border-radius:4px; padding:10px; font-size:0.95rem;"><div style="display:flex; justify-content:space-between;"><span>Subtotal:</span><b class="en-num-print">${data.subtotal.toFixed(2)}</b></div>${data.discountPercent > 0 ? `<div style="display:flex; justify-content:space-between;"><span>Discount ${data.discountPercent}%:</span><b class="en-num-print">- ${(data.subtotal * (data.discountPercent/100)).toFixed(2)}</b></div>` : ''}<div style="display:flex; justify-content:space-between; font-weight:900; font-size:1.1rem; border-top:1px solid #000; padding-top:5px; margin-top:5px;"><span>Total:</span><b class="en-num-print">${data.total.toFixed(2)}</b></div><div style="display:flex; justify-content:space-between;"><span>Paid (${pMethod}):</span><b class="en-num-print">${data.paid.toFixed(2)}</b></div><div style="display:flex; justify-content:space-between;"><span>Due الباقي:</span><b class="en-num-print">${data.due.toFixed(2)}</b></div></div>` : ''}<div style="text-align:center; margin-top:20px; font-weight:bold; font-size:0.8rem; border-top:1px dashed #000; padding-top:10px;"><p style="margin:0;">بواسطة: ${data.doctor || 'موظف'} | ✨ نتمنى لكم رؤية واضحة ✨</p></div></div>`;
-    window.print();
-}
-
-window.showPatientHistory = (patientName) => {
-    document.getElementById('history-patient-name').innerText = patientName; const tbody = document.getElementById('tb-patient-history'); tbody.innerHTML = '';
-    const records = window.allUnifiedRecords.filter(r => r.pName === patientName);
-    if (records.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">لا توجد سجلات</td></tr>'; } 
-    else { records.forEach(r => { tbody.innerHTML += `<tr><td class="en-num">${r.time?.toDate().toLocaleDateString('en-GB') || '--'}</td><td class="en-num">${r.invId}</td><td>${r.prodName}</td><td class="en-num" style="font-weight:bold; color:var(--primary);">${parseFloat(r.total).toFixed(2)}</td><td style="display:flex; gap:5px;"><button class="btn" style="background:#0f172a; color:white; border:none; border-radius:6px; padding:5px 10px;" onclick="printFromData('${r.invId}')"><i class="fas fa-print"></i></button> <button class="btn admin-only" style="background:var(--danger); color:white; border:none; border-radius:6px; padding:5px 10px;" onclick='deleteInvoice("${r.id}", ${JSON.stringify(r).replace(/'/g, "\\'")}, "${r.invId}")'><i class="fas fa-trash"></i></button></td></tr>`; }); }
-    document.getElementById('history-modal').style.display = 'flex'; applyRoles(Auth.user ? Auth.user.role : 'employee');
-};
-window.printPatientHistory = () => {
-    const pName = document.getElementById('history-patient-name').innerText; const records = window.allUnifiedRecords.filter(r => r.pName === pName); if(records.length === 0) return;
-    let rowsHtml = ''; let totalSpent = 0; records.forEach(r => { totalSpent += Number(r.total); rowsHtml += `<tr><td><span class="en-num-print">${r.time?.toDate().toLocaleDateString('en-GB')||'--'}</span></td><td><span class="en-num-print">${r.invId}</span></td><td>${r.prodName}</td><td><span class="en-num-print">${parseFloat(r.total).toFixed(2)}</span></td></tr>`; });
-    document.getElementById('pr-content').innerHTML = `<div class="print-card"><div style="border-bottom:2px solid #000; padding-bottom:10px; margin-bottom:15px; text-align:left;"><h2 style="margin:0; font-family:Arial,sans-serif;">Delta Optics</h2><h4 style="margin:0; color:#475569;">Patient History</h4></div><div style="margin-bottom:15px; font-size:1rem;"><b>المراجع:</b> ${pName}<br><b>الطباعة:</b> <span class="en-num-print">${new Date().toLocaleDateString('en-GB')}</span></div><table class="print-table"><tr><th>التاريخ</th><th>الملف</th><th>التفاصيل</th><th>JOD</th></tr>${rowsHtml}</table><div style="font-size:1.1rem; font-weight:bold; border:2px solid #000; padding:10px; border-radius:6px;">Total Spent: <span class="en-num-print">${totalSpent.toFixed(2)}</span> JOD</div></div>`;
-    window.print(); logAudit(`طباعة كشف حساب: ${pName}`);
-};
-
-// ================== المبيعات السريعة للكاشير ==================
-window.updatePosPrice = () => { document.getElementById('pos-total').value = document.getElementById('pos-product').options[document.getElementById('pos-product').selectedIndex]?.dataset.price || 0; calcPosTotal(); };
-window.calcPosTotal = () => { const price = parseFloat(document.getElementById('pos-price').value) || 0; const discountPercent = parseFloat(document.getElementById('pos-discount').value) || 0; const finalTotal = price - (price * (discountPercent / 100)); document.getElementById('pos-total').value = finalTotal.toFixed(2); const paid = parseFloat(document.getElementById('pos-paid').value) || 0; let due = finalTotal - paid; if (due < 0) due = 0; document.getElementById('pos-due').value = due.toFixed(2); document.getElementById('pos-due-display').innerText = due.toFixed(2); };
-window.createInvoice = async () => {
-    const pName = document.getElementById('pos-patient').value.trim(), prodSel = document.getElementById('pos-product'), prodName = prodSel.options[prodSel.selectedIndex]?.text;
-    const subtotal = parseFloat(document.getElementById('pos-price').value) || 0, discountPercent = parseFloat(document.getElementById('pos-discount').value) || 0, total = parseFloat(document.getElementById('pos-total').value) || 0, paid = parseFloat(document.getElementById('pos-paid').value) || 0, due = parseFloat(document.getElementById('pos-due').value) || 0, paymentMethod = document.getElementById('pos-payment-method').value || 'كاش';
-    if (!pName || !prodName || !prodSel.value) return Swal.fire('خطأ', 'أكمل البيانات', 'error'); const invId = 'POS-' + Math.floor(Math.random() * 90000 + 10000);
-    try {
-        await addDoc(collection(db, "invoices"), { invId, pName, prodName, subtotal, discountPercent, total, paid, due, paymentMethod, labStatus: 'تم التسليم', time: serverTimestamp(), isUnified: false, doctor: Auth.user ? Auth.user.name : 'موظف' });
-        const currentQty = Number(prodSel.options[prodSel.selectedIndex].dataset.qty); if (currentQty > 0) await updateDoc(doc(db, "products", prodSel.value), { qty: currentQty - 1 });
-        logAudit(`بيع سريع كاشير: ${invId}`); Swal.fire({ icon: 'success', title: 'تم الحفظ', timer: 1500, showConfirmButton: false }); printPosFromData(invId, pName, prodName, subtotal, discountPercent, total, paid, due, paymentMethod);
-        document.getElementById('pos-patient').value = ''; prodSel.value = ''; document.getElementById('pos-price').value = '0.00'; document.getElementById('pos-discount').value = '0'; document.getElementById('pos-paid').value = ''; calcPosTotal();
-    } catch(e) { Swal.fire('خطأ', 'مشكلة بالاتصال', 'error'); }
-};
-window.printPosFromData = (invId, pName, prodName, subtotal, discountPercent, total, paid, due, pMethod) => {
-    let d = { invId, pName, prodName, subtotal, discountPercent, total, paid, due, paymentMethod: pMethod, doctor: Auth.user ? Auth.user.name : 'موظف', time: new Date() };
-    if(!pName) { const record = window.allUnifiedRecords.find(r => r.invId === invId); if(record) d = { ...record, time: record.time?.toDate() || new Date() }; else return; }
-    document.getElementById('pr-content').innerHTML = `<div class="print-card" style="width:100mm; text-align:center;"><h2 style="margin:0; font-family:Arial;">Delta Optics</h2><p> فاتورة مبيعات: <span class="en-num-print">${d.invId}</span></p><p>التاريخ: <span class="en-num-print">${d.time.toLocaleDateString('en-GB')}</span></p><hr><p><b>الزبون:</b> ${d.pName}</p><p><b>المنتج:</b> ${d.prodName}</p><hr><h3 style="margin:5px;">الإجمالي: <span class="en-num-print">${d.total.toFixed(2)}</span> JOD</h3><p style="margin:2px;">المدفوع: <span class="en-num-print">${d.paid.toFixed(2)}</span> | الباقي: <span class="en-num-print">${d.due.toFixed(2)}</span></p></div>`; window.print();
-};
-
-window.openOnlineReport = (testId) => {
-    const record = window.allOnlineTests.find(t => t.id === testId); if (!record) return;
-    document.getElementById('report-m-name').innerText = record.name || 'غير محدد'; document.getElementById('report-m-phone').innerText = record.phone || '---'; document.getElementById('report-m-details').innerText = record.details || 'لا توجد تفاصيل';
-    const waMsg = encodeURIComponent(`مرحباً ${record.name}، معك عيادة دلتا للبصريات...`); document.getElementById('btn-wa-report').href = `https://wa.me/${record.phone ? record.phone.replace(/^0/, '962') : '962775549700'}?text=${waMsg}`;
-    const processBtn = document.getElementById('btn-process-report');
-    if (record.isProcessed) { processBtn.style.display = 'none'; } else { processBtn.style.display = 'flex'; processBtn.onclick = async () => { await updateDoc(doc(db, "tests", testId), { isProcessed: true }); document.getElementById('online-report-modal').style.display = 'none'; logAudit(`مراجعة فحص أونلاين: ${record.name}`); Swal.fire({ icon: 'success', title: 'تم', timer: 1500, showConfirmButton: false }); }; }
-    document.getElementById('online-report-modal').style.display = 'flex';
-};
-
-// ================== المزامنة החية ==================
-function startSync() {
-    onSnapshot(query(collection(db, "brands"), orderBy("timestamp", "desc")), (s) => {
-        let html = ""; s.forEach(d => { const data = d.data(); const imgSrc = data.imageUrl ? `<img src="${data.imageUrl}" style="width:40px; border-radius:4px;">` : 'بدون صورة'; const typeLabel = data.type === 'sun' ? '<span style="color:var(--warning); font-weight:bold;">شمسي</span>' : '<span style="color:var(--primary); font-weight:bold;">طبي</span>'; html += `<tr><td>${data.name}</td><td>${typeLabel}</td><td><button class="btn" style="background:var(--warning); color:white; border:none; border-radius:6px; padding:5px 10px;" onclick='loadExtCollectionForEdit("${d.id}", "${data.name}", "${data.type}", "${data.imageUrl||''}")'><i class="fas fa-edit"></i></button> <button class="btn admin-only" style="background:var(--danger); color:white; border:none; border-radius:6px; padding:5px 10px;" onclick='deleteExtCollection("${d.id}", ${JSON.stringify(data).replace(/'/g, "\\'")})'><i class="fas fa-trash"></i></button></td></tr>`; });
-        if(document.getElementById('tb-ext-collections')) document.getElementById('tb-ext-collections').innerHTML = html; applyRoles(Auth.user ? Auth.user.role : 'employee');
-    });
-
-    onSnapshot(query(collection(db, "products"), orderBy("time", "desc")), (s) => {
-        let invHtml = "", posProdHtml = "<option value=''>-- اختر المنتج --</option>";
-        s.forEach(d => { const p = d.data(); invHtml += `<tr><td>${p.name}</td><td>${p.type}</td><td class="en-num">${p.qty}</td><td class="en-num">${p.price}</td><td style="display:flex; gap:5px;"><button class="btn" style="background:var(--warning); color:white; border:none; border-radius:6px; padding:5px 10px;" onclick='loadProductForEdit("${d.id}", ${JSON.stringify(p).replace(/'/g, "\\'")})'><i class="fas fa-edit"></i></button><button class="btn admin-only" style="background:var(--danger); color:white; border:none; border-radius:6px; padding:5px 10px;" onclick='softDeleteProduct("${d.id}", ${JSON.stringify(p).replace(/'/g, "\\'")})'><i class="fas fa-trash"></i></button></td></tr>`; if (p.qty > 0) posProdHtml += `<option value="${d.id}" data-price="${p.price}" data-qty="${p.qty}">${p.name}</option>`; });
-        document.getElementById('tb-inv').innerHTML = invHtml; document.getElementById('pos-product').innerHTML = posProdHtml; applyRoles(Auth.user ? Auth.user.role : 'employee');
-    });
-
-    onSnapshot(query(collection(db, "tests"), orderBy("timestamp", "desc")), (s) => {
-        let tbOnlineHtml = ""; window.allOnlineTests = []; s.forEach(d => { const data = d.data(); window.allOnlineTests.push({ id: d.id, ...data }); const dStr = data.timestamp?.toDate().toLocaleDateString('en-GB') || '--'; const stat = data.isProcessed ? '<span style="color:var(--success); font-weight:bold;">مكتمل</span>' : '<span style="color:var(--warning); font-weight:bold;">جديد</span>'; tbOnlineHtml += `<tr><td>${data.name||'--'}</td><td class="en-num">${data.phone||'--'}</td><td class="en-num">${dStr}</td><td>${stat}</td><td><button class="btn" style="background:var(--primary); color:white; border:none; border-radius:6px; padding:5px 10px;" onclick="openOnlineReport('${d.id}')">عرض التقرير</button></td></tr>`; });
-        if(document.getElementById('tb-online-rx')) document.getElementById('tb-online-rx').innerHTML = tbOnlineHtml;
-    });
-
-    onSnapshot(query(collection(db, "expenses"), orderBy("time", "desc")), (s) => { todayExpensesData = []; s.forEach(d => { todayExpensesData.push({ id: d.id, ...d.data() }); }); if(typeof window.renderDailyLedger === 'function') window.renderDailyLedger(); });
-
-    onSnapshot(query(collection(db, "invoices"), orderBy("time", "desc")), (s) => {
-        let tbInvoices = "", tbLab = ""; let posPatientHtml = "<option value=''>-- المراجع --</option>"; todayInvoicesData = []; window.allUnifiedRecords = []; let uniquePatients = {}; 
-        s.forEach(d => { 
-            const i = d.data(); i.id = d.id; todayInvoicesData.push(i);
-            if (!i.isUnified) { window.allUnifiedRecords.push(i); tbInvoices += `<tr><td class="en-num">${i.invId}</td><td style="font-weight:bold;">${i.pName}</td><td>${i.prodName}</td><td class="en-num" style="font-weight:bold; color:var(--primary);">${parseFloat(i.total).toFixed(2)}</td><td class="en-num" style="color:var(--danger); font-weight:bold;">${parseFloat(i.due).toFixed(2)}</td><td style="display:flex; gap:5px;"><button class="btn" style="background:#0f172a; color:white; border:none; border-radius:6px; padding:5px 10px;" onclick="printPosFromData('${i.invId}')"><i class="fas fa-print"></i></button> <button class="btn admin-only" style="background:var(--danger); color:white; border:none; border-radius:6px; padding:5px 10px;" onclick='deleteInvoice("${d.id}", ${JSON.stringify(i).replace(/'/g, "\\'")}, "${i.invId}")'><i class="fas fa-trash"></i></button></td></tr>`; }
-            if (i.labStatus !== 'تم التسليم') { tbLab += `<tr><td class="en-num">${i.invId}</td><td style="font-weight:bold;">${i.pName}</td><td>${i.prodName}</td><td><select onchange="updateLabStatus('${d.id}', this.value)" style="padding:5px; border-radius:5px;"><option value="انتظار" ${i.labStatus==='انتظار'?'selected':''}>انتظار</option><option value="جاهز" ${i.labStatus==='جاهز'?'selected':''}>جاهز</option><option value="تم التسليم">تسليم</option></select></td></tr>`; }
-            if (i.isUnified && i.rx) { window.allUnifiedRecords.push(i); if (!uniquePatients[i.pName]) { uniquePatients[i.pName] = { lastVisit: i.time?.toDate(), totalSpent: 0 }; } uniquePatients[i.pName].totalSpent += Number(i.total); }
-        });
-        const patientNames = Object.keys(uniquePatients); if(document.getElementById('patients-list')) { document.getElementById('patients-list').innerHTML = patientNames.map(name => `<option value="${name}">`).join(''); }
-        let tbUnifiedHTML = ""; patientNames.forEach(pName => { tbUnifiedHTML += `<tr><td style="font-weight:bold; color:var(--primary); font-size:1.1rem;">${pName}</td><td class="en-num">${uniquePatients[pName].lastVisit?.toLocaleDateString('en-GB')||'--'}</td><td class="en-num" style="font-weight:bold;">${uniquePatients[pName].totalSpent.toFixed(2)}</td><td><button class="btn" style="background:var(--primary); color:white; border:none; border-radius:6px; padding:5px 10px;" onclick="showPatientHistory('${pName}')"><i class="fas fa-folder-open"></i> السجل</button></td></tr>`; posPatientHtml += `<option value="${pName}">${pName}</option>`; });
-        if(document.getElementById('tb-invc')) document.getElementById('tb-invc').innerHTML = tbInvoices; if(document.getElementById('tb-unified-rx')) document.getElementById('tb-unified-rx').innerHTML = tbUnifiedHTML; if(document.getElementById('pos-patient')) document.getElementById('pos-patient').innerHTML = posPatientHtml;
-        if(typeof window.renderDailyLedger === 'function') window.renderDailyLedger(); applyRoles(Auth.user ? Auth.user.role : 'employee');
-    });
-
-    onSnapshot(collection(db, "users"), (s) => {
-        allStaffData = []; s.forEach(d => allStaffData.push({id: d.id, ...d.data()}));
-        if (document.getElementById('tb-staff')) {
-            document.getElementById('tb-staff').innerHTML = allStaffData.map(d => {
-                const statusBtn = d.status === 'frozen' ? `<button class="btn" style="background:var(--success); color:white; border:none; border-radius:6px; padding:5px 10px;" onclick="toggleUserFreeze('${d.id}', 'frozen', '${d.name}')"><i class="fas fa-play"></i> فك تجميد</button>` : `<button class="btn" style="background:var(--warning); color:white; border:none; border-radius:6px; padding:5px 10px;" onclick="toggleUserFreeze('${d.id}', 'active', '${d.name}')"><i class="fas fa-pause"></i> تجميد</button>`;
-                const roleBadge = d.role === 'developer' ? '<span class="role-badge role-dev">مطور/مسؤول</span>' : d.role === 'manager' ? '<span class="role-badge role-mgr">مدير</span>' : '<span class="role-badge role-emp">موظف</span>';
-                return `<tr><td style="font-weight:bold;">${d.name}</td><td class="en-num">${d.user}</td><td>${roleBadge}</td><td>${d.status==='frozen'?'<span style="color:red; font-weight:bold;">مجمد</span>':'<span style="color:green; font-weight:bold;">نشط</span>'}</td><td style="display:flex; gap:5px;"><button class="btn" style="background:var(--primary); color:white; border:none; border-radius:6px; padding:5px 10px;" onclick="loadStaffForEdit('${d.id}')"><i class="fas fa-edit"></i></button>${statusBtn}<button class="btn" style="background:var(--danger); color:white; border:none; border-radius:6px; padding:5px 10px;" onclick='deleteUserAccount("${d.id}", "${d.name}", ${JSON.stringify(d).replace(/'/g, "\\'")})'><i class="fas fa-trash"></i></button></td></tr>`;
-            }).join('');
-        }
-    });
-
-    onSnapshot(query(collection(db, "audit_logs"), orderBy("time", "desc"), limit(50)), (s) => {
-        if(document.getElementById('tb-secret-audit')) document.getElementById('tb-secret-audit').innerHTML = s.docs.map(d => { const data = d.data(); const dStr = data.time?.toDate().toLocaleString('en-GB') || '--'; return `<tr><td><span style="font-weight:bold;">${data.user}</span></td><td>جهاز نظام</td><td style="color:var(--primary); font-weight:bold;">${data.action}</td><td class="en-num">${dStr}</td></tr>`; }).join('');
-    });
-
-    onSnapshot(query(collection(db, "recycle_bin"), orderBy("deletedAt", "desc")), (s) => {
-        if (document.getElementById('tb-recycle')) document.getElementById('tb-recycle').innerHTML = s.docs.map(d => { const p = d.data(); const dStr = p.deletedAt?.toDate().toLocaleString('en-GB') || '--'; return `<tr><td style="font-weight:bold; color:var(--danger);">${p.typeLabel}</td><td>${p.displayName}</td><td><span style="font-weight:bold; color:var(--text-muted);">${p.deletedBy}</span></td><td class="en-num">${dStr}</td><td><button class="btn" style="background:var(--success); color:white; border:none; border-radius:8px; padding:8px 15px; font-weight:bold; cursor:pointer;" onclick='universalRestore("${d.id}", "${p.originalCol}", "${p.originalId}", ${JSON.stringify(p.data).replace(/'/g, "\\'")}, "${p.displayName}", "${p.typeLabel}")'><i class="fas fa-undo"></i> استرجاع الملف</button></td></tr>`; }).join(''); 
-    });
+    .print-header h2 { margin: 0; font-size: 16pt; font-weight: 700; font-family: 'Inter', sans-serif; }
+    .print-header h4 { margin: 2px 0 0 0; font-size: 9pt; color: #555; }
+    
+    .print-info-box {
+        font-size: 9pt;
+        margin-bottom: 12px;
+        line-height: 1.4;
+    }
+    
+    .print-info-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+    
+    .print-section-title {
+        font-weight: 700;
+        text-align: center;
+        font-size: 9pt;
+        background: #f4f4f4 !important;
+        -webkit-print-color-adjust: exact;
+        padding: 4px;
+        border: 1px solid #ddd;
+        margin-bottom: 4px;
+    }
+    
+    .print-table { 
+        width: 100%; 
+        border-collapse: collapse; 
+        margin-bottom: 12px; 
+        font-size: 9pt; 
+    }
+    
+    .print-table th, .print-table td { 
+        border: 1px solid #ddd; 
+        padding: 4px 6px; 
+        text-align: center; 
+    }
+    
+    .print-table th { background: #fafafa !important; font-weight: 600; }
+    
+    .print-totals-box {
+        border: 1.5px solid #000;
+        border-radius: 4px;
+        padding: 8px;
+        font-size: 9pt;
+    }
+    
+    .print-total-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+    .print-total-row.final { font-weight: 700; font-size: 10pt; border-top: 1px solid #ccc; padding-top: 4px; margin-top: 4px; }
+    
+    .en-num-print { font-family: 'Inter', sans-serif !important; direction: ltr !important; display: inline-block; font-weight: 600;}
 }

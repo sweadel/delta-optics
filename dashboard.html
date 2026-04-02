@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>لوحة المراقبة | Delta Optics</title>
+    <link rel="stylesheet" href="./style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="main">
+        <header class="header" id="main-header"></header>
+        <div class="content" style="padding: 40px;">
+            <div class="kpi-grid">
+                <div class="kpi-card"><div class="kpi-title">المبيعات الإجمالية</div><div id="kpi-sales" class="kpi-val en-num" style="color: var(--text-main);">0.00</div></div>
+                <div class="kpi-card"><div class="kpi-title">مقبوضات الصندوق</div><div id="kpi-profits" class="kpi-val en-num" style="color: var(--primary);">0.00</div></div>
+                <div class="kpi-card"><div class="kpi-title">المصروفات</div><div id="kpi-expenses" class="kpi-val en-num" style="color: var(--danger);">0.00</div></div>
+                <div class="kpi-card" style="background: #f0fdf4; border-color: #bbf7d0;"><div class="kpi-title" style="color: var(--success);">صافي الصندوق</div><div id="kpi-netbox" class="kpi-val en-num" style="color: var(--success);">0.00</div></div>
+                <div class="kpi-card"><div class="kpi-title">الديون (الذمم)</div><div id="kpi-dues" class="kpi-val en-num" style="color: #8b5cf6;">0.00</div></div>
+            </div>
+
+            <div class="grid-2">
+                <div class="clean-card">
+                    <div class="clean-card-header"><i class="fas fa-wallet text-danger"></i> تسجيل مصروف جديد</div>
+                    <div class="clean-card-body">
+                        <div class="input-group"><label class="input-label">المبلغ (JOD)</label><input type="number" id="exp-amount" class="clean-input en-num" placeholder="0.00"></div>
+                        <div class="input-group"><label class="input-label">التفاصيل</label><input type="text" id="exp-desc" class="clean-input" placeholder="مثال: فاتورة كهرباء..."></div>
+                        <button class="btn-massive" style="background: #ef4444; box-shadow: 0 10px 20px -10px #ef4444; margin-top: 10px;" onclick="saveExpense()">سحب وتسجيل المصروف</button>
+                    </div>
+                </div>
+                <div class="clean-card">
+                    <div class="clean-card-header"><i class="fas fa-list"></i> حركة الصندوق اليومية</div>
+                    <div style="max-height: 350px; overflow-y: auto; padding: 20px;">
+                        <table class="data-table"><thead><tr><th>الوقت</th><th>البيان</th><th>المبلغ</th></tr></thead><tbody id="tb-daily-ledger"></tbody></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="./dashboard.js"></script>
+</body>
+</html>

@@ -4,44 +4,54 @@
     <meta charset="UTF-8">
     <title>المعرض | Delta Optics</title>
     <link rel="stylesheet" href="./style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="main">
         <header class="header" id="main-header"></header>
-        
         <div class="content" style="padding: 40px;">
             <div class="clean-card">
-                <div class="clean-card-header"><i class="fas fa-images text-primary"></i> إضافة تشكيلة جديدة</div>
+                <div class="clean-card-header"><i class="fas fa-images"></i> إضافة موديل للمعرض</div>
                 <div class="clean-card-body">
-                    <div class="grid-2">
-                        <div class="input-group"><label class="input-label">اسم الموديل/الماركة</label><input type="text" id="ext-col-name" class="clean-input" placeholder="مثال: RayBan 2026"></div>
-                        <div class="input-group"><label class="input-label">النوع</label><select id="ext-col-type" class="clean-input"><option value="medical">طبي</option><option value="sun">شمسي</option></select></div>
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label">رفع الصورة</label>
-                        <input type="file" accept="image/*" class="clean-input" onchange="handleImageUpload(event)" style="padding:12px;">
-                        <input type="hidden" id="ext-col-base64">
-                        <img id="img-preview" src="" style="display:none; margin-top:15px; width:150px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
-                    </div>
-                    <button class="btn-massive" style="margin-top:20px;" onclick="saveExtCollection()"><i class="fas fa-cloud-upload-alt"></i> نشر المعرض للموقع الخارجي</button>
+                    <div class="input-group"><input type="text" id="g-name" class="clean-input" placeholder="اسم الموديل"></div>
+                    <div class="input-group"><input type="file" class="clean-input" onchange="handleImg(event)"></div>
+                    <input type="hidden" id="g-b64">
+                    <img id="img-prv" style="display:none; width:100px; border-radius:12px; margin-bottom:15px;">
+                    <button class="btn-massive" onclick="saveGallery()">نشر الموديل</button>
                 </div>
             </div>
-
-            <div class="clean-card">
-                <div class="clean-card-header">الموديلات المرفوعة (تظهر للزبائن)</div>
-                <div style="padding:20px; overflow-x:auto;">
-                    <table class="data-table">
-                        <thead><tr><th>الصورة</th><th>الاسم</th><th>النوع</th><th>خيارات</th></tr></thead>
-                        <tbody id="tb-ext-collections"></tbody>
-                    </table>
-                </div>
-            </div>
+            <div class="clean-card"><div class="clean-card-header">المعرض الحالي</div><table class="data-table"><thead><tr><th>الصورة</th><th>الاسم</th><th>إجراء</th></tr></thead><tbody id="tb-gallery"></tbody></table></div>
         </div>
     </div>
+    <script type="module">
+        import { db } from './firebase-config.js';
+        import { collection, addDoc, deleteDoc, doc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { loadLayout } from './layout.js';
 
-    <script type="module" src="./gallery.js"></script>
+        loadLayout('المعرض', 'gallery');
+
+        window.handleImg = (e) => {
+            const r = new FileReader();
+            r.onload = (ev) => { document.getElementById('g-b64').value = ev.target.result; document.getElementById('img-prv').src = ev.target.result; document.getElementById('img-prv').style.display='block'; };
+            r.readAsDataURL(e.target.files[0]);
+        };
+
+        window.saveGallery = async () => {
+            const name = document.getElementById('g-name').value; const img = document.getElementById('g-b64').value;
+            if(!name || !img) return Swal.fire('خطأ', 'أدخل الاسم والصورة', 'error');
+            await addDoc(collection(db, "brands"), { name, imageUrl: img, timestamp: serverTimestamp() });
+            Swal.fire('تم', '', 'success');
+        };
+
+        window.delGal = async (id) => { if(confirm("حذف؟")) await deleteDoc(doc(db, "brands", id)); };
+
+        onSnapshot(collection(db, "brands"), (s) => {
+            let html = "";
+            s.forEach(d => html += `<tr><td><img src="${d.data().imageUrl}" style="width:60px; border-radius:8px;"></td><td>${d.data().name}</td><td><button class="btn-massive" style="background:#ef4444; width:auto; padding:10px;" onclick="delGal('${d.id}')">حذف</button></td></tr>`);
+            document.getElementById('tb-gallery').innerHTML = html;
+        });
+    </script>
 </body>
 </html>

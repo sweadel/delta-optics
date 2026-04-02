@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>العيادة | Delta Optics</title>
+    <link rel="stylesheet" href="./style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="main">
+        <header class="header" id="main-header"></header>
+        <div class="content" style="padding: 40px;">
+            <div class="clean-card">
+                <div class="clean-card-header"><i class="fas fa-notes-medical"></i> الفحص الطبي</div>
+                <div class="clean-card-body">
+                    <div class="grid-2">
+                        <div class="input-group"><input type="text" id="u-name" class="clean-input" placeholder="اسم المراجع"></div>
+                        <div class="input-group"><input type="text" id="u-phone" class="clean-input en-num" placeholder="رقم الهاتف"></div>
+                    </div>
+                    <div style="background:#f8fafc; padding:20px; border-radius:16px;">
+                        <table style="width:100%; text-align:center;">
+                            <thead><tr><th>Eye</th><th>SPH</th><th>CYL</th><th>AXIS</th></tr></thead>
+                            <tbody>
+                                <tr><td style="font-weight:bold; color:var(--primary);">OD</td><td><input id="ods" class="clean-input en-num"></td><td><input id="odc" class="clean-input en-num"></td><td><input id="oda" class="clean-input en-num"></td></tr>
+                                <tr><td style="font-weight:bold; color:var(--success);">OS</td><td><input id="oss" class="clean-input en-num"></td><td><input id="osc" class="clean-input en-num"></td><td><input id="osa" class="clean-input en-num"></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="btn-massive" style="margin-top:20px;" onclick="saveRx()">حفظ الملف</button>
+                </div>
+            </div>
+            <div class="clean-card"><div class="clean-card-header">أرشيف المراجعين</div><table class="data-table"><thead><tr><th>الاسم</th><th>التاريخ</th></tr></thead><tbody id="tb-rx"></tbody></table></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { db } from './firebase-config.js';
+        import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { loadLayout } from './layout.js';
+
+        loadLayout('العيادة الشاملة', 'clinic');
+
+        window.saveRx = async () => {
+            const pName = document.getElementById('u-name').value;
+            if(!pName) return Swal.fire('خطأ', 'أدخل الاسم', 'error');
+            await addDoc(collection(db, "invoices"), {
+                pName, phone: document.getElementById('u-phone').value,
+                rx: { od: {s:ods.value, c:odc.value, a:oda.value}, os: {s:oss.value, c:osc.value, a:osa.value} },
+                isUnified: true, time: serverTimestamp(), total:0, paid:0, due:0
+            });
+            Swal.fire('تم', 'حفظ الملف الطبي', 'success');
+        };
+
+        onSnapshot(query(collection(db, "invoices"), orderBy("time", "desc")), (s) => {
+            let html = "";
+            s.forEach(d => {
+                if(d.data().isUnified) html += `<tr><td style="font-weight:bold;">${d.data().pName}</td><td class="en-num">${d.data().time?.toDate().toLocaleDateString()}</td></tr>`;
+            });
+            document.getElementById('tb-rx').innerHTML = html;
+        });
+    </script>
+</body>
+</html>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>الكاشير | Delta Optics</title>
     <link rel="stylesheet" href="./style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -13,31 +13,64 @@
         <header class="header" id="main-header"></header>
         <div class="content" style="padding: 40px;">
             <div class="clean-card">
-                <div class="clean-card-header"><i class="fas fa-shopping-cart text-primary"></i> المبيعات السريعة</div>
+                <div class="clean-card-header"><i class="fas fa-shopping-cart"></i> الكاشير</div>
                 <div class="clean-card-body">
-                    <div class="grid-2" style="margin-bottom: 30px;">
-                        <div><label class="input-label">الزبون</label><input type="text" id="pos-patient" class="clean-input" placeholder="اسم الزبون..."></div>
-                        <div><label class="input-label">المنتج من المخزون</label><select id="pos-product" class="clean-input" onchange="updatePosPrice()"><option value="">-- جاري التحميل --</option></select></div>
+                    <div class="grid-2">
+                        <div class="input-group"><input type="text" id="pos-patient" class="clean-input" placeholder="اسم الزبون"></div>
+                        <div class="input-group"><select id="pos-product" class="clean-input" onchange="updatePrice()"><option value="">-- اختر المنتج --</option></select></div>
                     </div>
                     <div class="calc-wrapper">
-                        <div class="calc-item"><span style="color:#94a3b8;">السعر الأساسي</span><input type="text" id="pos-price" class="en-num" style="background:transparent; border:none; text-align:left; font-size:1.4rem; color:white; font-weight:900;" readonly value="0.00"></div>
-                        <div class="calc-item"><span style="color:#94a3b8;">الخصم</span><select id="pos-discount" class="clean-input en-num" style="width:120px; padding:10px;" onchange="calcPosTotal()"><option value="0">0%</option><option value="10">10%</option><option value="20">20%</option><option value="50">50%</option></select></div>
-                        <div class="calc-item" style="border-top:1px solid rgba(255,255,255,0.2); margin-top:15px; padding-top:20px;"><span style="color:#34d399; font-size:1.6rem;">الإجمالي المطلوب</span><input type="text" id="pos-total" class="en-num" style="background:transparent; border:none; text-align:left; color:#34d399; font-size:2rem; font-weight:900;" readonly value="0.00"></div>
-                        
-                        <div style="background:rgba(255,255,255,0.05); padding:20px; border-radius:var(--radius-md); margin-top:20px; border:1px solid rgba(255,255,255,0.1);">
-                            <div class="calc-item" style="border:none; padding:0 0 15px 0;"><span style="color:#fff;">طريقة الدفع</span><select id="pos-payment-method" class="clean-input" style="width:150px; padding:12px;"><option value="كاش">كاش</option><option value="فيزا">فيزا</option><option value="كليك">كليك</option></select></div>
-                            <div class="calc-item" style="border:none; padding:0;"><span style="color:#fff;">المبلغ المدفوع</span><input type="number" id="pos-paid" class="clean-input en-num" placeholder="0.00" oninput="calcPosTotal()" style="border:2px solid var(--primary); font-size:1.4rem; width:150px; padding:12px; background:#fff; color:#0f172a;"></div>
-                        </div>
-                        
-                        <div class="calc-item" style="border:none; margin-top:20px; background:rgba(239,68,68,0.15); padding:20px; border-radius:var(--radius-md);"><span style="color:#fca5a5;">المتبقي (الذمة)</span><div><span id="pos-due-display" class="en-num" style="font-size:2rem; color:#fca5a5; font-weight:900;">0.00</span> <span style="font-size:1rem; color:#fca5a5;">JOD</span></div><input type="hidden" id="pos-due" value="0"></div>
-                        <button class="btn-massive" style="margin-top: 30px;" onclick="createInvoice()"><i class="fas fa-receipt"></i> إصدار وطباعة الفاتورة</button>
+                        <div class="calc-item"><span>السعر</span><input type="text" id="pos-price" class="en-num" style="background:none; border:none; color:#fff;" readonly value="0"></div>
+                        <div class="calc-item"><span>الإجمالي</span><input type="text" id="pos-total" class="en-num" style="background:none; border:none; color:#34d399; font-size:2rem;" readonly value="0"></div>
+                        <div class="calc-item"><span>المدفوع</span><input type="number" id="pos-paid" class="clean-input en-num" placeholder="0" oninput="calcDue()" style="width:150px; background:#fff; color:#000;"></div>
+                        <div class="calc-item"><span>الباقي</span><div id="pos-due" class="en-num" style="color:#ef4444;">0.00</div></div>
+                        <button class="btn-massive" style="margin-top:20px;" onclick="savePos()">إصدار فاتورة</button>
                     </div>
                 </div>
             </div>
-            
-            <div class="clean-card"><div class="clean-card-header">سجل الكاشير الأخير</div><div style="padding:20px; overflow-x:auto;"><table class="data-table"><thead><tr><th>الفاتورة</th><th>الزبون</th><th>المنتج</th><th>الإجمالي</th><th>الباقي</th></tr></thead><tbody id="tb-invc"></tbody></table></div></div>
         </div>
     </div>
-    <script type="module" src="./pos.js"></script>
+
+    <script type="module">
+        import { db } from './firebase-config.js';
+        import { collection, onSnapshot, addDoc, updateDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { loadLayout } from './layout.js';
+
+        loadLayout('الكاشير السريع', 'pos');
+
+        onSnapshot(collection(db, "products"), (s) => {
+            let html = "<option value=''>-- اختر المنتج --</option>";
+            s.forEach(d => { if(d.data().qty > 0) html += `<option value="${d.id}" data-price="${d.data().price}" data-qty="${d.data().qty}">${d.data().name}</option>`; });
+            document.getElementById('pos-product').innerHTML = html;
+        });
+
+        window.updatePrice = () => {
+            const sel = document.getElementById('pos-product');
+            document.getElementById('pos-price').value = sel.options[sel.selectedIndex]?.dataset.price || 0;
+            window.calcDue();
+        };
+
+        window.calcDue = () => {
+            const total = parseFloat(document.getElementById('pos-price').value) || 0;
+            const paid = parseFloat(document.getElementById('pos-paid').value) || 0;
+            document.getElementById('pos-total').value = total;
+            document.getElementById('pos-due').innerText = (total - paid > 0 ? total - paid : 0).toFixed(2);
+        };
+
+        window.savePos = async () => {
+            const pName = document.getElementById('pos-patient').value;
+            const sel = document.getElementById('pos-product');
+            if(!pName || !sel.value) return Swal.fire('خطأ', 'أكمل البيانات', 'error');
+            
+            const qty = Number(sel.options[sel.selectedIndex].dataset.qty);
+            await updateDoc(doc(db, "products", sel.value), { qty: qty - 1 });
+            await addDoc(collection(db, "invoices"), {
+                pName, prodName: sel.options[sel.selectedIndex].text,
+                total: document.getElementById('pos-total').value, paid: document.getElementById('pos-paid').value,
+                due: document.getElementById('pos-due').innerText, isUnified: false, time: serverTimestamp()
+            });
+            Swal.fire('تم', '', 'success');
+        };
+    </script>
 </body>
 </html>

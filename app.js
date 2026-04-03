@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, setDoc, deleteDoc, updateDoc, limit } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { Auth } from './auth.js';
 
 const firebaseConfig = {
@@ -12,6 +13,7 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
+const auth = getAuth(app);
 
 // ─── Global state ────────────────────────────────────────────
 window.allRecords  = [];
@@ -21,27 +23,48 @@ let expData        = [];
 let allStaff       = [];
 
 // ─── Sweet-Alert helper ──────────────────────────────────────
-const swal = (opts) => Swal.fire({ background:'#0f0f12', color:'#eef0f8', confirmButtonColor:'#4f8ef7', ...opts });
+const swal = (opts) => Swal.fire({ background:'var(--bg2)', color:'var(--t1)', confirmButtonColor:'var(--blue)', ...opts });
 
-// ─── Date chip ───────────────────────────────────────────────
+// ─── Date & Theme ───────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const el = document.getElementById('date-chip');
   if (el) el.innerText = new Date().toLocaleDateString('ar-EG', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  
+  // Theme init
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  const themeBtn = document.getElementById('theme-toggle');
+  if(themeBtn) themeBtn.innerHTML = savedTheme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
 });
+
+window.toggleTheme = () => {
+  const root = document.documentElement;
+  const isLight = root.getAttribute('data-theme') === 'light';
+  const newTheme = isLight ? 'dark' : 'light';
+  root.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+  document.getElementById('theme-toggle').innerHTML = newTheme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+};
 
 // ═══════════════════════════════════════════════════════
 //  PAGE NAVIGATION  — fully isolated, no overlap
 // ═══════════════════════════════════════════════════════
 window.goPage = (id) => {
-  // hide all pages
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('page-active'));
-  // show target
+  // Hide all pages strictly
+  document.querySelectorAll('.page').forEach(p => {
+      p.classList.remove('page-active');
+      p.style.display = 'none';
+  });
+  // Show target
   const target = document.getElementById('page-' + id);
-  if (target) target.classList.add('page-active');
-  // update nav items
+  if (target) {
+      target.classList.add('page-active');
+      target.style.display = 'block';
+  }
+  // Update nav items
   document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
   document.querySelectorAll(`.ni[data-page="${id}"]`).forEach(n => n.classList.add('active'));
-  // close sidebar
+  // Close sidebar
   toggleSidebar(false);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
@@ -73,7 +96,7 @@ window.togglePassVis = (inputId, iconId) => {
   const inp  = document.getElementById(inputId);
   const icon = document.getElementById(iconId);
   if (inp.type === 'password') { inp.type = 'text';     icon.className = 'fas fa-eye-slash'; }
-  else                          { inp.type = 'password'; icon.className = 'fas fa-eye'; }
+  else                         { inp.type = 'password'; icon.className = 'fas fa-eye'; }
 };
 
 // ═══════════════════════════════════════════════════════
@@ -92,7 +115,7 @@ async function logAudit(action) {
 }
 
 // ═══════════════════════════════════════════════════════
-//  AUTH
+//  AUTH (Email/Pass & Google & Reset)
 // ═══════════════════════════════════════════════════════
 window.handleLogin = async () => {
   const u = document.getElementById('auth-u').value.trim();
@@ -100,20 +123,56 @@ window.handleLogin = async () => {
   if (!u || !p) return swal({ icon:'warning', title:'تنبيه', text:'أدخل البريد وكلمة المرور' });
   const res = await Auth.login(u, p);
   if (res.success) {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('shell').style.display = 'block';
-    mountUser(Auth.user);
-    logAudit('تسجيل دخول');
-    startSync();
-    goPage('dash');
+    proceedLogin(Auth.user);
   } else {
     swal({ icon:'error', title:'مرفوض', text: res.msg });
   }
 };
 
+window.loginWithGoogle = async () => {
+  const provider = new GoogleAuthProvider();
+  try {
+      const result = await signInWithPopup(auth, provider);
+      const userEmail = result.user.email;
+      const dbUser = allStaff.find(s => s.user === userEmail);
+      
+      if(dbUser) {
+           if (dbUser.status === 'frozen') return swal({icon:'error', title:'مرفوض', text:'الحساب مجمد'});
+           // Override Auth user manually for UI purposes if Auth class isn't tracking it
+           Auth.user = dbUser; 
+           proceedLogin(dbUser);
+      } else {
+           swal({icon:'error', title:'غير مصرح', text:'بريدك غير مسجل في النظام كمسؤول أو موظف.'});
+      }
+  } catch (error) {
+      swal({icon:'error', title:'خطأ', text: error.message});
+  }
+};
+
+window.forgotPassword = async () => {
+    const email = document.getElementById('auth-u').value.trim();
+    if(!email) return swal({icon:'warning', title:'تنبيه', text:'يرجى إدخال البريد الإلكتروني أولاً في الحقل المخصص لإرسال رابط الاستعادة'});
+    try {
+        await sendPasswordResetEmail(auth, email);
+        swal({icon:'success', title:'تم', text:'تم إرسال رابط استعادة كلمة المرور إلى بريدك'});
+    } catch (error) {
+        swal({icon:'error', title:'خطأ', text: 'تأكد من صحة البريد الإلكتروني'});
+    }
+};
+
+function proceedLogin(user) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('shell').style.display = 'block';
+    mountUser(user);
+    logAudit('تسجيل دخول');
+    startSync();
+    goPage('dash');
+}
+
 window.handleLogout = () => {
   logAudit('تسجيل خروج');
   Auth.logout();
+  location.reload(); // Refresh to ensure proper reset
 };
 
 function mountUser(user) {
@@ -150,7 +209,7 @@ window.softDelete = async (col, id, data, label, type) => {
     title: `حذف "${label}"؟`, text:'سيُنقل لسلة المحذوفات.',
     icon:'warning', showCancelButton:true,
     confirmButtonText:'حذف', cancelButtonText:'إلغاء',
-    confirmButtonColor:'#ef4444', cancelButtonColor:'#1e1e26'
+    confirmButtonColor:'#ef4444', cancelButtonColor:'var(--bg4)'
   });
   if (!r.isConfirmed) return;
   try {
@@ -212,10 +271,10 @@ window.loadAccountForEdit = (id) => {
   document.getElementById('acc-id').value   = id;
   document.getElementById('acc-name').value = s.name;
   document.getElementById('acc-user').value = s.user;
-  document.getElementById('acc-pass').value = '';
+  document.getElementById('acc-pass').value = s.pass || ''; // تم حل المشكلة: إظهار كلمة المرور
   document.getElementById('acc-role').value = s.role || 'employee';
   document.getElementById('acc-form-title').innerText = `تعديل: ${s.name}`;
-  // load custom perms if exist, else role defaults
+  
   const perms = s.permissions || ROLE_DEFAULTS[s.role] || [];
   ALL_PERMS.forEach(p => {
     const chk  = document.getElementById('perm-' + p);
@@ -223,7 +282,6 @@ window.loadAccountForEdit = (id) => {
     if (chk) { chk.checked = perms.includes(p); }
     if (wrap) wrap.classList.toggle('checked', perms.includes(p));
   });
-  // scroll to form
   document.getElementById('page-accounts').scrollTo({ top: 0, behavior:'smooth' });
   window.scrollTo({ top: 0, behavior:'smooth' });
 };
@@ -351,7 +409,6 @@ window.saveRx = async () => {
     logAudit(`ملف عيادة: ${name} (${invId})`);
     swal({ icon:'success', title:'تم الحفظ', timer:1300, showConfirmButton:false });
     printRx({ invId, pName:name, phone, time:new Date(), doctor, rx, detailedSales:sales, subtotal:sub, discountPercent:disc, total:tot, paid, due, paymentMethod:pay });
-    // reset fields
     ['u-name','u-phone','od-s','od-c','od-a','od-add','os-s','os-c','os-a','os-add','u-pd','u-notes','u-fr-t','u-fr-p','u-ln-t','u-ln-p','u-cl-t','u-cl-p','u-ex-t','u-ex-p','rx-paid'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
     document.getElementById('rx-disc').value = '0';
     calcRx();
@@ -594,7 +651,7 @@ window.saveProduct = async () => {
 window.deleteProduct = (id, data) => softDelete('products', id, data, data.name, 'منتج');
 
 // ═══════════════════════════════════════════════════════
-//  GALLERY
+//  GALLERY (FIXED IMAGES)
 // ═══════════════════════════════════════════════════════
 window.saveGallery = async () => {
   const id   = document.getElementById('gal-id').value;
@@ -646,8 +703,15 @@ function startSync() {
 
   onSnapshot(query(collection(db,'brands'),orderBy('timestamp','desc')), s => {
     let html='';
-    s.forEach(d=>{ const p=d.data(); const tb=p.type==='sun'?'<span class="bdg bdg-a">شمسي</span>':'<span class="bdg bdg-b">طبي</span>';
-      html+=`<tr><td class="fw">${p.name}</td><td>${tb}</td>
+    s.forEach(d=>{ 
+      const p=d.data(); 
+      const tb=p.type==='sun'?'<span class="bdg bdg-a">شمسي</span>':'<span class="bdg bdg-b">طبي</span>';
+      // Fix image rendering logic here
+      const imgDisplay = p.imageUrl ? `<img src="${p.imageUrl}" style="width:40px;height:40px;object-fit:cover;border-radius:8px;">` : `<span class="dim">بدون صورة</span>`;
+      
+      html+=`<tr>
+        <td>${imgDisplay}</td>
+        <td class="fw">${p.name}</td><td>${tb}</td>
         <td style="display:flex;gap:5px;">
           <button class="btn btn-am btn-sm" onclick='loadGalEdit("${d.id}","${p.name}","${p.type}","${p.imageUrl||''}")'><i class="fas fa-edit"></i></button>
           <button class="btn btn-dn btn-sm" onclick='deleteGallery("${d.id}",${JSON.stringify(p).replace(/'/g,"\\'")})'><i class="fas fa-trash"></i></button>

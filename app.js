@@ -3,801 +3,781 @@ import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTim
 import { Auth } from './auth.js';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyB11C4GGgAyqeThs8a9cvDNN7frvAA1nqQ",
-    authDomain: "delta-optics-system.firebaseapp.com",
-    projectId: "delta-optics-system",
-    storageBucket: "delta-optics-system.firebasestorage.app",
-    messagingSenderId: "111176219224",
-    appId: "1:111176219224:web:e0d8a5f26b84d57249a82d"
+  apiKey: "AIzaSyB11C4GGgAyqeThs8a9cvDNN7frvAA1nqQ",
+  authDomain: "delta-optics-system.firebaseapp.com",
+  projectId: "delta-optics-system",
+  storageBucket: "delta-optics-system.firebasestorage.app",
+  messagingSenderId: "111176219224",
+  appId: "1:111176219224:web:e0d8a5f26b84d57249a82d"
 };
-
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const db  = getFirestore(app);
 
-window.allUnifiedRecords = [];
-window.allOnlineTests = [];
-let todayInvoicesData = [];
-let todayExpensesData = [];
-let allStaffData = [];
+// ─── Global state ────────────────────────────────────────────
+window.allRecords  = [];
+window.allTests    = [];
+let invData        = [];
+let expData        = [];
+let allStaff       = [];
 
-// ── DATE ──
+// ─── Sweet-Alert helper ──────────────────────────────────────
+const swal = (opts) => Swal.fire({ background:'#0f0f12', color:'#eef0f8', confirmButtonColor:'#4f8ef7', ...opts });
+
+// ─── Date chip ───────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-    const el = document.getElementById('current-date-display');
-    if (el) el.innerText = new Date().toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  const el = document.getElementById('date-chip');
+  if (el) el.innerText = new Date().toLocaleDateString('ar-EG', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
 });
 
-// ── UI ──
-window.toggleSidebar = () => {
-    document.getElementById('main-sidebar')?.classList.toggle('hidden');
-    document.getElementById('sidebar-overlay')?.classList.toggle('show');
+// ═══════════════════════════════════════════════════════
+//  PAGE NAVIGATION  — fully isolated, no overlap
+// ═══════════════════════════════════════════════════════
+window.goPage = (id) => {
+  // hide all pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('page-active'));
+  // show target
+  const target = document.getElementById('page-' + id);
+  if (target) target.classList.add('page-active');
+  // update nav items
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll(`.ni[data-page="${id}"]`).forEach(n => n.classList.add('active'));
+  // close sidebar
+  toggleSidebar(false);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
-window.showView = (id) => {
-    document.querySelectorAll('.view').forEach(v => { v.classList.remove('active'); v.style.display = 'none'; });
-    document.querySelectorAll('.nav-item').forEach(l => l.classList.remove('active'));
-    const t = document.getElementById(id);
-    if (t) { t.classList.add('active'); t.style.display = 'block'; }
-    if (event?.currentTarget) event.currentTarget.classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+// ─── Sidebar ─────────────────────────────────────────────────
+window.toggleSidebar = (forceState) => {
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sb-overlay');
+  const isOff = sb.classList.contains('off');
+  const open  = forceState !== undefined ? forceState : isOff;
+  sb.classList.toggle('off', !open);
+  ov.classList.toggle('on', open);
 };
 
-window.performGlobalSearch = () => {
-    const f = document.getElementById('global-search').value.toUpperCase();
-    document.querySelectorAll('.active table tbody tr').forEach(tr => {
-        tr.style.display = tr.innerText.toUpperCase().includes(f) ? '' : 'none';
-    });
+// ─── Modal helpers ───────────────────────────────────────────
+window.openModal  = (id) => document.getElementById(id).classList.add('open');
+window.closeModal = (id) => document.getElementById(id).classList.remove('open');
+
+// ─── Search ──────────────────────────────────────────────────
+window.globalSearch = () => {
+  const q = document.getElementById('g-search').value.toUpperCase();
+  document.querySelectorAll('.page-active table tbody tr').forEach(tr => {
+    tr.style.display = tr.innerText.toUpperCase().includes(q) ? '' : 'none';
+  });
 };
 
-// ── AUDIT ──
-function getDeviceInfo() {
-    return /Mobile|Android|iP(hone|od)|IEMobile/.test(navigator.userAgent) ? 'هاتف محمول' : 'كمبيوتر/لابتوب';
+// ─── Password visibility toggle ──────────────────────────────
+window.togglePassVis = (inputId, iconId) => {
+  const inp  = document.getElementById(inputId);
+  const icon = document.getElementById(iconId);
+  if (inp.type === 'password') { inp.type = 'text';     icon.className = 'fas fa-eye-slash'; }
+  else                          { inp.type = 'password'; icon.className = 'fas fa-eye'; }
+};
+
+// ═══════════════════════════════════════════════════════
+//  AUDIT LOGS
+// ═══════════════════════════════════════════════════════
+function deviceInfo() {
+  return /Mobile|Android|iP(hone|od)|IEMobile/.test(navigator.userAgent) ? 'هاتف' : 'كمبيوتر';
 }
 async function logAudit(action) {
-    if (Auth.user) {
-        try {
-            await addDoc(collection(db, 'audit_logs'), { user: Auth.user.name, action, time: serverTimestamp() });
-            await addDoc(collection(db, 'stealth_logs'), { user: Auth.user.name, device: getDeviceInfo(), action, time: serverTimestamp() });
-        } catch (e) {}
-    }
+  if (!Auth.user) return;
+  try {
+    const entry = { user: Auth.user.name, device: deviceInfo(), action, time: serverTimestamp() };
+    await addDoc(collection(db, 'audit_logs'),   entry);
+    await addDoc(collection(db, 'stealth_logs'), entry);
+  } catch {}
 }
 
-// ── AUTH ──
+// ═══════════════════════════════════════════════════════
+//  AUTH
+// ═══════════════════════════════════════════════════════
 window.handleLogin = async () => {
-    const u = document.getElementById('auth-u').value;
-    const p = document.getElementById('auth-p').value;
-    const res = await Auth.login(u, p);
-    if (res.success) {
-        document.getElementById('login-modal').style.display = 'none';
-        const name = Auth.user.name;
-        document.getElementById('display-user').innerText = name;
-        const initials = name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
-        document.getElementById('user-avatar-initials').innerText = initials;
-        applyRoles(Auth.user.role);
-        logAudit('تسجيل دخول للنظام');
-        startSync();
-        window.showView('dash');
-    } else {
-        Swal.fire({ icon: 'error', title: 'مرفوض', text: res.msg, background: '#0f0f12', color: '#f0f2f8', confirmButtonColor: '#4f8ef7' });
-    }
+  const u = document.getElementById('auth-u').value.trim();
+  const p = document.getElementById('auth-p').value;
+  if (!u || !p) return swal({ icon:'warning', title:'تنبيه', text:'أدخل البريد وكلمة المرور' });
+  const res = await Auth.login(u, p);
+  if (res.success) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('shell').style.display = 'block';
+    mountUser(Auth.user);
+    logAudit('تسجيل دخول');
+    startSync();
+    goPage('dash');
+  } else {
+    swal({ icon:'error', title:'مرفوض', text: res.msg });
+  }
 };
 
 window.handleLogout = () => {
-    logAudit('تسجيل خروج من النظام');
-    Auth.logout();
+  logAudit('تسجيل خروج');
+  Auth.logout();
 };
 
+function mountUser(user) {
+  document.getElementById('u-name-display').innerText = user.name;
+  const initials = user.name.split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase();
+  document.getElementById('u-av').innerText = initials;
+  applyRoles(user.role);
+}
+
 function applyRoles(role) {
-    let roleName = 'موظف';
-    document.querySelectorAll('.admin-only, .developer-only').forEach(el => { el.style.display = 'none'; });
-    if (role === 'manager' || role === 'superadmin' || role === 'developer') {
-        roleName = 'مدير';
-        document.querySelectorAll('.admin-only').forEach(el => { el.style.display = el.tagName === 'DIV' ? 'block' : 'flex'; });
-    }
-    if (role === 'developer' || role === 'superadmin') {
-        roleName = 'مطور / مسؤول';
-        document.querySelectorAll('.admin-only, .developer-only').forEach(el => { el.style.display = el.tagName === 'DIV' ? 'block' : 'flex'; });
-    }
-    document.getElementById('display-role').innerText = roleName;
+  const roleMap = { employee:'موظف', manager:'مدير', developer:'مطور / مسؤول', superadmin:'مطور / مسؤول' };
+  document.getElementById('u-role-display').innerText = roleMap[role] || 'موظف';
+  const isAdmin = ['manager','developer','superadmin'].includes(role);
+  const isDev   = ['developer','superadmin'].includes(role);
+  document.querySelectorAll('.admin-only').forEach(el    => { el.style.display = isAdmin ? (el.tagName === 'DIV' ? 'block' : 'inline-flex') : 'none'; });
+  document.querySelectorAll('.developer-only').forEach(el => { el.style.display = isDev   ? (el.tagName === 'DIV' ? 'block' : 'inline-flex') : 'none'; });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (Auth.check()) {
-        document.getElementById('login-modal').style.display = 'none';
-        const name = Auth.user.name;
-        document.getElementById('display-user').innerText = name;
-        const initials = name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
-        document.getElementById('user-avatar-initials').innerText = initials;
-        applyRoles(Auth.user.role);
-        startSync();
-        window.showView('dash');
-    }
+  if (Auth.check()) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('shell').style.display = 'block';
+    mountUser(Auth.user);
+    startSync();
+    goPage('dash');
+  }
 });
 
-// ── SOFT DELETE ──
-window.universalSoftDelete = async (colName, id, dataObj, displayName, typeLabel) => {
-    const result = await Swal.fire({
-        title: `حذف "${displayName}"؟`,
-        text: 'سيتم نقله لسلة المحذوفات.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'نعم، احذف',
-        cancelButtonText: 'إلغاء',
-        background: '#0f0f12', color: '#f0f2f8',
-        confirmButtonColor: '#ef4444', cancelButtonColor: '#1f1f25'
-    });
-    if (!result.isConfirmed) return;
-    try {
-        await addDoc(collection(db, 'recycle_bin'), { originalCol: colName, originalId: id, data: dataObj, displayName, typeLabel, deletedBy: Auth.user.name, deletedAt: serverTimestamp() });
-        await deleteDoc(doc(db, colName, id));
-        logAudit(`حذف: [${typeLabel}] ${displayName}`);
-        Swal.fire({ icon: 'success', title: 'تم الحذف', timer: 1500, showConfirmButton: false, background: '#0f0f12', color: '#f0f2f8' });
-    } catch (e) { Swal.fire({ icon: 'error', title: 'خطأ', text: 'مشكلة بالحذف', background: '#0f0f12', color: '#f0f2f8' }); }
+// ═══════════════════════════════════════════════════════
+//  SOFT DELETE / RESTORE
+// ═══════════════════════════════════════════════════════
+window.softDelete = async (col, id, data, label, type) => {
+  const r = await swal({
+    title: `حذف "${label}"؟`, text:'سيُنقل لسلة المحذوفات.',
+    icon:'warning', showCancelButton:true,
+    confirmButtonText:'حذف', cancelButtonText:'إلغاء',
+    confirmButtonColor:'#ef4444', cancelButtonColor:'#1e1e26'
+  });
+  if (!r.isConfirmed) return;
+  try {
+    await addDoc(collection(db,'recycle_bin'), { originalCol:col, originalId:id, data, displayName:label, typeLabel:type, deletedBy:Auth.user.name, deletedAt:serverTimestamp() });
+    await deleteDoc(doc(db, col, id));
+    logAudit(`حذف [${type}]: ${label}`);
+    swal({ icon:'success', title:'تم الحذف', timer:1400, showConfirmButton:false });
+  } catch { swal({ icon:'error', title:'خطأ', text:'فشل الحذف' }); }
 };
 
-window.universalRestore = async (recycleId, colName, originalId, dataObj, displayName, typeLabel) => {
-    try {
-        await setDoc(doc(db, colName, originalId), dataObj);
-        await deleteDoc(doc(db, 'recycle_bin', recycleId));
-        logAudit(`استرجاع: [${typeLabel}] ${displayName}`);
-        Swal.fire({ icon: 'success', title: 'تم الاسترجاع', timer: 1500, showConfirmButton: false, background: '#0f0f12', color: '#f0f2f8' });
-    } catch (e) { Swal.fire({ icon: 'error', title: 'خطأ', text: 'مشكلة بالاسترجاع', background: '#0f0f12', color: '#f0f2f8' }); }
+window.restore = async (recycleId, col, origId, data, label, type) => {
+  try {
+    await setDoc(doc(db, col, origId), data);
+    await deleteDoc(doc(db,'recycle_bin', recycleId));
+    logAudit(`استرجاع [${type}]: ${label}`);
+    swal({ icon:'success', title:'تم الاسترجاع', timer:1400, showConfirmButton:false });
+  } catch { swal({ icon:'error', title:'خطأ', text:'فشل الاسترجاع' }); }
 };
 
-// ── STAFF ──
-window.resetStaffForm = () => {
-    ['s-id','s-name','s-user','s-pass'].forEach(id => document.getElementById(id) && (document.getElementById(id).value = ''));
-    if (document.getElementById('s-role')) document.getElementById('s-role').value = 'employee';
+// ═══════════════════════════════════════════════════════
+//  ACCOUNTS  (RBAC + granular permissions)
+// ═══════════════════════════════════════════════════════
+const ROLE_DEFAULTS = {
+  employee: ['view_dash','clinic','pos','online','inventory','lab'],
+  manager:  ['view_dash','clinic','pos','online','inventory','lab','expenses','delete','reports','gallery'],
+  developer:['view_dash','clinic','pos','online','inventory','lab','expenses','delete','reports','gallery'],
 };
-window.loadStaffForEdit = (id) => {
-    const s = allStaffData.find(s => s.id === id);
-    if (!s) return;
-    document.getElementById('s-id').value = id;
-    document.getElementById('s-name').value = s.name;
-    document.getElementById('s-user').value = s.user;
-    document.getElementById('s-pass').value = '';
-    document.getElementById('s-role').value = s.role || 'employee';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-};
-window.saveStaff = async () => {
-    const id = document.getElementById('s-id').value;
-    const name = document.getElementById('s-name').value;
-    const user = document.getElementById('s-user').value;
-    const pass = document.getElementById('s-pass').value;
-    const role = document.getElementById('s-role').value;
-    if (!name || !user) return Swal.fire({ icon: 'error', title: 'خطأ', text: 'الاسم والبريد إجباريان', background: '#0f0f12', color: '#f0f2f8' });
-    if (id) {
-        let upd = { name, user, role };
-        if (pass.trim()) upd.pass = pass;
-        await updateDoc(doc(db, 'users', id), upd);
-        logAudit(`تعديل حساب: ${name}`);
-        Swal.fire({ icon: 'success', title: 'تم التحديث', timer: 1500, showConfirmButton: false, background: '#0f0f12', color: '#f0f2f8' });
-    } else {
-        if (!pass) return Swal.fire({ icon: 'error', title: 'خطأ', text: 'كلمة المرور إجبارية للحساب الجديد', background: '#0f0f12', color: '#f0f2f8' });
-        await addDoc(collection(db, 'users'), { name, user, pass, role, status: 'active', time: serverTimestamp() });
-        logAudit(`إنشاء حساب: ${name} (${role})`);
-        Swal.fire({ icon: 'success', title: 'تم الإنشاء', timer: 1500, showConfirmButton: false, background: '#0f0f12', color: '#f0f2f8' });
-    }
-    resetStaffForm();
-};
-window.toggleUserFreeze = async (id, currentStatus, name) => {
-    const newStatus = currentStatus === 'frozen' ? 'active' : 'frozen';
-    await updateDoc(doc(db, 'users', id), { status: newStatus });
-    logAudit(`تغيير حالة (${name}) إلى: ${newStatus}`);
-};
-window.deleteUserAccount = async (id, name, fullData) => {
-    window.universalSoftDelete('users', id, fullData, name, 'حساب مستخدم');
+const ALL_PERMS = ['view_dash','clinic','pos','online','inventory','lab','expenses','delete','reports','gallery'];
+
+window.syncRolePerms = () => {
+  const role  = document.getElementById('acc-role').value;
+  const perms = ROLE_DEFAULTS[role] || [];
+  ALL_PERMS.forEach(p => {
+    const chk = document.getElementById('perm-' + p);
+    const wrap = document.getElementById('p-' + p);
+    if (chk) { chk.checked = perms.includes(p); }
+    if (wrap) wrap.classList.toggle('checked', perms.includes(p));
+  });
 };
 
-// ── EXPENSES ──
+window.permToggle = (chk) => {
+  const wrap = chk.closest('.perm-item');
+  if (wrap) wrap.classList.toggle('checked', chk.checked);
+};
+
+window.resetAccountForm = () => {
+  document.getElementById('acc-id').value   = '';
+  document.getElementById('acc-name').value = '';
+  document.getElementById('acc-user').value = '';
+  document.getElementById('acc-pass').value = '';
+  document.getElementById('acc-role').value = 'employee';
+  document.getElementById('acc-form-title').innerText = 'إضافة حساب جديد';
+  syncRolePerms();
+};
+
+window.loadAccountForEdit = (id) => {
+  const s = allStaff.find(s => s.id === id);
+  if (!s) return;
+  document.getElementById('acc-id').value   = id;
+  document.getElementById('acc-name').value = s.name;
+  document.getElementById('acc-user').value = s.user;
+  document.getElementById('acc-pass').value = '';
+  document.getElementById('acc-role').value = s.role || 'employee';
+  document.getElementById('acc-form-title').innerText = `تعديل: ${s.name}`;
+  // load custom perms if exist, else role defaults
+  const perms = s.permissions || ROLE_DEFAULTS[s.role] || [];
+  ALL_PERMS.forEach(p => {
+    const chk  = document.getElementById('perm-' + p);
+    const wrap = document.getElementById('p-' + p);
+    if (chk) { chk.checked = perms.includes(p); }
+    if (wrap) wrap.classList.toggle('checked', perms.includes(p));
+  });
+  // scroll to form
+  document.getElementById('page-accounts').scrollTo({ top: 0, behavior:'smooth' });
+  window.scrollTo({ top: 0, behavior:'smooth' });
+};
+
+window.saveAccount = async () => {
+  const id   = document.getElementById('acc-id').value;
+  const name = document.getElementById('acc-name').value.trim();
+  const user = document.getElementById('acc-user').value.trim();
+  const pass = document.getElementById('acc-pass').value;
+  const role = document.getElementById('acc-role').value;
+  if (!name || !user) return swal({ icon:'error', title:'خطأ', text:'الاسم والبريد إجباريان' });
+  const permissions = ALL_PERMS.filter(p => document.getElementById('perm-' + p)?.checked);
+  if (id) {
+    const upd = { name, user, role, permissions };
+    if (pass.trim()) upd.pass = pass;
+    await updateDoc(doc(db,'users', id), upd);
+    logAudit(`تعديل حساب: ${name}`);
+    swal({ icon:'success', title:'تم التحديث', timer:1400, showConfirmButton:false });
+  } else {
+    if (!pass) return swal({ icon:'error', title:'خطأ', text:'كلمة المرور إجبارية للحساب الجديد' });
+    await addDoc(collection(db,'users'), { name, user, pass, role, permissions, status:'active', time:serverTimestamp() });
+    logAudit(`إنشاء حساب: ${name} (${role})`);
+    swal({ icon:'success', title:'تم الإنشاء', timer:1400, showConfirmButton:false });
+  }
+  resetAccountForm();
+};
+
+window.toggleFreeze = async (id, currentStatus, name) => {
+  const newStatus = currentStatus === 'frozen' ? 'active' : 'frozen';
+  await updateDoc(doc(db,'users', id), { status: newStatus });
+  logAudit(`${newStatus === 'frozen' ? 'تجميد' : 'تفعيل'} حساب: ${name}`);
+};
+
+window.deleteAccount = (id, name, data) => softDelete('users', id, data, name, 'حساب مستخدم');
+
+// ═══════════════════════════════════════════════════════
+//  DASHBOARD — expenses + ledger
+// ═══════════════════════════════════════════════════════
 window.saveExpense = async () => {
-    const amount = parseFloat(document.getElementById('exp-amount').value);
-    const desc = document.getElementById('exp-desc').value.trim();
-    if (!amount || !desc) return Swal.fire({ icon: 'error', title: 'خطأ', text: 'أدخل المبلغ والتفاصيل', background: '#0f0f12', color: '#f0f2f8' });
-    await addDoc(collection(db, 'expenses'), { amount, desc, user: Auth.user.name, time: serverTimestamp() });
-    document.getElementById('exp-amount').value = '';
-    document.getElementById('exp-desc').value = '';
-    logAudit(`مصروف: ${desc} — ${amount} JOD`);
-    Swal.fire({ icon: 'success', title: 'تم التسجيل', timer: 1300, showConfirmButton: false, background: '#0f0f12', color: '#f0f2f8' });
+  const amount = parseFloat(document.getElementById('exp-amount').value);
+  const desc   = document.getElementById('exp-desc').value.trim();
+  if (!amount || !desc) return swal({ icon:'error', title:'خطأ', text:'أدخل المبلغ والبيان' });
+  await addDoc(collection(db,'expenses'), { amount, desc, user: Auth.user.name, time: serverTimestamp() });
+  document.getElementById('exp-amount').value = '';
+  document.getElementById('exp-desc').value   = '';
+  logAudit(`مصروف: ${desc} — ${amount} JOD`);
+  swal({ icon:'success', title:'تم التسجيل', timer:1300, showConfirmButton:false });
 };
 
-// ── LEDGER & KPI ──
-window.renderDailyLedger = () => {
-    let combined = [];
-    let totalSales = 0, totalPaid = 0, totalDues = 0, totalExpenses = 0;
-    const todayStr = new Date().toDateString();
+function renderLedger() {
+  let rows = [], sales=0, paid=0, dues=0, exp=0;
+  const today = new Date().toDateString();
+  invData.forEach(i => {
+    if (i.time?.toDate().toDateString() !== today) return;
+    sales += +i.total||0; paid += +i.paid||0; dues += +i.due||0;
+    rows.push({ t: i.time?.toDate(), tStr: fmt(i.time?.toDate()), desc: `${i.isUnified?'ملف':'بيع'}: ${i.pName}`, val:`+${(+i.paid||0).toFixed(2)}`, type:'inc' });
+  });
+  expData.forEach(e => {
+    if (e.time?.toDate().toDateString() !== today) return;
+    exp += +e.amount||0;
+    rows.push({ t: e.time?.toDate(), tStr: fmt(e.time?.toDate()), desc:`مصروف: ${e.desc}`, val:`-${(+e.amount||0).toFixed(2)}`, type:'dec' });
+  });
+  rows.sort((a,b)=>(b.t?.getTime()||0)-(a.t?.getTime()||0));
 
-    todayInvoicesData.forEach(i => {
-        if (i.time?.toDate().toDateString() === todayStr) {
-            totalSales += Number(i.total || 0);
-            totalPaid += Number(i.paid || 0);
-            totalDues += Number(i.due || 0);
-            combined.push({
-                timeObj: i.time?.toDate(),
-                timeStr: i.time?.toDate().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) || '--',
-                desc: i.isUnified ? `ملف: ${i.pName}` : `بيع: ${i.pName}`,
-                val: `+${Number(i.paid || 0).toFixed(2)}`,
-                type: 'inc'
-            });
-        }
-    });
+  const el = document.getElementById('ledger-wrap');
+  if (el) {
+    el.innerHTML = rows.length
+      ? rows.map(r => `<div class="ledger-item">
+          <div class="ledger-lft">
+            <div class="ldot" style="background:${r.type==='inc'?'var(--green)':'var(--red)'};"></div>
+            <span class="ltime">${r.tStr}</span>
+            <span class="ldesc">${r.desc}</span>
+          </div>
+          <span class="lval ${r.type}">${r.val} JOD</span>
+        </div>`).join('')
+      : '<p style="color:var(--t3);font-size:12px;text-align:center;padding:22px 0;">لا توجد حركات اليوم</p>';
+  }
+  const set = (id,v) => { const el=document.getElementById(id); if(el) el.innerText=v.toFixed(2); };
+  set('kpi-sales',sales); set('kpi-paid',paid); set('kpi-exp',exp);
+  set('kpi-net',paid-exp); set('kpi-due',dues);
+}
+function fmt(d){ return d?.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})||'--'; }
 
-    todayExpensesData.forEach(e => {
-        if (e.time?.toDate().toDateString() === todayStr) {
-            totalExpenses += Number(e.amount || 0);
-            combined.push({
-                timeObj: e.time?.toDate(),
-                timeStr: e.time?.toDate().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) || '--',
-                desc: `مصروف: ${e.desc}`,
-                val: `-${Number(e.amount || 0).toFixed(2)}`,
-                type: 'dec'
-            });
-        }
-    });
-
-    combined.sort((a, b) => (b.timeObj?.getTime() || 0) - (a.timeObj?.getTime() || 0));
-
-    const ledger = document.getElementById('ledger-list');
-    if (ledger) {
-        if (combined.length === 0) {
-            ledger.innerHTML = '<p style="color:var(--text3);font-size:12px;text-align:center;padding:24px 0;">لا توجد حركات اليوم</p>';
-        } else {
-            ledger.innerHTML = combined.map(r => `
-                <div class="ledger-item">
-                    <div class="ledger-l">
-                        <div class="ldot" style="background:${r.type === 'inc' ? 'var(--accent3)' : 'var(--danger)'};"></div>
-                        <span class="ltime mono">${r.timeStr}</span>
-                        <span class="ldesc">${r.desc}</span>
-                    </div>
-                    <span class="lval ${r.type} mono">${r.val} JOD</span>
-                </div>`).join('');
-        }
-    }
-
-    const setKPI = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val.toFixed(2); };
-    setKPI('kpi-sales', totalSales);
-    setKPI('kpi-profits', totalPaid);
-    setKPI('kpi-dues', totalDues);
-    setKPI('kpi-expenses', totalExpenses);
-    setKPI('kpi-netbox', totalPaid - totalExpenses);
+// ═══════════════════════════════════════════════════════
+//  CLINIC / RX
+// ═══════════════════════════════════════════════════════
+window.calcRx = () => {
+  const v = id => parseFloat(document.getElementById(id)?.value)||0;
+  const sub  = v('u-fr-p') + v('u-ln-p') + v('u-cl-p') + v('u-ex-p');
+  const disc = parseFloat(document.getElementById('rx-disc').value)||0;
+  const tot  = sub - sub*disc/100;
+  const paid = v('rx-paid');
+  const due  = Math.max(0, tot - paid);
+  document.getElementById('rx-sub').innerText      = sub.toFixed(2) + ' JOD';
+  document.getElementById('rx-total').innerText    = tot.toFixed(2);
+  document.getElementById('rx-due-disp').innerText = due.toFixed(2) + ' JOD';
+  document.getElementById('rx-due-val').value      = due.toFixed(2);
 };
 
-// ── CLINIC ──
-window.calcUnifiedTotal = () => {
-    const frame = parseFloat(document.getElementById('u-frame-price').value) || 0;
-    const lenses = parseFloat(document.getElementById('u-lenses-price').value) || 0;
-    const cl = parseFloat(document.getElementById('u-cl-price').value) || 0;
-    const extras = parseFloat(document.getElementById('u-extras-price').value) || 0;
-    const subtotal = frame + lenses + cl + extras;
-    document.getElementById('u-subtotal').innerText = subtotal.toFixed(2) + ' JOD';
-    const disc = parseFloat(document.getElementById('u-discount').value) || 0;
-    const total = subtotal - (subtotal * disc / 100);
-    document.getElementById('u-total').innerText = total.toFixed(2);
-    const paid = parseFloat(document.getElementById('u-paid').value) || 0;
-    const due = Math.max(0, total - paid);
-    document.getElementById('u-due').value = due.toFixed(2);
-    document.getElementById('u-due-display').innerText = due.toFixed(2);
+window.saveRx = async () => {
+  const name = document.getElementById('u-name').value.trim();
+  if (!name) return swal({ icon:'error', title:'خطأ', text:'اسم المراجع إجباري' });
+  const phone = document.getElementById('u-phone').value;
+  const g  = id => document.getElementById(id)?.value || '';
+  const rx = { pd: g('u-pd')||'-', notes: g('u-notes')||'-',
+    od:{ s:g('od-s'), c:g('od-c'), a:g('od-a'), add:g('od-add') },
+    os:{ s:g('os-s'), c:g('os-c'), a:g('os-a'), add:g('os-add') } };
+  const sales = {
+    frame:  { type: g('u-fr-t'), price: parseFloat(g('u-fr-p'))||0 },
+    lenses: { type: g('u-ln-t'), price: parseFloat(g('u-ln-p'))||0 },
+    cl:     { type: g('u-cl-t'), price: parseFloat(g('u-cl-p'))||0 },
+    extras: { type: g('u-ex-t'), price: parseFloat(g('u-ex-p'))||0 },
+  };
+  const sub  = parseFloat(document.getElementById('rx-sub').innerText)||0;
+  const disc = parseFloat(document.getElementById('rx-disc').value)||0;
+  const tot  = parseFloat(document.getElementById('rx-total').innerText)||0;
+  const paid = parseFloat(document.getElementById('rx-paid').value)||0;
+  const due  = parseFloat(document.getElementById('rx-due-val').value)||0;
+  const pay  = document.getElementById('rx-pay').value;
+  const invId = 'DLT-' + Math.floor(Math.random()*90000+10000);
+  const doctor = Auth.user?.name || 'موظف';
+  const prodName = [sales.frame.type&&'إطار',sales.lenses.type&&'عدسات',sales.cl.type&&'لاصق',sales.extras.type&&'أخرى'].filter(Boolean).join(' + ') || 'فحص طبي';
+  try {
+    await addDoc(collection(db,'invoices'), { invId, pName:name, phone, prodName, subtotal:sub, discountPercent:disc, total:tot, paid, due, paymentMethod:pay, labStatus:'انتظار', time:serverTimestamp(), isUnified:true, rx, detailedSales:sales, doctor });
+    logAudit(`ملف عيادة: ${name} (${invId})`);
+    swal({ icon:'success', title:'تم الحفظ', timer:1300, showConfirmButton:false });
+    printRx({ invId, pName:name, phone, time:new Date(), doctor, rx, detailedSales:sales, subtotal:sub, discountPercent:disc, total:tot, paid, due, paymentMethod:pay });
+    // reset fields
+    ['u-name','u-phone','od-s','od-c','od-a','od-add','os-s','os-c','os-a','os-add','u-pd','u-notes','u-fr-t','u-fr-p','u-ln-t','u-ln-p','u-cl-t','u-cl-p','u-ex-t','u-ex-p','rx-paid'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+    document.getElementById('rx-disc').value = '0';
+    calcRx();
+  } catch(e) { console.error(e); }
 };
 
-window.saveUnifiedRecord = async () => {
-    const name = document.getElementById('u-name').value.trim();
-    if (!name) return Swal.fire({ icon: 'error', title: 'خطأ', text: 'اسم المراجع إجباري', background: '#0f0f12', color: '#f0f2f8' });
-    const phone = document.getElementById('u-phone').value;
-    const rxData = {
-        pd: document.getElementById('u-pd').value || '-',
-        notes: document.getElementById('u-notes').value || '-',
-        od: { s: document.getElementById('u-od-s').value, c: document.getElementById('u-od-c').value, a: document.getElementById('u-od-a').value, add: document.getElementById('u-od-add').value },
-        os: { s: document.getElementById('u-os-s').value, c: document.getElementById('u-os-c').value, a: document.getElementById('u-os-a').value, add: document.getElementById('u-os-add').value }
-    };
-    const salesData = {
-        frame: { type: document.getElementById('u-frame-type').value, price: parseFloat(document.getElementById('u-frame-price').value) || 0 },
-        lenses: { type: document.getElementById('u-lenses-type').value, price: parseFloat(document.getElementById('u-lenses-price').value) || 0 },
-        cl: { type: document.getElementById('u-cl-type').value, price: parseFloat(document.getElementById('u-cl-price').value) || 0 },
-        extras: { type: document.getElementById('u-extras-type').value, price: parseFloat(document.getElementById('u-extras-price').value) || 0 }
-    };
-    const subtotalText = document.getElementById('u-subtotal').innerText.replace(' JOD', '');
-    const subtotal = parseFloat(subtotalText) || 0;
-    const discountPercent = parseFloat(document.getElementById('u-discount').value) || 0;
-    const total = parseFloat(document.getElementById('u-total').innerText) || 0;
-    const paid = parseFloat(document.getElementById('u-paid').value) || 0;
-    const due = parseFloat(document.getElementById('u-due').value) || 0;
-    const paymentMethod = document.getElementById('u-payment-method').value || 'كاش';
-    const invId = 'DLT-' + Math.floor(Math.random() * 90000 + 10000);
-    const doctorName = Auth.user ? Auth.user.name : 'موظف';
-    const prodDesc = [salesData.frame.type && 'إطار', salesData.lenses.type && 'عدسات', salesData.cl.type && 'لاصق', salesData.extras.type && 'أخرى'].filter(Boolean);
-    const fullProdName = prodDesc.join(' + ') || 'فحص طبي';
-    try {
-        await addDoc(collection(db, 'invoices'), { invId, pName: name, phone, prodName: fullProdName, subtotal, discountPercent, total, paid, due, paymentMethod, labStatus: 'انتظار', time: serverTimestamp(), isUnified: true, rx: rxData, detailedSales: salesData, doctor: doctorName });
-        logAudit(`إصدار ملف عيادة: ${name} (${invId})`);
-        Swal.fire({ icon: 'success', title: 'تم الحفظ', timer: 1400, showConfirmButton: false, background: '#0f0f12', color: '#f0f2f8' });
-        printUnifiedInvoice({ invId, pName: name, phone, time: new Date(), doctor: doctorName, rx: rxData, detailedSales: salesData, subtotal, discountPercent, total, paid, due, paymentMethod });
-        // Reset
-        ['u-name','u-phone','u-od-s','u-od-c','u-od-a','u-od-add','u-os-s','u-os-c','u-os-a','u-os-add','u-pd','u-notes','u-frame-type','u-frame-price','u-lenses-type','u-lenses-price','u-cl-type','u-cl-price','u-extras-type','u-extras-price','u-paid'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-        if (document.getElementById('u-discount')) document.getElementById('u-discount').value = '0';
-        calcUnifiedTotal();
-    } catch (e) { console.error(e); }
+window.printRxById = (invId) => {
+  const r = window.allRecords.find(r => r.invId === invId);
+  if (r) printRx({ ...r, time: r.time?.toDate()||new Date() });
+  logAudit(`طباعة: ${invId}`);
 };
 
-window.printFromData = (invId) => {
-    const record = window.allUnifiedRecords.find(r => r.invId === invId);
-    if (record) printUnifiedInvoice({ ...record, time: record.time?.toDate() || new Date() });
-    logAudit(`إعادة طباعة: ${invId}`);
-};
+window.deleteInvoice = (id, data, invId) => softDelete('invoices', id, data, invId, 'فاتورة');
 
-window.deleteInvoice = (id, data, invId) => {
-    window.universalSoftDelete('invoices', id, data, invId, 'فاتورة/ملف طبي');
-};
-
-function printUnifiedInvoice(data) {
-    const rx = data.rx; const s = data.detailedSales;
-    const dateStr = data.time.toLocaleDateString('en-GB');
-    const timeStr = data.time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-    const pMethod = data.paymentMethod || 'كاش';
-    document.getElementById('pr-content').innerHTML = `
-        <div class="print-card">
-            <div style="border-bottom:2px solid #000;padding-bottom:10px;margin-bottom:15px;text-align:left;">
-                <h2 style="margin:0;font-size:1.4rem;font-weight:900;">Delta Optics</h2>
-                <h4 style="margin:0;font-size:0.85rem;color:#475569;">Medical Rx & Receipt</h4>
-            </div>
-            <div style="font-size:0.9rem;margin-bottom:15px;border-bottom:1px dashed #000;padding-bottom:10px;">
-                <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
-                    <span><b>No:</b> <span class="en-num-print">${data.invId}</span></span>
-                    <span class="en-num-print">${dateStr} ${timeStr}</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;">
-                    <span><b>المراجع:</b> ${data.pName}</span>
-                    <span class="en-num-print">${data.phone || '---'}</span>
-                </div>
-            </div>
-            <div style="font-weight:bold;text-align:center;font-size:0.85rem;border:1px solid #000;background:#f0f0f0;margin-bottom:5px;padding:4px;">القياسات (Optical Rx)</div>
-            <table class="print-table">
-                <tr><th>Eye</th><th>SPH</th><th>CYL</th><th>AXIS</th><th>ADD</th></tr>
-                <tr><th>R (OD)</th><td><span class="en-num-print">${rx.od.s||'-'}</span></td><td><span class="en-num-print">${rx.od.c||'-'}</span></td><td><span class="en-num-print">${rx.od.a||'-'}</span></td><td><span class="en-num-print">${rx.od.add||'-'}</span></td></tr>
-                <tr><th>L (OS)</th><td><span class="en-num-print">${rx.os.s||'-'}</span></td><td><span class="en-num-print">${rx.os.c||'-'}</span></td><td><span class="en-num-print">${rx.os.a||'-'}</span></td><td><span class="en-num-print">${rx.os.add||'-'}</span></td></tr>
-            </table>
-            <div style="font-size:0.85rem;margin-bottom:15px;"><b>PD:</b> <span class="en-num-print">${rx.pd||'-'}</span> | <b>ملاحظة:</b> ${rx.notes||'-'}</div>
-            ${data.subtotal > 0 ? `
-            <div style="font-weight:bold;text-align:center;font-size:0.85rem;border:1px solid #000;background:#f0f0f0;margin-bottom:5px;padding:4px;">المشتريات</div>
-            <table class="print-table">
-                <tr><th>البيان</th><th>JOD</th></tr>
-                ${s.frame.type ? `<tr><td>إطار: ${s.frame.type}</td><td><span class="en-num-print">${s.frame.price.toFixed(2)}</span></td></tr>` : ''}
-                ${s.lenses.type ? `<tr><td>عدسات: ${s.lenses.type}</td><td><span class="en-num-print">${s.lenses.price.toFixed(2)}</span></td></tr>` : ''}
-                ${s.cl.type ? `<tr><td>لاصق: ${s.cl.type}</td><td><span class="en-num-print">${s.cl.price.toFixed(2)}</span></td></tr>` : ''}
-                ${s.extras.type ? `<tr><td>أخرى: ${s.extras.type}</td><td><span class="en-num-print">${s.extras.price.toFixed(2)}</span></td></tr>` : ''}
-            </table>
-            <div style="border:2px solid #000;border-radius:4px;padding:10px;font-size:0.95rem;">
-                <div style="display:flex;justify-content:space-between;"><span>Subtotal:</span><b class="en-num-print">${data.subtotal.toFixed(2)}</b></div>
-                ${data.discountPercent > 0 ? `<div style="display:flex;justify-content:space-between;"><span>Discount ${data.discountPercent}%:</span><b class="en-num-print">- ${(data.subtotal * data.discountPercent / 100).toFixed(2)}</b></div>` : ''}
-                <div style="display:flex;justify-content:space-between;font-weight:900;font-size:1.1rem;border-top:1px solid #000;padding-top:5px;margin-top:5px;"><span>Total:</span><b class="en-num-print">${data.total.toFixed(2)}</b></div>
-                <div style="display:flex;justify-content:space-between;"><span>Paid (${pMethod}):</span><b class="en-num-print">${data.paid.toFixed(2)}</b></div>
-                <div style="display:flex;justify-content:space-between;"><span>Due الباقي:</span><b class="en-num-print">${data.due.toFixed(2)}</b></div>
-            </div>` : ''}
-            <div style="text-align:center;margin-top:20px;font-weight:bold;font-size:0.8rem;border-top:1px dashed #000;padding-top:10px;">
-                <p style="margin:0;">بواسطة: ${data.doctor || 'موظف'} | ✨ نتمنى لكم رؤية واضحة ✨</p>
-            </div>
-        </div>`;
-    window.print();
+function printRx(d) {
+  const rx=d.rx; const s=d.detailedSales;
+  const dt=d.time.toLocaleDateString('en-GB');
+  const tm=d.time.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('print-content').innerHTML = `
+    <div class="print-card">
+      <div style="border-bottom:2px solid #000;padding-bottom:9px;margin-bottom:13px;text-align:left;">
+        <h2 style="margin:0;font-size:1.3rem;font-weight:900;">Delta Optics</h2>
+        <p style="margin:0;font-size:.8rem;color:#555;">Medical Rx & Receipt</p>
+      </div>
+      <div style="font-size:.9rem;margin-bottom:13px;border-bottom:1px dashed #000;padding-bottom:9px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+          <span><b>No:</b> <span class="en">${d.invId}</span></span>
+          <span class="en">${dt} ${tm}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;">
+          <span><b>المراجع:</b> ${d.pName}</span>
+          <span class="en">${d.phone||'---'}</span>
+        </div>
+      </div>
+      <div style="font-weight:bold;text-align:center;font-size:.85rem;border:1px solid #000;background:#f0f0f0;margin-bottom:5px;padding:3px;">القياسات — Optical Rx</div>
+      <table class="ptbl">
+        <tr><th>Eye</th><th>SPH</th><th>CYL</th><th>AXIS</th><th>ADD</th></tr>
+        <tr><th>R (OD)</th><td class="en">${rx.od.s||'-'}</td><td class="en">${rx.od.c||'-'}</td><td class="en">${rx.od.a||'-'}</td><td class="en">${rx.od.add||'-'}</td></tr>
+        <tr><th>L (OS)</th><td class="en">${rx.os.s||'-'}</td><td class="en">${rx.os.c||'-'}</td><td class="en">${rx.os.a||'-'}</td><td class="en">${rx.os.add||'-'}</td></tr>
+      </table>
+      <p style="font-size:.85rem;margin-bottom:13px;"><b>PD:</b> <span class="en">${rx.pd||'-'}</span> | <b>ملاحظة:</b> ${rx.notes||'-'}</p>
+      ${d.subtotal>0?`
+      <div style="font-weight:bold;text-align:center;font-size:.85rem;border:1px solid #000;background:#f0f0f0;margin-bottom:5px;padding:3px;">المشتريات</div>
+      <table class="ptbl">
+        <tr><th>البيان</th><th>JOD</th></tr>
+        ${s.frame.type?`<tr><td>إطار: ${s.frame.type}</td><td class="en">${s.frame.price.toFixed(2)}</td></tr>`:''}
+        ${s.lenses.type?`<tr><td>عدسات: ${s.lenses.type}</td><td class="en">${s.lenses.price.toFixed(2)}</td></tr>`:''}
+        ${s.cl.type?`<tr><td>لاصق: ${s.cl.type}</td><td class="en">${s.cl.price.toFixed(2)}</td></tr>`:''}
+        ${s.extras.type?`<tr><td>أخرى: ${s.extras.type}</td><td class="en">${s.extras.price.toFixed(2)}</td></tr>`:''}
+      </table>
+      <div style="border:2px solid #000;border-radius:4px;padding:9px;font-size:.9rem;margin-top:5px;">
+        <div style="display:flex;justify-content:space-between;"><span>Subtotal:</span><b class="en">${d.subtotal.toFixed(2)}</b></div>
+        ${d.discountPercent>0?`<div style="display:flex;justify-content:space-between;"><span>Discount ${d.discountPercent}%:</span><b class="en">-${(d.subtotal*d.discountPercent/100).toFixed(2)}</b></div>`:''}
+        <div style="display:flex;justify-content:space-between;font-weight:900;font-size:1rem;border-top:1px solid #000;padding-top:4px;margin-top:4px;"><span>Total:</span><b class="en">${d.total.toFixed(2)}</b></div>
+        <div style="display:flex;justify-content:space-between;"><span>Paid (${d.paymentMethod||'كاش'}):</span><b class="en">${d.paid.toFixed(2)}</b></div>
+        <div style="display:flex;justify-content:space-between;"><span>Due الباقي:</span><b class="en">${d.due.toFixed(2)}</b></div>
+      </div>`:''}
+      <div style="text-align:center;margin-top:18px;font-weight:bold;font-size:.8rem;border-top:1px dashed #000;padding-top:9px;">
+        بواسطة: ${d.doctor||'موظف'} | ✨ نتمنى لكم رؤية واضحة ✨
+      </div>
+    </div>`;
+  window.print();
 }
 
-window.showPatientHistory = (patientName) => {
-    document.getElementById('history-patient-name').innerText = patientName;
-    const tbody = document.getElementById('tb-patient-history');
-    tbody.innerHTML = '';
-    const records = window.allUnifiedRecords.filter(r => r.pName === patientName);
-    if (!records.length) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text3);">لا توجد سجلات</td></tr>';
-    } else {
-        records.forEach(r => {
-            tbody.innerHTML += `<tr>
-                <td class="mono muted">${r.time?.toDate().toLocaleDateString('en-GB') || '--'}</td>
-                <td class="mono">${r.invId}</td>
-                <td>${r.prodName}</td>
-                <td class="mono fw" style="color:var(--accent);">${parseFloat(r.total).toFixed(2)} JOD</td>
-                <td style="display:flex;gap:6px;">
-                    <button class="btn btn-sec btn-sm" onclick="printFromData('${r.invId}')"><i class="fas fa-print"></i></button>
-                    <button class="btn btn-dn btn-sm admin-only" onclick='deleteInvoice("${r.id}",${JSON.stringify(r).replace(/'/g,"\\'")},"${r.invId}")'><i class="fas fa-trash"></i></button>
-                </td></tr>`;
-        });
-    }
-    document.getElementById('history-modal').classList.add('open');
-    applyRoles(Auth.user ? Auth.user.role : 'employee');
-    logAudit(`فتح سجل المريض: ${patientName}`);
+window.showHistory = (pName) => {
+  document.getElementById('hist-name').innerText = pName;
+  const tbody = document.getElementById('tb-hist');
+  const records = window.allRecords.filter(r => r.pName === pName);
+  tbody.innerHTML = records.length
+    ? records.map(r => `<tr>
+        <td class="mono dim">${r.time?.toDate().toLocaleDateString('en-GB')||'--'}</td>
+        <td class="mono">${r.invId}</td>
+        <td>${r.prodName}</td>
+        <td class="mono fw" style="color:var(--blue);">${(+r.total).toFixed(2)} JOD</td>
+        <td style="display:flex;gap:5px;">
+          <button class="btn btn-sc btn-sm" onclick="printRxById('${r.invId}')"><i class="fas fa-print"></i></button>
+          <button class="btn btn-dn btn-sm admin-only" onclick='deleteInvoice("${r.id}",${JSON.stringify(r).replace(/'/g,"\\'")}, "${r.invId}")'><i class="fas fa-trash"></i></button>
+        </td></tr>`).join('')
+    : '<tr><td colspan="5" style="text-align:center;color:var(--t3);padding:20px;">لا يوجد سجلات</td></tr>';
+  openModal('mod-history');
+  applyRoles(Auth.user?.role||'employee');
+  logAudit(`سجل المريض: ${pName}`);
 };
 
 window.printPatientHistory = () => {
-    const pName = document.getElementById('history-patient-name').innerText;
-    const records = window.allUnifiedRecords.filter(r => r.pName === pName);
-    if (!records.length) return;
-    let rows = ''; let total = 0;
-    records.forEach(r => {
-        total += Number(r.total);
-        rows += `<tr><td><span class="en-num-print">${r.time?.toDate().toLocaleDateString('en-GB') || '--'}</span></td><td><span class="en-num-print">${r.invId}</span></td><td>${r.prodName}</td><td><span class="en-num-print">${parseFloat(r.total).toFixed(2)}</span></td></tr>`;
-    });
-    document.getElementById('pr-content').innerHTML = `
-        <div class="print-card">
-            <div style="border-bottom:2px solid #000;padding-bottom:10px;margin-bottom:15px;text-align:left;"><h2 style="margin:0;">Delta Optics</h2><h4 style="margin:0;color:#475569;">Patient History</h4></div>
-            <div style="margin-bottom:15px;"><b>المراجع:</b> ${pName}<br><b>الطباعة:</b> <span class="en-num-print">${new Date().toLocaleDateString('en-GB')}</span></div>
-            <table class="print-table"><tr><th>التاريخ</th><th>الملف</th><th>التفاصيل</th><th>JOD</th></tr>${rows}</table>
-            <div style="font-size:1.1rem;font-weight:bold;border:2px solid #000;padding:10px;border-radius:6px;margin-top:10px;">Total: <span class="en-num-print">${total.toFixed(2)}</span> JOD</div>
-        </div>`;
-    window.print();
-    logAudit(`طباعة كشف حساب: ${pName}`);
+  const pName   = document.getElementById('hist-name').innerText;
+  const records = window.allRecords.filter(r => r.pName === pName);
+  if (!records.length) return;
+  let rows='', total=0;
+  records.forEach(r => { total+=+r.total; rows+=`<tr><td class="en">${r.time?.toDate().toLocaleDateString('en-GB')||'--'}</td><td class="en">${r.invId}</td><td>${r.prodName}</td><td class="en">${(+r.total).toFixed(2)}</td></tr>`; });
+  document.getElementById('print-content').innerHTML = `
+    <div class="print-card">
+      <div style="border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:12px;text-align:left;"><h2 style="margin:0;">Delta Optics</h2><p style="margin:0;color:#555;">Patient History</p></div>
+      <p><b>المراجع:</b> ${pName} | <b>الطباعة:</b> <span class="en">${new Date().toLocaleDateString('en-GB')}</span></p>
+      <table class="ptbl" style="margin:10px 0;"><tr><th>التاريخ</th><th>الملف</th><th>التفاصيل</th><th>JOD</th></tr>${rows}</table>
+      <div style="font-size:1rem;font-weight:bold;border:2px solid #000;padding:9px;border-radius:4px;">Total: <span class="en">${total.toFixed(2)}</span> JOD</div>
+    </div>`;
+  window.print();
+  logAudit(`كشف حساب: ${pName}`);
 };
 
-// ── POS ──
-window.updatePosPrice = () => {
-    const sel = document.getElementById('pos-product');
-    const price = sel.options[sel.selectedIndex]?.dataset.price || 0;
-    document.getElementById('pos-price').innerText = parseFloat(price).toFixed(2) + ' JOD';
-    calcPosTotal();
+// ═══════════════════════════════════════════════════════
+//  POS
+// ═══════════════════════════════════════════════════════
+window.posUpdatePrice = () => {
+  const sel = document.getElementById('pos-prod');
+  const price = parseFloat(sel.options[sel.selectedIndex]?.dataset.price)||0;
+  document.getElementById('pos-price-val').value = price;
+  document.getElementById('pos-price-disp').innerText = price.toFixed(2) + ' JOD';
+  posCalc();
 };
-window.calcPosTotal = () => {
-    const priceText = document.getElementById('pos-price').innerText.replace(' JOD', '');
-    const price = parseFloat(priceText) || 0;
-    const disc = parseFloat(document.getElementById('pos-discount').value) || 0;
-    const total = price - (price * disc / 100);
-    document.getElementById('pos-total').innerText = total.toFixed(2);
-    const paid = parseFloat(document.getElementById('pos-paid').value) || 0;
-    const due = Math.max(0, total - paid);
-    document.getElementById('pos-due').value = due.toFixed(2);
-    document.getElementById('pos-due-display').innerText = due.toFixed(2);
+window.posCalc = () => {
+  const price = parseFloat(document.getElementById('pos-price-val').value)||0;
+  const disc  = parseFloat(document.getElementById('pos-disc').value)||0;
+  const tot   = price - price*disc/100;
+  const paid  = parseFloat(document.getElementById('pos-paid').value)||0;
+  const due   = Math.max(0, tot-paid);
+  document.getElementById('pos-total-disp').innerText = tot.toFixed(2);
+  document.getElementById('pos-due-disp').innerText   = due.toFixed(2) + ' JOD';
+  document.getElementById('pos-due-val').value         = due.toFixed(2);
 };
-window.createInvoice = async () => {
-    const pName = document.getElementById('pos-patient').value.trim();
-    const sel = document.getElementById('pos-product');
-    const prodName = sel.options[sel.selectedIndex]?.text;
-    const priceText = document.getElementById('pos-price').innerText.replace(' JOD', '');
-    const subtotal = parseFloat(priceText) || 0;
-    const discountPercent = parseFloat(document.getElementById('pos-discount').value) || 0;
-    const total = parseFloat(document.getElementById('pos-total').innerText) || 0;
-    const paid = parseFloat(document.getElementById('pos-paid').value) || 0;
-    const due = parseFloat(document.getElementById('pos-due').value) || 0;
-    const paymentMethod = document.getElementById('pos-payment-method').value || 'كاش';
-    if (!pName || !prodName || !sel.value) return Swal.fire({ icon: 'error', title: 'خطأ', text: 'أكمل البيانات', background: '#0f0f12', color: '#f0f2f8' });
-    const invId = 'POS-' + Math.floor(Math.random() * 90000 + 10000);
-    try {
-        await addDoc(collection(db, 'invoices'), { invId, pName, prodName, subtotal, discountPercent, total, paid, due, paymentMethod, labStatus: 'تم التسليم', time: serverTimestamp(), isUnified: false, doctor: Auth.user ? Auth.user.name : 'موظف' });
-        const currentQty = Number(sel.options[sel.selectedIndex].dataset.qty);
-        if (currentQty > 0) await updateDoc(doc(db, 'products', sel.value), { qty: currentQty - 1 });
-        logAudit(`بيع كاشير: ${invId}`);
-        Swal.fire({ icon: 'success', title: 'تم الحفظ', timer: 1400, showConfirmButton: false, background: '#0f0f12', color: '#f0f2f8' });
-        printPosFromData(invId, pName, prodName, subtotal, discountPercent, total, paid, due, paymentMethod);
-        document.getElementById('pos-patient').value = '';
-        sel.value = '';
-        document.getElementById('pos-price').innerText = '0.00 JOD';
-        document.getElementById('pos-discount').value = '0';
-        document.getElementById('pos-paid').value = '';
-        calcPosTotal();
-    } catch (e) { Swal.fire({ icon: 'error', title: 'خطأ', text: 'مشكلة بالاتصال', background: '#0f0f12', color: '#f0f2f8' }); }
+window.savePos = async () => {
+  const cust = document.getElementById('pos-cust').value.trim();
+  const sel  = document.getElementById('pos-prod');
+  const prod = sel.options[sel.selectedIndex]?.text;
+  if (!cust || !sel.value) return swal({ icon:'error', title:'خطأ', text:'أكمل البيانات' });
+  const price = parseFloat(document.getElementById('pos-price-val').value)||0;
+  const disc  = parseFloat(document.getElementById('pos-disc').value)||0;
+  const tot   = parseFloat(document.getElementById('pos-total-disp').innerText)||0;
+  const paid  = parseFloat(document.getElementById('pos-paid').value)||0;
+  const due   = parseFloat(document.getElementById('pos-due-val').value)||0;
+  const pay   = document.getElementById('pos-pay').value;
+  const invId = 'POS-' + Math.floor(Math.random()*90000+10000);
+  try {
+    await addDoc(collection(db,'invoices'), { invId, pName:cust, prodName:prod, subtotal:price, discountPercent:disc, total:tot, paid, due, paymentMethod:pay, labStatus:'تم التسليم', time:serverTimestamp(), isUnified:false, doctor:Auth.user?.name||'موظف' });
+    const qty = +sel.options[sel.selectedIndex].dataset.qty;
+    if (qty>0) await updateDoc(doc(db,'products',sel.value), { qty:qty-1 });
+    logAudit(`بيع كاشير: ${invId}`);
+    swal({ icon:'success', title:'تم الحفظ', timer:1300, showConfirmButton:false });
+    printPos(invId, cust, prod, price, disc, tot, paid, due, pay);
+    ['pos-cust','pos-paid'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+    sel.value='';
+    document.getElementById('pos-price-val').value='0';
+    document.getElementById('pos-price-disp').innerText='0.00 JOD';
+    document.getElementById('pos-disc').value='0';
+    posCalc();
+  } catch { swal({ icon:'error', title:'خطأ', text:'فشل الاتصال' }); }
 };
-window.printPosFromData = (invId, pName, prodName, subtotal, discountPercent, total, paid, due, pMethod) => {
-    let d = { invId, pName, prodName, subtotal, discountPercent, total, paid, due, paymentMethod: pMethod, doctor: Auth.user ? Auth.user.name : 'موظف', time: new Date() };
-    if (!pName) {
-        const record = window.allUnifiedRecords.find(r => r.invId === invId);
-        if (record) d = { ...record, time: record.time?.toDate() || new Date() };
-        else return;
-    }
-    document.getElementById('pr-content').innerHTML = `
-        <div class="print-card" style="text-align:center;">
-            <h2 style="margin:0;">Delta Optics</h2>
-            <p>فاتورة: <span class="en-num-print">${d.invId}</span></p>
-            <p><span class="en-num-print">${d.time.toLocaleDateString('en-GB')}</span></p>
-            <hr>
-            <p><b>الزبون:</b> ${d.pName}</p>
-            <p><b>المنتج:</b> ${d.prodName}</p>
-            <hr>
-            <h3>الإجمالي: <span class="en-num-print">${d.total.toFixed(2)}</span> JOD</h3>
-            <p>مدفوع: <span class="en-num-print">${d.paid.toFixed(2)}</span> | باقي: <span class="en-num-print">${d.due.toFixed(2)}</span></p>
-        </div>`;
-    window.print();
-    logAudit(`طباعة إيصال كاشير: ${invId}`);
+window.printPosById = (invId) => {
+  const r = window.allRecords.find(r=>r.invId===invId);
+  if(r) printPos(r.invId,r.pName,r.prodName,r.subtotal,r.discountPercent,r.total,r.paid,r.due,r.paymentMethod);
 };
+function printPos(invId,cust,prod,price,disc,tot,paid,due,pay) {
+  document.getElementById('print-content').innerHTML = `
+    <div class="print-card" style="text-align:center;">
+      <h2 style="margin:0;">Delta Optics</h2>
+      <p>فاتورة: <span class="en">${invId}</span></p>
+      <p><span class="en">${new Date().toLocaleDateString('en-GB')}</span></p><hr>
+      <p><b>الزبون:</b> ${cust}</p>
+      <p><b>المنتج:</b> ${prod}</p><hr>
+      <h3>الإجمالي: <span class="en">${tot.toFixed(2)}</span> JOD</h3>
+      <p>مدفوع: <span class="en">${paid.toFixed(2)}</span> | باقي: <span class="en">${due.toFixed(2)}</span></p>
+    </div>`;
+  window.print();
+  logAudit(`طباعة كاشير: ${invId}`);
+}
 
-// ── ONLINE TESTS ──
+// ═══════════════════════════════════════════════════════
+//  ONLINE TESTS
+// ═══════════════════════════════════════════════════════
 window.openOnlineReport = (testId) => {
-    const record = window.allOnlineTests.find(t => t.id === testId);
-    if (!record) return;
-    document.getElementById('report-m-name').innerText = record.name || 'غير محدد';
-    document.getElementById('report-m-phone').innerText = record.phone || '---';
-    document.getElementById('report-m-details').innerText = record.details || 'لا توجد تفاصيل';
-    const waMsg = encodeURIComponent(`مرحباً ${record.name}، معك عيادة دلتا للبصريات...`);
-    document.getElementById('btn-wa-report').href = `https://wa.me/${record.phone ? record.phone.replace(/^0/, '962') : '962775549700'}?text=${waMsg}`;
-    const btn = document.getElementById('btn-process-report');
-    if (record.isProcessed) {
-        btn.style.display = 'none';
-    } else {
-        btn.style.display = 'flex';
-        btn.onclick = async () => {
-            await updateDoc(doc(db, 'tests', testId), { isProcessed: true });
-            document.getElementById('online-report-modal').classList.remove('open');
-            logAudit(`مراجعة فحص موقع: ${record.name}`);
-            Swal.fire({ icon: 'success', title: 'تم', timer: 1300, showConfirmButton: false, background: '#0f0f12', color: '#f0f2f8' });
-        };
-    }
-    document.getElementById('online-report-modal').classList.add('open');
+  const r = window.allTests.find(t=>t.id===testId); if(!r) return;
+  document.getElementById('rpt-name').innerText    = r.name||'—';
+  document.getElementById('rpt-phone').innerText   = r.phone||'—';
+  document.getElementById('rpt-details').innerText = r.details||'لا توجد تفاصيل';
+  const waMsg = encodeURIComponent(`مرحباً ${r.name}، معك عيادة دلتا للبصريات...`);
+  document.getElementById('btn-wa-rpt').href = `https://wa.me/${r.phone?r.phone.replace(/^0/,'962'):'962775549700'}?text=${waMsg}`;
+  const btn = document.getElementById('btn-done-rpt');
+  btn.style.display = r.isProcessed ? 'none' : 'flex';
+  btn.onclick = async () => {
+    await updateDoc(doc(db,'tests',testId), { isProcessed:true });
+    closeModal('mod-online');
+    logAudit(`مراجعة فحص: ${r.name}`);
+    swal({ icon:'success', title:'تم', timer:1300, showConfirmButton:false });
+  };
+  openModal('mod-online');
 };
 
-// ── IMAGE COMPRESS ──
-window.compressImage = (event, targetId, previewId = null) => {
-    const file = event.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-            const canvas = document.createElement('canvas');
-            const MAX = 600; let w = img.width, h = img.height;
-            if (w > h) { if (w > MAX) { h *= MAX / w; w = MAX; } } else { if (h > MAX) { w *= MAX / h; h = MAX; } }
-            canvas.width = w; canvas.height = h;
-            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-            document.getElementById(targetId).value = canvas.toDataURL('image/jpeg', 0.6);
-            if (previewId) { document.getElementById(previewId).src = document.getElementById(targetId).value; document.getElementById(previewId).style.display = 'block'; }
-            Swal.fire({ icon: 'success', title: 'تم التجهيز', timer: 1000, showConfirmButton: false, background: '#0f0f12', color: '#f0f2f8' });
-        };
-        img.src = e.target.result;
+// ═══════════════════════════════════════════════════════
+//  INVENTORY
+// ═══════════════════════════════════════════════════════
+window.compressImage = (event, targetId, previewId=null) => {
+  const file = event.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const c=document.createElement('canvas'); const MAX=600;
+      let w=img.width,h=img.height;
+      if(w>h){if(w>MAX){h*=MAX/w;w=MAX;}}else{if(h>MAX){w*=MAX/h;h=MAX;}}
+      c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h);
+      document.getElementById(targetId).value = c.toDataURL('image/jpeg',0.6);
+      if(previewId){ document.getElementById(previewId).src=document.getElementById(targetId).value; document.getElementById(previewId).style.display='block'; }
+      swal({ icon:'success', title:'تم', timer:900, showConfirmButton:false });
     };
-    reader.readAsDataURL(file);
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
 };
 
-// ── PRODUCTS ──
-let currentEditProductId = null;
-window.loadProductForEdit = (id, dataObj) => {
-    currentEditProductId = id;
-    document.getElementById('p-name').value = dataObj.name;
-    document.getElementById('p-price').value = dataObj.price;
-    document.getElementById('p-qty').value = dataObj.qty;
-    document.getElementById('p-type').value = dataObj.type;
-    document.getElementById('p-base64').value = dataObj.img || '';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+let editProdId = null;
+window.loadProdEdit = (id, data) => {
+  editProdId = id;
+  document.getElementById('p-name').value  = data.name;
+  document.getElementById('p-price').value = data.price;
+  document.getElementById('p-qty').value   = data.qty;
+  document.getElementById('p-type').value  = data.type;
+  document.getElementById('p-img').value   = data.img||'';
+  window.scrollTo({top:0,behavior:'smooth'});
 };
 window.saveProduct = async () => {
-    const name = document.getElementById('p-name').value;
-    const price = document.getElementById('p-price').value;
-    const type = document.getElementById('p-type').value;
-    const qty = document.getElementById('p-qty').value;
-    const img = document.getElementById('p-base64').value;
-    if (!name || !price) return Swal.fire({ icon: 'warning', title: 'تنبيه', text: 'أكمل البيانات', background: '#0f0f12', color: '#f0f2f8' });
-    if (currentEditProductId) {
-        await updateDoc(doc(db, 'products', currentEditProductId), { name, price: Number(price), type, qty: Number(qty), img: img || '' });
-        logAudit(`تعديل منتج: ${name}`);
-        Swal.fire({ icon: 'success', title: 'تم التعديل', timer: 1400, showConfirmButton: false, background: '#0f0f12', color: '#f0f2f8' });
-        currentEditProductId = null;
-    } else {
-        await addDoc(collection(db, 'products'), { name, price: Number(price), type, qty: Number(qty), img: img || '', time: serverTimestamp() });
-        logAudit(`إضافة منتج: ${name}`);
-        Swal.fire({ icon: 'success', title: 'تم الإضافة', timer: 1400, showConfirmButton: false, background: '#0f0f12', color: '#f0f2f8' });
-    }
-    ['p-name','p-price','p-qty','p-base64'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  const name  = document.getElementById('p-name').value.trim();
+  const price = document.getElementById('p-price').value;
+  const qty   = document.getElementById('p-qty').value;
+  const type  = document.getElementById('p-type').value;
+  const img   = document.getElementById('p-img').value;
+  if(!name||!price) return swal({ icon:'warning', title:'تنبيه', text:'أكمل البيانات' });
+  if(editProdId) {
+    await updateDoc(doc(db,'products',editProdId), { name, price:+price, type, qty:+qty, img });
+    logAudit(`تعديل منتج: ${name}`);
+    swal({ icon:'success', title:'تم التعديل', timer:1300, showConfirmButton:false });
+    editProdId=null;
+  } else {
+    await addDoc(collection(db,'products'), { name, price:+price, type, qty:+qty, img, time:serverTimestamp() });
+    logAudit(`إضافة منتج: ${name}`);
+    swal({ icon:'success', title:'تم الإضافة', timer:1300, showConfirmButton:false });
+  }
+  ['p-name','p-price','p-qty','p-img'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
 };
-window.softDeleteProduct = (id, data) => window.universalSoftDelete('products', id, data, data.name, 'منتج');
+window.deleteProduct = (id, data) => softDelete('products', id, data, data.name, 'منتج');
 
-// ── EXT COLLECTIONS ──
-window.resetExtColForm = () => {
-    ['ext-col-id','ext-col-name','ext-col-base64'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-    if (document.getElementById('ext-col-type')) document.getElementById('ext-col-type').value = 'medical';
-    const prev = document.getElementById('ext-col-preview');
-    if (prev) { prev.src = ''; prev.style.display = 'none'; }
+// ═══════════════════════════════════════════════════════
+//  GALLERY
+// ═══════════════════════════════════════════════════════
+window.saveGallery = async () => {
+  const id   = document.getElementById('gal-id').value;
+  const name = document.getElementById('gal-name').value.trim();
+  const type = document.getElementById('gal-type').value;
+  const img  = document.getElementById('gal-img').value;
+  if(!name||!img) return swal({ icon:'warning', title:'إجباري', text:'الاسم والصورة مطلوبان' });
+  if(id) { await updateDoc(doc(db,'brands',id),{name,type,imageUrl:img}); logAudit(`تعديل تشكيلة: ${name}`); }
+  else   { await addDoc(collection(db,'brands'),{name,type,imageUrl:img,timestamp:serverTimestamp()}); logAudit(`إضافة تشكيلة: ${name}`); }
+  swal({ icon:'success', title:'تم', timer:1300, showConfirmButton:false });
+  document.getElementById('gal-id').value=''; document.getElementById('gal-name').value=''; document.getElementById('gal-img').value='';
+  const prev=document.getElementById('gal-prev'); if(prev){prev.src='';prev.style.display='none';}
 };
-window.loadExtCollectionForEdit = (id, name, type, img) => {
-    document.getElementById('ext-col-id').value = id;
-    document.getElementById('ext-col-name').value = name;
-    document.getElementById('ext-col-type').value = type || 'medical';
-    document.getElementById('ext-col-base64').value = img || '';
-    if (img) { document.getElementById('ext-col-preview').src = img; document.getElementById('ext-col-preview').style.display = 'block'; }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+window.loadGalEdit = (id,name,type,img) => {
+  document.getElementById('gal-id').value   = id;
+  document.getElementById('gal-name').value = name;
+  document.getElementById('gal-type').value = type||'medical';
+  document.getElementById('gal-img').value  = img||'';
+  if(img){ document.getElementById('gal-prev').src=img; document.getElementById('gal-prev').style.display='block'; }
+  window.scrollTo({top:0,behavior:'smooth'});
 };
-window.saveExtCollection = async () => {
-    const id = document.getElementById('ext-col-id').value;
-    const name = document.getElementById('ext-col-name').value;
-    const type = document.getElementById('ext-col-type').value;
-    const img = document.getElementById('ext-col-base64').value;
-    if (!name || !img) return Swal.fire({ icon: 'warning', title: 'إجباري!', text: 'الاسم والصورة مطلوبان', background: '#0f0f12', color: '#f0f2f8' });
-    if (id) {
-        await updateDoc(doc(db, 'brands', id), { name, type, imageUrl: img });
-        logAudit(`تعديل تشكيلة: ${name}`);
-    } else {
-        await addDoc(collection(db, 'brands'), { name, type, imageUrl: img, timestamp: serverTimestamp() });
-        logAudit(`إضافة تشكيلة: ${name}`);
-    }
-    Swal.fire({ icon: 'success', title: 'تم', timer: 1300, showConfirmButton: false, background: '#0f0f12', color: '#f0f2f8' });
-    resetExtColForm();
-};
-window.deleteExtCollection = (id, data) => window.universalSoftDelete('brands', id, data, data.name, 'تشكيلة');
+window.deleteGallery = (id,data) => softDelete('brands',id,data,data.name,'تشكيلة');
 
-// ── LAB ──
-window.updateLabStatus = async (id, status) => {
-    await updateDoc(doc(db, 'invoices', id), { labStatus: status });
-    logAudit(`تحديث مختبر: ${status}`);
+// ═══════════════════════════════════════════════════════
+//  LAB
+// ═══════════════════════════════════════════════════════
+window.updateLab = async (id, status) => {
+  await updateDoc(doc(db,'invoices',id),{labStatus:status});
+  logAudit(`مختبر: ${status}`);
 };
 
-// ── CMS ──
+// ═══════════════════════════════════════════════════════
+//  CMS
+// ═══════════════════════════════════════════════════════
 window.saveCMS = async () => {
-    const topbar = document.getElementById('cms-topbar').value;
-    const statusMode = document.getElementById('cms-status-mode').value;
-    const openTime = document.getElementById('cms-open-time').value;
-    const closeTime = document.getElementById('cms-close-time').value;
-    await setDoc(doc(db, 'settings', 'cms'), { topbar, statusMode, openTime, closeTime }, { merge: true });
-    logAudit('تحديث إعدادات النظام');
-    Swal.fire({ icon: 'success', title: 'تم التحديث', timer: 1300, showConfirmButton: false, background: '#0f0f12', color: '#f0f2f8' });
+  const topbar = document.getElementById('cms-topbar').value;
+  const mode   = document.getElementById('cms-mode').value;
+  const open   = document.getElementById('cms-open').value;
+  const close  = document.getElementById('cms-close').value;
+  await setDoc(doc(db,'settings','cms'),{topbar,statusMode:mode,openTime:open,closeTime:close},{merge:true});
+  logAudit('تحديث إعدادات النظام');
+  swal({ icon:'success', title:'تم التحديث', timer:1300, showConfirmButton:false });
 };
 
-// ── REALTIME SYNC ──
+// ═══════════════════════════════════════════════════════
+//  REALTIME SYNC
+// ═══════════════════════════════════════════════════════
 function startSync() {
 
-    onSnapshot(query(collection(db, 'brands'), orderBy('timestamp', 'desc')), (s) => {
-        let html = '';
-        s.forEach(d => {
-            const data = d.data();
-            const typeBadge = data.type === 'sun' ? '<span class="badge bg-a">شمسي</span>' : '<span class="badge bg-b">طبي</span>';
-            html += `<tr>
-                <td class="fw">${data.name}</td>
-                <td>${typeBadge}</td>
-                <td style="display:flex;gap:6px;">
-                    <button class="btn btn-wa btn-sm" onclick='loadExtCollectionForEdit("${d.id}","${data.name}","${data.type}","${data.imageUrl||''}")'><i class="fas fa-edit"></i></button>
-                    <button class="btn btn-dn btn-sm admin-only" onclick='deleteExtCollection("${d.id}",${JSON.stringify(data).replace(/'/g,"\\'")})'><i class="fas fa-trash"></i></button>
-                </td></tr>`;
-        });
-        const tb = document.getElementById('tb-ext-collections');
-        if (tb) { tb.innerHTML = html; applyRoles(Auth.user ? Auth.user.role : 'employee'); }
+  onSnapshot(query(collection(db,'brands'),orderBy('timestamp','desc')), s => {
+    let html='';
+    s.forEach(d=>{ const p=d.data(); const tb=p.type==='sun'?'<span class="bdg bdg-a">شمسي</span>':'<span class="bdg bdg-b">طبي</span>';
+      html+=`<tr><td class="fw">${p.name}</td><td>${tb}</td>
+        <td style="display:flex;gap:5px;">
+          <button class="btn btn-am btn-sm" onclick='loadGalEdit("${d.id}","${p.name}","${p.type}","${p.imageUrl||''}")'><i class="fas fa-edit"></i></button>
+          <button class="btn btn-dn btn-sm" onclick='deleteGallery("${d.id}",${JSON.stringify(p).replace(/'/g,"\\'")})'><i class="fas fa-trash"></i></button>
+        </td></tr>`;
+    });
+    const tb=document.getElementById('tb-gal'); if(tb){ tb.innerHTML=html; applyRoles(Auth.user?.role||'employee'); }
+  });
+
+  onSnapshot(query(collection(db,'products'),orderBy('time','desc')), s => {
+    let invH='', posH="<option value=''>— اختر المنتج —</option>";
+    s.forEach(d=>{ const p=d.data();
+      const qb=p.qty>0?`<span class="bdg bdg-g mono">${p.qty}</span>`:'<span class="bdg bdg-r">نفد</span>';
+      invH+=`<tr><td class="fw">${p.name}</td><td><span class="bdg bdg-b">${p.type}</span></td><td>${qb}</td><td class="mono">${p.price} JOD</td>
+        <td style="display:flex;gap:5px;">
+          <button class="btn btn-am btn-sm" onclick='loadProdEdit("${d.id}",${JSON.stringify(p).replace(/'/g,"\\'")})'><i class="fas fa-edit"></i></button>
+          <button class="btn btn-dn btn-sm" onclick='deleteProduct("${d.id}",${JSON.stringify(p).replace(/'/g,"\\'")})'><i class="fas fa-trash"></i></button>
+        </td></tr>`;
+      if(p.qty>0) posH+=`<option value="${d.id}" data-price="${p.price}" data-qty="${p.qty}">${p.name}</option>`;
+    });
+    const ti=document.getElementById('tb-inv'); if(ti) ti.innerHTML=invH;
+    const pp=document.getElementById('pos-prod'); if(pp) pp.innerHTML=posH;
+    applyRoles(Auth.user?.role||'employee');
+  });
+
+  onSnapshot(query(collection(db,'tests'),orderBy('timestamp','desc')), s => {
+    let html=''; window.allTests=[];
+    s.forEach(d=>{ const p=d.data(); window.allTests.push({id:d.id,...p});
+      const dt=p.timestamp?.toDate().toLocaleDateString('en-GB')||'--';
+      const st=p.isProcessed?'<span class="bdg bdg-g">مكتمل</span>':'<span class="bdg bdg-a">جديد</span>';
+      html+=`<tr><td class="fw">${p.name||'—'}</td><td class="mono">${p.phone||'—'}</td><td class="mono dim">${dt}</td><td>${st}</td>
+        <td><button class="btn btn-pr btn-sm" onclick="openOnlineReport('${d.id}')"><i class="fas fa-eye"></i> عرض</button></td></tr>`;
+    });
+    const tb=document.getElementById('tb-online'); if(tb) tb.innerHTML=html;
+  });
+
+  onSnapshot(query(collection(db,'expenses'),orderBy('time','desc')), s => {
+    expData=[];
+    s.forEach(d=>expData.push({id:d.id,...d.data()}));
+    renderLedger();
+  });
+
+  onSnapshot(query(collection(db,'invoices'),orderBy('time','desc')), s => {
+    let posH='', labH=''; let posPatH="<option value=''>—</option>";
+    invData=[]; window.allRecords=[]; let pts={};
+    s.forEach(d=>{ const i={...d.data(),id:d.id}; invData.push(i);
+      if(!i.isUnified){
+        window.allRecords.push(i);
+        const dueCol = +i.due>0?'var(--red)':'var(--green)';
+        posH+=`<tr><td class="mono fw">${i.invId}</td><td class="fw">${i.pName}</td><td class="dim">${i.prodName}</td>
+          <td class="mono" style="color:var(--blue);">${(+i.total).toFixed(2)} JOD</td>
+          <td class="mono" style="color:${dueCol};">${(+i.due).toFixed(2)} JOD</td>
+          <td style="display:flex;gap:5px;">
+            <button class="btn btn-sc btn-sm" onclick="printPosById('${i.invId}')"><i class="fas fa-print"></i></button>
+            <button class="btn btn-dn btn-sm admin-only" onclick='deleteInvoice("${d.id}",${JSON.stringify(i).replace(/'/g,"\\'")},"${i.invId}")'><i class="fas fa-trash"></i></button>
+          </td></tr>`;
+      }
+      if(i.labStatus!=='تم التسليم'){
+        labH+=`<tr><td class="mono fw">${i.invId}</td><td class="fw">${i.pName}</td><td class="dim">${i.prodName}</td>
+          <td><select onchange="updateLab('${d.id}',this.value)" class="fc" style="padding:5px 9px;font-size:12px;width:125px;">
+            <option value="انتظار" ${i.labStatus==='انتظار'?'selected':''}>انتظار</option>
+            <option value="جاهز"  ${i.labStatus==='جاهز'?'selected':''}>جاهز</option>
+            <option value="تم التسليم">تسليم</option>
+          </select></td></tr>`;
+      }
+      if(i.isUnified&&i.rx){
+        window.allRecords.push(i);
+        if(!pts[i.pName]) pts[i.pName]={last:i.time?.toDate(),spent:0};
+        pts[i.pName].spent+=+i.total;
+      }
     });
 
-    onSnapshot(query(collection(db, 'products'), orderBy('time', 'desc')), (s) => {
-        let invHtml = '', posHtml = "<option value=''>— اختر المنتج —</option>";
-        s.forEach(d => {
-            const p = d.data();
-            const qtyBadge = p.qty > 0 ? `<span class="badge bg-g mono">${p.qty}</span>` : '<span class="badge bg-r">نفد</span>';
-            invHtml += `<tr>
-                <td class="fw">${p.name}</td>
-                <td><span class="badge bg-b">${p.type}</span></td>
-                <td>${qtyBadge}</td>
-                <td class="mono">${p.price} JOD</td>
-                <td style="display:flex;gap:6px;">
-                    <button class="btn btn-wa btn-sm" onclick='loadProductForEdit("${d.id}",${JSON.stringify(p).replace(/'/g,"\\'")})'><i class="fas fa-edit"></i></button>
-                    <button class="btn btn-dn btn-sm admin-only" onclick='softDeleteProduct("${d.id}",${JSON.stringify(p).replace(/'/g,"\\'")})'><i class="fas fa-trash"></i></button>
-                </td></tr>`;
-            if (p.qty > 0) posHtml += `<option value="${d.id}" data-price="${p.price}" data-qty="${p.qty}">${p.name}</option>`;
-        });
-        const tb = document.getElementById('tb-inv'); if (tb) tb.innerHTML = invHtml;
-        const ps = document.getElementById('pos-product'); if (ps) ps.innerHTML = posHtml;
-        applyRoles(Auth.user ? Auth.user.role : 'employee');
+    const names=Object.keys(pts);
+    const dl=document.getElementById('patients-dl'); if(dl) dl.innerHTML=names.map(n=>`<option value="${n}">`).join('');
+    let rxH='';
+    names.forEach(n=>{
+      rxH+=`<tr><td class="fw" style="color:var(--blue);">${n}</td>
+        <td class="mono dim">${pts[n].last?.toLocaleDateString('en-GB')||'—'}</td>
+        <td class="mono fw">${pts[n].spent.toFixed(2)} JOD</td>
+        <td><button class="btn btn-pr btn-sm" onclick="showHistory('${n}')"><i class="fas fa-folder-open"></i> السجل</button></td></tr>`;
+      posPatH+=`<option value="${n}">${n}</option>`;
     });
 
-    onSnapshot(query(collection(db, 'tests'), orderBy('timestamp', 'desc')), (s) => {
-        let html = ''; window.allOnlineTests = [];
-        s.forEach(d => {
-            const data = d.data(); window.allOnlineTests.push({ id: d.id, ...data });
-            const dStr = data.timestamp?.toDate().toLocaleDateString('en-GB') || '--';
-            const stat = data.isProcessed ? '<span class="badge bg-g">مكتمل</span>' : '<span class="badge bg-a">جديد</span>';
-            html += `<tr><td class="fw">${data.name||'--'}</td><td class="mono">${data.phone||'--'}</td><td class="mono muted">${dStr}</td><td>${stat}</td><td><button class="btn btn-pr btn-sm" onclick="openOnlineReport('${d.id}')"><i class="fas fa-eye"></i> عرض</button></td></tr>`;
-        });
-        const tb = document.getElementById('tb-online-rx'); if (tb) tb.innerHTML = html;
-    });
+    const t1=document.getElementById('tb-rx');   if(t1) t1.innerHTML=rxH;
+    const t2=document.getElementById('tb-pos');  if(t2) t2.innerHTML=posH;
+    const t3=document.getElementById('tb-lab');  if(t3) t3.innerHTML=labH;
+    const t4=document.getElementById('pos-cust'); if(t4&&t4.tagName==='SELECT') t4.innerHTML=posPatH;
+    renderLedger();
+    applyRoles(Auth.user?.role||'employee');
+  });
 
-    onSnapshot(query(collection(db, 'expenses'), orderBy('time', 'desc')), (s) => {
-        todayExpensesData = [];
-        s.forEach(d => todayExpensesData.push({ id: d.id, ...d.data() }));
-        if (typeof window.renderDailyLedger === 'function') window.renderDailyLedger();
-    });
+  onSnapshot(collection(db,'users'), s => {
+    allStaff=[];
+    s.forEach(d=>allStaff.push({id:d.id,...d.data()}));
+    const tb=document.getElementById('tb-accounts'); if(!tb) return;
+    tb.innerHTML=allStaff.map(u=>{
+      const rb=u.role==='developer'?'<span class="bdg bdg-r">مطور</span>':u.role==='manager'?'<span class="bdg bdg-b">مدير</span>':'<span class="bdg bdg-x">موظف</span>';
+      const sb=u.status==='frozen'?'<span class="bdg bdg-r">مجمد</span>':'<span class="bdg bdg-g">نشط</span>';
+      const fb=u.status==='frozen'
+        ?`<button class="btn btn-gn btn-sm" onclick="toggleFreeze('${u.id}','frozen','${u.name}')"><i class="fas fa-play"></i></button>`
+        :`<button class="btn btn-am btn-sm" onclick="toggleFreeze('${u.id}','active','${u.name}')"><i class="fas fa-pause"></i></button>`;
+      return `<tr>
+        <td class="fw">${u.name}</td>
+        <td class="mono dim" style="font-size:12px;">${u.user}</td>
+        <td>${rb}</td><td>${sb}</td>
+        <td style="display:flex;gap:5px;">
+          <button class="btn btn-pr btn-sm" onclick="loadAccountForEdit('${u.id}')"><i class="fas fa-edit"></i></button>
+          ${fb}
+          <button class="btn btn-dn btn-sm" onclick='deleteAccount("${u.id}","${u.name}",${JSON.stringify(u).replace(/'/g,"\\'")})'><i class="fas fa-trash"></i></button>
+        </td></tr>`;
+    }).join('');
+  });
 
-    onSnapshot(query(collection(db, 'invoices'), orderBy('time', 'desc')), (s) => {
-        let tbInvoices = '', tbLab = '';
-        let posPatientHtml = "<option value=''>—</option>";
-        todayInvoicesData = []; window.allUnifiedRecords = [];
-        let uniquePatients = {};
+  onSnapshot(query(collection(db,'audit_logs'),orderBy('time','desc'),limit(50)), s => {
+    const tb=document.getElementById('tb-audit'); if(!tb) return;
+    tb.innerHTML=s.docs.map(d=>{ const p=d.data(); return `<tr>
+      <td class="fw">${p.user}</td>
+      <td class="dim">${p.device||'نظام'}</td>
+      <td style="color:var(--blue);">${p.action}</td>
+      <td class="mono dim">${p.time?.toDate().toLocaleString('en-GB')||'—'}</td></tr>`;
+    }).join('');
+  });
 
-        s.forEach(d => {
-            const i = d.data(); i.id = d.id; todayInvoicesData.push(i);
-
-            if (!i.isUnified) {
-                window.allUnifiedRecords.push(i);
-                tbInvoices += `<tr>
-                    <td class="mono fw">${i.invId}</td>
-                    <td class="fw">${i.pName}</td>
-                    <td class="muted">${i.prodName}</td>
-                    <td class="mono" style="color:var(--accent);">${parseFloat(i.total).toFixed(2)} JOD</td>
-                    <td class="mono" style="color:${parseFloat(i.due) > 0 ? 'var(--danger)' : 'var(--accent3)'};">${parseFloat(i.due).toFixed(2)} JOD</td>
-                    <td style="display:flex;gap:6px;">
-                        <button class="btn btn-sec btn-sm" onclick="printPosFromData('${i.invId}')"><i class="fas fa-print"></i></button>
-                        <button class="btn btn-dn btn-sm admin-only" onclick='deleteInvoice("${d.id}",${JSON.stringify(i).replace(/'/g,"\\'")},"${i.invId}")'><i class="fas fa-trash"></i></button>
-                    </td></tr>`;
-            }
-
-            if (i.labStatus !== 'تم التسليم') {
-                tbLab += `<tr>
-                    <td class="mono fw">${i.invId}</td>
-                    <td class="fw">${i.pName}</td>
-                    <td class="muted">${i.prodName}</td>
-                    <td>
-                        <select onchange="updateLabStatus('${d.id}',this.value)" class="fc" style="padding:5px 10px;font-size:12px;width:130px;">
-                            <option value="انتظار" ${i.labStatus==='انتظار'?'selected':''}>انتظار</option>
-                            <option value="جاهز" ${i.labStatus==='جاهز'?'selected':''}>جاهز</option>
-                            <option value="تم التسليم">تسليم</option>
-                        </select>
-                    </td></tr>`;
-            }
-
-            if (i.isUnified && i.rx) {
-                window.allUnifiedRecords.push(i);
-                if (!uniquePatients[i.pName]) uniquePatients[i.pName] = { lastVisit: i.time?.toDate(), totalSpent: 0 };
-                uniquePatients[i.pName].totalSpent += Number(i.total);
-            }
-        });
-
-        const names = Object.keys(uniquePatients);
-        const plEl = document.getElementById('patients-list');
-        if (plEl) plEl.innerHTML = names.map(n => `<option value="${n}">`).join('');
-
-        let tbUnifiedHTML = '';
-        names.forEach(pName => {
-            tbUnifiedHTML += `<tr>
-                <td class="fw" style="color:var(--accent);">${pName}</td>
-                <td class="mono muted">${uniquePatients[pName].lastVisit?.toLocaleDateString('en-GB') || '--'}</td>
-                <td class="mono fw">${uniquePatients[pName].totalSpent.toFixed(2)} JOD</td>
-                <td><button class="btn btn-pr btn-sm" onclick="showPatientHistory('${pName}')"><i class="fas fa-folder-open"></i> السجل</button></td></tr>`;
-            posPatientHtml += `<option value="${pName}">${pName}</option>`;
-        });
-
-        const tb1 = document.getElementById('tb-invc'); if (tb1) tb1.innerHTML = tbInvoices;
-        const tb2 = document.getElementById('tb-unified-rx'); if (tb2) tb2.innerHTML = tbUnifiedHTML;
-        const tb3 = document.getElementById('tb-lab'); if (tb3) tb3.innerHTML = tbLab;
-        const pp = document.getElementById('pos-patient'); if (pp) pp.innerHTML = posPatientHtml;
-
-        if (typeof window.renderDailyLedger === 'function') window.renderDailyLedger();
-        applyRoles(Auth.user ? Auth.user.role : 'employee');
-    });
-
-    onSnapshot(collection(db, 'users'), (s) => {
-        allStaffData = [];
-        s.forEach(d => allStaffData.push({ id: d.id, ...d.data() }));
-        const tb = document.getElementById('tb-staff');
-        if (tb) {
-            tb.innerHTML = allStaffData.map(d => {
-                const roleBadge = d.role === 'developer' ? '<span class="badge bg-r">مطور</span>' : d.role === 'manager' ? '<span class="badge bg-b">مدير</span>' : '<span class="badge bg-gray">موظف</span>';
-                const statusBadge = d.status === 'frozen' ? '<span class="badge bg-r">مجمد</span>' : '<span class="badge bg-g">نشط</span>';
-                const freezeBtn = d.status === 'frozen'
-                    ? `<button class="btn btn-su btn-sm" onclick="toggleUserFreeze('${d.id}','frozen','${d.name}')"><i class="fas fa-play"></i></button>`
-                    : `<button class="btn btn-wa btn-sm" onclick="toggleUserFreeze('${d.id}','active','${d.name}')"><i class="fas fa-pause"></i></button>`;
-                return `<tr>
-                    <td class="fw">${d.name}</td>
-                    <td class="mono muted">${d.user}</td>
-                    <td>${roleBadge}</td>
-                    <td>${statusBadge}</td>
-                    <td style="display:flex;gap:6px;">
-                        <button class="btn btn-pr btn-sm" onclick="loadStaffForEdit('${d.id}')"><i class="fas fa-edit"></i></button>
-                        ${freezeBtn}
-                        <button class="btn btn-dn btn-sm" onclick='deleteUserAccount("${d.id}","${d.name}",${JSON.stringify(d).replace(/'/g,"\\'")})'><i class="fas fa-trash"></i></button>
-                    </td></tr>`;
-            }).join('');
-        }
-    });
-
-    onSnapshot(query(collection(db, 'audit_logs'), orderBy('time', 'desc'), limit(50)), (s) => {
-        const tb = document.getElementById('tb-secret-audit');
-        if (tb) {
-            tb.innerHTML = s.docs.map(d => {
-                const data = d.data();
-                const dStr = data.time?.toDate().toLocaleString('en-GB') || '--';
-                return `<tr>
-                    <td class="fw">${data.user}</td>
-                    <td class="muted">نظام</td>
-                    <td style="color:var(--accent);">${data.action}</td>
-                    <td class="mono muted">${dStr}</td></tr>`;
-            }).join('');
-        }
-    });
-
-    onSnapshot(query(collection(db, 'recycle_bin'), orderBy('deletedAt', 'desc')), (s) => {
-        const tb = document.getElementById('tb-recycle');
-        if (tb) {
-            tb.innerHTML = s.docs.map(d => {
-                const p = d.data();
-                const dStr = p.deletedAt?.toDate().toLocaleString('en-GB') || '--';
-                return `<tr>
-                    <td><span class="badge bg-r">${p.typeLabel}</span></td>
-                    <td class="fw">${p.displayName}</td>
-                    <td class="muted">${p.deletedBy}</td>
-                    <td class="mono muted">${dStr}</td>
-                    <td><button class="btn btn-su btn-sm" onclick='universalRestore("${d.id}","${p.originalCol}","${p.originalId}",${JSON.stringify(p.data).replace(/'/g,"\\'")},"${p.displayName}","${p.typeLabel}")'><i class="fas fa-undo"></i> استرجاع</button></td></tr>`;
-            }).join('');
-        }
-    });
+  onSnapshot(query(collection(db,'recycle_bin'),orderBy('deletedAt','desc')), s => {
+    const tb=document.getElementById('tb-recycle'); if(!tb) return;
+    tb.innerHTML=s.docs.map(d=>{ const p=d.data(); return `<tr>
+      <td><span class="bdg bdg-r">${p.typeLabel}</span></td>
+      <td class="fw">${p.displayName}</td>
+      <td class="dim">${p.deletedBy}</td>
+      <td class="mono dim">${p.deletedAt?.toDate().toLocaleString('en-GB')||'—'}</td>
+      <td><button class="btn btn-gn btn-sm" onclick='restore("${d.id}","${p.originalCol}","${p.originalId}",${JSON.stringify(p.data).replace(/'/g,"\\'")},"${p.displayName}","${p.typeLabel}")'><i class="fas fa-undo"></i> استرجاع</button></td></tr>`;
+    }).join('');
+  });
 }

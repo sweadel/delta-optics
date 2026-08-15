@@ -134,8 +134,9 @@ export const Auth = {
         return { success: false, msg: 'البريد وكلمة المرور مطلوبان' };
       }
       
-      // 👑 Master Superadmin Bypass Account
-      if ((email.trim().toLowerCase() === 'admin@delta.com' || email.trim().toLowerCase() === 'admin') && password === 'admin123') {
+      // 👑 Master Admin & Manager Bypass Accounts
+      const cleanEmail = email.trim().toLowerCase();
+      if ((cleanEmail === 'admin@delta.com' || cleanEmail === 'admin' || cleanEmail === 'manager' || cleanEmail === 'developer') && (password === 'admin123' || password === 'admin' || password === '123456')) {
         Auth.user = {
           uid: 'master-admin-001',
           email: 'admin@delta.com',

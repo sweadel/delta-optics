@@ -777,29 +777,24 @@ window.saveProduct = async () => {
   } else {
     await addDoc(collection(db,'products'), { name, price:+price, type, qty:+qty, img, time:serverTimestamp() });
     logAudit(`إضافة منتج: ${name}`);
-    swal({ icon:'success', title:'تم الإضافة', timer:1300, showConfirmButton:false });
-  }
-  
-  ['p-name','p-price','p-qty','p-img'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
-};
-
-window.deleteProduct = (id, data) => softDelete('products', id, data, data.name, 'منتج');
-
-// ═══════════════════════════════════════════════════════
-//  GALLERY
-// ═══════════════════════════════════════════════════════
-
-window.saveGallery = async () => {
-  const id   = document.getElementById('gal-id').value;
-  const name = document.getElementById('gal-name').value.trim();
-  const type = document.getElementById('gal-type').value;
-  const img  = document.getElementById('gal-img').value;
-  
-  if(!name||!img) return swal({ icon:'warning', title:'إجباري', text:'الاسم والصورة مطلوبان' });
-  
-  if(id) {
-    await updateDoc(doc(db,'brands',id),{name,type,imageUrl:img});
-    logAudit(`تعديل تشكيلة: ${name}`);
+    swal({ icon:'success', title:'تم الإض  // Inventory table
+  onSnapshot(query(collection(db,'products'),orderBy('time','desc')), s => {
+    let invH='', posH="<option value=''>— اختر المنتج —</option>";
+    s.forEach(d=>{ const p=d.data();
+      const qb=p.qty>0?`<span class="bdg bdg-g mono">${p.qty}</span>`:'<span class="bdg bdg-r">نفد</span>';
+      invH+=`<tr><td class="fw">${p.name}</td><td><span class="bdg bdg-b">${p.type}</span></td><td>${qb}</td><td class="mono">${p.price} JOD</td>
+        <td style="display:flex;gap:6px;align-items:center;">
+          <button class="btn btn-am" style="font-size:12px;padding:5px 10px;gap:5px;" onclick='loadProdEdit("${d.id}",${JSON.stringify(p).replace(/'/g,"\\'")})' ><i class="fas fa-pen"></i> تعديل</button>
+          <button class="btn btn-dn" style="font-size:12px;padding:5px 10px;gap:5px;" onclick='deleteProduct("${d.id}",${JSON.stringify(p).replace(/'/g,"\\'")})'><i class="fas fa-trash"></i> حذف</button>
+        </td></tr>`;
+      if(p.qty>0) posH+=`<option value="${d.id}" data-price="${p.price}" data-qty="${p.qty}">${p.name}</option>`;
+    });
+    const ti=document.getElementById('tb-inv');
+    if(ti) ti.innerHTML=invH;
+    const pp=document.getElementById('pos-prod');
+    if(pp) pp.innerHTML=posH;
+    applyRoles(Auth.user?.role||'employee');
+  });${name}`);
   } else {
     await addDoc(collection(db,'brands'),{name,type,imageUrl:img,timestamp:serverTimestamp()});
     logAudit(`إضافة تشكيلة: ${name}`);

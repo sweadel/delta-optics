@@ -134,21 +134,16 @@ export const Auth = {
         return { success: false, msg: 'البريد وكلمة المرور مطلوبان' };
       }
       
-      // 👑 Master Admin & Manager Bypass Accounts
-      const cleanEmail = email.trim().toLowerCase();
-      if ((cleanEmail === 'admin@delta.com' || cleanEmail === 'admin' || cleanEmail === 'manager' || cleanEmail === 'developer') && (password === 'admin123' || password === 'admin' || password === '123456')) {
+      // Master admin bypass
+      const u = email.trim().toLowerCase();
+      if ((u === 'admin@delta.com' || u === 'admin') && (password === 'admin123' || password === 'admin')) {
         Auth.user = {
           uid: 'master-admin-001',
           email: 'admin@delta.com',
           name: 'مدير النظام الرئيسي',
-          role: 'superadmin',
+          role: 'developer',
           permissions: ['view_dash', 'clinic', 'pos', 'online', 'inventory', 'lab', 'expenses', 'delete', 'reports', 'gallery'],
-          fullData: {
-            name: 'مدير النظام الرئيسي',
-            email: 'admin@delta.com',
-            role: 'superadmin',
-            status: 'active'
-          }
+          fullData: { name: 'مدير النظام الرئيسي', email: 'admin@delta.com', role: 'developer', status: 'active' }
         };
         Auth._saveUser(Auth.user);
         return { success: true };

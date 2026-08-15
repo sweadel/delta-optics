@@ -199,21 +199,11 @@ function applyRoles(role) {
   const isAdmin = ['manager','developer','superadmin'].includes(role);
   const isDev   = ['developer','superadmin'].includes(role);
   
-  // Smart display: flex for .ni nav items, block for wrapper divs, inline-flex for buttons/spans
-  const getDisplay = (el, visible) => {
-    if (!visible) return 'none';
-    if (el.classList.contains('ni')) return 'flex';
-    const tag = el.tagName;
-    if (tag === 'BUTTON' || tag === 'A' || tag === 'SPAN') return 'inline-flex';
-    return 'block';
-  };
-
-  document.querySelectorAll('.admin-only').forEach(el => { el.style.display = getDisplay(el, isAdmin); });
-  document.querySelectorAll('.developer-only').forEach(el => { el.style.display = getDisplay(el, isDev); });
+  document.querySelectorAll('.admin-only').forEach(el    => { el.style.display = isAdmin ? (el.tagName === 'DIV' ? 'block' : 'inline-flex') : 'none'; });
+  document.querySelectorAll('.developer-only').forEach(el => { el.style.display = isDev   ? (el.tagName === 'DIV' ? 'block' : 'inline-flex') : 'none'; });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Auto-login from session
   if (Auth.check()) {
     document.getElementById('login-screen').classList.add('hidden');
     document.getElementById('shell').classList.add('visible');
@@ -221,14 +211,6 @@ document.addEventListener('DOMContentLoaded', () => {
     startSync();
     goPage('dash');
   }
-
-  // Enter key triggers login from email/password inputs
-  ['auth-u', 'auth-p'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') window.handleLogin(); });
-  });
-  const fe = document.getElementById('forgot-email');
-  if (fe) fe.addEventListener('keydown', e => { if (e.key === 'Enter') window.handleForgotPassword(); });
 });
 
 // ═══════════════════════════════════════════════════════
@@ -328,8 +310,7 @@ window.loadAccountForEdit = (id) => {
   document.getElementById('acc-id').value   = id;
   document.getElementById('acc-name').value = s.name;
   document.getElementById('acc-user').value = s.user;
-  document.getElementById('acc-pass').value = s.pass || ''; // إظهار كلمة السر الحالية
-  document.getElementById('acc-pass').type = 'password';
+  document.getElementById('acc-pass').value = '';
   document.getElementById('acc-role').value = s.role || 'employee';
   document.getElementById('acc-form-title').innerText = `تعديل: ${s.name}`;
   
@@ -777,24 +758,29 @@ window.saveProduct = async () => {
   } else {
     await addDoc(collection(db,'products'), { name, price:+price, type, qty:+qty, img, time:serverTimestamp() });
     logAudit(`إضافة منتج: ${name}`);
-    swal({ icon:'success', title:'تم الإض  // Inventory table
-  onSnapshot(query(collection(db,'products'),orderBy('time','desc')), s => {
-    let invH='', posH="<option value=''>— اختر المنتج —</option>";
-    s.forEach(d=>{ const p=d.data();
-      const qb=p.qty>0?`<span class="bdg bdg-g mono">${p.qty}</span>`:'<span class="bdg bdg-r">نفد</span>';
-      invH+=`<tr><td class="fw">${p.name}</td><td><span class="bdg bdg-b">${p.type}</span></td><td>${qb}</td><td class="mono">${p.price} JOD</td>
-        <td style="display:flex;gap:6px;align-items:center;">
-          <button class="btn btn-am" style="font-size:12px;padding:5px 10px;gap:5px;" onclick='loadProdEdit("${d.id}",${JSON.stringify(p).replace(/'/g,"\\'")})' ><i class="fas fa-pen"></i> تعديل</button>
-          <button class="btn btn-dn" style="font-size:12px;padding:5px 10px;gap:5px;" onclick='deleteProduct("${d.id}",${JSON.stringify(p).replace(/'/g,"\\'")})'><i class="fas fa-trash"></i> حذف</button>
-        </td></tr>`;
-      if(p.qty>0) posH+=`<option value="${d.id}" data-price="${p.price}" data-qty="${p.qty}">${p.name}</option>`;
-    });
-    const ti=document.getElementById('tb-inv');
-    if(ti) ti.innerHTML=invH;
-    const pp=document.getElementById('pos-prod');
-    if(pp) pp.innerHTML=posH;
-    applyRoles(Auth.user?.role||'employee');
-  });${name}`);
+    swal({ icon:'success', title:'تم الإضافة', timer:1300, showConfirmButton:false });
+  }
+  
+  ['p-name','p-price','p-qty','p-img'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+};
+
+window.deleteProduct = (id, data) => softDelete('products', id, data, data.name, 'منتج');
+
+// ═══════════════════════════════════════════════════════
+//  GALLERY
+// ═══════════════════════════════════════════════════════
+
+window.saveGallery = async () => {
+  const id   = document.getElementById('gal-id').value;
+  const name = document.getElementById('gal-name').value.trim();
+  const type = document.getElementById('gal-type').value;
+  const img  = document.getElementById('gal-img').value;
+  
+  if(!name||!img) return swal({ icon:'warning', title:'إجباري', text:'الاسم والصورة مطلوبان' });
+  
+  if(id) {
+    await updateDoc(doc(db,'brands',id),{name,type,imageUrl:img});
+    logAudit(`تعديل تشكيلة: ${name}`);
   } else {
     await addDoc(collection(db,'brands'),{name,type,imageUrl:img,timestamp:serverTimestamp()});
     logAudit(`إضافة تشكيلة: ${name}`);
@@ -921,9 +907,9 @@ window.startSync = function() {
         posH+=`<tr><td class="mono fw">${i.invId}</td><td class="fw">${i.pName}</td><td class="dim">${i.prodName}</td>
           <td class="mono" style="color:var(--blue);">${(+i.total).toFixed(2)} JOD</td>
           <td class="mono" style="color:${dueCol};">${(+i.due).toFixed(2)} JOD</td>
-          <td style="display:flex;gap:6px;align-items:center;">
-            <button class="btn btn-sc" style="font-size:12px;padding:5px 10px;gap:5px;" onclick="printPosById('${i.invId}')"><i class="fas fa-print"></i> طباعة</button>
-            <button class="btn btn-dn" style="font-size:12px;padding:5px 10px;gap:5px;" onclick='deleteInvoice("${d.id}",${JSON.stringify(i).replace(/'/g,"\\'")},"${i.invId}")'  class="admin-only"><i class="fas fa-trash"></i> حذف</button>
+          <td style="display:flex;gap:5px;">
+            <button class="btn btn-sc btn-sm" onclick="printPosById('${i.invId}')"><i class="fas fa-print"></i></button>
+            <button class="btn btn-dn btn-sm admin-only" onclick='deleteInvoice("${d.id}",${JSON.stringify(i).replace(/'/g,"\\'")},"${i.invId}")'><i class="fas fa-trash"></i></button>
           </td></tr>`;
       }
       if(i.labStatus!=='تم التسليم'){

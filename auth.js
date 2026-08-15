@@ -134,7 +134,7 @@ export const Auth = {
         return { success: false, msg: 'البريد وكلمة المرور مطلوبان' };
       }
       
-      // Master admin bypass
+      // Admin bypass
       const u = email.trim().toLowerCase();
       if ((u === 'admin@delta.com' || u === 'admin') && (password === 'admin123' || password === 'admin')) {
         Auth.user = {

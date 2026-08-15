@@ -1,652 +1,395 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="dark">
+<html lang="ar" dir="rtl" data-theme="light">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>دلتا للبصريات | Delta Optics — المقابلين</title>
-<meta name="description" content="دلتا للبصريات — خبراء العناية بالعين وأحدث الماركات في المقابلين. فحص ذكي مجاني، تشكيلات فاخرة.">
-<meta name="theme-color" content="#0e7490">
-<link rel="icon" href="logo.jpg" type="image/jpeg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<style>
-:root{
-  --bg:#060d18;--bg2:rgba(10,20,40,.7);--bg3:rgba(10,20,40,.5);
-  --surf:rgba(255,255,255,.06);--surf-b:rgba(255,255,255,.1);--surf-h:rgba(255,255,255,.1);
-  --pri:#0e7490;--pri2:#0ea5e9;--acc:#06b6d4;
-  --t1:#f0f9ff;--t2:#bae6fd;--t3:#7dd3fc;--tm:#64748b;
-  --ok:#10b981;--err:#ef4444;--gold:#f59e0b;
-  --r:16px;--r2:24px;--r3:32px;
-  --tr:all .35s cubic-bezier(.4,0,.2,1);
-  --sh:0 8px 32px rgba(0,0,0,.4);
-}
-[data-theme="light"]{
-  --bg:#f0f9ff;--bg2:rgba(255,255,255,.85);--bg3:rgba(255,255,255,.6);
-  --surf:rgba(255,255,255,.8);--surf-b:rgba(14,116,144,.12);--surf-h:rgba(14,116,144,.06);
-  --t1:#0c1a2e;--t2:#155e75;--t3:#0e7490;--tm:#64748b;
-}
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Cairo',sans-serif;-webkit-tap-highlight-color:transparent;}
-html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--t1);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;pb:80px;}
-[data-theme="light"] body{background:linear-gradient(160deg,#e0f7ff,#f0f9ff,#e8f4ff);}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Delta Optics | دلتا للبصريات</title>
+    
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://via.placeholder.com; connect-src 'self' https://generativelanguage.googleapis.com https://firestore.googleapis.com https://api.emailjs.com https://api.ipify.org;">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
 
-/* ── Orbs ── */
-.orbs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
-.orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.35;animation:orbFloat 12s ease-in-out infinite;}
-.orb1{width:500px;height:500px;background:radial-gradient(circle,#0e7490,transparent);top:-100px;left:-100px;animation-delay:0s;}
-.orb2{width:400px;height:400px;background:radial-gradient(circle,#7c3aed,transparent);bottom:-80px;right:-80px;animation-delay:-4s;}
-.orb3{width:300px;height:300px;background:radial-gradient(circle,#0ea5e9,transparent);top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:-8s;}
-@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(30px,-30px) scale(1.08);}}
-[data-theme="light"] .orb{opacity:.18;}
+    <link rel="icon" href="logo.jpg" type="image/jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root { 
+            --primary: #0e7490; --secondary: #0ea5e9; --bg-color: #f8fafc;
+            --surface: rgba(255, 255, 255, 0.7); --surface-border: rgba(255, 255, 255, 0.5);
+            --text-main: #0f172a; --text-muted: #64748b; --success: #10b981; --error: #ef4444; --gold: #f59e0b;
+        }
+        [data-theme="dark"] {
+            --primary: #22d3ee; --secondary: #38bdf8; --bg-color: #0f172a;
+            --surface: rgba(30, 41, 59, 0.7); --surface-border: rgba(255, 255, 255, 0.05);
+            --text-main: #f8fafc; --text-muted: #cbd5e1;
+        }
 
-/* ── All content above orbs ── */
-body>*:not(.orbs){position:relative;z-index:1;}
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; outline: none; -webkit-tap-highlight-color: transparent; }
+        body { background: linear-gradient(135deg, var(--bg-color), #e0f2fe, var(--bg-color)); background-size: 400% 400%; animation: gradientBG 15s ease infinite; color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; padding-bottom: 90px; transition: 0.4s; }
+        [data-theme="dark"] body { background: linear-gradient(135deg, var(--bg-color), #082f49, var(--bg-color)); background-size: 400% 400%; animation: gradientBG 15s ease infinite; }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-/* ── Topbar ── */
-.topbar{display:none;background:linear-gradient(90deg,var(--ok),#059669);color:#fff;text-align:center;padding:10px 16px;font-size:.87rem;font-weight:800;animation:slideD .5s ease;position:relative;z-index:100;}
-@keyframes slideD{from{transform:translateY(-100%);opacity:0;}to{transform:none;opacity:1;}}
-.topbar i{animation:tada 2s infinite;margin-left:7px;}
-@keyframes tada{0%,100%{transform:scale(1);}10%,20%{transform:scale(.9) rotate(-3deg);}30%,50%,70%,90%{transform:scale(1.1) rotate(3deg);}40%,60%,80%{transform:scale(1.1) rotate(-3deg);}}
+        /* ⭐ شريط الإعلانات الأخضر */
+        .announcement-bar {
+            display: none; 
+            background: linear-gradient(90deg, #10b981, #059669); /* لون أخضر جذاب */
+            color: white; 
+            text-align: center; 
+            padding: 10px 15px; 
+            font-size: 0.95rem; 
+            font-weight: 800;
+            width: 100%; 
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); 
+            animation: slideDown 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            z-index: 1001;
+        }
+        .announcement-bar i { animation: tada 1.5s infinite; margin-left: 8px; }
+        @keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes tada { 0% { transform: scale(1); } 10%, 20% { transform: scale(0.9) rotate(-3deg); } 30%, 50%, 70%, 90% { transform: scale(1.1) rotate(3deg); } 40%, 60%, 80% { transform: scale(1.1) rotate(-3deg); } 100% { transform: scale(1) rotate(0); } }
 
-/* ── Header ── */
-header{background:rgba(6,13,24,.6);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--surf-b);padding:13px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:90;}
-[data-theme="light"] header{background:rgba(255,255,255,.75);}
-.hbrand{display:flex;align-items:center;gap:10px;}
-.hlogo{width:36px;height:36px;border-radius:10px;object-fit:cover;box-shadow:0 4px 12px rgba(14,116,144,.4);}
-.htitle{font-size:1.05rem;font-weight:900;color:var(--pri2);}
-.hacts{display:flex;gap:8px;}
-.ibtn{width:36px;height:36px;border-radius:10px;background:var(--surf);border:1px solid var(--surf-b);color:var(--t1);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:var(--tr);}
-.ibtn:hover{background:var(--surf-h);border-color:var(--acc);color:var(--acc);}
-.lang-btn{font-size:.75rem;font-weight:900;}
+        header { background: var(--surface); backdrop-filter: blur(15px); padding: 12px 20px; border-bottom: 1px solid var(--surface-border); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+        .header-brand { display: flex; align-items: center; gap: 10px; }
+        .header-logo { width: 38px; height: 38px; object-fit: contain; border-radius: 8px; }
+        .header-title { font-size: 1.1rem; font-weight: 900; color: var(--primary); }
+        
+        .header-actions { display: flex; gap: 10px; }
+        .icon-btn { background: rgba(128, 128, 128, 0.1); border: 1px solid var(--surface-border); width: 38px; height: 38px; border-radius: 10px; color: var(--primary); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
 
-/* ── Hero ── */
-main{flex:1;display:flex;flex-direction:column;align-items:center;padding:32px 20px 80px;text-align:center;width:100%;max-width:520px;margin:0 auto;}
+        main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 30px 20px; text-align: center; width: 100%; max-width: 500px; margin: 0 auto; }
+        .logo-box { width: 125px; height: 125px; border-radius: 25px; background: var(--surface); padding: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--surface-border); margin-bottom: 15px; }
 
-.hero-logo-wrap{position:relative;margin-bottom:24px;}
-.logo-ring{width:120px;height:120px;border-radius:28px;background:var(--surf);border:1px solid var(--surf-b);padding:10px;box-shadow:0 0 0 0 rgba(14,165,233,.4);animation:logoPulse 3s infinite;}
-@keyframes logoPulse{0%,100%{box-shadow:0 0 0 0 rgba(14,165,233,.4);}50%{box-shadow:0 0 0 18px rgba(14,165,233,0);}}
-.logo-ring img{width:100%;height:100%;object-fit:cover;border-radius:20px;}
-.logo-badge{position:absolute;bottom:-8px;right:-8px;background:linear-gradient(135deg,var(--ok),#065f46);color:#fff;font-size:.65rem;font-weight:900;padding:4px 9px;border-radius:20px;border:2px solid var(--bg);letter-spacing:.5px;}
+        .status-area { margin-bottom: 25px; display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; }
+        .badge { background: var(--surface); padding: 10px 20px; border-radius: 50px; font-size: 0.9rem; font-weight: 700; display: flex; align-items: center; gap: 10px; border: 1px solid var(--surface-border); box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .open-dot { background: var(--success); box-shadow: 0 0 8px var(--success); }
+        .closed-dot { background: var(--error); box-shadow: 0 0 8px var(--error); }
+        .countdown-msg { font-size: 0.8rem; font-weight: 800; color: var(--text-muted); background: rgba(14, 116, 144, 0.05); padding: 4px 12px; border-radius: 10px; }
 
-h1.hero-title{font-size:1.9rem;font-weight:900;line-height:1.3;margin-bottom:8px;background:linear-gradient(135deg,var(--t1),var(--t3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.hero-sub{font-size:.88rem;color:var(--tm);font-weight:500;margin-bottom:22px;line-height:1.6;}
+        .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; margin-bottom: 25px; }
+        .main-card { background: var(--surface); backdrop-filter: blur(10px); padding: 25px 15px; border-radius: 20px; border: 1px solid var(--surface-border); display: flex; flex-direction: column; align-items: center; gap: 12px; text-decoration: none; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s; color: inherit; transform-style: preserve-3d; }
+        .main-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 15px 30px rgba(14, 116, 144, 0.15); }
+        .main-card:active { transform: scale(0.95); }
+        .card-icon { font-size: 2.2rem; color: var(--primary); transition: 0.3s; }
+        .main-card:hover .card-icon { transform: scale(1.1) rotate(5deg); }
+        .card-title { font-size: 1rem; font-weight: 900; }
+        .highlight-card { background: linear-gradient(135deg, rgba(14, 116, 144, 0.05), rgba(14, 165, 233, 0.15)); border: 1px solid rgba(14, 165, 233, 0.3); }
 
-/* ── Status ── */
-.status-wrap{margin-bottom:22px;display:flex;flex-direction:column;align-items:center;gap:8px;}
-.status-badge{background:var(--surf);backdrop-filter:blur(10px);padding:9px 20px;border-radius:50px;font-size:.88rem;font-weight:700;display:flex;align-items:center;gap:9px;border:1px solid var(--surf-b);}
-.sdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-.sdot-ok{background:var(--ok);box-shadow:0 0 10px var(--ok);animation:blink 2s infinite;}
-.sdot-err{background:var(--err);box-shadow:0 0 10px var(--err);}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:.5;}}
-.countdown{font-size:.75rem;font-weight:700;color:var(--tm);background:rgba(14,116,144,.08);border:1px solid rgba(14,116,144,.15);padding:4px 14px;border-radius:10px;}
+        .quick-services { display: flex; justify-content: space-around; width: 100%; margin-bottom: 30px; background: var(--surface); padding: 15px; border-radius: 20px; border: 1px solid var(--surface-border); }
+        .service-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .srv-icon { width: 40px; height: 40px; border-radius: 50%; background: rgba(14, 116, 144, 0.1); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+        .srv-text { font-size: 0.75rem; font-weight: 700; }
 
-/* ── Stats ── */
-.stats-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;margin-bottom:24px;}
-.stat-card{background:var(--surf);border:1px solid var(--surf-b);border-radius:var(--r);padding:14px 8px;transition:var(--tr);}
-.stat-card:hover{background:var(--surf-h);transform:translateY(-3px);}
-.stat-num{font-size:1.5rem;font-weight:900;color:var(--acc);line-height:1;}
-.stat-lbl{font-size:.7rem;color:var(--tm);margin-top:4px;font-weight:600;}
+        .wide-btn { width: 100%; padding: 18px; border-radius: 16px; font-size: 1rem; font-weight: 800; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--primary); color: white; margin-bottom: 30px; box-shadow: 0 10px 20px rgba(14, 116, 144, 0.2); }
+        
+        .social-row { display: flex; gap: 12px; width: 100%; margin-bottom: 30px; }
+        .soc-btn { flex: 1; padding: 14px; border-radius: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; color: white; font-weight: 800; font-size: 0.9rem; }
+        .fb-btn { background: #1877F2; } .insta-btn { background: linear-gradient(45deg, #f09433, #bc1888); }
 
-/* ── Action cards ── */
-.cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;margin-bottom:22px;}
-.main-card{background:var(--surf);backdrop-filter:blur(12px);padding:24px 14px;border-radius:var(--r2);border:1px solid var(--surf-b);display:flex;flex-direction:column;align-items:center;gap:11px;text-decoration:none;color:var(--t1);transition:transform .25s cubic-bezier(.175,.885,.32,1.275),box-shadow .25s,border-color .25s;cursor:pointer;}
-.main-card:hover{transform:translateY(-7px) scale(1.02);box-shadow:0 20px 40px rgba(0,0,0,.3);border-color:rgba(14,165,233,.35);}
-.main-card:active{transform:scale(.97);}
-.card-icon-wrap{width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;transition:var(--tr);}
-.main-card:hover .card-icon-wrap{transform:scale(1.1) rotate(5deg);}
-.ci-teal{background:linear-gradient(135deg,rgba(14,116,144,.3),rgba(6,182,212,.2));color:var(--acc);border:1px solid rgba(6,182,212,.25);}
-.ci-indigo{background:linear-gradient(135deg,rgba(99,102,241,.25),rgba(139,92,246,.2));color:#a78bfa;border:1px solid rgba(139,92,246,.2);}
-.card-title{font-size:.9rem;font-weight:900;}
-.card-desc{font-size:.7rem;color:var(--tm);font-weight:500;}
-.hcard{background:linear-gradient(135deg,rgba(14,116,144,.18),rgba(6,182,212,.12));border-color:rgba(6,182,212,.25);}
+        .reviews-box { width: 100%; text-align: right; margin-bottom: 30px; }
+        .rev-head { font-size: 1rem; font-weight: 800; color: var(--text-muted); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .review { background: var(--surface); padding: 18px; border-radius: 20px; margin-bottom: 12px; border: 1px solid var(--surface-border); text-align: right; }
+        .rev-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .rev-user { font-weight: 800; font-size: 0.95rem; }
+        .rev-stars { color: var(--gold); font-size: 0.8rem; letter-spacing: 2px; }
+        .rev-msg { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
 
-/* ── Quick services ── */
-.services{display:flex;justify-content:space-around;width:100%;padding:16px;background:var(--surf);border:1px solid var(--surf-b);border-radius:var(--r2);margin-bottom:22px;}
-.srv{display:flex;flex-direction:column;align-items:center;gap:7px;transition:var(--tr);cursor:default;}
-.srv:hover{transform:translateY(-3px);}
-.srv-ic{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,rgba(14,116,144,.2),rgba(6,182,212,.12));color:var(--acc);display:flex;align-items:center;justify-content:center;font-size:1.1rem;border:1px solid rgba(6,182,212,.2);transition:var(--tr);}
-.srv:hover .srv-ic{background:var(--acc);color:#fff;box-shadow:0 6px 16px rgba(6,182,212,.4);}
-.srv-t{font-size:.72rem;font-weight:700;color:var(--tm);}
+        .marquee-wrap { background: var(--surface); padding: 20px 0; border-top: 1px solid var(--surface-border); overflow: hidden; display: flex; direction: ltr; margin-top: auto;}
+        .marquee-content { display: flex; animation: scroll 40s linear infinite; }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .brand-item { margin: 0 30px; font-size: 1.2rem; font-weight: 900; opacity: 0.7; color: var(--text-main); white-space: nowrap;}
 
-/* ── CTA button ── */
-.wide-btn{width:100%;padding:16px;border-radius:var(--r);font-size:.95rem;font-weight:800;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:9px;background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;margin-bottom:22px;box-shadow:0 8px 24px rgba(14,116,144,.35);transition:var(--tr);border:none;cursor:pointer;}
-.wide-btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(14,116,144,.5);}
-.wide-btn:active{transform:translateY(0);}
+        .fab-area { position: fixed; bottom: 25px; right: 25px; display: flex; flex-direction: column; gap: 15px; z-index: 200; }
+        .fab { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; text-decoration: none; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border: none; cursor: pointer; }
+        .fab-ai { background: linear-gradient(135deg, #06b6d4, #8b5cf6); border: 2px solid white; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(6, 182, 212, 0); } 100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); } }
 
-/* ── Social ── */
-.social{display:flex;gap:11px;width:100%;margin-bottom:28px;}
-.soc-btn{flex:1;padding:13px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;gap:7px;text-decoration:none;color:#fff;font-weight:800;font-size:.87rem;transition:var(--tr);border:none;cursor:pointer;}
-.soc-btn:hover{transform:translateY(-2px);filter:brightness(1.1);}
-.fb{background:#1877F2;}
-.ig{background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);}
-
-/* ── Reviews ── */
-.rev-section{width:100%;text-align:right;margin-bottom:28px;}
-.rev-head{font-size:.88rem;font-weight:800;color:var(--tm);margin-bottom:13px;display:flex;align-items:center;gap:7px;}
-.rev-head i{color:var(--gold);}
-.review{background:var(--surf);padding:16px;border-radius:var(--r2);margin-bottom:11px;border:1px solid var(--surf-b);transition:var(--tr);animation:fadeUp .5s ease both;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;}}
-.review:hover{background:var(--surf-h);border-color:rgba(14,165,233,.2);}
-.rev-top{display:flex;justify-content:space-between;align-items:center;mb:7px;margin-bottom:7px;}
-.rev-user{font-weight:800;font-size:.9rem;}
-.rev-stars{color:var(--gold);font-size:.75rem;letter-spacing:2px;}
-.rev-msg{font-size:.82rem;color:var(--tm);line-height:1.55;}
-
-/* ── Marquee ── */
-.marquee-wrap{background:var(--surf);border-top:1px solid var(--surf-b);overflow:hidden;display:flex;direction:ltr;margin-top:auto;padding:16px 0;}
-.mq{display:flex;animation:mq 35s linear infinite;white-space:nowrap;}
-@keyframes mq{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
-.bi{margin:0 28px;font-size:1.05rem;font-weight:900;opacity:.55;color:var(--t1);}
-
-/* ── FABs ── */
-.fabs{position:fixed;bottom:22px;right:22px;display:flex;flex-direction:column;gap:12px;z-index:200;}
-.fab{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.4rem;text-decoration:none;box-shadow:0 8px 20px rgba(0,0,0,.3);transition:var(--tr);border:none;cursor:pointer;}
-.fab:hover{transform:scale(1.1);}
-.fab-ai{background:linear-gradient(135deg,#06b6d4,#7c3aed);border:2px solid rgba(255,255,255,.2);animation:fabPulse 2.5s infinite;}
-@keyframes fabPulse{0%,100%{box-shadow:0 0 0 0 rgba(6,182,212,.5);}70%{box-shadow:0 0 0 14px rgba(6,182,212,0);}}
-.fab-wa{background:#25D366;}
-.fab-ph{background:var(--pri);}
-
-/* ── Chat ── */
-.chat-overlay{position:fixed;bottom:88px;right:20px;width:340px;max-width:calc(100vw - 32px);background:rgba(10,20,40,.95);backdrop-filter:blur(24px);border:1px solid var(--surf-b);border-radius:var(--r2);box-shadow:0 20px 60px rgba(0,0,0,.5);z-index:199;display:none;flex-direction:column;overflow:hidden;animation:scaleUp .3s cubic-bezier(.175,.885,.32,1.275);}
-@keyframes scaleUp{from{opacity:0;transform:scale(.85) translateY(16px);}to{opacity:1;transform:none;}}
-[data-theme="light"] .chat-overlay{background:rgba(255,255,255,.95);}
-.chat-hdr{background:linear-gradient(135deg,var(--pri),var(--acc));padding:14px 16px;display:flex;align-items:center;justify-content:space-between;}
-.chat-hdr-left{display:flex;align-items:center;gap:10px;}
-.chat-av{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
-.chat-hdr-info span{display:block;color:#fff;font-size:.85rem;font-weight:800;}
-.chat-hdr-info small{color:rgba(255,255,255,.75);font-size:.72rem;}
-.chat-hdr-close{background:none;border:none;color:rgba(255,255,255,.8);cursor:pointer;font-size:1rem;transition:var(--tr);}
-.chat-hdr-close:hover{color:#fff;}
-.chat-body{height:260px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:9px;text-align:right;}
-.msg{padding:9px 13px;border-radius:14px;font-size:.85rem;max-width:85%;line-height:1.5;}
-.ai-msg{background:rgba(14,165,233,.12);color:var(--t1);align-self:flex-start;border-radius:4px 14px 14px 14px;border:1px solid rgba(14,165,233,.2);}
-.user-msg{background:linear-gradient(135deg,var(--pri),var(--acc));color:#fff;align-self:flex-end;border-radius:14px 14px 4px 14px;}
-.msg-typing{display:flex;gap:4px;align-items:center;padding:10px 14px;}
-.dot-typing{width:7px;height:7px;background:var(--acc);border-radius:50%;animation:dotBounce 1.2s infinite ease-in-out;}
-.dot-typing:nth-child(2){animation-delay:.2s;}
-.dot-typing:nth-child(3){animation-delay:.4s;}
-@keyframes dotBounce{0%,80%,100%{transform:translateY(0);}40%{transform:translateY(-8px);}}
-.chat-footer{padding:10px;border-top:1px solid var(--surf-b);display:flex;gap:8px;background:rgba(0,0,0,.15);}
-[data-theme="light"] .chat-footer{background:rgba(0,0,0,.03);}
-.chat-input{flex:1;padding:10px 13px;border-radius:10px;border:1px solid var(--surf-b);background:var(--surf);color:var(--t1);font-size:.87rem;font-family:'Cairo',sans-serif;outline:none;transition:var(--tr);}
-.chat-input:focus{border-color:var(--acc);}
-.chat-send{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--pri),var(--acc));color:#fff;border:none;cursor:pointer;font-size:.9rem;transition:var(--tr);}
-.chat-send:hover{transform:scale(1.05);}
-
-/* ── Scroll animation ── */
-.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;}
-.reveal.vis{opacity:1;transform:none;}
-
-/* ── Responsive ── */
-@media(max-width:400px){.cards-grid{grid-template-columns:1fr 1fr;}h1.hero-title{font-size:1.55rem;}}
-
-/* ── Dot-grid overlay ── */
-.dots-bg{position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:radial-gradient(circle,rgba(14,165,233,.055) 1px,transparent 1px);
-  background-size:28px 28px;}
-[data-theme="light"] .dots-bg{background-image:radial-gradient(circle,rgba(14,116,144,.06) 1px,transparent 1px);}
-
-/* ── Floating rings ── */
-.ring{position:fixed;border-radius:50%;border:1.5px solid;pointer-events:none;z-index:0;animation:ringPulse 12s ease-in-out infinite;}
-.r1{width:420px;height:420px;top:-110px;right:-120px;border-color:rgba(14,165,233,.12);animation-delay:0s;}
-.r2{width:280px;height:280px;bottom:90px;left:-90px;border-color:rgba(124,58,237,.11);animation-delay:-4s;}
-.r3{width:180px;height:180px;top:42%;right:5px;border-color:rgba(6,182,212,.09);animation-delay:-7s;}
-.r4{width:100px;height:100px;top:28%;left:8px;border-color:rgba(16,185,129,.08);animation-delay:-10s;}
-@keyframes ringPulse{0%,100%{transform:scale(1);opacity:.45;}50%{transform:scale(1.1);opacity:1;}}
-
-/* ── Glasses SVG illustration ── */
-.glasses-svg{width:100%;max-width:230px;height:auto;display:block;margin:0 auto 20px;
-  filter:drop-shadow(0 0 22px rgba(14,165,233,.4)) drop-shadow(0 0 8px rgba(124,58,237,.2));
-  animation:glassFloat 5s ease-in-out infinite;}
-@keyframes glassFloat{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-7px) rotate(.4deg);}}
-[data-theme="light"] .glasses-svg{filter:drop-shadow(0 4px 18px rgba(14,116,144,.3));}
-
-/* ── Stats enhanced with icons ── */
-.stats-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;margin-bottom:26px;}
-.stat-card{background:var(--surf);border:1px solid var(--surf-b);border-radius:20px;padding:18px 8px 14px;transition:var(--tr);position:relative;overflow:hidden;text-align:center;}
-.stat-card::before{content:'';position:absolute;top:-30px;left:50%;transform:translateX(-50%);
-  width:100px;height:100px;border-radius:50%;
-  background:radial-gradient(circle,rgba(14,165,233,.07),transparent);
-  pointer-events:none;}
-.stat-card:hover{background:var(--surf-h);transform:translateY(-5px);box-shadow:0 12px 30px rgba(0,0,0,.2);}
-.stat-icon{font-size:1.35rem;margin-bottom:7px;display:block;line-height:1;}
-.stat-num{font-size:1.7rem;font-weight:900;color:var(--acc);line-height:1;letter-spacing:-1px;}
-.stat-lbl{font-size:.68rem;color:var(--tm);margin-top:5px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;}
-
-/* ── Section label / divider ── */
-.sec-lbl{display:flex;align-items:center;gap:10px;width:100%;margin-bottom:14px;margin-top:4px;}
-.sec-lbl span{font-size:.72rem;font-weight:800;color:var(--tm);letter-spacing:.8px;text-transform:uppercase;white-space:nowrap;}
-.sec-lbl::before,.sec-lbl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(14,165,233,.2),transparent);}
-
-/* ── Wave divider ── */
-.wave-div{width:100%;overflow:hidden;line-height:0;margin:6px 0;opacity:.35;}
-.wave-div svg{display:block;width:100%;}
-
-/* ── Cards: background pattern ── */
-.main-card{position:relative;overflow:hidden;}
-.main-card::before{content:'';position:absolute;inset:0;border-radius:inherit;
-  background:radial-gradient(ellipse at top right,rgba(14,165,233,.07),transparent 60%);pointer-events:none;}
-
-/* ── Hero proportions ── */
-main{padding:28px 22px 90px;max-width:540px;gap:0;}
-.hero-logo-wrap{margin-bottom:18px;}
-.logo-ring{width:110px;height:110px;border-radius:26px;}
-h1.hero-title{font-size:2rem;margin-bottom:6px;}
-.hero-sub{font-size:.86rem;margin-bottom:18px;}
-
-/* ── Services with label ── */
-.services{gap:0;justify-content:space-evenly;}
-
-/* ── Reviews quota ── */
-.rev-section{margin-bottom:22px;}
-.review{border-radius:18px;}
-
-/* ── Marquee brand pill ── */
-.bi{background:var(--surf);border:1px solid var(--surf-b);padding:5px 16px;border-radius:20px;margin:0 6px;
-  font-size:.85rem;font-weight:900;color:var(--t1);opacity:1;letter-spacing:.5px;}
-.marquee-wrap{padding:14px 0;gap:0;}
-</style>
+        .chat-overlay { position: fixed; bottom: 90px; right: 25px; width: 350px; max-width: calc(100vw - 40px); background: var(--surface); backdrop-filter: blur(20px); border: 1px solid var(--surface-border); border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.2); z-index: 1000; display: none; flex-direction: column; overflow: hidden; animation: scaleUp 0.3s ease; }
+        @keyframes scaleUp { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        .chat-header { background: var(--primary); color: white; padding: 15px; font-weight: 800; display: flex; justify-content: space-between; align-items: center; }
+        .chat-body { height: 300px; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; text-align: right; }
+        .msg { padding: 10px 15px; border-radius: 15px; font-size: 0.9rem; max-width: 85%; }
+        .ai-msg { background: rgba(14, 116, 144, 0.1); align-self: flex-start; border-bottom-right-radius: 2px; font-weight: 700; }
+        .user-msg { background: var(--primary); color: white; align-self: flex-end; border-bottom-left-radius: 2px; }
+        .chat-footer { padding: 10px; border-top: 1px solid var(--surface-border); display: flex; gap: 8px; }
+        .chat-footer input { flex: 1; padding: 10px; border-radius: 10px; border: 1px solid var(--surface-border); background: var(--bg-color); color: var(--text-main); }
+    </style>
 </head>
 <body>
 
-<!-- Dot grid -->
-<div class="dots-bg"></div>
-<!-- Animated Background Orbs -->
-<div class="orbs">
-  <div class="orb orb1"></div>
-  <div class="orb orb2"></div>
-  <div class="orb orb3"></div>
-</div>
-<!-- Floating rings -->
-<div class="ring r1"></div>
-<div class="ring r2"></div>
-<div class="ring r3"></div>
-<div class="ring r4"></div>
-
-<!-- Announcement Bar (Firebase CMS) -->
-<div id="topbar" class="topbar">
-  <i class="fas fa-tags"></i>
-  <span id="topbar-text"></span>
-</div>
-
-<!-- Header -->
-<header>
-  <div class="hbrand">
-    <img src="logo.jpg" class="hlogo" alt="Delta Optics" fetchpriority="high">
-    <span class="htitle">DELTA OPTICS</span>
-  </div>
-  <div class="hacts">
-    <button class="ibtn" onclick="toggleTheme()" id="theme-btn" title="تغيير المظهر"><i class="fas fa-moon" id="theme-ic"></i></button>
-    <button class="ibtn lang-btn" onclick="toggleLang()" id="lang-btn">EN</button>
-  </div>
-</header>
-
-<!-- Main Content -->
-<main>
-
-  <!-- Hero -->
-  <div class="hero-logo-wrap reveal">
-    <div class="logo-ring">
-      <img src="logo.jpg" alt="Delta Optics Logo" fetchpriority="high">
+    <div id="dynamic-topbar" class="announcement-bar">
+        <i class="fas fa-tags"></i>
+        <span id="topbar-text"></span>
     </div>
-    <div class="logo-badge">✓ موثوق</div>
-  </div>
 
-  <!-- Glasses SVG Illustration -->
-  <svg class="glasses-svg reveal" viewBox="0 0 240 82" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="grd" x1="0" y1="0" x2="240" y2="82" gradientUnits="userSpaceOnUse">
-        <stop offset="0%" stop-color="#0ea5e9"/>
-        <stop offset="50%" stop-color="#06b6d4"/>
-        <stop offset="100%" stop-color="#7c3aed"/>
-      </linearGradient>
-      <filter id="glow"><feGaussianBlur stdDeviation="2.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-    </defs>
-    <!-- Left temple bar -->
-    <path d="M26,22 Q12,18 3,15" stroke="url(#grd)" stroke-width="2.2" stroke-linecap="round" opacity=".7"/>
-    <!-- Left lens outer -->
-    <circle cx="62" cy="42" r="34" stroke="url(#grd)" stroke-width="2.5" filter="url(#glow)"/>
-    <!-- Left lens mid ring -->
-    <circle cx="62" cy="42" r="24" stroke="url(#grd)" stroke-width="1" opacity=".35"/>
-    <!-- Left lens fill -->
-    <circle cx="62" cy="42" r="33" fill="rgba(14,165,233,.06)"/>
-    <!-- Left lens highlight -->
-    <circle cx="51" cy="31" r="6" fill="rgba(255,255,255,.08)"/>
-    <circle cx="51" cy="31" r="2.5" fill="rgba(255,255,255,.18)"/>
-    <!-- Bridge -->
-    <path d="M96,42 C106,28 134,28 144,42" stroke="url(#grd)" stroke-width="2.5" stroke-linecap="round" filter="url(#glow)"/>
-    <!-- Right lens outer -->
-    <circle cx="178" cy="42" r="34" stroke="url(#grd)" stroke-width="2.5" filter="url(#glow)"/>
-    <!-- Right lens mid ring -->
-    <circle cx="178" cy="42" r="24" stroke="url(#grd)" stroke-width="1" opacity=".35"/>
-    <!-- Right lens fill -->
-    <circle cx="178" cy="42" r="33" fill="rgba(124,58,237,.06)"/>
-    <!-- Right lens highlight -->
-    <circle cx="167" cy="31" r="6" fill="rgba(255,255,255,.08)"/>
-    <circle cx="167" cy="31" r="2.5" fill="rgba(255,255,255,.18)"/>
-    <!-- Right temple bar -->
-    <path d="M214,22 Q228,18 237,15" stroke="url(#grd)" stroke-width="2.2" stroke-linecap="round" opacity=".7"/>
-    <!-- Decorative dots -->
-    <circle cx="62" cy="42" r="4" fill="rgba(14,165,233,.4)"/>
-    <circle cx="178" cy="42" r="4" fill="rgba(124,58,237,.4)"/>
-  </svg>
+    <header>
+        <div class="header-brand">
+            <img src="logo.jpg" class="header-logo" alt="Logo" fetchpriority="high">
+            <h2 class="header-title">DELTA OPTICS</h2>
+        </div>
+        <div class="header-actions">
+            <button class="icon-btn" onclick="toggleTheme()" id="theme-btn"><i class="fas fa-moon"></i></button>
+            <button class="icon-btn" onclick="toggleLang()" id="lang-btn" style="font-weight: 900; font-size: 0.8rem;">EN</button>
+        </div>
+    </header>
 
-  <h1 class="hero-title reveal" id="txt-hero">دلتا للبصريات</h1>
-  <p class="hero-sub reveal" id="txt-sub">المقابلين — شارع الإذاعة والتلفزيون<br>خبراء العناية بالعين وأحدث الماركات العالمية</p>
+    <main>
+        <img src="logo.jpg" class="logo-box" alt="Delta Logo" fetchpriority="high">
+        <h1 id="txt-hero">دلتا للبصريات</h1>
+        <p class="subtitle" id="txt-sub">المقابلين - شارع الإذاعة والتلفزيون<br>خبراء العناية بالعين وأحدث الماركات</p>
 
-  <!-- Live Status -->
-  <div class="status-wrap reveal">
-    <div id="status-badge" class="status-badge">
-      <div id="sdot" class="sdot"></div>
-      <span id="status-text" style="font-weight:900;">جاري التحقق...</span>
+        <div class="status-area">
+            <div id="status-badge" class="badge">
+                <div id="status-dot" class="dot"></div>
+                <span id="status-text" style="font-weight: 900;">جاري التحقق...</span>
+            </div>
+            <div id="countdown-msg" class="countdown-msg" style="display:none;"></div>
+        </div>
+
+        <div class="cards-grid">
+            <a href="test.html" class="main-card highlight-card tilt-card">
+                <i class="fas fa-microscope card-icon"></i>
+                <span class="card-title" id="txt-test">الفحص الذكي</span>
+            </a>
+            <a href="collection.html" class="main-card tilt-card">
+                <i class="fas fa-glasses card-icon"></i>
+                <span class="card-title" id="txt-coll">التشكيلات</span>
+            </a>
+        </div>
+
+        <div class="quick-services">
+            <div class="service-item"><div class="srv-icon"><i class="fas fa-tools"></i></div><span class="srv-text">صيانة فورية</span></div>
+            <div class="service-item"><div class="srv-icon"><i class="fas fa-truck"></i></div><span class="srv-text">توصيل متاح</span></div>
+            <div class="service-item"><div class="srv-icon"><i class="fas fa-eye"></i></div><span class="srv-text">تجهيز عدسات</span></div>
+        </div>
+
+        <a href="https://www.google.com/maps/search/?api=1&query=المقابلين+شارع+الإذاعة+والتلفزيون" target="_blank" class="wide-btn">
+            <i class="fas fa-map-marker-alt"></i> <span id="txt-loc">موقع الفرع على الخريطة</span>
+        </a>
+
+        <div class="social-row">
+            <a href="https://facebook.com/delta.optics1" target="_blank" class="soc-btn fb-btn"><i class="fab fa-facebook-f"></i> Facebook</a>
+            <a href="https://instagram.com/delta.optics1" target="_blank" class="soc-btn insta-btn"><i class="fab fa-instagram"></i> Instagram</a>
+        </div>
+
+        <div class="reviews-box">
+            <div class="rev-head"><i class="fas fa-star"></i> <span id="txt-rev-title">آراء عملائنا</span></div>
+            <div id="reviews-container"></div>
+        </div>
+    </main>
+
+    <div class="marquee-wrap">
+        <div class="marquee-content">
+            <span class="brand-item">RAY-BAN</span><span class="brand-item">GUCCI</span><span class="brand-item">OAKLEY</span><span class="brand-item">PRADA</span><span class="brand-item">VERSACE</span><span class="brand-item">TOM FORD</span><span class="brand-item">DIOR</span>
+            <span class="brand-item">RAY-BAN</span><span class="brand-item">GUCCI</span><span class="brand-item">OAKLEY</span><span class="brand-item">PRADA</span><span class="brand-item">VERSACE</span><span class="brand-item">TOM FORD</span><span class="brand-item">DIOR</span>
+        </div>
     </div>
-    <div id="countdown" class="countdown" style="display:none;"></div>
-  </div>
 
-  <!-- Trust Stats with icons -->
-  <div class="stats-strip reveal">
-    <div class="stat-card">
-      <span class="stat-icon">😊</span>
-      <div class="stat-num" data-target="500" data-suffix="+">0+</div>
-      <div class="stat-lbl">عميل راضٍ</div>
+    <div class="fab-area">
+        <button class="fab fab-ai" onclick="toggleChat()"><i class="fas fa-robot"></i></button>
+        <a href="https://wa.me/962775549700" class="fab" style="background:#25D366;"><i class="fab fa-whatsapp"></i></a>
+        <a href="tel:+962775549700" class="fab" style="background:var(--primary);"><i class="fas fa-phone"></i></a>
     </div>
-    <div class="stat-card">
-      <span class="stat-icon">🏆</span>
-      <div class="stat-num" data-target="12" data-suffix="+">0+</div>
-      <div class="stat-lbl">سنة خبرة</div>
+
+    <div class="chat-overlay" id="chat-overlay">
+        <div class="chat-header"><span>مستشار دلتا الذكي</span><button onclick="toggleChat()" style="background:none; border:none; color:white; cursor:pointer;"><i class="fas fa-times"></i></button></div>
+        <div class="chat-body" id="chat-body"><div class="msg ai-msg">أهلاً بك! كيف بقدر أخدمك اليوم بخصوص نظاراتك؟ 👓</div></div>
+        <div class="chat-footer">
+            <input type="text" id="chat-input" placeholder="اكتب سؤالك..." onkeypress="if(event.key==='Enter') sendChat()">
+            <button onclick="sendChat()" style="background:var(--primary); color:white; border:none; padding:10px; border-radius:10px; cursor:pointer;"><i class="fas fa-paper-plane"></i></button>
+        </div>
     </div>
-    <div class="stat-card">
-      <span class="stat-icon">🕶️</span>
-      <div class="stat-num" data-target="50" data-suffix="+">0+</div>
-      <div class="stat-lbl">موديل فاخر</div>
-    </div>
-  </div>
 
-  <!-- Wave divider -->
-  <div class="wave-div" aria-hidden="true">
-    <svg viewBox="0 0 400 20" preserveAspectRatio="none" height="20">
-      <path d="M0,10 C50,0 100,20 150,10 C200,0 250,20 300,10 C350,0 400,20 400,10 L400,20 L0,20 Z" fill="rgba(14,165,233,.12)"/>
-    </svg>
-  </div>
+    <script>
+        window.cmsData = {
+            topbar: "",
+            openTime: "10:00",
+            closeTime: "23:59",
+            statusMode: "auto" 
+        };
 
-  <!-- Section label -->
-  <div class="sec-lbl reveal"><span>خدماتنا</span></div>
+        window.applyCmsData = function(data) {
+            if (!data) return;
+            
+            // تفعيل وتغيير نص شريط الإعلانات فقط
+            if (data.topbar && data.topbar.trim() !== "") {
+                document.getElementById('dynamic-topbar').style.display = 'block';
+                document.getElementById('topbar-text').innerText = data.topbar;
+            } else {
+                document.getElementById('dynamic-topbar').style.display = 'none';
+            }
 
-  <!-- Action Cards -->
-  <div class="cards-grid reveal">
-    <a href="test.html" class="main-card hcard">
-      <!-- Decorative bg shape -->
-      <svg style="position:absolute;top:-10px;right:-10px;opacity:.12;" width="80" height="80" viewBox="0 0 80 80"><circle cx="60" cy="20" r="40" fill="#0ea5e9"/></svg>
-      <div class="card-icon-wrap ci-teal"><i class="fas fa-microscope"></i></div>
-      <span class="card-title" id="txt-test">الفحص الذكي</span>
-      <span class="card-desc">مجاني وفوري · 6 اختبارات</span>
-    </a>
-    <a href="collection.html" class="main-card">
-      <!-- Decorative bg shape -->
-      <svg style="position:absolute;top:-10px;left:-10px;opacity:.12;" width="80" height="80" viewBox="0 0 80 80"><circle cx="20" cy="20" r="40" fill="#7c3aed"/></svg>
-      <div class="card-icon-wrap ci-indigo"><i class="fas fa-glasses"></i></div>
-      <span class="card-title" id="txt-coll">التشكيلات</span>
-      <span class="card-desc">50+ موديل فاخر</span>
-    </a>
-  </div>
+            if (data.openTime) window.cmsData.openTime = data.openTime;
+            if (data.closeTime) window.cmsData.closeTime = data.closeTime;
+            if (data.statusMode) window.cmsData.statusMode = data.statusMode;
 
-  <!-- Section label -->
-  <div class="sec-lbl reveal"><span>مميزاتنا</span></div>
+            updateStoreStatus();
+        };
 
-  <!-- Quick Services -->
-  <div class="services reveal">
-    <div class="srv"><div class="srv-ic"><i class="fas fa-tools"></i></div><span class="srv-t">صيانة فورية</span></div>
-    <div class="srv"><div class="srv-ic"><i class="fas fa-truck"></i></div><span class="srv-t">توصيل</span></div>
-    <div class="srv"><div class="srv-ic"><i class="fas fa-eye"></i></div><span class="srv-t">تجهيز عدسات</span></div>
-    <div class="srv"><div class="srv-ic"><i class="fas fa-shield-alt"></i></div><span class="srv-t">ضمان</span></div>
-  </div>
+        function updateStoreStatus() {
+            const text = document.getElementById('status-text');
+            const dot = document.getElementById('status-dot');
+            const countdown = document.getElementById('countdown-msg');
+            const mode = window.cmsData.statusMode;
 
-  <!-- Wave divider 2 -->
-  <div class="wave-div" aria-hidden="true" style="transform:scaleX(-1);margin-top:4px;">
-    <svg viewBox="0 0 400 20" preserveAspectRatio="none" height="20">
-      <path d="M0,5 C60,20 120,0 180,10 C240,20 300,0 400,8 L400,20 L0,20 Z" fill="rgba(124,58,237,.1)"/>
-    </svg>
-  </div>
+            if (mode === 'force_open') {
+                text.innerText = (curLang === 'ar' ? "مفتوح الآن" : "Open Now");
+                dot.className = "dot open-dot";
+                countdown.style.display = 'none'; 
+                return;
+            } else if (mode === 'force_close') {
+                text.innerText = (curLang === 'ar' ? "مغلق (إجازة)" : "Closed");
+                dot.className = "dot closed-dot";
+                countdown.style.display = 'none'; 
+                return;
+            }
 
-  <!-- Map CTA -->
-  <a id="map-btn" href="https://www.google.com/maps/search/?api=1&query=المقابلين+شارع+الإذاعة+والتلفزيون" target="_blank" class="wide-btn reveal">
-    <i class="fas fa-map-marker-alt"></i>
-    <span id="txt-loc">موقعنا على الخريطة</span>
-  </a>
+            countdown.style.display = 'block';
+            const now = new Date();
+            const curTotalMin = (now.getHours() * 60) + now.getMinutes();
 
-  <!-- Social -->
-  <div class="social reveal">
-    <a href="https://facebook.com/delta.optics1" target="_blank" class="soc-btn fb"><i class="fab fa-facebook-f"></i> Facebook</a>
-    <a href="https://instagram.com/delta.optics1" target="_blank" class="soc-btn ig"><i class="fab fa-instagram"></i> Instagram</a>
-  </div>
+            let openStr = window.cmsData.openTime || "10:00";
+            let closeStr = window.cmsData.closeTime || "23:59";
+            
+            if (!openStr.includes(':')) openStr = "10:00";
+            if (!closeStr.includes(':')) closeStr = "23:59";
 
-  <!-- Section label -->
-  <div class="sec-lbl reveal"><span>آراء العملاء</span></div>
+            let [openH, openM] = openStr.split(':').map(Number);
+            let [closeH, closeM] = closeStr.split(':').map(Number);
 
-  <!-- Reviews -->
-  <div class="rev-section reveal">
-    <div class="rev-head"><i class="fas fa-star"></i> <span id="txt-rev-title">ماذا يقول عملاؤنا؟</span></div>
-    <div id="reviews-container"></div>
-  </div>
+            const openTotalMin = (openH * 60) + (openM || 0);
+            const closeTotalMin = (closeH * 60) + (closeM || 0);
 
-</main>
+            let isOpen = false;
+            if (closeTotalMin > openTotalMin) {
+                isOpen = (curTotalMin >= openTotalMin && curTotalMin < closeTotalMin);
+            } else { 
+                isOpen = (curTotalMin >= openTotalMin || curTotalMin < closeTotalMin);
+            }
 
-<!-- Brand Marquee with pill style -->
-<div class="marquee-wrap">
-  <div class="mq">
-    <span class="bi">👓 RAY-BAN</span><span class="bi">✨ GUCCI</span><span class="bi">🏎 OAKLEY</span><span class="bi">💎 PRADA</span><span class="bi">🌟 VERSACE</span><span class="bi">🎯 TOM FORD</span><span class="bi">🌸 DIOR</span><span class="bi">💛 CARTIER</span><span class="bi">🖤 CHANEL</span>
-    <span class="bi">👓 RAY-BAN</span><span class="bi">✨ GUCCI</span><span class="bi">🏎 OAKLEY</span><span class="bi">💎 PRADA</span><span class="bi">🌟 VERSACE</span><span class="bi">🎯 TOM FORD</span><span class="bi">🌸 DIOR</span><span class="bi">💛 CARTIER</span><span class="bi">🖤 CHANEL</span>
-  </div>
-</div>
+            if (isOpen) {
+                text.innerText = (curLang === 'ar' ? "مفتوح الآن" : "Open Now");
+                dot.className = "dot open-dot";
+                let timeToClose = closeTotalMin - curTotalMin;
+                if (timeToClose < 0) timeToClose += 1440;
+                countdown.innerText = (curLang === 'ar' ? "يغلق بعد: " : "Closes in: ") + formatTime(timeToClose);
+            } else {
+                text.innerText = (curLang === 'ar' ? "مغلق الآن" : "Closed Now");
+                dot.className = "dot closed-dot";
+                let timeToOpen = openTotalMin - curTotalMin;
+                if (timeToOpen < 0) timeToOpen += 1440;
+                countdown.innerText = (curLang === 'ar' ? "يفتح بعد: " : "Opens in: ") + formatTime(timeToOpen);
+            }
+        }
 
-<!-- FABs -->
-<div class="fabs">
-  <button class="fab fab-ai" onclick="toggleChat()" title="المستشار الذكي"><i class="fas fa-robot"></i></button>
-  <a class="fab fab-wa" href="https://wa.me/962775549700" target="_blank" title="واتساب"><i class="fab fa-whatsapp"></i></a>
-  <a class="fab fab-ph" href="tel:+962775549700" title="اتصال"><i class="fas fa-phone"></i></a>
-</div>
+        window.triggerStatusUpdate = updateStoreStatus;
 
-<!-- AI Chat -->
-<div class="chat-overlay" id="chat-overlay">
-  <div class="chat-hdr">
-    <div class="chat-hdr-left">
-      <div class="chat-av"><i class="fas fa-robot"></i></div>
-      <div class="chat-hdr-info">
-        <span>مستشار دلتا الذكي</span>
-        <small>متوفر الآن · Delta AI</small>
-      </div>
-    </div>
-    <button class="chat-hdr-close" onclick="toggleChat()"><i class="fas fa-times"></i></button>
-  </div>
-  <div class="chat-body" id="chat-body">
-    <div class="msg ai-msg">أهلاً بك في دلتا للبصريات! 👓<br>كيف بقدر أساعدك اليوم؟</div>
-  </div>
-  <div class="chat-footer">
-    <input class="chat-input" id="chat-input" type="text" placeholder="اكتب سؤالك هنا..." onkeydown="if(event.key==='Enter') sendChat()">
-    <button class="chat-send" onclick="sendChat()"><i class="fas fa-paper-plane"></i></button>
-  </div>
-</div>
+        function formatTime(t) {
+            const h = Math.floor(t / 60); const m = t % 60;
+            if (curLang === 'en') return `${h}h ${m}m`;
+            let res = "";
+            if (h > 0) res += (h === 1 ? "ساعة" : h === 2 ? "ساعتين" : h <= 10 ? h + " ساعات" : h + " ساعة") + " ";
+            if (m > 0) res += (h > 0 ? "و " : "") + (m === 1 ? "دقيقة" : m === 2 ? "دقيقتين" : m <= 10 ? m + " دقائق" : m + " دقيقة");
+            return res || "أقل من دقيقة";
+        }
 
-<script>
-// ── i18n ──
-const T = {
-  ar: { hero:'دلتا للبصريات', sub:'المقابلين — شارع الإذاعة والتلفزيون\nخبراء العناية بالعين وأحدث الماركات العالمية', test:'الفحص الذكي', coll:'التشكيلات', loc:'موقعنا على الخريطة', revTitle:'آراء عملائنا', open:'مفتوح الآن', closed:'مغلق الآن', closesIn:'يغلق بعد: ', opensIn:'يفتح بعد: ', langBtn:'EN' },
-  en: { hero:'Delta Optics', sub:'Al Muqablain - Radio & TV Street\nExperts in Eye Care & Latest Brands', test:'Smart Clinic', coll:'Collection', loc:'Find Us on the Map', revTitle:'Customer Reviews', open:'Open Now', closed:'Closed Now', closesIn:'Closes in: ', opensIn:'Opens in: ', langBtn:'AR' }
-};
-const reviews = {
-  ar: [
-    { name:'محمد العلي', text:'خدمة ممتازة، الفحص دقيق جداً والكادر محترف.', stars:5 },
-    { name:'سعاد محمد', text:'المحل مرتب والتعامل راقي، الأسعار مناسبة جداً.', stars:5 },
-    { name:'خالد الزعبي', text:'أفضل محل بصريات في المقابلين، أنصح به بشدة!', stars:5 },
-    { name:'نور الأحمد', text:'شريت نظارتي من هون وبشوفها أحسن من قبل 😍', stars:5 }
-  ],
-  en: [
-    { name:'Mohammad Ali', text:'Excellent service, very accurate eye test and professional staff.', stars:5 },
-    { name:'Suad M.', text:'Great shop, professional staff and good prices.', stars:5 },
-    { name:'Khaled Z.', text:'Best optical shop in Al Muqablain, highly recommended!', stars:5 }
-  ]
-};
+        const reviewsData = {
+            ar: [
+                { name: "محمد العلي", text: "خدمة ممتازة، الدكتور شاطر والفحص دقيق جداً." },
+                { name: "سعاد محمد", text: "المحل مرتب والتعامل راقي، الأسعار مناسبة." },
+                { name: "خالد الزعبي", text: "أفضل محل بصريات في المقابلين، أنصح به بشدة." }
+            ],
+            en: [
+                { name: "Mohammad Ali", text: "Excellent service, very accurate eye test." },
+                { name: "Suad M.", text: "Great shop, professional staff and good prices." },
+                { name: "Khaled Z.", text: "Best optical shop in Al Muqablain, highly recommended." }
+            ]
+        };
 
-let lang = 'ar';
-let cmsData = { openTime:'10:00', closeTime:'23:59', statusMode:'auto' };
+        function loadReviews() {
+            const container = document.getElementById('reviews-container');
+            container.innerHTML = '';
+            const list = reviewsData[curLang];
+            const shuffled = [...list].sort(() => 0.5 - Math.random()).slice(0, 2);
+            shuffled.forEach(rev => {
+                container.innerHTML += `<div class="review"><div class="rev-top"><span class="rev-user">${rev.name}</span><span class="rev-stars">★★★★★</span></div><p class="rev-msg">${rev.text}</p></div>`;
+            });
+        }
 
-// ── Theme ──
-function toggleTheme() {
-  const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', t);
-  document.getElementById('theme-ic').className = t === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
-  localStorage.setItem('theme', t);
-}
-(function(){ const t = localStorage.getItem('theme')||'dark'; document.documentElement.setAttribute('data-theme',t); document.getElementById('theme-ic').className = t==='dark'?'fas fa-moon':'fas fa-sun'; })();
+        async function sendChat() {
+            const input = document.getElementById('chat-input');
+            const body = document.getElementById('chat-body');
+            if(!input.value.trim()) return;
+            const q = input.value;
+            body.innerHTML += `<div class="msg user-msg">${q}</div>`;
+            input.value = ""; body.scrollTop = body.scrollHeight;
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyAgR51pScEgGUIky_N6fX6GaelzsfI5ZBM`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ contents: [{ parts: [{ text: "أنت مساعد ذكي لمركز دلتا للبصريات في الأردن. أجب بلهجة أردنية مختصرة. شجع على فحص النظر المجاني في المقابلين. السؤال: " + q }] }] })
+                });
+                const data = await res.json();
+                body.innerHTML += `<div class="msg ai-msg">${data.candidates[0].content.parts[0].text}</div>`;
+                body.scrollTop = body.scrollHeight;
+            } catch (e) { body.innerHTML += `<div class="msg ai-msg">تواصل معنا واتساب لخدمة أسرع! 💚</div>`; }
+        }
 
-// ── Lang ──
-function toggleLang() {
-  lang = lang === 'ar' ? 'en' : 'ar';
-  document.documentElement.lang = lang;
-  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-  document.getElementById('lang-btn').innerText = T[lang].langBtn;
-  applyLang();
-  updateStatus();
-  loadReviews();
-}
-function applyLang() {
-  const t = T[lang];
-  document.getElementById('txt-hero').innerText = t.hero;
-  document.getElementById('txt-sub').innerText = t.sub;
-  document.getElementById('txt-test').innerText = t.test;
-  document.getElementById('txt-coll').innerText = t.coll;
-  document.getElementById('txt-loc').innerText = t.loc;
-  document.getElementById('txt-rev-title').innerText = t.revTitle;
-}
+        let curLang = 'ar';
+        function toggleLang() {
+            curLang = curLang === 'ar' ? 'en' : 'ar';
+            document.getElementById('lang-btn').innerText = curLang === 'ar' ? 'EN' : 'AR';
+            document.documentElement.dir = curLang === 'ar' ? 'rtl' : 'ltr';
+            updateStoreStatus(); loadReviews();
+        }
 
-// ── Status ──
-function updateStatus() {
-  const txt = document.getElementById('status-text');
-  const dot = document.getElementById('sdot');
-  const cd  = document.getElementById('countdown');
-  const mode = cmsData.statusMode;
-  const t = T[lang];
+        function toggleTheme() {
+            const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+            document.getElementById('theme-btn').innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        }
 
-  if (mode === 'force_open') { txt.innerText = t.open; dot.className='sdot sdot-ok'; cd.style.display='none'; return; }
-  if (mode === 'force_close') { txt.innerText = t.closed; dot.className='sdot sdot-err'; cd.style.display='none'; return; }
+        document.querySelectorAll('.tilt-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                let r = card.getBoundingClientRect();
+                card.style.transform = `rotateX(${(e.clientY - r.top - r.height/2)/-10}deg) rotateY(${(e.clientX - r.left - r.width/2)/10}deg) scale(1.02)`;
+            });
+            card.addEventListener('mouseleave', () => card.style.transform = 'rotateX(0) rotateY(0) scale(1)');
+        });
 
-  cd.style.display = 'block';
-  const now = new Date(); const cur = now.getHours()*60 + now.getMinutes();
-  const [oh,om] = cmsData.openTime.split(':').map(Number);
-  const [ch,cm] = cmsData.closeTime.split(':').map(Number);
-  const open = oh*60+(om||0), close = ch*60+(cm||0);
-  const isOpen = close > open ? (cur >= open && cur < close) : (cur >= open || cur < close);
+        function toggleChat() { const c = document.getElementById('chat-overlay'); c.style.display = (c.style.display === 'flex') ? 'none' : 'flex'; }
 
-  if (isOpen) {
-    txt.innerText = t.open; dot.className='sdot sdot-ok';
-    const left = ((close - cur) + 1440) % 1440;
-    cd.innerText = t.closesIn + fmtTime(left);
-  } else {
-    txt.innerText = t.closed; dot.className='sdot sdot-err';
-    const left = ((open - cur) + 1440) % 1440;
-    cd.innerText = t.opensIn + fmtTime(left);
-  }
-}
+        updateStoreStatus(); setInterval(updateStoreStatus, 60000); loadReviews();
+    </script>
 
-function fmtTime(t) {
-  const h = Math.floor(t/60), m = t%60;
-  if (lang === 'en') return `${h}h ${m}m`;
-  let r = '';
-  if (h > 0) r += (h===1?'ساعة':h===2?'ساعتين':h<=10?h+' ساعات':h+' ساعة') + ' ';
-  if (m > 0) r += (h>0?'و ':' ') + (m===1?'دقيقة':m===2?'دقيقتين':m<=10?m+' دقائق':m+' دقيقة');
-  return r || 'أقل من دقيقة';
-}
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-// ── Reviews ──
-function loadReviews() {
-  const c = document.getElementById('reviews-container');
-  const list = reviews[lang];
-  const sample = [...list].sort(()=>Math.random()-.5).slice(0,2);
-  c.innerHTML = sample.map(r => `<div class="review"><div class="rev-top"><span class="rev-user">${r.name}</span><span class="rev-stars">${'★'.repeat(r.stars)}</span></div><p class="rev-msg">${r.text}</p></div>`).join('');
-}
+        const firebaseConfig = {
+            apiKey: "AIzaSyB11C4GGgAyqeThs8a9cvDNN7frvAA1nqQ",
+            authDomain: "delta-optics-system.firebaseapp.com",
+            projectId: "delta-optics-system",
+            storageBucket: "delta-optics-system.firebasestorage.app",
+            messagingSenderId: "111176219224",
+            appId: "1:111176219224:web:e0d8a5f26b84d57249a82d"
+        };
 
-// ── Chat ──
-function toggleChat() {
-  const c = document.getElementById('chat-overlay');
-  c.style.display = c.style.display === 'flex' ? 'none' : 'flex';
-  if (c.style.display === 'flex') setTimeout(()=>document.getElementById('chat-input').focus(), 300);
-}
+        try {
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
 
-async function sendChat() {
-  const inp = document.getElementById('chat-input');
-  const body = document.getElementById('chat-body');
-  const q = inp.value.trim();
-  if (!q) return;
-  inp.value = '';
+            onSnapshot(doc(db, "settings", "cms"), (docSnap) => {
+                if (docSnap.exists()) {
+                    window.applyCmsData(docSnap.data());
+                }
+            });
+        } catch(error) {
+            console.error("مشكلة في الاتصال:", error);
+        }
+    </script>
 
-  body.innerHTML += `<div class="msg user-msg">${q}</div>`;
-  body.innerHTML += `<div class="msg ai-msg msg-typing"><div class="dot-typing"></div><div class="dot-typing"></div><div class="dot-typing"></div></div>`;
-  body.scrollTop = body.scrollHeight;
-
-  try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyAgR51pScEgGUIky_N6fX6GaelzsfI5ZBM`, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ contents:[{ parts:[{ text:`أنت مساعد ذكي متخصص لمركز دلتا للبصريات في المقابلين بالأردن. أجب باللهجة الأردنية الودية المختصرة. شجّع على زيارة المحل وفحص النظر المجاني. السؤال: ${q}` }] }] })
-    });
-    const data = await res.json();
-    body.querySelector('.msg-typing').remove();
-    body.innerHTML += `<div class="msg ai-msg">${data.candidates[0].content.parts[0].text.replace(/\n/g,'<br>')}</div>`;
-  } catch {
-    body.querySelector('.msg-typing').remove();
-    body.innerHTML += `<div class="msg ai-msg">تواصل معنا على واتساب للمساعدة الفورية 💚</div>`;
-  }
-  body.scrollTop = body.scrollHeight;
-}
-
-// ── Stats Counter ──
-function animateCounters() {
-  document.querySelectorAll('.stat-num[data-target]').forEach(el => {
-    const target = +el.dataset.target;
-    const suffix = el.dataset.suffix || '+';
-    let start = 0;
-    const step = Math.ceil(target / 40);
-    const timer = setInterval(() => {
-      start = Math.min(start + step, target);
-      el.innerText = start + suffix;
-      if (start >= target) clearInterval(timer);
-    }, 35);
-  });
-}
-
-// ── Scroll Reveal + IntersectionObserver ──
-function initReveal() {
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-}
-
-// ── Init ──
-updateStatus();
-setInterval(updateStatus, 60000);
-loadReviews();
-initReveal();
-setTimeout(animateCounters, 400);
-</script>
-
-<!-- Firebase CMS (realtime) -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-const cfg = { apiKey:"AIzaSyB11C4GGgAyqeThs8a9cvDNN7frvAA1nqQ", authDomain:"delta-optics-system.firebaseapp.com", projectId:"delta-optics-system", storageBucket:"delta-optics-system.firebasestorage.app", messagingSenderId:"111176219224", appId:"1:111176219224:web:e0d8a5f26b84d57249a82d" };
-try {
-  const db = getFirestore(initializeApp(cfg));
-  onSnapshot(doc(db,"settings","cms"), snap => {
-    if (!snap.exists()) return;
-    const d = snap.data();
-    if (d.topbar?.trim()) { document.getElementById('topbar').style.display='block'; document.getElementById('topbar-text').innerText=d.topbar; }
-    if (d.openTime) window.cmsData = { ...window.cmsData, ...d };
-    window.updateStatus && window.updateStatus();
-  });
-} catch(e) { console.warn('CMS offline:', e); }
-</script>
 </body>
 </html>

@@ -52,11 +52,9 @@ body{background:var(--bg1);color:var(--t1);min-height:100vh;transition:var(--tr)
 }
 @keyframes lbIn{from{opacity:0;transform:translateY(40px) scale(.9);}to{opacity:1;transform:none;}}
 .llogo{width:68px;height:68px;border-radius:16px;overflow:hidden;margin:0 auto 18px;
-  box-shadow:0 8px 24px rgba(79,142,247,.3);animation:flt 3.5s ease-in-out infinite;
-  background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;}
+  box-shadow:0 8px 24px rgba(79,142,247,.3);animation:flt 3.5s ease-in-out infinite;}
 @keyframes flt{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
-.llogo img{width:100%;height:100%;object-fit:cover;display:block;}
-.llogo i{color:#fff;font-size:28px;display:none;}
+.llogo img{width:100%;height:100%;object-fit:cover;}
 .ltit{text-align:center;font-size:22px;font-weight:900;margin-bottom:3px;}
 .lsub{text-align:center;font-size:11px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin-bottom:26px;}
 .ltabs{display:flex;background:rgba(0,0,0,.3);border-radius:10px;padding:4px;gap:4px;margin-bottom:22px;}
@@ -100,17 +98,16 @@ body{background:var(--bg1);color:var(--t1);min-height:100vh;transition:var(--tr)
 #sb-overlay.on{opacity:1;pointer-events:all;}
 
 .sb-top{display:flex;align-items:center;justify-content:space-between;padding:18px 16px;border-bottom:1px solid var(--glass-b);}
-.sb-brand{display:flex;align-items:center;gap:11px;margin:auto;}
-.sb-logo{width:32px;height:32px;border-radius:8px;overflow:hidden;box-shadow:0 4px 12px rgba(79,142,247,.25);background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;}
+.sb-brand{display:flex;align-items:center;gap:11px;}
+.sb-logo{width:36px;height:36px;border-radius:9px;overflow:hidden;box-shadow:0 4px 12px rgba(79,142,247,.25);}
 .sb-logo img{width:100%;height:100%;object-fit:cover;}
-.sb-logo i{color:#fff;font-size:14px;}
-.sb-nm{font-size:13px;font-weight:900;}
-.sb-vr{font-size:8px;color:var(--t3);letter-spacing:1px;}
+.sb-nm{font-size:14px;font-weight:900;}
+.sb-vr{font-size:9px;color:var(--t3);letter-spacing:1.2px;}
 .btn-sbc{width:28px;height:28px;border:none;background:var(--glass);color:var(--t2);border-radius:7px;cursor:pointer;font-size:12px;transition:var(--tr);}
 .btn-sbc:hover{background:var(--red);color:#fff;transform:rotate(90deg);}
 
-.sb-ubox{margin:12px 14px;padding:11px 13px;background:linear-gradient(135deg,rgba(79,142,247,.12),rgba(139,92,246,.08));border:1px solid rgba(79,142,247,.2);border-radius:var(--r);display:flex;align-items:center;gap:10px;box-shadow:0 2px 12px rgba(79,142,247,.1);}
-.sb-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:900;box-shadow:0 4px 16px rgba(79,142,247,.4);}
+.sb-ubox{margin:12px 14px;padding:11px 13px;background:linear-gradient(135deg,rgba(79,142,247,.1),rgba(139,92,246,.08));border:1px solid rgba(79,142,247,.15);border-radius:var(--r);display:flex;align-items:center;gap:10px;}
+.sb-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:900;box-shadow:0 4px 12px rgba(79,142,247,.3);}
 .sb-unm{font-size:13px;font-weight:700;}
 .sb-url{font-size:11px;color:var(--t3);}
 
@@ -145,7 +142,7 @@ body{background:var(--bg1);color:var(--t1);min-height:100vh;transition:var(--tr)
 .btn-hth:hover{background:var(--glass-h);border-color:var(--blue);}
 .hdr-u{display:flex;align-items:center;gap:9px;padding:5px 11px 5px 5px;border:1px solid var(--glass-b);border-radius:50px;background:var(--glass);cursor:pointer;transition:var(--tr);}
 .hdr-u:hover{background:var(--glass-h);border-color:var(--blue);}
-.hdr-av{width:29px;height:29px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:900;box-shadow:0 2px 8px rgba(79,142,247,.3);}
+.hdr-av{width:29px;height:29px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:900;}
 .hdr-unm{font-size:13px;font-weight:700;}
 .hdr-url{font-size:10px;color:var(--t3);}
 
@@ -155,14 +152,11 @@ body{background:var(--bg1);color:var(--t1);min-height:100vh;transition:var(--tr)
 .page.page-active{display:block;animation:pgIn .35s ease;}
 @keyframes pgIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
 .pgh{margin-bottom:22px;}
-.pgt{font-size:26px;font-weight:900;color:var(--t1);margin-bottom:3px;display:flex;align-items:center;gap:8px;}
-.pgt i{color:var(--blue);font-size:20px;}
+.pgt{font-size:27px;font-weight:900;background:linear-gradient(135deg,var(--t1),var(--t2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:3px;}
 .pgs{font-size:13px;color:var(--t3);}
 
 /* ── CARDS ── */
-.card{background:var(--bg2);border:1px solid var(--glass-b);border-radius:var(--r2);box-shadow:0 4px 24px rgba(0,0,0,.15);transition:var(--tr);position:relative;overflow:hidden;}
-.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(79,142,247,.2),transparent);}
-.card:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.25);}
+.card{background:var(--bg2);border:1px solid var(--glass-b);border-radius:var(--r2);box-shadow:0 2px 12px rgba(0,0,0,.2);transition:var(--tr);}
 .cp{padding:22px;}
 .ctit{font-size:13px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;display:flex;align-items:center;gap:7px;}
 .ctit i{color:var(--blue);}
@@ -291,43 +285,6 @@ tbody tr:hover td{background:var(--glass);}
 
 /* ── RESPONSIVE ── */
 @media(max-width:900px){.g2{grid-template-columns:1fr;}.g3{grid-template-columns:1fr 1fr;}}
-
-/* ── TOAST SYSTEM ── */
-.toast-container{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;min-width:260px;max-width:380px;}
-.toast{background:var(--bg2);border:1px solid var(--glass-b);border-radius:12px;padding:11px 16px;box-shadow:0 8px 24px rgba(0,0,0,.4);display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;animation:toastIn .35s var(--bounce);pointer-events:all;}
-@keyframes toastIn{from{opacity:0;transform:translateY(-12px) scale(.9);}to{opacity:1;transform:none;}}
-.toast.out{animation:toastOut .3s ease forwards;}
-@keyframes toastOut{to{opacity:0;transform:translateY(-8px) scale(.95);}}
-.toast-ok{border-right:3px solid var(--green);}.toast-ok i{color:var(--green);}
-.toast-err{border-right:3px solid var(--red);}.toast-err i{color:var(--red);}
-.toast-info{border-right:3px solid var(--blue);}.toast-info i{color:var(--blue);}
-.toast-warn{border-right:3px solid var(--yellow);}.toast-warn i{color:var(--yellow);}
-
-/* ── KPI animated glow ── */
-.kcard::before{content:'';position:absolute;inset:0;border-radius:var(--r2);background:linear-gradient(135deg,rgba(79,142,247,.04),transparent);pointer-events:none;}
-.kcard .kv{transition:color .4s;}
-
-/* ── Loading bar ── */
-.load-bar{position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--purple),var(--blue));background-size:200% 100%;animation:loadAnim 1.2s linear infinite;z-index:9998;display:none;}
-.load-bar.on{display:block;}
-@keyframes loadAnim{0%{background-position:0% 0%;}100%{background-position:200% 0%;}}
-
-/* ── Sidebar hover upgrade ── */
-.ni{position:relative;overflow:hidden;}
-.ni::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(79,142,247,.05),transparent);transform:translateX(-100%);transition:transform .4s;}
-.ni:hover::after{transform:translateX(100%);}
-
-/* ── Clock ── */
-.hdr-clock{font-size:11px;color:var(--t3);font-family:monospace;font-weight:700;letter-spacing:.5px;white-space:nowrap;}
-
-/* ── Connection dot ── */
-.conn-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:connPulse 2s infinite;display:inline-block;margin-right:4px;}
-@keyframes connPulse{0%,100%{opacity:1;}50%{opacity:.4;}}
-
-/* ── Welcome banner upgrade ── */
-.welcome-banner h2{animation:waveText 3s ease-in-out infinite;}
-@keyframes waveText{0%,100%{opacity:1;}50%{opacity:.85;}}
-
 @media(max-width:600px){
   .mw{padding:16px 14px 30px;}
   .kgrid{grid-template-columns:1fr 1fr;}
@@ -345,10 +302,7 @@ tbody tr:hover td{background:var(--glass);}
 <!-- ══ LOGIN ══ -->
 <div id="login-screen">
   <div class="lbox">
-    <div class="llogo">
-      <img src="logo.jpg" alt="Delta" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" style="display:block;">
-      <i class="fas fa-glasses" style="display:none;"></i>
-    </div>
+    <div class="llogo"><img src="logo.jpg" alt="Delta"></div>
     <h1 class="ltit">Delta Vision Pro</h1>
     <p class="lsub">Enterprise System · نظام إداري</p>
     <div class="ltabs">
@@ -392,11 +346,8 @@ tbody tr:hover td{background:var(--glass);}
   <aside class="sidebar off" id="sidebar">
     <div class="sb-top">
       <div class="sb-brand">
-        <div class="sb-logo">
-          <img src="logo.jpg" alt="Delta" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" style="display:block;">
-          <i class="fas fa-glasses" style="display:none;"></i>
-        </div>
-        <div><div class="sb-nm">Delta Vision</div><div class="sb-vr">PRO</div></div>
+        <div class="sb-logo"><img src="logo.jpg" alt="Delta"></div>
+        <div><div class="sb-nm">Delta Vision</div><div class="sb-vr">ENTERPRISE PRO</div></div>
       </div>
       <button class="btn-sbc" onclick="toggleSidebar(false)"><i class="fas fa-times"></i></button>
     </div>
@@ -407,13 +358,15 @@ tbody tr:hover td{background:var(--glass);}
     </div>
 
     <nav class="sb-nav">
-      <div class="ng-lbl">🔧 العمليات</div>
-<div class="ni active" data-page="dash" onclick="goPage('dash')"><i class="fas fa-chart-line"></i><span>لوحة التحكم</span></div>
+      <div class="ng-lbl">العمليات</div>
+      <div class="ni active" data-page="dash" onclick="goPage('dash')"><i class="fas fa-chart-line"></i><span>لوحة التحكم</span></div>
       <div class="ni" data-page="clinic" onclick="goPage('clinic')"><i class="fas fa-stethoscope"></i><span>العيادة والملفات</span></div>
+      <div class="ni" data-page="pos" onclick="goPage('pos')"><i class="fas fa-cash-register"></i><span>الكاشير</span></div>
       <div class="ni" data-page="online" onclick="goPage('online')"><i class="fas fa-wifi"></i><span>الفحوصات الذكية</span></div>
       <div class="ni" data-page="lab" onclick="goPage('lab')"><i class="fas fa-flask"></i><span>المختبر</span></div>
 
-      <div class="ng-lbl">⚙️ الإدارة</div>
+      <div class="ng-lbl">الإدارة</div>
+      <div class="ni" data-page="inventory" onclick="goPage('inventory')"><i class="fas fa-boxes-stacked"></i><span>المخزون</span></div>
       <div class="ni" data-page="gallery" onclick="goPage('gallery')"><i class="fas fa-images"></i><span>معرض التشكيلات</span></div>
 
       <!-- Admin nav items wrapped so flex layout preserved -->
@@ -444,9 +397,8 @@ tbody tr:hover td{background:var(--glass);}
         <input type="text" id="g-search" placeholder="بحث سريع... (Ctrl+K)" onkeyup="globalSearch()">
       </div>
     </div>
-      <div class="hdr-r">
+    <div class="hdr-r">
       <span class="hdr-dt" id="date-chip"></span>
-      <span class="hdr-clock"><span class="conn-dot"></span><span id="live-clock">00:00:00</span></span>
       <button class="btn-hth" onclick="toggleTheme()" title="الوضع الليلي"><i class="fas fa-moon" id="theme-icon"></i></button>
       <div class="hdr-u" onclick="toggleSidebar(true)">
         <div class="hdr-av" id="u-av">DV</div>
@@ -463,58 +415,36 @@ tbody tr:hover td{background:var(--glass);}
 
     <!-- ══ DASHBOARD ══ -->
     <div id="page-dash" class="page page-active">
-      <div class="pgh"><h1 class="pgt"><i class="fas fa-chart-line" style="margin-left:8px;color:var(--blue)"></i>لوحة التحكم</h1><p class="pgs">نظرة شاملة على أداء اليوم</p></div>
-
-      <!-- Premium Welcome Banner -->
-      <div style="position:relative;border-radius:24px;padding:28px 28px 28px 140px;margin-bottom:24px;overflow:hidden;background:linear-gradient(135deg,rgba(79,142,247,.12),rgba(139,92,246,.1));border:1px solid rgba(79,142,247,.25);">
-        <!-- Decorative dot grid -->
-        <div style="position:absolute;inset:0;background-image:radial-gradient(circle,rgba(79,142,247,.06) 1px,transparent 1px);background-size:18px 18px;pointer-events:none;"></div>
-        <!-- Glasses SVG illustration -->
-        <div style="position:absolute;left:-10px;top:50%;transform:translateY(-50%);opacity:.9;">
-          <svg width="140" height="90" viewBox="0 0 240 82" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation:bannerGlass 6s ease-in-out infinite;">
-            <style>@keyframes bannerGlass{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}</style>
-            <defs>
-              <linearGradient id="bg1" x1="0" y1="0" x2="240" y2="82" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stop-color="#4f8ef7"/><stop offset="100%" stop-color="#8b5cf6"/>
-              </linearGradient>
-              <filter id="bg2"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-            </defs>
-            <path d="M26,22 Q12,18 3,15" stroke="url(#bg1)" stroke-width="2" stroke-linecap="round" opacity=".7"/>
-            <circle cx="62" cy="41" r="34" stroke="url(#bg1)" stroke-width="2.5" filter="url(#bg2)"/>
-            <circle cx="62" cy="41" r="24" stroke="url(#bg1)" stroke-width=".8" opacity=".3"/>
-            <circle cx="62" cy="41" r="33" fill="rgba(79,142,247,.08)"/>
-            <circle cx="51" cy="30" r="6" fill="rgba(255,255,255,.07)"/>
-            <circle cx="51" cy="30" r="2.5" fill="rgba(255,255,255,.2)"/>
-            <path d="M96,41 C106,27 134,27 144,41" stroke="url(#bg1)" stroke-width="2.5" stroke-linecap="round" filter="url(#bg2)"/>
-            <circle cx="178" cy="41" r="34" stroke="url(#bg1)" stroke-width="2.5" filter="url(#bg2)"/>
-            <circle cx="178" cy="41" r="24" stroke="url(#bg1)" stroke-width=".8" opacity=".3"/>
-            <circle cx="178" cy="41" r="33" fill="rgba(139,92,246,.08)"/>
-            <circle cx="167" cy="30" r="6" fill="rgba(255,255,255,.07)"/>
-            <circle cx="167" cy="30" r="2.5" fill="rgba(255,255,255,.2)"/>
-            <path d="M214,22 Q228,18 237,15" stroke="url(#bg1)" stroke-width="2" stroke-linecap="round" opacity=".7"/>
-            <circle cx="62" cy="41" r="4" fill="rgba(79,142,247,.5)"/>
-            <circle cx="178" cy="41" r="4" fill="rgba(139,92,246,.5)"/>
-          </svg>
-        </div>
-        <!-- Text -->
-        <div style="position:relative;z-index:2;">
-          <div style="font-size:11px;font-weight:900;letter-spacing:1.5px;color:var(--blue);text-transform:uppercase;margin-bottom:7px;opacity:.8;">DELTA VISION PRO &nbsp;·&nbsp; ENTERPRISE</div>
-          <h2 class="welcome-banner" style="font-size:21px;font-weight:900;color:var(--t1);margin-bottom:7px;">أهلاً بك في نظام دلتا الإداري</h2>
-          <p style="color:var(--t2);font-size:13px;line-height:1.65;max-width:380px;font-weight:500;">تتبع المبيعات والفحوصات وإدارة كل شيء من مكان واحد بسهولة واحترافية.</p>
-          <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
-            <span style="background:rgba(79,142,247,.15);border:1px solid rgba(79,142,247,.3);color:var(--blue);padding:4px 12px;border-radius:20px;font-size:11px;font-weight:800;">&#9679; متصل بـ Firebase</span>
-            <span style="background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.25);color:var(--green);padding:4px 12px;border-radius:20px;font-size:11px;font-weight:800;">&#10003; النظام يعمل</span>
+      <div class="pgh"><h1 class="pgt">لوحة التحكم</h1><p class="pgs">نظرة شاملة على أداء اليوم</p></div>
+      
+      <!-- Welcome Premium Banner -->
+      <div class="welcome-banner" style="background: linear-gradient(135deg, rgba(79, 142, 247, 0.15), rgba(139, 92, 246, 0.15)); border: 1px solid rgba(79, 142, 247, 0.3); border-radius: 24px; padding: 30px; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; overflow: hidden; position: relative;">
+          <div style="z-index: 2;">
+              <h2 style="font-size: 24px; font-weight: 900; margin-bottom: 5px; color: var(--blue);">أهلاً بك في نظام دلتا الإداري 👋</h2>
+              <p style="color: var(--t2); font-size: 14px; max-width: 400px; line-height: 1.6;">الآن يمكنك متابعة المبيعات، الفحوصات، وإدارة كل شيء من مكان واحد بسهولة واحترافية.</p>
           </div>
-        </div>
+          <div style="position: absolute; left: 20px; top: -30px; opacity: 0.8; z-index: 1;">
+              <!-- 3D Illustration placeholder via SVG -->
+              <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                      <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#4f8ef7;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                      </linearGradient>
+                  </defs>
+                  <circle cx="100" cy="100" r="80" fill="url(#grad1)" opacity="0.3" />
+                  <path d="M70,80 Q100,50 130,80 T130,140 Q100,170 70,140 T70,80" fill="url(#grad1)" />
+                  <circle cx="100" cy="110" r="30" fill="#fff" opacity="0.4" />
+              </svg>
+          </div>
       </div>
 
-      <!-- KPI Cards with icons -->
       <div class="kgrid">
-        <div class="kcard" style="border-top:2px solid var(--blue);"><div style="font-size:1.3rem;margin-bottom:3px;">💰</div><div class="kl">المبيعات اليومية</div><div class="kv mono" id="kpi-sales">0.00</div><div class="ku">JOD (إجمالي)</div></div>
-        <div class="kcard" style="border-top:2px solid var(--green);"><div style="font-size:1.3rem;margin-bottom:3px;">✅</div><div class="kl">المقبوضات</div><div class="kv mono" id="kpi-paid">0.00</div><div class="ku">JOD (مدفوع)</div></div>
-        <div class="kcard" style="border-top:2px solid var(--red);"><div style="font-size:1.3rem;margin-bottom:3px;">📤</div><div class="kl">المصاريف</div><div class="kv mono" style="color:var(--red)" id="kpi-exp">0.00</div><div class="ku">JOD</div></div>
-        <div class="kcard" style="border-top:2px solid var(--green);"><div style="font-size:1.3rem;margin-bottom:3px;">📊</div><div class="kl">صافي اليوم</div><div class="kv mono" style="color:var(--green)" id="kpi-net">0.00</div><div class="ku">JOD</div></div>
-        <div class="kcard" style="border-top:2px solid var(--yellow);"><div style="font-size:1.3rem;margin-bottom:3px;">⏳</div><div class="kl">الديون المعلقة</div><div class="kv mono" style="color:var(--yellow)" id="kpi-due">0.00</div><div class="ku">JOD</div></div>
+        <div class="kcard"><div class="kl">المبيعات اليومية</div><div class="kv mono" id="kpi-sales">0.00</div><div class="ku">JOD (إجمالي)</div></div>
+        <div class="kcard"><div class="kl">المقبوضات</div><div class="kv mono" id="kpi-paid">0.00</div><div class="ku">JOD (مدفوع)</div></div>
+        <div class="kcard"><div class="kl">المصاريف</div><div class="kv mono" style="color:var(--red)" id="kpi-exp">0.00</div><div class="ku">JOD</div></div>
+        <div class="kcard"><div class="kl">صافي اليوم</div><div class="kv mono" style="color:var(--green)" id="kpi-net">0.00</div><div class="ku">JOD</div></div>
+        <div class="kcard"><div class="kl">الديون المعلقة</div><div class="kv mono" style="color:var(--yellow)" id="kpi-due">0.00</div><div class="ku">JOD</div></div>
       </div>
       <div class="g2">
         <div class="card cp">
@@ -534,7 +464,7 @@ tbody tr:hover td{background:var(--glass);}
 
     <!-- ══ CLINIC ══ -->
     <div id="page-clinic" class="page">
-      <div class="pgh"><h1 class="pgt"><i class="fas fa-stethoscope" style="margin-left:8px;color:var(--blue)"></i>العيادة والملفات</h1><p class="pgs">إدخال وصفات الفحوصات وإدارة السجلات</p></div>
+      <div class="pgh"><h1 class="pgt">العيادة والملفات</h1><p class="pgs">إدخال وصفات الفحوصات وإدارة السجلات</p></div>
       <datalist id="patients-dl"></datalist>
       <div class="g2">
         <!-- RX Form -->
@@ -616,7 +546,7 @@ tbody tr:hover td{background:var(--glass);}
     </div>
 
     <!-- ══ POS ══ -->
-    <!-- <div id="page-pos" class="page">
+    <div id="page-pos" class="page">
       <div class="pgh"><h1 class="pgt">الكاشير السريع</h1><p class="pgs">مبيعات مباشرة من المخزون</p></div>
       <div class="g2">
         <div class="card cp">
@@ -651,11 +581,11 @@ tbody tr:hover td{background:var(--glass);}
           </table></div>
         </div>
       </div>
-    </div> -->
+    </div>
 
     <!-- ══ ONLINE ══ -->
     <div id="page-online" class="page">
-      <div class="pgh"><h1 class="pgt"><i class="fas fa-wifi" style="margin-left:8px;color:var(--blue)"></i>الفحوصات الذكية</h1><p class="pgs">طلبات الفحص الواردة من العيادة الإلكترونية</p></div>
+      <div class="pgh"><h1 class="pgt">الفحوصات الذكية</h1><p class="pgs">طلبات الفحص الواردة من العيادة الإلكترونية</p></div>
       <div class="card cp">
         <div class="ctit"><i class="fas fa-wifi"></i> طلبات الفحص الواردة</div>
         <div class="tw"><table>
@@ -667,7 +597,7 @@ tbody tr:hover td{background:var(--glass);}
 
     <!-- ══ LAB ══ -->
     <div id="page-lab" class="page">
-      <div class="pgh"><h1 class="pgt"><i class="fas fa-flask" style="margin-left:8px;color:var(--blue)"></i>المختبر</h1><p class="pgs">متابعة حالات الطلبات المرسلة للمختبر</p></div>
+      <div class="pgh"><h1 class="pgt">المختبر</h1><p class="pgs">متابعة حالات الطلبات المرسلة للمختبر</p></div>
       <div class="card cp">
         <div class="ctit"><i class="fas fa-flask"></i> طلبات المختبر</div>
         <div class="tw"><table>
@@ -678,7 +608,7 @@ tbody tr:hover td{background:var(--glass);}
     </div>
 
     <!-- ══ INVENTORY ══ -->
-    <!-- <div id="page-inventory" class="page">
+    <div id="page-inventory" class="page">
       <div class="pgh"><h1 class="pgt">إدارة المخزون</h1><p class="pgs">متابعة المنتجات والكميات</p></div>
       <div class="g2">
         <div class="card cp">
@@ -709,11 +639,11 @@ tbody tr:hover td{background:var(--glass);}
           </table></div>
         </div>
       </div>
-    </div> -->
+    </div>
 
     <!-- ══ GALLERY ══ -->
     <div id="page-gallery" class="page">
-      <div class="pgh"><h1 class="pgt"><i class="fas fa-images" style="margin-left:8px;color:var(--blue)"></i>معرض التشكيلات</h1><p class="pgs">إدارة الموديلات المعروضة للعملاء</p></div>
+      <div class="pgh"><h1 class="pgt">معرض التشكيلات</h1><p class="pgs">إدارة الموديلات المعروضة للعملاء</p></div>
       <div class="g2">
         <div class="card cp">
           <div class="ctit"><i class="fas fa-plus-circle"></i> إضافة / تعديل موديل</div>
@@ -742,7 +672,7 @@ tbody tr:hover td{background:var(--glass);}
 
     <!-- ══ ACCOUNTS (admin) ══ -->
     <div id="page-accounts" class="page">
-      <div class="pgh"><h1 class="pgt"><i class="fas fa-users-gear" style="margin-left:8px;color:var(--blue)"></i>إدارة الحسابات</h1><p class="pgs">إضافة وإدارة صلاحيات المستخدمين</p></div>
+      <div class="pgh"><h1 class="pgt">إدارة الحسابات</h1><p class="pgs">إضافة وإدارة صلاحيات المستخدمين</p></div>
       <div class="g2">
         <div class="card cp">
           <div class="ctit" id="acc-form-title"><i class="fas fa-user-plus"></i> إضافة حساب جديد</div>
@@ -752,13 +682,8 @@ tbody tr:hover td{background:var(--glass);}
             <div class="fg"><label class="fl">البريد *</label><input type="email" id="acc-user" class="fc" placeholder="user@delta.com" dir="ltr"></div>
           </div>
           <div class="frow">
-            <div class="fg" style="flex:2"><label class="fl">كلمة المرور</label>
-              <div class="pw-w">
-                <input type="password" id="acc-pass" class="fin" placeholder="اتركها فارغة إن لم تتغير">
-                <button class="pw-eye" onclick="togglePassVis('acc-pass','acc-pass-eye')" type="button"><i id="acc-pass-eye" class="fas fa-eye"></i></button>
-              </div>
-            </div>
-            <div class="fg" style="flex:1"><label class="fl">الدور</label>
+            <div class="fg"><label class="fl">كلمة المرور</label><input type="password" id="acc-pass" class="fc" placeholder="تُترك فارغة إن لم تتغير"></div>
+            <div class="fg"><label class="fl">الدور</label>
               <select id="acc-role" class="fc" onchange="syncRolePerms()">
                 <option value="employee">موظف</option><option value="manager">مدير</option><option value="developer">مطور / مشرف</option>
               </select>
@@ -794,7 +719,7 @@ tbody tr:hover td{background:var(--glass);}
 
     <!-- ══ REPORTS (admin) ══ -->
     <div id="page-reports" class="page">
-      <div class="pgh"><h1 class="pgt"><i class="fas fa-clipboard-list" style="margin-left:8px;color:var(--blue)"></i>سجل العمليات</h1><p class="pgs">مراقبة جميع الأنشطة</p></div>
+      <div class="pgh"><h1 class="pgt">سجل العمليات</h1><p class="pgs">مراقبة جميع الأنشطة</p></div>
       <div class="card cp">
         <div class="ctit"><i class="fas fa-clipboard-list"></i> آخر 50 عملية</div>
         <div class="tw"><table>
@@ -806,7 +731,7 @@ tbody tr:hover td{background:var(--glass);}
 
     <!-- ══ SETTINGS (admin) ══ -->
     <div id="page-settings" class="page">
-      <div class="pgh"><h1 class="pgt"><i class="fas fa-sliders" style="margin-left:8px;color:var(--blue)"></i>إعدادات النظام</h1><p class="pgs">إدارة CMS وإعدادات المتجر</p></div>
+      <div class="pgh"><h1 class="pgt">إعدادات النظام</h1><p class="pgs">إدارة CMS وإعدادات المتجر</p></div>
       <div class="card cp" style="max-width:580px;">
         <div class="ctit"><i class="fas fa-store"></i> إعدادات المتجر</div>
         <div class="fg"><label class="fl">شريط الإعلانات</label><input type="text" id="cms-topbar" class="fc" placeholder="نص الإعلان للعملاء..."></div>
@@ -827,7 +752,7 @@ tbody tr:hover td{background:var(--glass);}
 
     <!-- ══ RECYCLE BIN (developer) ══ -->
     <div id="page-recycle" class="page">
-      <div class="pgh"><h1 class="pgt"><i class="fas fa-trash-restore" style="margin-left:8px;color:var(--blue)"></i>سلة المحذوفات</h1><p class="pgs">استرجاع العناصر المحذوفة</p></div>
+      <div class="pgh"><h1 class="pgt">سلة المحذوفات</h1><p class="pgs">استرجاع العناصر المحذوفة</p></div>
       <div class="card cp">
         <div class="ctit"><i class="fas fa-trash-restore"></i> العناصر المحذوفة</div>
         <div class="tw"><table>
@@ -900,58 +825,6 @@ document.addEventListener('keydown', e => {
     if(ic) ic.className = 'fas fa-sun';
   }
 })();
-
-// ── TOAST SYSTEM ──
-window.toast = function(msg, type='ok', dur=3000) {
-  const icons = {ok:'fa-check-circle',err:'fa-times-circle',info:'fa-info-circle',warn:'fa-exclamation-triangle'};
-  const c = document.getElementById('toast-container');
-  const t = document.createElement('div');
-  t.className = `toast toast-${type}`;
-  t.innerHTML = `<i class="fas ${icons[type]||(icons.ok)}"></i><span>${msg}</span>`;
-  c.appendChild(t);
-  setTimeout(() => { t.classList.add('out'); setTimeout(()=>t.remove(), 320); }, dur);
-};
-
-// ── REAL-TIME CLOCK ──
-(function() {
-  function tick() {
-    const el = document.getElementById('live-clock');
-    if (el) {
-      const now = new Date();
-      el.innerText = now.toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:true});
-    }
-  }
-  tick();
-  setInterval(tick, 1000);
-})();
-
-// ── LOADING BAR (expose globally) ──
-window.showLoader = () => document.getElementById('load-bar')?.classList.add('on');
-window.hideLoader = () => document.getElementById('load-bar')?.classList.remove('on');
-
-// ── ANIMATED KPI COUNTER ──
-window.animateKPI = function(id, newVal) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  const target = parseFloat(newVal) || 0;
-  const current = parseFloat(el.innerText) || 0;
-  if (current === target) return;
-  const steps = 25;
-  const diff = (target - current) / steps;
-  let step = 0;
-  const t = setInterval(() => {
-    step++;
-    const v = step >= steps ? target : current + diff * step;
-    el.innerText = v.toFixed(2);
-    if (step >= steps) clearInterval(t);
-  }, 25);
-};
 </script>
-
-<!-- Toast Container -->
-<div class="toast-container" id="toast-container"></div>
-<!-- Loading Bar -->
-<div class="load-bar" id="load-bar"></div>
-
 </body>
 </html>

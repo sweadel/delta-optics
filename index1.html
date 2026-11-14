@@ -126,17 +126,17 @@
 
     <header>
         <div class="header-brand">
-            <img src="logo.jpg" class="header-logo" alt="Logo" fetchpriority="high">
+            <img src="logo.jpg" class="header-logo" alt="Delta Optics Logo" fetchpriority="high" onerror="this.src='logo.svg'">
             <h2 class="header-title">DELTA OPTICS</h2>
         </div>
         <div class="header-actions">
-            <button class="icon-btn" onclick="toggleTheme()" id="theme-btn"><i class="fas fa-moon"></i></button>
-            <button class="icon-btn" onclick="toggleLang()" id="lang-btn" style="font-weight: 900; font-size: 0.8rem;">EN</button>
+            <button class="icon-btn" onclick="toggleTheme()" id="theme-btn" title="تغيير المظهر" aria-label="تغيير المظهر بين الداكن والفاتح"><i class="fas fa-moon"></i></button>
+            <button class="icon-btn" onclick="toggleLang()" id="lang-btn" style="font-weight: 900; font-size: 0.8rem;" title="تغيير اللغة" aria-label="Switch Language">EN</button>
         </div>
     </header>
 
     <main>
-        <img src="logo.jpg" class="logo-box" alt="Delta Logo" fetchpriority="high">
+        <img src="logo.jpg" class="logo-box" alt="Delta Logo" fetchpriority="high" onerror="this.src='logo.svg'">
         <h1 id="txt-hero">دلتا للبصريات</h1>
         <p class="subtitle" id="txt-sub">المقابلين - شارع الإذاعة والتلفزيون<br>خبراء العناية بالعين وأحدث الماركات</p>
 
@@ -188,17 +188,17 @@
     </div>
 
     <div class="fab-area">
-        <button class="fab fab-ai" onclick="toggleChat()"><i class="fas fa-robot"></i></button>
-        <a href="https://wa.me/962775549700" class="fab" style="background:#25D366;"><i class="fab fa-whatsapp"></i></a>
-        <a href="tel:+962775549700" class="fab" style="background:var(--primary);"><i class="fas fa-phone"></i></a>
+        <button class="fab fab-ai" onclick="toggleChat()" title="المساعد الذكي" aria-label="المستشار والمساعد الذكي"><i class="fas fa-robot"></i></button>
+        <a href="https://wa.me/962775549700" class="fab" style="background:#25D366;" title="محادثة واتساب" aria-label="تواصل معنا عبر واتساب"><i class="fab fa-whatsapp"></i></a>
+        <a href="tel:+962775549700" class="fab" style="background:var(--primary);" title="اتصال هاتفي" aria-label="اتصل بنا هاتفياً"><i class="fas fa-phone"></i></a>
     </div>
 
     <div class="chat-overlay" id="chat-overlay">
-        <div class="chat-header"><span>مستشار دلتا الذكي</span><button onclick="toggleChat()" style="background:none; border:none; color:white; cursor:pointer;"><i class="fas fa-times"></i></button></div>
+        <div class="chat-header"><span>مستشار دلتا الذكي</span><button onclick="toggleChat()" style="background:none; border:none; color:white; cursor:pointer;" title="إغلاق المحادثة" aria-label="إغلاق نافذة المحادثة"><i class="fas fa-times"></i></button></div>
         <div class="chat-body" id="chat-body"><div class="msg ai-msg">أهلاً بك! كيف بقدر أخدمك اليوم بخصوص نظاراتك؟ 👓</div></div>
         <div class="chat-footer">
             <input type="text" id="chat-input" placeholder="اكتب سؤالك..." onkeypress="if(event.key==='Enter') sendChat()">
-            <button onclick="sendChat()" style="background:var(--primary); color:white; border:none; padding:10px; border-radius:10px; cursor:pointer;"><i class="fas fa-paper-plane"></i></button>
+            <button onclick="sendChat()" style="background:var(--primary); color:white; border:none; padding:10px; border-radius:10px; cursor:pointer;" title="إرسال الرسالة" aria-label="إرسال الرسالة"><i class="fas fa-paper-plane"></i></button>
         </div>
     </div>
 

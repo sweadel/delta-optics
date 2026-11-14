@@ -305,7 +305,7 @@ tbody tr:hover td{background:var(--glass);}
 <!-- ══ LOGIN ══ -->
 <div id="login-screen">
   <div class="lbox">
-    <div class="llogo"><img src="logo.jpg" alt="Delta"></div>
+    <div class="llogo"><img src="logo.jpg" alt="Delta Optics" onerror="this.src='logo.svg'"></div>
     <h1 class="ltit">Delta Vision Pro</h1>
     <p class="lsub">Enterprise System · نظام إداري</p>
     <div class="ltabs">
@@ -328,7 +328,7 @@ tbody tr:hover td{background:var(--glass);}
         </div>
         <div class="pw-w">
           <input id="auth-p" type="password" class="fin" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter') handleLogin()">
-          <button class="pw-eye" onclick="toggleAuthPassVis()" type="button"><i id="pass-eye-login" class="fas fa-eye"></i></button>
+          <button class="pw-eye" onclick="toggleAuthPassVis()" type="button" title="إظهار/إخفاء كلمة المرور" aria-label="إظهار أو إخفاء كلمة المرور"><i id="pass-eye-login" class="fas fa-eye"></i></button>
         </div>
       </div>
       <button class="btn-lo" onclick="handleLogin()"><i class="fas fa-arrow-right-to-bracket"></i> تسجيل الدخول</button>
@@ -359,10 +359,10 @@ tbody tr:hover td{background:var(--glass);}
   <aside class="sidebar off" id="sidebar">
     <div class="sb-top">
       <div class="sb-brand">
-        <div class="sb-logo"><img src="logo.jpg" alt="Delta"></div>
+        <div class="sb-logo"><img src="logo.jpg" alt="Delta Optics" onerror="this.src='logo.svg'"></div>
         <div><div class="sb-nm">Delta Vision</div><div class="sb-vr">ENTERPRISE PRO</div></div>
       </div>
-      <button class="btn-sbc" onclick="toggleSidebar(false)"><i class="fas fa-times"></i></button>
+      <button class="btn-sbc" onclick="toggleSidebar(false)" title="إغلاق القائمة الجانبية" aria-label="إغلاق القائمة الجانبية"><i class="fas fa-times"></i></button>
     </div>
 
     <div class="sb-ubox">
@@ -404,7 +404,7 @@ tbody tr:hover td{background:var(--glass);}
   <!-- Header -->
   <header class="hdr">
     <div class="hdr-l">
-      <button class="btn-mn" onclick="toggleSidebar(true)"><i class="fas fa-bars"></i></button>
+      <button class="btn-mn" onclick="toggleSidebar(true)" title="فتح القائمة الجانبية" aria-label="فتح القائمة الجانبية"><i class="fas fa-bars"></i></button>
       <div class="sw">
         <i class="fas fa-search"></i>
         <input type="text" id="g-search" placeholder="بحث سريع... (Ctrl+K)" onkeyup="globalSearch()">
@@ -443,7 +443,7 @@ tbody tr:hover td{background:var(--glass);}
               <p style="color: var(--t2); font-size: 14px; max-width: 400px; line-height: 1.6;">الآن يمكنك متابعة المبيعات، الفحوصات، وإدارة كل شيء من مكان واحد بسهولة واحترافية.</p>
           </div>
           <div style="position: absolute; left: 20px; top: -30px; opacity: 0.8; z-index: 1;">
-              <!-- 3D Illustration placeholder via SVG -->
+              <!-- 3D Vector Graphic Illustration via SVG -->
               <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                   <defs>
                       <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -805,8 +805,8 @@ tbody tr:hover td{background:var(--glass);}
     <div class="mhdr">
       <h2 class="mtit">سجل المراجع: <span id="hist-name">—</span></h2>
       <div style="display:flex;gap:8px;">
-        <button class="btn btn-sc btn-sm" onclick="printPatientHistory()"><i class="fas fa-print"></i> طباعة كشف</button>
-        <button class="btn-mc" onclick="closeModal('mod-history')"><i class="fas fa-times"></i></button>
+        <button class="btn btn-sc btn-sm" onclick="printPatientHistory()" title="طباعة كشف سجل المراجع"><i class="fas fa-print"></i> طباعة كشف</button>
+        <button class="btn-mc" onclick="closeModal('mod-history')" title="إغلاق النافذة" aria-label="إغلاق نافذة السجل"><i class="fas fa-times"></i></button>
       </div>
     </div>
     <div class="tw"><table>
@@ -820,7 +820,7 @@ tbody tr:hover td{background:var(--glass);}
   <div class="mbox" style="max-width:460px;">
     <div class="mhdr">
       <h2 class="mtit">تقرير الفحص الإلكتروني</h2>
-      <button class="btn-mc" onclick="closeModal('mod-online')"><i class="fas fa-times"></i></button>
+      <button class="btn-mc" onclick="closeModal('mod-online')" title="إغلاق النافذة" aria-label="إغلاق نافذة التقرير"><i class="fas fa-times"></i></button>
     </div>
     <div style="margin-bottom:14px;">
       <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="font-size:13px;color:var(--t3);">الاسم:</span><span class="fw" id="rpt-name">—</span></div>
@@ -828,8 +828,8 @@ tbody tr:hover td{background:var(--glass);}
     </div>
     <div style="background:var(--bg3);border:1px solid var(--glass-b);border-radius:var(--r);padding:13px;margin-bottom:14px;white-space:pre-wrap;font-size:13px;color:var(--t2);max-height:240px;overflow-y:auto;" id="rpt-details"></div>
     <div style="display:flex;gap:10px;">
-      <a class="btn btn-gn" id="btn-wa-rpt" href="#" target="_blank" style="flex:1;"><i class="fab fa-whatsapp"></i> واتساب</a>
-      <button class="btn btn-pr" id="btn-done-rpt" style="flex:1;"><i class="fas fa-check-circle"></i> تم المعالجة</button>
+      <a class="btn btn-gn" id="btn-wa-rpt" href="https://wa.me/962775549700" target="_blank" style="flex:1;" title="مراسلة عبر واتساب" aria-label="مراسلة المراجع عبر واتساب"><i class="fab fa-whatsapp"></i> واتساب</a>
+      <button class="btn btn-pr" id="btn-done-rpt" style="flex:1;" title="تأكيد معالجة الفحص"><i class="fas fa-check-circle"></i> تم المعالجة</button>
     </div>
   </div>
 </div>

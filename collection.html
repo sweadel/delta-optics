@@ -57,8 +57,8 @@
 
 <header>
     <div style="display: flex; align-items: center; gap: 12px;">
-        <a href="index.html" class="back-main"><i class="fas fa-arrow-right"></i></a>
-        <img src="logo.jpg" style="height: 40px; border-radius: 8px;">
+        <a href="index.html" class="back-main" title="العودة إلى الصفحة الرئيسية" aria-label="العودة إلى الصفحة الرئيسية"><i class="fas fa-arrow-right"></i></a>
+        <img src="logo.jpg" alt="شعار دلتا للبصريات" style="height: 40px; border-radius: 8px;" onerror="this.src='logo.svg'">
     </div>
     <h1 style="font-size: 1.1rem; font-weight: 800; color: var(--brand); margin: 0;">تشكيلات دلتا</h1>
 </header>
@@ -77,14 +77,14 @@
 
 <div class="lightbox" id="lightbox">
     <div class="lightbox-header">
-        <button class="btn-back-light" onclick="closeLightbox()"><i class="fas fa-arrow-right"></i></button>
+        <button class="btn-back-light" onclick="closeLightbox()" title="إغلاق والعودة للمعرض" aria-label="إغلاق والعودة للمعرض"><i class="fas fa-arrow-right"></i></button>
         <span style="color: white; margin-right: 15px; font-weight: bold;">العودة للمعرض</span>
     </div>
     
-    <img id="lb-img" src="">
+    <img id="lb-img" src="logo.svg" alt="معاينة الموديل" onerror="this.src='logo.svg'">
     <h3 id="lb-title" style="color: white; margin-top: 20px; text-align: center; font-weight: 800;"></h3>
     
-    <a id="lb-wa" href="#" target="_blank" class="wa-order-btn">
+    <a id="lb-wa" href="https://wa.me/962775549700" target="_blank" class="wa-order-btn" title="استفسار عبر واتساب" aria-label="استفسار عن هذا الموديل عبر واتساب">
         <i class="fab fa-whatsapp"></i> استفسار عن هذا الموديل
     </a>
 </div>

@@ -220,6 +220,24 @@ function applyRoles(role) {
   
   document.querySelectorAll('.admin-only').forEach(el    => { el.style.display = isAdmin ? (el.tagName === 'DIV' ? 'block' : 'inline-flex') : 'none'; });
   document.querySelectorAll('.developer-only').forEach(el => { el.style.display = isDev   ? (el.tagName === 'DIV' ? 'block' : 'inline-flex') : 'none'; });
+
+  // تفعيل صلاحيات الصفحات على عناصر القائمة الجانبية (Permissions Filter)
+  const userPerms = Auth.user?.permissions;
+  if (Array.isArray(userPerms) && userPerms.length > 0 && !isAdmin) {
+    document.querySelectorAll('.sb-nav .ni').forEach(item => {
+      const page = item.getAttribute('data-page');
+      if (page && page !== 'dash') {
+        const hasPerm = userPerms.includes(page) || userPerms.includes('view_' + page);
+        item.style.display = hasPerm ? 'flex' : 'none';
+      }
+    });
+  } else {
+    document.querySelectorAll('.sb-nav .ni').forEach(item => {
+      if (!item.closest('.admin-only') && !item.closest('.developer-only')) {
+        item.style.display = 'flex';
+      }
+    });
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -414,7 +432,7 @@ window.saveExpense = async () => {
 
 function renderLedger() {
   let rows = [], sales=0, paid=0, dues=0, exp=0;
-  const today = new Date().toDateString();
+  const today = window.dashDate ? new Date(window.dashDate).toDateString() : new Date().toDateString();
   
   invData.forEach(i => {
     if (i.time?.toDate().toDateString() !== today) return;
@@ -487,13 +505,28 @@ window.saveRx = async () => {
     extras: { type: g('u-ex-t'), price: parseFloat(g('u-ex-p'))||0 },
   };
   
+  // ─── Validation: فحص إذا كانت جميع حقول القياس والمشتريات فارغة ───
+  const rxEmpty = ['od-s','od-c','od-a','os-s','os-c'].every(id => { const v=g(id); return !v || v==='0'; });
+  const salesEmpty = !sales.frame.type && !sales.frame.price && !sales.lenses.type && !sales.lenses.price
+    && !sales.cl.type && !sales.cl.price && !sales.extras.type && !sales.extras.price;
+  
+  if (rxEmpty && salesEmpty) {
+    const confirm = await Swal.fire({
+      background:'var(--bg2)', color:'var(--t1)', confirmButtonColor:'#4f8ef7',
+      icon: 'warning', title: 'تنبيه',
+      text: 'لم تُدخل أي قياسات أو مشتريات، هل تريد الحفظ؟',
+      showCancelButton: true, confirmButtonText: 'نعم، احفظ', cancelButtonText: 'إلغاء'
+    });
+    if (!confirm.isConfirmed) return;
+  }
+  
   const sub  = parseFloat(document.getElementById('rx-sub').innerText)||0;
   const disc = parseFloat(document.getElementById('rx-disc').value)||0;
   const tot  = parseFloat(document.getElementById('rx-total').innerText)||0;
   const paid = parseFloat(document.getElementById('rx-paid').value)||0;
   const due  = parseFloat(document.getElementById('rx-due-val').value)||0;
   const pay  = document.getElementById('rx-pay').value;
-  const invId = 'DLT-' + Date.now().toString(36).toUpperCase() + Math.floor(Math.random()*100).toString(36).toUpperCase();
+  const invId = 'DLT-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 7).toUpperCase();
   const doctor = Auth.user?.name || 'موظف';
   const prodName = [sales.frame.type&&'إطار',sales.lenses.type&&'عدسات',sales.cl.type&&'لاصق',sales.extras.type&&'أخرى'].filter(Boolean).join(' + ') || 'فحص طبي';
   
@@ -590,19 +623,27 @@ function printRx(d) {
 window.showHistory = (pName) => {
   document.getElementById('hist-name').innerText = pName;
   const tbody = document.getElementById('tb-hist');
-  const records = window.allRecords.filter(r => r.pName === pName);
+  // فلترة حسب pName وترتيب بالتاريخ DESC، مع إزالة التكرارات بـ invId
+  const seen = new Set();
+  const records = window.allRecords
+    .filter(r => r.pName === pName && !seen.has(r.invId) && seen.add(r.invId))
+    .sort((a, b) => (b.time?.toDate()?.getTime()||0) - (a.time?.toDate()?.getTime()||0));
   
   tbody.innerHTML = records.length
-    ? records.map(r => `<tr>
+    ? records.map(r => {
+        const recType = r.isUnified ? '<span class="bdg bdg-b">عيادة</span>' : '<span class="bdg bdg-x">كاشير</span>';
+        return `<tr>
         <td class="mono dim">${r.time?.toDate().toLocaleDateString('en-GB')||'--'}</td>
         <td class="mono">${r.invId}</td>
         <td>${r.prodName}</td>
+        <td>${recType}</td>
         <td class="mono fw" style="color:var(--blue);">${(+r.total).toFixed(2)} JOD</td>
         <td style="display:flex;gap:5px;">
           <button class="btn btn-sc btn-sm" onclick="printRxById('${r.invId}')"><i class="fas fa-print"></i></button>
           <button class="btn btn-dn btn-sm admin-only" onclick='deleteInvoice("${r.id}",${JSON.stringify(r).replace(/'/g,"\\'")}, "${r.invId}")'><i class="fas fa-trash"></i></button>
-        </td></tr>`).join('')
-    : '<tr><td colspan="5" style="text-align:center;color:var(--t3);padding:20px;">لا يوجد سجلات</td></tr>';
+        </td></tr>`;
+      }).join('')
+    : '<tr><td colspan="6" style="text-align:center;color:var(--t3);padding:20px;">لا يوجد سجلات</td></tr>';
   
   openModal('mod-history');
   applyRoles(Auth.user?.role||'employee');
@@ -667,7 +708,7 @@ window.savePos = async () => {
   const paid  = parseFloat(document.getElementById('pos-paid').value)||0;
   const due   = parseFloat(document.getElementById('pos-due-val').value)||0;
   const pay   = document.getElementById('pos-pay').value;
-  const invId = 'POS-' + Date.now().toString(36).toUpperCase() + Math.floor(Math.random()*100).toString(36).toUpperCase();
+  const invId = 'POS-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 7).toUpperCase();
   
   try {
     await addDoc(collection(db,'invoices'), { invId, pName:cust, prodName:prod, subtotal:price, discountPercent:disc, total:tot, paid, due, paymentMethod:pay, labStatus:'تم التسليم', time:serverTimestamp(), isUnified:false, doctor:Auth.user?.name||'موظف' });
@@ -1067,4 +1108,97 @@ window.startSync = function() {
         <td><button class="btn btn-gn btn-sm" onclick='restore("${d.id}","${p.originalCol}","${p.originalId}",${JSON.stringify(p.data).replace(/'/g,"\\'")},"${p.displayName}","${p.typeLabel}")'><i class="fas fa-undo"></i> استرجاع</button></td></tr>`;
     }).join('');
   });
+
+  // ─── تحميل إعدادات CMS لصفحة Settings ───────────────────────────
+  onSnapshot(doc(db,'settings','cms'), snap => {
+    if(!snap.exists()) return;
+    const d = snap.data();
+    const topbarEl = document.getElementById('cms-topbar');
+    const modeEl   = document.getElementById('cms-mode');
+    const openEl   = document.getElementById('cms-open');
+    const closeEl  = document.getElementById('cms-close');
+    if(topbarEl) topbarEl.value = d.topbar || '';
+    if(modeEl)   modeEl.value   = d.statusMode || 'auto';
+    if(openEl)   openEl.value   = d.openTime   || '10:00';
+    if(closeEl)  closeEl.value  = d.closeTime  || '23:00';
+  });
 }
+
+// ═══════════════════════════════════════════════════════
+//  EXPORT HELPERS
+// ═══════════════════════════════════════════════════════
+
+window.applyDashDateFilter = () => {
+  const dVal = document.getElementById('dash-date-filter')?.value;
+  if (!dVal) return;
+  window.dashDate = dVal;
+  const lbl = document.getElementById('dash-date-label');
+  const txt = document.getElementById('dash-date-label-text');
+  if (lbl && txt) {
+    lbl.style.display = 'block';
+    txt.innerText = 'عرض حركات وتفاصيل تاريخ: ' + new Date(dVal).toLocaleDateString('ar-EG');
+  }
+  renderLedger();
+};
+
+window.resetDashDate = () => {
+  window.dashDate = null;
+  const input = document.getElementById('dash-date-filter');
+  if (input) input.value = '';
+  const lbl = document.getElementById('dash-date-label');
+  if (lbl) lbl.style.display = 'none';
+  renderLedger();
+};
+
+window.filterAuditTable = () => {
+  const userQuery = document.getElementById('audit-filter-user')?.value?.toLowerCase().trim() || '';
+  const actionQuery = document.getElementById('audit-filter-action')?.value?.toLowerCase().trim() || '';
+  const rows = document.querySelectorAll('#tb-audit tr');
+  rows.forEach(tr => {
+    const tds = tr.querySelectorAll('td');
+    if (tds.length < 4) return;
+    const userText = tds[0].innerText.toLowerCase();
+    const actionText = tds[2].innerText.toLowerCase();
+    const matchUser = !userQuery || userText.includes(userQuery);
+    const matchAction = !actionQuery || actionText.includes(actionQuery);
+    tr.style.display = (matchUser && matchAction) ? '' : 'none';
+  });
+};
+
+window.clearAuditFilter = () => {
+  const uInp = document.getElementById('audit-filter-user');
+  const aInp = document.getElementById('audit-filter-action');
+  if (uInp) uInp.value = '';
+  if (aInp) aInp.value = '';
+  document.querySelectorAll('#tb-audit tr').forEach(tr => tr.style.display = '');
+};
+
+window.exportAuditCSV = () => {
+  const rows = [['المستخدم','الجهاز','الإجراء','الوقت']];
+  document.querySelectorAll('#tb-audit tr').forEach(tr => {
+    const cells = [...tr.querySelectorAll('td')].map(td => '"' + td.innerText.replace(/"/g,'""') + '"');
+    if(cells.length) rows.push(cells);
+  });
+  const csv = '\uFEFF' + rows.map(r=>r.join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'audit_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+};
+
+window.exportReportCSV = (type) => {
+  let rows, tbId;
+  if(type === 'pos') { tbId = 'tb-pos'; rows = [['رقم الفاتورة','الزبون','المنتج','الإجمالي','الباقي']]; }
+  else if(type === 'clinic') { tbId = 'tb-rx'; rows = [['المراجع','آخر زيارة','الإجمالي']]; }
+  else if(type === 'inventory') { tbId = 'tb-inv'; rows = [['المنتج','النوع','الكمية','السعر']]; }
+  else return;
+  document.querySelectorAll('#' + tbId + ' tr').forEach(tr => {
+    const cells = [...tr.querySelectorAll('td')].map(td => '"' + td.innerText.replace(/"/g,'""') + '"');
+    if(cells.length > 1) rows.push(cells);
+  });
+  const csv = '\uFEFF' + rows.map(r=>r.join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = type + '_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+};

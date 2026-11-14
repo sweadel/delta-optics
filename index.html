@@ -428,7 +428,13 @@ tbody tr:hover td{background:var(--glass);}
 
     <!-- ══ DASHBOARD ══ -->
     <div id="page-dash" class="page page-active">
-      <div class="pgh"><h1 class="pgt">لوحة التحكم</h1><p class="pgs">نظرة شاملة على أداء اليوم</p></div>
+      <div class="pgh" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+        <div><h1 class="pgt">لوحة التحكم</h1><p class="pgs">نظرة شاملة على أداء اليوم</p></div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <div class="fg" style="margin-bottom:0;"><label class="fl">تاريخ العرض</label><input type="date" id="dash-date-filter" class="fc" style="width:170px;" onchange="applyDashDateFilter()"></div>
+          <button class="btn btn-sc btn-sm" onclick="resetDashDate()" title="عرض اليوم"><i class="fas fa-calendar-day"></i> اليوم</button>
+        </div>
+      </div>
       
       <!-- Welcome Premium Banner -->
       <div class="welcome-banner" style="background: linear-gradient(135deg, rgba(79, 142, 247, 0.15), rgba(139, 92, 246, 0.15)); border: 1px solid rgba(79, 142, 247, 0.3); border-radius: 24px; padding: 30px; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; overflow: hidden; position: relative;">
@@ -459,6 +465,7 @@ tbody tr:hover td{background:var(--glass);}
         <div class="kcard"><div class="kl">صافي اليوم</div><div class="kv mono" style="color:var(--green)" id="kpi-net">0.00</div><div class="ku">JOD</div></div>
         <div class="kcard"><div class="kl">الديون المعلقة</div><div class="kv mono" style="color:var(--yellow)" id="kpi-due">0.00</div><div class="ku">JOD</div></div>
       </div>
+      <div id="dash-date-label" style="font-size:12px;color:var(--t3);margin-bottom:12px;font-weight:600;display:none;"><i class="fas fa-calendar-alt" style="color:var(--blue);margin-left:5px;"></i><span id="dash-date-label-text"></span></div>
       <div class="g2">
         <div class="card cp">
           <div class="ctit"><i class="fas fa-stream"></i> حركات اليوم</div>
@@ -549,7 +556,10 @@ tbody tr:hover td{background:var(--glass);}
         </div>
         <!-- Patient Records -->
         <div class="card cp">
-          <div class="ctit"><i class="fas fa-users"></i> سجل المرضى</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <div class="ctit" style="margin-bottom:0;"><i class="fas fa-users"></i> سجل المرضى</div>
+            <button class="btn btn-sc btn-sm" onclick="exportReportCSV('clinic')"><i class="fas fa-file-csv"></i> تصدير</button>
+          </div>
           <div class="tw"><table>
             <thead><tr><th>المراجع</th><th>آخر زيارة</th><th>الإجمالي</th><th>سجل</th></tr></thead>
             <tbody id="tb-rx"><tr><td colspan="4" style="text-align:center;color:var(--t3);padding:30px;">لا توجد بيانات</td></tr></tbody>
@@ -587,7 +597,10 @@ tbody tr:hover td{background:var(--glass);}
           <button class="btn btn-pr btn-fl" onclick="savePos()"><i class="fas fa-receipt"></i> حفظ وطباعة الفاتورة</button>
         </div>
         <div class="card cp">
-          <div class="ctit"><i class="fas fa-history"></i> فواتير اليوم</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <div class="ctit" style="margin-bottom:0;"><i class="fas fa-history"></i> فواتير اليوم</div>
+            <button class="btn btn-sc btn-sm" onclick="exportReportCSV('pos')"><i class="fas fa-file-csv"></i> تصدير</button>
+          </div>
           <div class="tw"><table>
             <thead><tr><th>رقم</th><th>الزبون</th><th>المنتج</th><th>الإجمالي</th><th>الباقي</th><th>إجراء</th></tr></thead>
             <tbody id="tb-pos"><tr><td colspan="6" style="text-align:center;color:var(--t3);padding:30px;">لا توجد فواتير</td></tr></tbody>
@@ -733,6 +746,14 @@ tbody tr:hover td{background:var(--glass);}
     <!-- ══ REPORTS (admin) ══ -->
     <div id="page-reports" class="page">
       <div class="pgh"><h1 class="pgt">سجل العمليات</h1><p class="pgs">مراقبة جميع الأنشطة</p></div>
+      <div class="card cp" style="margin-bottom:16px;">
+        <div class="frow" style="align-items:flex-end;flex-wrap:wrap;gap:10px;">
+          <div class="fg" style="min-width:150px;margin-bottom:0;"><label class="fl">فلترة بالمستخدم</label><input type="text" id="audit-filter-user" class="fc" placeholder="اسم المستخدم..." oninput="filterAuditTable()"></div>
+          <div class="fg" style="min-width:150px;margin-bottom:0;"><label class="fl">فلترة بالإجراء</label><input type="text" id="audit-filter-action" class="fc" placeholder="نوع الإجراء..." oninput="filterAuditTable()"></div>
+          <button class="btn btn-gn" onclick="exportAuditCSV()" style="margin-bottom:0;"><i class="fas fa-file-csv"></i> تصدير CSV</button>
+          <button class="btn btn-sc" onclick="clearAuditFilter()" style="margin-bottom:0;"><i class="fas fa-times"></i> مسح الفلتر</button>
+        </div>
+      </div>
       <div class="card cp">
         <div class="ctit"><i class="fas fa-clipboard-list"></i> آخر 50 عملية</div>
         <div class="tw"><table>

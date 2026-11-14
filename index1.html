@@ -149,7 +149,7 @@
         </div>
 
         <div class="cards-grid">
-            <a href="test.html" class="main-card highlight-card tilt-card">
+            <a href="eye-test.html" class="main-card highlight-card tilt-card">
                 <i class="fas fa-microscope card-icon"></i>
                 <span class="card-title" id="txt-test">الفحص الذكي</span>
             </a>
@@ -318,13 +318,36 @@
             });
         }
 
+        function escapeHTML(str) {
+            if (str == null) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#x27;');
+        }
+
         async function sendChat() {
             const input = document.getElementById('chat-input');
             const body = document.getElementById('chat-body');
-            if(!input.value.trim()) return;
-            const q = input.value;
-            body.innerHTML += `<div class="msg user-msg">${q}</div>`;
-            input.value = ""; body.scrollTop = body.scrollHeight;
+            const q = input.value.trim();
+            if(!q) return;
+
+            const userDiv = document.createElement('div');
+            userDiv.className = 'msg user-msg';
+            userDiv.textContent = q;
+            body.appendChild(userDiv);
+
+            input.value = ""; 
+            body.scrollTop = body.scrollHeight;
+
+            const aiDiv = document.createElement('div');
+            aiDiv.className = 'msg ai-msg';
+            aiDiv.textContent = "جاري الرد...";
+            body.appendChild(aiDiv);
+            body.scrollTop = body.scrollHeight;
+
             try {
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyAgR51pScEgGUIky_N6fX6GaelzsfI5ZBM`, {
                     method: 'POST',
@@ -332,9 +355,12 @@
                     body: JSON.stringify({ contents: [{ parts: [{ text: "أنت مساعد ذكي لمركز دلتا للبصريات في الأردن. أجب بلهجة أردنية مختصرة. شجع على فحص النظر المجاني في المقابلين. السؤال: " + q }] }] })
                 });
                 const data = await res.json();
-                body.innerHTML += `<div class="msg ai-msg">${data.candidates[0].content.parts[0].text}</div>`;
+                const replyText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "تواصل معنا واتساب لخدمة أسرع! 💚";
+                aiDiv.textContent = replyText;
                 body.scrollTop = body.scrollHeight;
-            } catch (e) { body.innerHTML += `<div class="msg ai-msg">تواصل معنا واتساب لخدمة أسرع! 💚</div>`; }
+            } catch (e) { 
+                aiDiv.textContent = "تواصل معنا واتساب لخدمة أسرع! 💚"; 
+            }
         }
 
         let curLang = 'ar';

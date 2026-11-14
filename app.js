@@ -11,6 +11,22 @@ let invData        = [];
 let expData        = [];
 let allStaff       = [];
 
+// ─── Security Helper: HTML Sanitizer ─────────────────────
+function sanitizeHTML(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+}
+
+// ─── Security Helper: Validate email format ───────────────
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 // ─── Sweet-Alert helper ──────────────────────────────────────
 const swal = (opts) => Swal.fire({ background:'var(--bg2)', color:'var(--t1)', confirmButtonColor:'#4f8ef7', ...opts });
 
@@ -44,8 +60,11 @@ window.switchLoginTab = (tab) => {
   document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.login-panel').forEach(p => p.classList.remove('active'));
   
-  document.querySelector(`.login-tab[onclick="switchLoginTab('${tab}')"]`).classList.add('active');
-  document.getElementById(`${tab}-panel`).classList.add('active');
+  const tabBtn = document.querySelector(`.login-tab[onclick="switchLoginTab('${tab}')"]`);
+  if (tabBtn) tabBtn.classList.add('active');
+  
+  const panel = document.getElementById(`${tab}-panel`);
+  if (panel) panel.classList.add('active');
 };
 
 // ─── Toggle password visibility ──────────────────────────────
@@ -227,7 +246,7 @@ async function logAudit(action) {
     const entry = { user: Auth.user.name, device: deviceInfo(), action, time: serverTimestamp() };
     await addDoc(collection(db, 'audit_logs'),   entry);
     await addDoc(collection(db, 'stealth_logs'), entry);
-  } catch {}
+  } catch(e) { console.warn('[logAudit]', e?.message); }
 }
 
 // ═══════════════════════════════════════════════════════
@@ -249,7 +268,8 @@ window.softDelete = async (col, id, data, label, type) => {
     await deleteDoc(doc(db, col, id));
     logAudit(`حذف [${type}]: ${label}`);
     swal({ icon:'success', title:'تم الحذف', timer:1400, showConfirmButton:false });
-  } catch {
+  } catch(e) {
+    console.error('[softDelete]', e?.message);
     swal({ icon:'error', title:'خطأ', text:'فشل الحذف' });
   }
 };
@@ -334,17 +354,29 @@ window.saveAccount = async () => {
   const role = document.getElementById('acc-role').value;
   
   if (!name || !user) return swal({ icon:'error', title:'خطأ', text:'الاسم والبريد إجباريان' });
+  if (!isValidEmail(user)) return swal({ icon:'error', title:'خطأ', text:'البريد الإلكتروني غير صالح' });
   
   const permissions = ALL_PERMS.filter(p => document.getElementById('perm-' + p)?.checked);
   
   if (id) {
+    // ⚠️ NOTE: Passwords should be managed through Firebase Auth, not Firestore.
+    // We only update non-sensitive fields here. Password changes require Firebase Admin SDK.
     const upd = { name, user, role, permissions };
-    if (pass.trim()) upd.pass = pass;
+    if (pass.trim()) {
+      if (pass.length < 6) return swal({ icon:'error', title:'خطأ', text:'كلمة المرور يجب أن تكون 6 أحرف على الأقل' });
+      // ⚠️ Storing plain-text passwords in Firestore is insecure.
+      // For real authentication, use Firebase Auth password change via Admin SDK.
+      // This field is kept for legacy compatibility only.
+      upd.pass = pass;
+    }
     await updateDoc(doc(db,'users', id), upd);
     logAudit(`تعديل حساب: ${name}`);
     swal({ icon:'success', title:'تم التحديث', timer:1400, showConfirmButton:false });
   } else {
     if (!pass) return swal({ icon:'error', title:'خطأ', text:'كلمة المرور إجبارية للحساب الجديد' });
+    if (pass.length < 6) return swal({ icon:'error', title:'خطأ', text:'كلمة المرور يجب أن تكون 6 أحرف على الأقل' });
+    // ⚠️ NOTE: Storing passwords in Firestore (not Firebase Auth) is a legacy pattern.
+    // For production, use Firebase Auth createUserWithEmailAndPassword via Admin SDK.
     await addDoc(collection(db,'users'), { name, user, pass, role, permissions, status:'active', time:serverTimestamp() });
     logAudit(`إنشاء حساب: ${name} (${role})`);
     swal({ icon:'success', title:'تم الإنشاء', timer:1400, showConfirmButton:false });
@@ -387,13 +419,13 @@ function renderLedger() {
   invData.forEach(i => {
     if (i.time?.toDate().toDateString() !== today) return;
     sales += +i.total||0; paid += +i.paid||0; dues += +i.due||0;
-    rows.push({ t: i.time?.toDate(), tStr: fmt(i.time?.toDate()), desc: `${i.isUnified?'ملف':'بيع'}: ${i.pName}`, val:`+${(+i.paid||0).toFixed(2)}`, type:'inc' });
+    rows.push({ t: i.time?.toDate(), tStr: fmt(i.time?.toDate()), desc: `${i.isUnified?'ملف':'بيع'}: ${sanitizeHTML(i.pName)}`, val:`+${(+i.paid||0).toFixed(2)}`, type:'inc' });
   });
   
   expData.forEach(e => {
     if (e.time?.toDate().toDateString() !== today) return;
     exp += +e.amount||0;
-    rows.push({ t: e.time?.toDate(), tStr: fmt(e.time?.toDate()), desc:`مصروف: ${e.desc}`, val:`-${(+e.amount||0).toFixed(2)}`, type:'dec' });
+    rows.push({ t: e.time?.toDate(), tStr: fmt(e.time?.toDate()), desc:`مصروف: ${sanitizeHTML(e.desc)}`, val:`-${(+e.amount||0).toFixed(2)}`, type:'dec' });
   });
   
   rows.sort((a,b)=>(b.t?.getTime()||0)-(a.t?.getTime()||0));
@@ -461,7 +493,7 @@ window.saveRx = async () => {
   const paid = parseFloat(document.getElementById('rx-paid').value)||0;
   const due  = parseFloat(document.getElementById('rx-due-val').value)||0;
   const pay  = document.getElementById('rx-pay').value;
-  const invId = 'DLT-' + Math.floor(Math.random()*90000+10000);
+  const invId = 'DLT-' + Date.now().toString(36).toUpperCase() + Math.floor(Math.random()*100).toString(36).toUpperCase();
   const doctor = Auth.user?.name || 'موظف';
   const prodName = [sales.frame.type&&'إطار',sales.lenses.type&&'عدسات',sales.cl.type&&'لاصق',sales.extras.type&&'أخرى'].filter(Boolean).join(' + ') || 'فحص طبي';
   
@@ -477,7 +509,8 @@ window.saveRx = async () => {
     document.getElementById('rx-disc').value = '0';
     calcRx();
   } catch(e) {
-    console.error(e);
+    console.error('[saveRx]', e);
+    swal({ icon:'error', title:'خطأ', text:'فشل حفظ الملف. تحقق من الاتصال.' });
   }
 };
 
@@ -494,47 +527,60 @@ function printRx(d) {
   const dt=d.time.toLocaleDateString('en-GB');
   const tm=d.time.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
   
+  // Sanitize all user-supplied data before inserting into innerHTML
+  const pName    = sanitizeHTML(d.pName);
+  const phone    = sanitizeHTML(d.phone || '---');
+  const doctor   = sanitizeHTML(d.doctor || 'موظف');
+  const invId    = sanitizeHTML(d.invId);
+  const pd       = sanitizeHTML(rx.pd || '-');
+  const notes    = sanitizeHTML(rx.notes || '-');
+  const payMeth  = sanitizeHTML(d.paymentMethod || 'كاش');
+  const frType   = s?.frame?.type  ? sanitizeHTML(s.frame.type)  : '';
+  const lnType   = s?.lenses?.type ? sanitizeHTML(s.lenses.type) : '';
+  const clType   = s?.cl?.type     ? sanitizeHTML(s.cl.type)     : '';
+  const exType   = s?.extras?.type ? sanitizeHTML(s.extras.type) : '';
+  
   document.getElementById('print-content').innerHTML = `
     <div class="print-card">
       <div style="border-bottom:2px solid #000;padding-bottom:9px;margin-bottom:13px;text-align:left;">
         <h2 style="margin:0;font-size:1.3rem;font-weight:900;">Delta Optics</h2>
-        <p style="margin:0;font-size:.8rem;color:#555;">Medical Rx & Receipt</p>
+        <p style="margin:0;font-size:.8rem;color:#555;">Medical Rx &amp; Receipt</p>
       </div>
       <div style="font-size:.9rem;margin-bottom:13px;border-bottom:1px dashed #000;padding-bottom:9px;">
         <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
-          <span><b>No:</b> <span class="en">${d.invId}</span></span>
+          <span><b>No:</b> <span class="en">${invId}</span></span>
           <span class="en">${dt} ${tm}</span>
         </div>
         <div style="display:flex;justify-content:space-between;">
-          <span><b>المراجع:</b> ${d.pName}</span>
-          <span class="en">${d.phone||'---'}</span>
+          <span><b>المراجع:</b> ${pName}</span>
+          <span class="en">${phone}</span>
         </div>
       </div>
       <div style="font-weight:bold;text-align:center;font-size:.85rem;border:1px solid #000;background:#f0f0f0;margin-bottom:5px;padding:3px;">القياسات — Optical Rx</div>
       <table class="ptbl">
         <tr><th>Eye</th><th>SPH</th><th>CYL</th><th>AXIS</th><th>ADD</th></tr>
-        <tr><th>R (OD)</th><td class="en">${rx.od.s||'-'}</td><td class="en">${rx.od.c||'-'}</td><td class="en">${rx.od.a||'-'}</td><td class="en">${rx.od.add||'-'}</td></tr>
-        <tr><th>L (OS)</th><td class="en">${rx.os.s||'-'}</td><td class="en">${rx.os.c||'-'}</td><td class="en">${rx.os.a||'-'}</td><td class="en">${rx.os.add||'-'}</td></tr>
+        <tr><th>R (OD)</th><td class="en">${sanitizeHTML(rx.od.s||'-')}</td><td class="en">${sanitizeHTML(rx.od.c||'-')}</td><td class="en">${sanitizeHTML(rx.od.a||'-')}</td><td class="en">${sanitizeHTML(rx.od.add||'-')}</td></tr>
+        <tr><th>L (OS)</th><td class="en">${sanitizeHTML(rx.os.s||'-')}</td><td class="en">${sanitizeHTML(rx.os.c||'-')}</td><td class="en">${sanitizeHTML(rx.os.a||'-')}</td><td class="en">${sanitizeHTML(rx.os.add||'-')}</td></tr>
       </table>
-      <p style="font-size:.85rem;margin-bottom:13px;"><b>PD:</b> <span class="en">${rx.pd||'-'}</span> | <b>ملاحظة:</b> ${rx.notes||'-'}</p>
+      <p style="font-size:.85rem;margin-bottom:13px;"><b>PD:</b> <span class="en">${pd}</span> | <b>ملاحظة:</b> ${notes}</p>
       ${d.subtotal>0?`
       <div style="font-weight:bold;text-align:center;font-size:.85rem;border:1px solid #000;background:#f0f0f0;margin-bottom:5px;padding:3px;">المشتريات</div>
       <table class="ptbl">
         <tr><th>البيان</th><th>JOD</th></tr>
-        ${s.frame.type?`<tr><td>إطار: ${s.frame.type}</td><td class="en">${s.frame.price.toFixed(2)}</td></tr>`:''}
-        ${s.lenses.type?`<tr><td>عدسات: ${s.lenses.type}</td><td class="en">${s.lenses.price.toFixed(2)}</td></tr>`:''}
-        ${s.cl.type?`<tr><td>لاصق: ${s.cl.type}</td><td class="en">${s.cl.price.toFixed(2)}</td></tr>`:''}
-        ${s.extras.type?`<tr><td>أخرى: ${s.extras.type}</td><td class="en">${s.extras.price.toFixed(2)}</td></tr>`:''}
+        ${frType?`<tr><td>إطار: ${frType}</td><td class="en">${(+s.frame.price||0).toFixed(2)}</td></tr>`:''}
+        ${lnType?`<tr><td>عدسات: ${lnType}</td><td class="en">${(+s.lenses.price||0).toFixed(2)}</td></tr>`:''}
+        ${clType?`<tr><td>لاصق: ${clType}</td><td class="en">${(+s.cl.price||0).toFixed(2)}</td></tr>`:''}
+        ${exType?`<tr><td>أخرى: ${exType}</td><td class="en">${(+s.extras.price||0).toFixed(2)}</td></tr>`:''}
       </table>
       <div style="border:2px solid #000;border-radius:4px;padding:9px;font-size:.9rem;margin-top:5px;">
-        <div style="display:flex;justify-content:space-between;"><span>Subtotal:</span><b class="en">${d.subtotal.toFixed(2)}</b></div>
-        ${d.discountPercent>0?`<div style="display:flex;justify-content:space-between;"><span>Discount ${d.discountPercent}%:</span><b class="en">-${(d.subtotal*d.discountPercent/100).toFixed(2)}</b></div>`:''}
-        <div style="display:flex;justify-content:space-between;font-weight:900;font-size:1rem;border-top:1px solid #000;padding-top:4px;margin-top:4px;"><span>Total:</span><b class="en">${d.total.toFixed(2)}</b></div>
-        <div style="display:flex;justify-content:space-between;"><span>Paid (${d.paymentMethod||'كاش'}):</span><b class="en">${d.paid.toFixed(2)}</b></div>
-        <div style="display:flex;justify-content:space-between;"><span>Due الباقي:</span><b class="en">${d.due.toFixed(2)}</b></div>
+        <div style="display:flex;justify-content:space-between;"><span>Subtotal:</span><b class="en">${(+d.subtotal||0).toFixed(2)}</b></div>
+        ${d.discountPercent>0?`<div style="display:flex;justify-content:space-between;"><span>Discount ${(+d.discountPercent).toFixed(0)}%:</span><b class="en">-${(d.subtotal*d.discountPercent/100).toFixed(2)}</b></div>`:''}
+        <div style="display:flex;justify-content:space-between;font-weight:900;font-size:1rem;border-top:1px solid #000;padding-top:4px;margin-top:4px;"><span>Total:</span><b class="en">${(+d.total||0).toFixed(2)}</b></div>
+        <div style="display:flex;justify-content:space-between;"><span>Paid (${payMeth}):</span><b class="en">${(+d.paid||0).toFixed(2)}</b></div>
+        <div style="display:flex;justify-content:space-between;"><span>Due الباقي:</span><b class="en">${(+d.due||0).toFixed(2)}</b></div>
       </div>`:''}
       <div style="text-align:center;margin-top:18px;font-weight:bold;font-size:.8rem;border-top:1px dashed #000;padding-top:9px;">
-        بواسطة: ${d.doctor||'موظف'} | ✨ نتمنى لكم رؤية واضحة ✨
+        بواسطة: ${doctor} | ✨ نتمنى لكم رؤية واضحة ✨
       </div>
     </div>`;
   
@@ -621,7 +667,7 @@ window.savePos = async () => {
   const paid  = parseFloat(document.getElementById('pos-paid').value)||0;
   const due   = parseFloat(document.getElementById('pos-due-val').value)||0;
   const pay   = document.getElementById('pos-pay').value;
-  const invId = 'POS-' + Math.floor(Math.random()*90000+10000);
+  const invId = 'POS-' + Date.now().toString(36).toUpperCase() + Math.floor(Math.random()*100).toString(36).toUpperCase();
   
   try {
     await addDoc(collection(db,'invoices'), { invId, pName:cust, prodName:prod, subtotal:price, discountPercent:disc, total:tot, paid, due, paymentMethod:pay, labStatus:'تم التسليم', time:serverTimestamp(), isUnified:false, doctor:Auth.user?.name||'موظف' });
@@ -840,13 +886,15 @@ window.saveCMS = async () => {
 // ═══════════════════════════════════════════════════════
 
 window.startSync = function() {
-  onSnapshot(query(collection(db,'brands'),orderBy('timestamp','desc')), s => {
+  onSnapshot(query(collection(db,'brands'),orderBy('timestamp','desc'),limit(500)), s => {
     let html='';
     s.forEach(d=>{ const p=d.data();
-      const tb=p.type==='sun'?'<span class="bdg bdg-a">شمسي</span>':'<span class="bdg bdg-b">طبي</span>';
-      html+=`<tr><td class="fw">${p.name}</td><td>${tb}</td>
+      const safeName = sanitizeHTML(p.name);
+      const safeType = p.type==='sun' ? 'sun' : 'medical';
+      const tb=safeType==='sun'?'<span class="bdg bdg-a">شمسي</span>':'<span class="bdg bdg-b">طبي</span>';
+      html+=`<tr><td class="fw">${safeName}</td><td>${tb}</td>
         <td style="display:flex;gap:5px;">
-          <button class="btn btn-am btn-sm" onclick='loadGalEdit("${d.id}","${p.name}","${p.type}","${p.imageUrl||''}")'><i class="fas fa-edit"></i></button>
+          <button class="btn btn-am btn-sm" onclick='loadGalEdit("${d.id}","${safeName}","${safeType}","${sanitizeHTML(p.imageUrl||'')}")'><i class="fas fa-edit"></i></button>
           <button class="btn btn-dn btn-sm" onclick='deleteGallery("${d.id}",${JSON.stringify(p).replace(/'/g,"\\'")})'><i class="fas fa-trash"></i></button>
         </td></tr>`;
     });
@@ -854,16 +902,18 @@ window.startSync = function() {
     if(tb){ tb.innerHTML=html; applyRoles(Auth.user?.role||'employee'); }
   });
 
-  onSnapshot(query(collection(db,'products'),orderBy('time','desc')), s => {
+  onSnapshot(query(collection(db,'products'),orderBy('time','desc'),limit(500)), s => {
     let invH='', posH="<option value=''>— اختر المنتج —</option>";
     s.forEach(d=>{ const p=d.data();
-      const qb=p.qty>0?`<span class="bdg bdg-g mono">${p.qty}</span>`:'<span class="bdg bdg-r">نفد</span>';
-      invH+=`<tr><td class="fw">${p.name}</td><td><span class="bdg bdg-b">${p.type}</span></td><td>${qb}</td><td class="mono">${p.price} JOD</td>
+      const safeName = sanitizeHTML(p.name);
+      const safeType = sanitizeHTML(p.type);
+      const qb=p.qty>0?`<span class="bdg bdg-g mono">${+p.qty}</span>`:'<span class="bdg bdg-r">نفد</span>';
+      invH+=`<tr><td class="fw">${safeName}</td><td><span class="bdg bdg-b">${safeType}</span></td><td>${qb}</td><td class="mono">${(+p.price).toFixed(2)} JOD</td>
         <td style="display:flex;gap:5px;">
           <button class="btn btn-am btn-sm" onclick='loadProdEdit("${d.id}",${JSON.stringify(p).replace(/'/g,"\\'")})'><i class="fas fa-edit"></i></button>
           <button class="btn btn-dn btn-sm" onclick='deleteProduct("${d.id}",${JSON.stringify(p).replace(/'/g,"\\'")})'><i class="fas fa-trash"></i></button>
         </td></tr>`;
-      if(p.qty>0) posH+=`<option value="${d.id}" data-price="${p.price}" data-qty="${p.qty}">${p.name}</option>`;
+      if(p.qty>0) posH+=`<option value="${d.id}" data-price="${+p.price}" data-qty="${+p.qty}">${safeName}</option>`;
     });
     const ti=document.getElementById('tb-inv');
     if(ti) ti.innerHTML=invH;
@@ -872,27 +922,29 @@ window.startSync = function() {
     applyRoles(Auth.user?.role||'employee');
   });
 
-  onSnapshot(query(collection(db,'tests'),orderBy('timestamp','desc')), s => {
+  onSnapshot(query(collection(db,'tests'),orderBy('timestamp','desc'),limit(200)), s => {
     let html='';
     window.allTests=[];
     s.forEach(d=>{ const p=d.data();
       window.allTests.push({id:d.id,...p});
       const dt=p.timestamp?.toDate().toLocaleDateString('en-GB')||'--';
       const st=p.isProcessed?'<span class="bdg bdg-g">مكتمل</span>':'<span class="bdg bdg-a">جديد</span>';
-      html+=`<tr><td class="fw">${p.name||'—'}</td><td class="mono">${p.phone||'—'}</td><td class="mono dim">${dt}</td><td>${st}</td>
+      const safeName  = sanitizeHTML(p.name||'—');
+      const safePhone = sanitizeHTML(p.phone||'—');
+      html+=`<tr><td class="fw">${safeName}</td><td class="mono">${safePhone}</td><td class="mono dim">${dt}</td><td>${st}</td>
         <td><button class="btn btn-pr btn-sm" onclick="openOnlineReport('${d.id}')"><i class="fas fa-eye"></i> عرض</button></td></tr>`;
     });
     const tb=document.getElementById('tb-online');
     if(tb) tb.innerHTML=html;
   });
 
-  onSnapshot(query(collection(db,'expenses'),orderBy('time','desc')), s => {
+  onSnapshot(query(collection(db,'expenses'),orderBy('time','desc'),limit(500)), s => {
     expData=[];
     s.forEach(d=>expData.push({id:d.id,...d.data()}));
     renderLedger();
   });
 
-  onSnapshot(query(collection(db,'invoices'),orderBy('time','desc')), s => {
+  onSnapshot(query(collection(db,'invoices'),orderBy('time','desc'),limit(1000)), s => {
     let posH='', labH='';
     let posPatH="<option value=''>—</option>";
     invData=[];
@@ -904,23 +956,30 @@ window.startSync = function() {
       if(!i.isUnified){
         window.allRecords.push(i);
         const dueCol = +i.due>0?'var(--red)':'var(--green)';
-        posH+=`<tr><td class="mono fw">${i.invId}</td><td class="fw">${i.pName}</td><td class="dim">${i.prodName}</td>
+        const safeInvId  = sanitizeHTML(i.invId);
+        const safePName  = sanitizeHTML(i.pName);
+        const safeProd   = sanitizeHTML(i.prodName);
+        posH+=`<tr><td class="mono fw">${safeInvId}</td><td class="fw">${safePName}</td><td class="dim">${safeProd}</td>
           <td class="mono" style="color:var(--blue);">${(+i.total).toFixed(2)} JOD</td>
           <td class="mono" style="color:${dueCol};">${(+i.due).toFixed(2)} JOD</td>
           <td style="display:flex;gap:5px;">
-            <button class="btn btn-sc btn-sm" onclick="printPosById('${i.invId}')"><i class="fas fa-print"></i></button>
-            <button class="btn btn-dn btn-sm admin-only" onclick='deleteInvoice("${d.id}",${JSON.stringify(i).replace(/'/g,"\\'")},"${i.invId}")'><i class="fas fa-trash"></i></button>
+            <button class="btn btn-sc btn-sm" onclick="printPosById('${safeInvId}')"><i class="fas fa-print"></i></button>
+            <button class="btn btn-dn btn-sm admin-only" onclick='deleteInvoice("${d.id}",${JSON.stringify(i).replace(/'/g,"\\'")},"${safeInvId}")' ><i class="fas fa-trash"></i></button>
           </td></tr>`;
       }
       if(i.labStatus!=='تم التسليم'){
-        labH+=`<tr><td class="mono fw">${i.invId}</td><td class="fw">${i.pName}</td><td class="dim">${i.prodName}</td>
+        const safeInvId = sanitizeHTML(i.invId);
+        const safePName = sanitizeHTML(i.pName);
+        const safeProd  = sanitizeHTML(i.prodName);
+        labH+=`<tr><td class="mono fw">${safeInvId}</td><td class="fw">${safePName}</td><td class="dim">${safeProd}</td>
           <td><select onchange="updateLab('${d.id}',this.value)" class="fc" style="padding:5px 9px;font-size:12px;width:125px;">
             <option value="انتظار" ${i.labStatus==='انتظار'?'selected':''}>انتظار</option>
             <option value="جاهز"  ${i.labStatus==='جاهز'?'selected':''}>جاهز</option>
             <option value="تم التسليم">تسليم</option>
           </select></td></tr>`;
       }
-      if(i.isUnified&&i.rx){
+      // FIX: Only push unified (clinic) records to allRecords once — avoids duplication
+      if(i.isUnified && i.rx){
         window.allRecords.push(i);
         if(!pts[i.pName]) pts[i.pName]={last:i.time?.toDate(),spent:0};
         pts[i.pName].spent+=+i.total;
@@ -933,11 +992,12 @@ window.startSync = function() {
     
     let rxH='';
     names.forEach(n=>{
-      rxH+=`<tr><td class="fw" style="color:var(--blue);">${n}</td>
+      const safeN = sanitizeHTML(n);
+      rxH+=`<tr><td class="fw" style="color:var(--blue);">${safeN}</td>
         <td class="mono dim">${pts[n].last?.toLocaleDateString('en-GB')||'—'}</td>
         <td class="mono fw">${pts[n].spent.toFixed(2)} JOD</td>
-        <td><button class="btn btn-pr btn-sm" onclick="showHistory('${n}')"><i class="fas fa-folder-open"></i> السجل</button></td></tr>`;
-      posPatH+=`<option value="${n}">${n}</option>`;
+        <td><button class="btn btn-pr btn-sm" onclick="showHistory('${safeN}')"><i class="fas fa-folder-open"></i> السجل</button></td></tr>`;
+      posPatH+=`<option value="${safeN}">${safeN}</option>`;
     });
 
     const t1=document.getElementById('tb-rx');
@@ -963,18 +1023,20 @@ window.startSync = function() {
     tb.innerHTML=allStaff.map(u=>{
       const rb=u.role==='developer'?'<span class="bdg bdg-r">مطور</span>':u.role==='manager'?'<span class="bdg bdg-b">مدير</span>':'<span class="bdg bdg-x">موظف</span>';
       const sb=u.status==='frozen'?'<span class="bdg bdg-r">مجمد</span>':'<span class="bdg bdg-g">نشط</span>';
+      const safeName = sanitizeHTML(u.name);
+      const safeUser = sanitizeHTML(u.user);
       const fb=u.status==='frozen'
-        ?`<button class="btn btn-gn btn-sm" onclick="toggleFreeze('${u.id}','frozen','${u.name}')"><i class="fas fa-play"></i></button>`
-        :`<button class="btn btn-am btn-sm" onclick="toggleFreeze('${u.id}','active','${u.name}')"><i class="fas fa-pause"></i></button>`;
+        ?`<button class="btn btn-gn btn-sm" onclick="toggleFreeze('${u.id}','frozen','${safeName}')"><i class="fas fa-play"></i></button>`
+        :`<button class="btn btn-am btn-sm" onclick="toggleFreeze('${u.id}','active','${safeName}')"><i class="fas fa-pause"></i></button>`;
       
       return `<tr>
-        <td class="fw">${u.name}</td>
-        <td class="mono dim" style="font-size:12px;">${u.user}</td>
+        <td class="fw">${safeName}</td>
+        <td class="mono dim" style="font-size:12px;">${safeUser}</td>
         <td>${rb}</td><td>${sb}</td>
         <td style="display:flex;gap:5px;">
           <button class="btn btn-pr btn-sm" onclick="loadAccountForEdit('${u.id}')"><i class="fas fa-edit"></i></button>
           ${fb}
-          <button class="btn btn-dn btn-sm" onclick='deleteAccount("${u.id}","${u.name}",${JSON.stringify(u).replace(/'/g,"\\'")})'><i class="fas fa-trash"></i></button>
+          <button class="btn btn-dn btn-sm" onclick='deleteAccount("${u.id}","${safeName}",${JSON.stringify(u).replace(/'/g,"\\'")})'><i class="fas fa-trash"></i></button>
         </td></tr>`;
     }).join('');
   });
@@ -985,9 +1047,9 @@ window.startSync = function() {
     
     tb.innerHTML=s.docs.map(d=>{ const p=d.data();
       return `<tr>
-        <td class="fw">${p.user}</td>
-        <td class="dim">${p.device||'نظام'}</td>
-        <td style="color:var(--blue);">${p.action}</td>
+        <td class="fw">${sanitizeHTML(p.user)}</td>
+        <td class="dim">${sanitizeHTML(p.device||'نظام')}</td>
+        <td style="color:var(--blue);">${sanitizeHTML(p.action)}</td>
         <td class="mono dim">${p.time?.toDate().toLocaleString('en-GB')||'—'}</td></tr>`;
     }).join('');
   });

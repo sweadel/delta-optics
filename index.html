@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <title>Delta Vision Pro • النظام الإداري</title>
 <meta name="description" content="نظام دلتا للبصريات الإداري">
 <link rel="icon" href="logo.jpg" type="image/jpeg">
@@ -314,12 +317,17 @@ tbody tr:hover td{background:var(--glass);}
     <div id="login-panel" class="login-panel active">
       <div class="fg">
         <label>البريد الإلكتروني</label>
-        <input id="auth-u" type="email" class="fin" placeholder="user@delta.com" autocomplete="email">
+        <input id="auth-u" type="email" class="fin" placeholder="user@delta.com" autocomplete="email" onkeydown="if(event.key==='Enter') handleLogin()">
       </div>
       <div class="fg">
-        <label>كلمة المرور</label>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <label style="margin-bottom:0;">كلمة المرور</label>
+          <a href="javascript:void(0)" onclick="switchLoginTab('forgot')" style="color: var(--blue, #3b82f6); font-size: 12px; text-decoration: none; font-weight: 600;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">
+            <i class="fas fa-key" style="margin-left: 3px;"></i> نسيت كلمة السر؟
+          </a>
+        </div>
         <div class="pw-w">
-          <input id="auth-p" type="password" class="fin" placeholder="••••••••" autocomplete="current-password">
+          <input id="auth-p" type="password" class="fin" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter') handleLogin()">
           <button class="pw-eye" onclick="toggleAuthPassVis()" type="button"><i id="pass-eye-login" class="fas fa-eye"></i></button>
         </div>
       </div>
@@ -331,10 +339,15 @@ tbody tr:hover td{background:var(--glass);}
     <!-- Forgot Panel -->
     <div id="forgot-panel" class="login-panel">
       <div class="fg">
-        <label>البريد الإلكتروني</label>
-        <input id="forgot-email" type="email" class="fin" placeholder="user@delta.com">
+        <label>البريد الإلكتروني لإعادة التعيين</label>
+        <input id="forgot-email" type="email" class="fin" placeholder="user@delta.com" autocomplete="email" onkeydown="if(event.key==='Enter') handleForgotPassword()">
       </div>
       <button class="btn-lo" onclick="handleForgotPassword()"><i class="fas fa-paper-plane"></i> إرسال رابط الاسترجاع</button>
+      <div style="text-align: center; margin-top: 15px;">
+        <a href="javascript:void(0)" onclick="switchLoginTab('login')" style="color: var(--t2, #94a3b8); font-size: 13px; text-decoration: none; font-weight: 500;" onmouseover="this.style.color='var(--blue, #3b82f6)'" onmouseout="this.style.color='var(--t2, #94a3b8)'">
+          <i class="fas fa-arrow-right" style="margin-left: 5px;"></i> العودة لصفحة تسجيل الدخول
+        </a>
+      </div>
     </div>
   </div>
 </div>

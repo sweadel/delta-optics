@@ -50,20 +50,33 @@ export const Auth = {
     }
   },
   
-  // ✅ Advanced Encryption
+  // ✅ Obfuscated session token (not cryptographic, but prevents trivial reading)
+  // NOTE: For production, use SubtleCrypto AES-GCM + server-side validation
   _encrypt: (data) => {
     try {
-      return btoa(encodeURIComponent(JSON.stringify(data)));
+      const json = JSON.stringify(data);
+      const key = 'delta_session_v2';
+      let result = '';
+      for (let i = 0; i < json.length; i++) {
+        result += String.fromCharCode(json.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+      }
+      return btoa(result);
     } catch {
-      return JSON.stringify(data);
+      return btoa(encodeURIComponent(JSON.stringify(data)));
     }
   },
   
   _decrypt: (data) => {
     try {
-      return JSON.parse(decodeURIComponent(atob(data)));
+      const key = 'delta_session_v2';
+      const decoded = atob(data);
+      let result = '';
+      for (let i = 0; i < decoded.length; i++) {
+        result += String.fromCharCode(decoded.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+      }
+      return JSON.parse(result);
     } catch {
-      return JSON.parse(data);
+      try { return JSON.parse(decodeURIComponent(atob(data))); } catch { return null; }
     }
   },
   
@@ -134,27 +147,31 @@ export const Auth = {
         return { success: false, msg: 'البريد وكلمة المرور مطلوبان' };
       }
       
-      // Admin bypass
-      const u = email.trim().toLowerCase();
-      if ((u === 'admin@delta.com' || u === 'admin') && (password === 'admin123' || password === 'admin')) {
-        Auth.user = {
-          uid: 'master-admin-001',
-          email: 'admin@delta.com',
-          name: 'مدير النظام الرئيسي',
-          role: 'developer',
-          permissions: ['view_dash', 'clinic', 'pos', 'online', 'inventory', 'lab', 'expenses', 'delete', 'reports', 'gallery'],
-          fullData: { name: 'مدير النظام الرئيسي', email: 'admin@delta.com', role: 'developer', status: 'active' }
-        };
-        Auth._saveUser(Auth.user);
-        return { success: true };
-      }
+      // ⚠️ SECURITY NOTICE: Admin bypass removed for production security.
+      // If you need a local admin, create an actual Firebase account with 
+      // 'developer' role in Firestore instead of hardcoded credentials.
+      // ─── REMOVED: hardcoded admin@delta.com bypass ───
       
       const result = await signInWithEmailAndPassword(auth, email, password);
-      const userDataResult = await Auth._getUserData(result.user.uid);
+      let userDataResult = await Auth._getUserData(result.user.uid);
       
       if (!userDataResult.success) {
-        await firebaseSignOut(auth);
-        return userDataResult;
+        if (userDataResult.msg === 'حساب غير موجود في النظام') {
+          const defaultData = {
+            name: result.user.displayName || email.split('@')[0],
+            email: email,
+            role: 'employee',
+            permissions: ['view_dash', 'clinic', 'pos', 'online', 'inventory', 'lab'],
+            status: 'active',
+            createdAt: serverTimestamp(),
+            authMethod: 'email'
+          };
+          await setDoc(doc(db, 'users', result.user.uid), defaultData);
+          userDataResult = { success: true, data: defaultData };
+        } else {
+          await firebaseSignOut(auth);
+          return userDataResult;
+        }
       }
       
       const userData = userDataResult.data;
